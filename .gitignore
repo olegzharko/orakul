@@ -21,3 +21,22 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+
+back/resources/views/react/
+back/storage/framework/cache/data/
+.DS_Store
+# frontend
+
+www/public
+www/src
+www/.gitignore
+www/.DS_Store
+www/package-lock.json
+www/package.json
+www/node_modules
+
+# zharko
+back/resources/views/react/
+.DS_Store
+back/.DS_Store
+.idea
