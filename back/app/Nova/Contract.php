@@ -3,11 +3,16 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
 class Contract extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
@@ -31,6 +36,18 @@ class Contract extends Resource
         'id',
     ];
 
+    public static $group = "Угода";
+
+    public static function label()
+    {
+        return "Договір";
+    }
+
+    public static function canSort(NovaRequest $request)
+    {
+        return true;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -41,6 +58,19 @@ class Contract extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Тип договору', 'template', 'App\Nova\TemplateType')->onlyOnForms()->nullable(),
+            BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->onlyOnForms()->nullable(),
+            DateTime::make('Дата зустрічі', 'event_datetime')->timeFormat('HH:mm'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Developer')->onlyOnForms()->nullable(),
+            BelongsTo::make('Підписант', 'assistant', 'App\Nova\Assistant')->onlyOnForms()->nullable(),
+            BelongsTo::make('Менеджер', 'manager', 'App\Nova\Manager')->onlyOnForms()->nullable(),
+            BelongsTo::make('Клієнт', 'client', 'App\Nova\Client')->onlyOnForms()->nullable(),
+            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->onlyOnForms()->nullable(),
+            BelongsTo::make('Видавач', 'reader', 'App\Nova\Staff')->onlyOnForms()->nullable(),
+            BelongsTo::make('Читач', 'delivery', 'App\Nova\Staff')->onlyOnForms()->nullable(),
+            BelongsTo::make('Оцінка майна', 'pvprice', 'App\Nova\PVPrice')->onlyOnForms()->nullable(),
+            DateTime::make('Дата підписання угоди', 'sign_date'),
+            Toggle::make('Активний', 'active'),
         ];
     }
 

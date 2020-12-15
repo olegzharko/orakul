@@ -9,15 +9,22 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "bissolli/nova-phone-field": "^0.0.4",
+        "classic-o/nova-media-library": "^1.0",
         "coderello/laravel-nova-lang": "^1.7",
+        "ebess/advanced-nova-media-library": "^3.3",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/nova": "~3.0",
         "laravel/tinker": "^2.5",
+        "naif/toggle": "^1.2",
         "optimistdigital/nova-sortable": "^2.0",
-        "phpoffice/phpword": "^0.17.0"
+        "phpoffice/phpword": "^0.17.0",
+        "simplesquid/nova-advanced-number-field": "^2.0",
+        "techouse/intl-date-time": "^1.6",
+        "vyuldashev/nova-money-field": "^1.3"
     },
     "repositories": [
         {

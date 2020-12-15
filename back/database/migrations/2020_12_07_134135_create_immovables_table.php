@@ -19,14 +19,8 @@ class CreateImmovablesTable extends Migration
             $table->integer('work_address_id')->nullable();
             $table->integer('building_number')->nullable();
             $table->integer('immovable_number')->nullable();
-            $table->integer('developer_price')->nullable();
-            $table->integer('pv_price')->nullable();
-            $table->integer('gov_reg_imm_date')->nullable();
-            $table->integer('gov_reg_imm_num')->nullable();
-            $table->integer('discharge_imm_date')->nullable();
-            $table->integer('discharge_imm_number')->nullable();
-            $table->integer('discharge_responsible')->nullable();
-            $table->integer('registration_number')->nullable();
+            $table->float('developer_price')->nullable();
+            $table->float('pv_price')->nullable();
             $table->integer('drrp_number')->nullable();
             $table->timestamps();
         });

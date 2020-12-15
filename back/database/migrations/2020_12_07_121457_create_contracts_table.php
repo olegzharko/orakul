@@ -25,7 +25,7 @@ class CreateContractsTable extends Migration
             $table->integer('notary_id')->nullable();
             $table->integer('reader_id')->nullable();
             $table->integer('delivery_id')->nullable();
-            $table->integer('pv_id')->nullable();
+            $table->integer('pvprice_id')->nullable();
             $table->dateTime('sign_date')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();

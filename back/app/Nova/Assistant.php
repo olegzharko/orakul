@@ -2,12 +2,18 @@
 
 namespace App\Nova;
 
+use Bissolli\NovaPhoneField\PhoneNumber;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
 class Assistant extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
@@ -20,7 +26,10 @@ class Assistant extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public function title()
+    {
+        return $this->surname . " " . $this->name . " " . $this->patronymic;
+    }
 
     /**
      * The columns that should be searched.
@@ -31,9 +40,16 @@ class Assistant extends Resource
         'id',
     ];
 
+    public static $group = "Забудоник";
+
     public static function label()
     {
         return "Підписант";
+    }
+
+    public static function canSort(NovaRequest $request)
+    {
+        return true;
     }
 
     /**
@@ -46,6 +62,13 @@ class Assistant extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            Text::make('Прізвище', 'surname')->rules('required'),
+            Text::make('Ім\'я', 'name')->rules('required'),
+            Text::make('По батькові', 'patronymic')->rules('required'),
+//            DateTime::make('Дата народження', 'birthday'),
+            Text::make('E-main', 'email'),
+            PhoneNumber::make('Основний телефон', 'phone'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Developer'),
         ];
     }
 

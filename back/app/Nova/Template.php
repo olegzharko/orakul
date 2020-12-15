@@ -2,12 +2,18 @@
 
 namespace App\Nova;
 
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class Template extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
@@ -31,9 +37,16 @@ class Template extends Resource
         'id',
     ];
 
+    public static $group = "Угода";
+
     public static function label()
     {
         return "Шаблони";
+    }
+
+    public static function canSort(NovaRequest $request)
+    {
+        return true;
     }
 
     /**
@@ -46,6 +59,12 @@ class Template extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Developer'),
+            BelongsTo::make('Тип шаблону', 'template_type', 'App\Nova\TemplateType'),
+//            File::make('Шаблон', 'path')->disk('public'),
+            Files::make('Шаблон', 'path')->customPropertiesFields([
+                Markdown::make('Description'),
+            ]),
         ];
     }
 

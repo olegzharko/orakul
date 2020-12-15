@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkAddressesTable extends Migration
+class CreateGlobalTextsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateWorkAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_addresses', function (Blueprint $table) {
+        Schema::create('global_texts', function (Blueprint $table) {
             $table->id();
-            $table->integer('work_city_id')->nullable();
-            $table->string('title')->nullable();
-            $table->integer('sort_order')->nullable();
-            $table->boolean('active')->nullable();
+            $table->string('key')->nullable();
+            $table->string('title_n')->nullable();
+            $table->string('title_r')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateWorkAddressesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('work_addresses');
+        Schema::dropIfExists('global_texts');
     }
 }

@@ -27,7 +27,7 @@ class CreateClientsTable extends Migration
             $table->string('tax_code')->nullable();
             $table->integer('passport_type_id')->nullable();
             $table->string('passport_code')->nullable();
-            $table->date('passport_date')->nullable();
+            $table->dateTime('passport_date')->nullable();
             $table->string('passport_department')->nullable();
             $table->string('passport_demographic_code')->nullable();
             $table->integer('region_id')->nullable();

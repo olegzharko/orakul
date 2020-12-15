@@ -24,6 +24,8 @@ class User extends Resource
      */
     public static $title = 'name';
 
+    public static $group = "Nova";
+
     /**
      * The columns that should be searched.
      *

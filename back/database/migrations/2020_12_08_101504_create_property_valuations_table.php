@@ -18,7 +18,7 @@ class CreatePropertyValuationsTable extends Migration
             $table->string('title')->nullable();
             $table->text('text')->nullable();
             $table->string('certificate')->nullable();
-            $table->date('date')->nullable();
+            $table->dateTime('date')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();

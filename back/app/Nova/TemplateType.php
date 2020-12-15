@@ -4,10 +4,13 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class TemplateType extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
@@ -20,7 +23,7 @@ class TemplateType extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -31,9 +34,16 @@ class TemplateType extends Resource
         'id',
     ];
 
+    public static $group = "Типи";
+
     public static function label()
     {
-        return "Типи шоблонів";
+        return "Шоблон";
+    }
+
+    public static function canSort(NovaRequest $request)
+    {
+        return true;
     }
 
     /**
@@ -46,6 +56,7 @@ class TemplateType extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            Text::make('Заголовок', 'title'),
         ];
     }
 

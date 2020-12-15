@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkCitiesTable extends Migration
+class AddColumnSortOrderToDeveloperSpouseConsents extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateWorkCitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->nullable();
+        Schema::table('developer_spouse_consents', function (Blueprint $table) {
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
-            $table->timestamps();
         });
     }
 
@@ -29,6 +26,8 @@ class CreateWorkCitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('work_cities');
+        Schema::table('developer_spouse_consents', function (Blueprint $table) {
+            //
+        });
     }
 }
