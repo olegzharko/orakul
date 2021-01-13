@@ -19,6 +19,8 @@ class CreatePVPricesTable extends Migration
             $table->integer('pv_id')->nullable();
             $table->dateTime('date')->nullable();
             $table->string('price')->nullable();
+            $table->text('price_grn_str')->nullable();
+            $table->text('price_coin_str')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();

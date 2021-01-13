@@ -18,9 +18,14 @@ class DeveloperAddress extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
+    public function dev_company()
+    {
+        return $this->belongsTo(DevCompany::class, 'dev_company_id');
+    }
+
     public function developer_city()
     {
-        return $this->belongsTo(DeveloperCity::class);
+        return $this->belongsTo(City::class);
     }
 
     public function address_type()

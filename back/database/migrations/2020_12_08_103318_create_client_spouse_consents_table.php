@@ -17,7 +17,10 @@ class CreateClientSpouseConsentsTable extends Migration
             $table->id();
             $table->integer('notary_id')->nullable();
             $table->integer('client_spouse_id')->nullable();
-            $table->date('date')->nullable();
+            $table->dateTime('date')->nullable();
+            $table->string('reg_num')->nullable();
+            $table->unsignedInteger('consents_template_id')->nullable();
+            $table->boolean('acitve')->nullable();
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDeveloperCitiesTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateDeveloperCitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('developer_cities', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
+            $table->string('title_n')->nullable();
+            $table->string('title_r')->nullable();
+            $table->string('title_z')->nullable();
+            $table->string('title_m')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();
@@ -29,6 +32,6 @@ class CreateDeveloperCitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('developer_cities');
+        Schema::dropIfExists('cities');
     }
 }

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
-class KeyWord extends Model implements Sortable
+class KeyWord extends Model
 {
-    use HasFactory, SortableTrait;
+    use HasFactory;
 
-    public $sortable = [
-        'order_column_name' => 'sort_order',
-        'sort_when_creating' => true,
-    ];
+//    public $sortable = [
+//        'order_column_name' => 'sort_order',
+//        'sort_when_creating' => true,
+//    ];
 }

@@ -3,6 +3,8 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -21,7 +23,7 @@ class District extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title_n';
 
     /**
      * The columns that should be searched.
@@ -51,8 +53,12 @@ class District extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Назва району у називному відмінку', 'title_n'),
-            Text::make('Назва району у родовому відмінку', 'title_r'),
+            Heading::make('<p class="text-success">Додано визначення обсласті для перевірки правильно обраного району для міста (city-region == city-district-region)</p>')->asHtml(),
+            BelongsTo::make('Область', 'region', 'App\Nova\Region'),
+            Text::make('Назва району у називному відмінку', 'title_n')->creationRules('unique:districts,title_n')->updateRules('unique:districts,title_n,{{resourceId}}'),
+            Text::make('Назва району у родовому відмінку', 'title_r')->creationRules('unique:districts,title_r')->updateRules('unique:districts,title_r,{{resourceId}}'),
+            Text::make('Назва району у знахідному відмінку', 'title_z')->creationRules('unique:districts,title_z')->updateRules('unique:districts,title_z,{{resourceId}}'),
+            Text::make('Назва району у місцевому відмінку', 'title_m')->creationRules('unique:districts,title_m')->updateRules('unique:districts,title_m,{{resourceId}}'),
         ];
     }
 

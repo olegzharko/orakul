@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnShortToGlobalTexts extends Migration
+class CreateStatementTemplatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddColumnShortToGlobalTexts extends Migration
      */
     public function up()
     {
-        Schema::table('global_texts', function (Blueprint $table) {
-            $table->string('short')->nullable();
+        Schema::create('statement_templates', function (Blueprint $table) {
+            $table->id();
+            $table->text('title')->nullable();
+            $table->text('path')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddColumnShortToGlobalTexts extends Migration
      */
     public function down()
     {
-        Schema::table('global_texts', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('statement_templates');
     }
 }

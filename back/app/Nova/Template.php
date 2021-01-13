@@ -26,7 +26,12 @@ class Template extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+//    public static $title = 'id';
+
+    public function title()
+    {
+        return $this->template_type->title;
+    }
 
     /**
      * The columns that should be searched.
@@ -37,11 +42,11 @@ class Template extends Resource
         'id',
     ];
 
-    public static $group = "Угода";
+    public static $group = "Шаблон документу";
 
     public static function label()
     {
-        return "Шаблони";
+        return "Договір";
     }
 
     public static function canSort(NovaRequest $request)
@@ -59,7 +64,7 @@ class Template extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Developer'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
             BelongsTo::make('Тип шаблону', 'template_type', 'App\Nova\TemplateType'),
 //            File::make('Шаблон', 'path')->disk('public'),
             Files::make('Шаблон', 'path')->customPropertiesFields([

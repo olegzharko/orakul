@@ -15,9 +15,9 @@ class AddColumnZToImmovableTypes extends Migration
     {
         Schema::table('immovable_types', function (Blueprint $table) {
             $table->dropColumn('full');
-            $table->string('title_n');
-            $table->string('title_r');
-            $table->string('title_z');
+            $table->string('title_n')->nullable();
+            $table->string('title_r')->nullable();
+            $table->string('title_z')->nullable();
         });
     }
 

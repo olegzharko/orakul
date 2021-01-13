@@ -61,6 +61,8 @@ class CityType extends Resource
             Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:city_types,title_n')->updateRules('unique:city_types,title_n,{{resourceId}}'),
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:city_types,title_r')->updateRules('unique:city_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:city_types,title_z')->updateRules('unique:city_types,title_z,{{resourceId}}'),
+            Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:city_types,title_m')->updateRules('unique:city_types,title_m,{{resourceId}}'),
+            Text::make('Code-key', 'alias')->creationRules('unique:city_types,alias')->updateRules('unique:city_types,alias,{{resourceId}}'),
             Toggle::make('Активувати', 'active'),
         ];
     }

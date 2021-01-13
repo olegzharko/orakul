@@ -23,7 +23,7 @@ class Region extends Resource
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'title_n';
 
     /**
      * The columns that should be searched.
@@ -56,7 +56,10 @@ class Region extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Назва', 'title'),
+            Text::make('Назва області у називному відмінку', 'title_n')->creationRules('unique:regions,title_n')->updateRules('unique:regions,title_n,{{resourceId}}'),
+            Text::make('Назва області у родовому відмінку', 'title_r')->creationRules('unique:regions,title_r')->updateRules('unique:regions,title_r,{{resourceId}}'),
+            Text::make('Назва області у знахідному відмінку', 'title_z')->creationRules('unique:regions,title_z')->updateRules('unique:regions,title_z,{{resourceId}}'),
+            Text::make('Назва області у місцевому відмінку', 'title_m')->creationRules('unique:regions,title_m')->updateRules('unique:regions,title_m,{{resourceId}}'),
         ];
     }
 

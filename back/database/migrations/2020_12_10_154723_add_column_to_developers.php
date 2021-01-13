@@ -25,6 +25,7 @@ class AddColumnToDevelopers extends Migration
             $table->string('city')->nullable();
             $table->integer('address_type_id')->nullable();
             $table->string('address')->nullable();
+            $table->unsignedInteger('building_type');
             $table->string('building')->nullable();
             $table->string('apartment')->nullable();
         });

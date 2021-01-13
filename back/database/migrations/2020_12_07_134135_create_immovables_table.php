@@ -20,6 +20,8 @@ class CreateImmovablesTable extends Migration
             $table->integer('building_number')->nullable();
             $table->integer('immovable_number')->nullable();
             $table->float('developer_price')->nullable();
+            $table->text('developer_grn_str')->nullable();
+            $table->text('developer_coin_str')->nullable();
             $table->float('pv_price')->nullable();
             $table->integer('drrp_number')->nullable();
             $table->timestamps();

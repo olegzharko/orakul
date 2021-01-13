@@ -16,9 +16,19 @@ class CreateDevelopersTable extends Migration
         Schema::create('developers', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->string('surname')->nullable();
-            $table->string('name')->nullable();
-            $table->string('patronymic')->nullable();
+
+            $table->string('surname_n')->nullable();
+            $table->string('name_n')->nullable();
+            $table->string('patronymic_n')->nullable();
+
+            $table->string('surname_r')->nullable();
+            $table->string('name-r')->nullable();
+            $table->string('patronymic_r')->nullable();
+
+            $table->string('surname_d')->nullable();
+            $table->string('name-d')->nullable();
+            $table->string('patronymic_d')->nullable();
+
             $table->boolean('developer_spouses_id')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();

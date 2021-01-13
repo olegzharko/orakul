@@ -3,10 +3,10 @@
 namespace App\Nova;
 
 use App\Models\Immovable;
-use Faker\Provider\Text;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
 use Vyuldashev\NovaMoneyField\Money;
@@ -63,6 +63,8 @@ class PVPrice extends Resource
             BelongsTo::make('Оцінка від', 'property_valuation', 'App\Nova\PropertyValuation'),
             DateTime::make('Дата оцінки', 'date'),
             Money::make('price', 'UAH')->storedInMinorUnits(),
+            Text::make('Гривні словами', 'price_grn_str'),
+            Text::make('Копійки словами', 'price_coin_str'),
         ];
     }
 

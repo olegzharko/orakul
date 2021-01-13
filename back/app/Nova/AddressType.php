@@ -61,6 +61,7 @@ class AddressType extends Resource
             Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:address_types,title_n')->updateRules('unique:address_types,title_n,{{resourceId}}'),
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:address_types,title_r')->updateRules('unique:address_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:address_types,title_z')->updateRules('unique:address_types,title_z,{{resourceId}}'),
+            Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:address_types,title_m')->updateRules('unique:address_types,title_m,{{resourceId}}'),
             Toggle::make('Активувати', 'active'),
         ];
     }

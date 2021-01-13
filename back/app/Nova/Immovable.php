@@ -47,7 +47,7 @@ class Immovable extends Resource
         'id',
     ];
 
-    public static $group = "Об'єкт";
+    public static $group = "Забудовник";
 
     public static function label()
     {
@@ -71,14 +71,22 @@ class Immovable extends Resource
             ID::make(__('ID'), 'id')->sortable(),
 
             BelongsTo::make('Адреса', 'developer_address', 'App\Nova\DeveloperAddress')->rules('required'),
-            Number::make('Номер будинку', 'building_number')->rules('required'),
+//            Number::make('Номер будинку', 'building_number')->rules('required'),
             BelongsTo::make('Тип нерухомості', 'immovable_type', 'App\Nova\ImmovableType')->rules('required'),
             Number::make('Номер нерухомості', 'immovable_number')->rules('required'),
             Text::make('Реєстраційний номер', 'registration_number'),
-            Money::make('developer_price', 'UAH')->storedInMinorUnits(),
-            BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\AppartmentType'),
+            Money::make('developer_grn_price', 'UAH')->storedInMinorUnits(),
+            Text::make('Гривні словами', 'developer_grn_str'),
+            Text::make('Копійки словами', 'developer_grn_coin_str'),
+            Money::make('developer_dollar_price', 'USD')->storedInMinorUnits(),
+            Text::make('Гривні словами', 'developer_dollar_str'),
+            Text::make('Копійки словами', 'developer_dollar_coin_str'),
+            BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\AppartmentType')->nullable(),
             AdvancedNumber::make('Загальна площа', 'total_space')->thousandsSeparator(',')->decimals(1),
             AdvancedNumber::make('Житлова площа', 'living_spave')->thousandsSeparator(',')->decimals(1),
+            AdvancedNumber::make('Номер поверху', 'floor'),
+            AdvancedNumber::make('Номер секції', 'section'),
+
         ];
     }
 

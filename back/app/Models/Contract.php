@@ -23,7 +23,8 @@ class Contract extends Model implements Sortable
 
     public function template()
     {
-        return $this->belongsTo(TemplateType::class, 'template_id');
+//        return $this->belongsTo(TemplateType::class, 'template_id');
+        return $this->belongsTo(Template::class, 'template_id');
     }
 
     public function immovable()
@@ -31,19 +32,29 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Immovable::class);
     }
 
-    public function developer()
+    public function event_city()
     {
-        return $this->belongsTo(Developer::class, 'developer_id');
+        return $this->belongsTo(City::class);
+    }
+
+    public function dev_company()
+    {
+        return $this->belongsTo(DevCompany::class, 'developer_id');
+    }
+
+    public function developer_spouse_consent()
+    {
+        return $this->belongsTo(ClientSpouseConsent::class, 'dev_sp_consents_id');
     }
 
     public function assistant()
     {
-        return $this->belongsTo(Developer::class, 'assistant_id');
+        return $this->belongsTo(Client::class, 'assistant_id');
     }
 
     public function manager()
     {
-        return $this->belongsTo(Manager::class, 'manager_id');
+        return $this->belongsTo(Client::class, 'manager_id');
     }
 
     public function client()
@@ -69,5 +80,35 @@ class Contract extends Model implements Sortable
     public function pvprice()
     {
         return $this->belongsTo(PVPrice::class, 'pvprice_id');
+    }
+
+    public function client_spouse_consent()
+    {
+        return $this->belongsTo(ClientSpouseConsent::class, 'cl_sp_consents_id');
+    }
+
+    public function developer_statement()
+    {
+        return $this->belongsTo(DeveloperStatement::class, 'developer_statement_id');
+    }
+
+    public function questionnaire()
+    {
+        return $this->belongsTo(Questionnaire::class, 'questionnaire_id');
+    }
+
+    public function client_spouse_word()
+    {
+        return $this->belongsTo(SpouseWord::class, 'cl_sp_word_id');
+    }
+
+    public function developer_spouse_word()
+    {
+        return $this->belongsTo(SpouseWord::class, 'dev_sp_word_id');
+    }
+
+    public function proxy()
+    {
+        return $this->belongsTo(Proxy::class, 'proxy_id');
     }
 }

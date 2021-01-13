@@ -18,6 +18,7 @@ class CreateContractsTable extends Migration
             $table->integer('template_id')->nullable();
             $table->integer('immovable_id')->nullable();
             $table->dateTime('event_datetime')->nullable();
+            $table->dateTime('event_city_id')->nullable();
             $table->integer('developer_id')->nullable();
             $table->integer('assistant_id')->nullable();
             $table->integer('manager_id')->nullable();
@@ -26,6 +27,7 @@ class CreateContractsTable extends Migration
             $table->integer('reader_id')->nullable();
             $table->integer('delivery_id')->nullable();
             $table->integer('pvprice_id')->nullable();
+            $table->integer('cl_sp_consents_id')->nullable();
             $table->dateTime('sign_date')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();

@@ -15,7 +15,10 @@ class CreateRegionsTable extends Migration
     {
         Schema::create('regions', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
+            $table->string('title_n')->nullable();
+            $table->string('title_r')->nullable();
+            $table->string('title_z')->nullable();
+            $table->string('title_m')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();

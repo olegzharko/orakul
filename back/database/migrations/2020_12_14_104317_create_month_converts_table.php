@@ -18,6 +18,8 @@ class CreateMonthConvertsTable extends Migration
             $table->string('original')->nullable();
             $table->string('title_n')->nullable();
             $table->string('title_r')->nullable();
+            $table->string('title_z')->nullable();
+            $table->string('title_m')->nullable();
             $table->timestamps();
         });
     }

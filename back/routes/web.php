@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\ContractController;
+use \App\Http\Controllers\GeneratorController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,4 +18,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('contract/check', [ContractController::class, 'create_contract']);
+Route::get('clear', function () {
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+});
+
+Route::get('creat/contract', [GeneratorController::class, 'creat_contract']);
+//Route::get('consent/spouses', [ContractController::class, 'consent_spouses']);

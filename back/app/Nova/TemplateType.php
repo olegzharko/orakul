@@ -38,7 +38,7 @@ class TemplateType extends Resource
 
     public static function label()
     {
-        return "Шоблон";
+        return "Тип договору";
     }
 
     public static function canSort(NovaRequest $request)

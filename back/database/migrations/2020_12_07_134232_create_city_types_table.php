@@ -18,6 +18,7 @@ class CreateCityTypesTable extends Migration
             $table->string('title')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
+            $table->string('key')->nullable();
             $table->timestamps();
         });
     }

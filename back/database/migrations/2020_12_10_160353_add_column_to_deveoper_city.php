@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnToDeveoperCity extends Migration
+class AddColumnToCity extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddColumnToDeveoperCity extends Migration
      */
     public function up()
     {
-        Schema::table('developer_cities', function (Blueprint $table) {
+        Schema::table('cities', function (Blueprint $table) {
             $table->integer('district_id')->nullable();
             $table->integer('region_id')->nullable();
         });
@@ -26,7 +26,7 @@ class AddColumnToDeveoperCity extends Migration
      */
     public function down()
     {
-        Schema::table('developer_cities', function (Blueprint $table) {
+        Schema::table('cities', function (Blueprint $table) {
             //
         });
     }

@@ -11,6 +11,7 @@
         "php": "^7.3|^8.0",
         "bissolli/nova-phone-field": "^0.0.4",
         "classic-o/nova-media-library": "^1.0",
+        "cloudcake/nova-fixed-bars": "^1.1",
         "coderello/laravel-nova-lang": "^1.7",
         "ebess/advanced-nova-media-library": "^3.3",
         "fideloper/proxy": "^4.4",

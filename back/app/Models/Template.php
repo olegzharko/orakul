@@ -28,7 +28,7 @@ class Template extends Model implements Sortable, HasMedia
 
     public function developer()
     {
-        return $this->belongsTo(Developer::class);
+        return $this->belongsTo(DevCompany::class);
     }
 
     public function registerMediaConversions(Media $media = null): void
@@ -44,16 +44,16 @@ class Template extends Model implements Sortable, HasMedia
             ->width(768);
     }
 
-    public static function get_template($template_id)
-    {
-        $template = Template::where('id', $template_id)->first();
-        $template->type = TemplateType::where('id', $template->template_type_id)->first();
-        if ($file = $template->getMedia('path')->first()) {
-//            $template->document = str_replace(URL::to('/'), '', $file->getUrl());
-            $template->document = $file->getUrl();
-        } else {
-            $template->document = null;
-        }
-        return $template;
-    }
+//    public static function get_template($template_id)
+//    {
+//        $template = Template::where('id', $template_id)->first();
+//        $template->type = TemplateType::where('id', $template->template_type_id)->first();
+//        if ($file = $template->getMedia('path')->first()) {
+////            $template->document = str_replace(URL::to('/'), '', $file->getUrl());
+//            $template->document = $file->getUrl();
+//        } else {
+//            $template->document = null;
+//        }
+//        return $template;
+//    }
 }

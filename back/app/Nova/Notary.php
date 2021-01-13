@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -29,7 +30,7 @@ class Notary extends Resource
 
     public function title()
     {
-        return $this->surname . " " . $this->name . " " . $this->patronymic;
+        return $this->surname_n . " " . $this->name_n . " " . $this->patronymic_n;
     }
     /**
      * The columns that should be searched.
@@ -62,9 +63,32 @@ class Notary extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Прізвище', 'surname')->rules('required'),
-            Text::make('Ім\'я', 'name')->rules('required'),
-            Text::make('По батькові', 'patronymic')->rules('required'),
+            Heading::make('<p class="text-success">Називний відмінок та скорочення</p>')->asHtml(),
+            Text::make('Прізвище', 'surname_n')->rules('required'),
+
+            Text::make('Ім\'я', 'name_n')->rules('required'),
+            Text::make('Ім\'я скорочено з крапкою', 'short_name')->rules('required'),
+
+            Text::make('По батькові', 'patronymic_n')->rules('required'),
+            Text::make('По батькові скорочено з крапкою', 'short_patronymic')->rules('required'),
+            Text::make('Повна діяльнісь у називному відмінку', 'activity_n')->rules('required'),
+
+            Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
+            Text::make('Прізвище ', 'surname_d')->rules('required'),
+            Text::make('Ім\'я', 'name_d')->rules('required'),
+            Text::make('По батькові', 'patronymic_d')->rules('required'),
+            Text::make('Повна діяльнісь у називному відмінку', 'activity_d')->rules('required'),
+
+            Heading::make('<p class="text-success">Орудний відмінок</p>')->asHtml(),
+            Text::make('Прізвище', 'surname_o')->rules('required'),
+            Text::make('Ім\'я', 'name_o')->rules('required'),
+            Text::make('По батькові', 'patronymic_o')->rules('required'),
+            Text::make('Повна діяльність в орудному відмінку', 'activity_o')->rules('required'),
+
+
+
+
+
             Toggle::make('Ативувати', 'active')->color('#165153')
         ];
     }

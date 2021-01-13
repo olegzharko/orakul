@@ -15,8 +15,11 @@ class CreateDistrictsTable extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->id();
-            $table->string('title_n')->nullable();
-            $table->string('title_r')->nullable();
+            $table->integer('region_id')->nullable();
+            $table->text('title_n')->nullable();
+            $table->text('title_r')->nullable();
+            $table->text('title_z')->nullable();
+            $table->text('title_m')->nullable();
             $table->integer('sort_order')->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();
