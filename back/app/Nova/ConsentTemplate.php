@@ -38,7 +38,7 @@ class ConsentTemplate extends Resource
 
     public static function label()
     {
-        return "Згода";
+        return "Заява-згода";
     }
 
     /**

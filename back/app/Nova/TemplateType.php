@@ -57,6 +57,7 @@ class TemplateType extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Заголовок', 'title'),
+            Text::make('Скорочено, для назви файлу', 'short_title'),
         ];
     }
 

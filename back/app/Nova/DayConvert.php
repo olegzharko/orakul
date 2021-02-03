@@ -50,10 +50,7 @@ class DayConvert extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Оригінал', 'original'),
-            Text::make('Назва у називному відмінку', 'title_n'),
-            Text::make('Назва у родовому відмінку', 'title_r'),
-            Text::make('Назва у знахідному відмінку', 'title_z'),
-            Text::make('Назва у місцевому відмінку', 'title_m'),
+            Text::make('Називний відмінок', 'title'),
         ];
     }
 

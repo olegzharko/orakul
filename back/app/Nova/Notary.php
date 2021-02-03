@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
@@ -30,7 +31,7 @@ class Notary extends Resource
 
     public function title()
     {
-        return $this->surname_n . " " . $this->name_n . " " . $this->patronymic_n;
+        return $this->surname_n . " " . $this->short_name . " " . $this->short_patronymic;
     }
     /**
      * The columns that should be searched.
@@ -73,17 +74,23 @@ class Notary extends Resource
             Text::make('По батькові скорочено з крапкою', 'short_patronymic')->rules('required'),
             Text::make('Повна діяльнісь у називному відмінку', 'activity_n')->rules('required'),
 
+            Heading::make('<p class="text-success">Родовий відмінок</p>')->asHtml(),
+            Text::make('Прізвище ', 'surname_r')->rules('required'),
+            Text::make('Ім\'я', 'name_r')->rules('required'),
+            Text::make('По батькові', 'patronymic_r')->rules('required'),
+            Text::make('Повна діяльнісь', 'activity_r')->rules('required'),
+
             Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
             Text::make('Прізвище ', 'surname_d')->rules('required'),
             Text::make('Ім\'я', 'name_d')->rules('required'),
             Text::make('По батькові', 'patronymic_d')->rules('required'),
-            Text::make('Повна діяльнісь у називному відмінку', 'activity_d')->rules('required'),
+            Text::make('Повна діяльнісь у', 'activity_d')->rules('required'),
 
             Heading::make('<p class="text-success">Орудний відмінок</p>')->asHtml(),
             Text::make('Прізвище', 'surname_o')->rules('required'),
             Text::make('Ім\'я', 'name_o')->rules('required'),
             Text::make('По батькові', 'patronymic_o')->rules('required'),
-            Text::make('Повна діяльність в орудному відмінку', 'activity_o')->rules('required'),
+            Text::make('Повна діяльність', 'activity_o')->rules('required'),
 
 
 

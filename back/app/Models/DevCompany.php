@@ -21,6 +21,11 @@ class DevCompany extends Model
 
     public function building()
     {
-        return $this->hasMany(DeveloperAddress::class, 'dev_company_id');
+        return $this->hasMany(DeveloperBuilding::class, 'dev_company_id');
+    }
+
+    public function investment_agreement()
+    {
+        return $this->hasMany(InvestmentAgreement::class, 'dev_company_id');
     }
 }

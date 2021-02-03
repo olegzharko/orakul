@@ -57,8 +57,6 @@ class District extends Resource
             BelongsTo::make('Область', 'region', 'App\Nova\Region'),
             Text::make('Назва району у називному відмінку', 'title_n')->creationRules('unique:districts,title_n')->updateRules('unique:districts,title_n,{{resourceId}}'),
             Text::make('Назва району у родовому відмінку', 'title_r')->creationRules('unique:districts,title_r')->updateRules('unique:districts,title_r,{{resourceId}}'),
-            Text::make('Назва району у знахідному відмінку', 'title_z')->creationRules('unique:districts,title_z')->updateRules('unique:districts,title_z,{{resourceId}}'),
-            Text::make('Назва району у місцевому відмінку', 'title_m')->creationRules('unique:districts,title_m')->updateRules('unique:districts,title_m,{{resourceId}}'),
         ];
     }
 

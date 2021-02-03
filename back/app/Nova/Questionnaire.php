@@ -26,10 +26,7 @@ class Questionnaire extends Resource
 //    public static $title = 'id';
     public function title()
     {
-        return $this->questionnaire_template->title
-            . ", " . $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic
-            . ", " . $this->developer->surname_n . " " . $this->developer->name_n . " " . $this->developer->patronymic_n
-            . ", " . $this->client->surname_n . " " . $this->client->name_n . " " . $this->client->patronymic_n;;
+        return $this->template->title;
     }
 
     public static $group = "Угода";
@@ -58,13 +55,10 @@ class Questionnaire extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Шаблон анктеи', 'questionnaire_template', 'App\Nova\QuestionnaireTemplate'),
+            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->creationRules('unique:questionnaires,contract_id')->updateRules('unique:questionnaires,contract_id,{{resourceId}}')->nullable(),
+            BelongsTo::make('Шаблон анктеи', 'template', 'App\Nova\QuestionnaireTemplate'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
-//            BelongsTo::make('Представник забудовник', 'developer_assistant', 'App\Nova\Developer'),
-            BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
-//            BelongsTo::make('Представник клієнта', 'client_assistant', 'App\Nova\Client'),
-            DateTime::make('Дата підписання згоди', 'date'),
+            DateTime::make('Дата підписання згоди', 'sign_date'),
             Toggle::make('Активн згода', 'active'),
         ];
     }

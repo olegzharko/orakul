@@ -21,35 +21,29 @@ class Contract extends Model implements Sortable
         'sign_date' => 'datetime',
     ];
 
-    public function template()
+    public function contract_template()
     {
-//        return $this->belongsTo(TemplateType::class, 'template_id');
-        return $this->belongsTo(Template::class, 'template_id');
+        return $this->belongsTo(ContractTemplate::class, 'contract_template_id');
     }
 
     public function immovable()
     {
-        return $this->belongsTo(Immovable::class);
+        return $this->belongsTo(Immovable::class, 'immovable_id');
     }
 
     public function event_city()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'event_city_id');
     }
 
     public function dev_company()
     {
-        return $this->belongsTo(DevCompany::class, 'developer_id');
+        return $this->belongsTo(DevCompany::class, 'dev_company_id');
     }
 
-    public function developer_spouse_consent()
+    public function dev_representative()
     {
-        return $this->belongsTo(ClientSpouseConsent::class, 'dev_sp_consents_id');
-    }
-
-    public function assistant()
-    {
-        return $this->belongsTo(Client::class, 'assistant_id');
+        return $this->belongsTo(Client::class, 'dev_representative_id');
     }
 
     public function manager()
@@ -57,9 +51,14 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Client::class, 'manager_id');
     }
 
-    public function client()
+//    public function client()
+//    {
+//        return $this->belongsTo(Client::class, 'client_id');
+//    }
+
+    public function clients()
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsToMany(Client::class);
     }
 
     public function notary()
@@ -77,38 +76,28 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Staff::class, 'delivery_id');
     }
 
-    public function pvprice()
-    {
-        return $this->belongsTo(PVPrice::class, 'pvprice_id');
-    }
-
-    public function client_spouse_consent()
-    {
-        return $this->belongsTo(ClientSpouseConsent::class, 'cl_sp_consents_id');
-    }
-
     public function developer_statement()
     {
-        return $this->belongsTo(DeveloperStatement::class, 'developer_statement_id');
+        return $this->hasOne(DeveloperStatement::class, 'contract_id');
     }
 
     public function questionnaire()
     {
-        return $this->belongsTo(Questionnaire::class, 'questionnaire_id');
+        return $this->hasOne(Questionnaire::class, 'contract_id');
     }
 
-    public function client_spouse_word()
+    public function client_spouse_consent()
     {
-        return $this->belongsTo(SpouseWord::class, 'cl_sp_word_id');
+        return $this->belongsToMany(ClientSpouseConsent::class);
     }
 
-    public function developer_spouse_word()
+    public function bank_account()
     {
-        return $this->belongsTo(SpouseWord::class, 'dev_sp_word_id');
+        return $this->hasOne(BankAccount::class, 'contract_id');
     }
 
-    public function proxy()
+    public function final_sign_date()
     {
-        return $this->belongsTo(Proxy::class, 'proxy_id');
+        return $this->hasOne(FinalSignDate::class, 'contract_id');
     }
 }

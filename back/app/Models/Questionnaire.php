@@ -13,12 +13,12 @@ class Questionnaire extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $casts = [
-        'date' => 'datetime',
+        'sign_date' => 'datetime',
     ];
 
-    public function questionnaire_template()
+    public function template()
     {
-        return $this->belongsTo(QuestionnaireTemplate::class);
+        return $this->belongsTo(QuestionnaireTemplate::class, 'template_id');
     }
 
     public function notary()
@@ -26,13 +26,8 @@ class Questionnaire extends Model implements HasMedia
         return $this->belongsTo(Notary::class);
     }
 
-    public function developer()
+    public function contract()
     {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 }

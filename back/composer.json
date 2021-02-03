@@ -22,6 +22,7 @@
         "laravel/tinker": "^2.5",
         "naif/toggle": "^1.2",
         "optimistdigital/nova-sortable": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.16",
         "phpoffice/phpword": "^0.17.0",
         "simplesquid/nova-advanced-number-field": "^2.0",
         "techouse/intl-date-time": "^1.6",

@@ -12,9 +12,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use URL;
 
-class Template extends Model implements Sortable, HasMedia
+class ContractTemplate extends Model implements Sortable, HasMedia
 {
     use HasFactory, SortableTrait, InteractsWithMedia;
+
+    public $table = "contract_templates";
 
     public $sortable = [
         'order_column_name' => 'sort_order',

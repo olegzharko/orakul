@@ -58,9 +58,9 @@ class PassportType extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Тип паспорту', 'title'),
-            Text::make('Короткий опис', 'short_info'),
-            Markdown::make('Визначення коду, називний відмінок', 'description_n'),
-            Markdown::make('Визначення коду, орудний відмінок', 'description_o'),
+            Markdown::make('Короткий опис', 'short_info'),
+            Markdown::make('Паспортні данні, називний відмінок', 'description_n'),
+            Markdown::make('Паспортні данні, орудний відмінок', 'description_o'),
         ];
     }
 

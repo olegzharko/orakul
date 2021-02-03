@@ -50,10 +50,13 @@ class YearConvert extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Оригінал', 'original'),
-            Text::make('Назва у називному відмінку', 'title_n'),
-            Text::make('Назва у родовому відмінку', 'title_r'),
-            Text::make('Назва у знахідному відмінку', 'title_z'),
-            Text::make('Назва у місцевому відмінку', 'title_m'),
+            Text::make('Називний відмінок', 'title_n'),
+            Text::make('Родовий відмінок', 'title_r'),
+            Text::make('Давальний відмінок', 'title_d'),
+            Text::make('Знахідний відмінок', 'title_z'),
+            Text::make('Орудний відмінок', 'title_o'),
+            Text::make('Місцевий відмінок', 'title_m'),
+            Text::make('Кличний відмінок', 'title_k'),
         ];
     }
 

@@ -10,13 +10,18 @@ class ClientSpouseConsent extends Model
     use HasFactory;
 
     protected $casts = [
-        'date' => 'datetime',
+        'sign_date' => 'datetime',
         'mar_date' => 'datetime',
     ];
 
-    public function consents_template()
+    public function client()
     {
-        return $this->belongsTo(ConsentTemplate::class);
+        return $this->belongsTo(Client::class);
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(ConsentTemplate::class, 'template_id');
     }
 
     public function notary()
@@ -24,13 +29,19 @@ class ClientSpouseConsent extends Model
         return $this->belongsTo(Notary::class);
     }
 
-    public function client_spouse()
+    public function contracts()
     {
-        return $this->belongsTo(ClientSpouse::class);
+        return $this->belongsToMany(Contract::class);
     }
 
     public function marriage_type()
     {
         return $this->belongsTo(MarriageType::class, 'marriage_type_id');
     }
+
+    public function contract_spouse_word()
+    {
+        return $this->belongsTo(SpouseWord::class, 'contract_spouse_word_id');
+    }
+
 }

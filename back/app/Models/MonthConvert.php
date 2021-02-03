@@ -9,7 +9,7 @@ class MonthConvert extends Model
 {
     use HasFactory;
 
-    public static function convert($num_month)
+    public static function convert($num_month = null)
     {
         $month = MonthConvert::where('original', $num_month)->orWhere('original', strval(intval($num_month)))->first();
 

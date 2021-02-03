@@ -54,11 +54,13 @@ class NumericConvert extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Пропис цифрою', 'original'),
-            Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:city_types,title_n')->updateRules('unique:city_types,title_n,{{resourceId}}'),
-            Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:city_types,title_r')->updateRules('unique:city_types,title_r,{{resourceId}}'),
-            Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:city_types,title_z')->updateRules('unique:city_types,title_z,{{resourceId}}'),
-            Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:city_types,title_m')->updateRules('unique:city_types,title_m,{{resourceId}}'),
+            Text::make('Пропис цифрою', 'original')->creationRules('unique:numeric_converts,original')->updateRules('unique:numeric_converts,original,{{resourceId}}'),
+            Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:numeric_converts,title_n')->updateRules('unique:numeric_converts,title_n,{{resourceId}}'),
+            Text::make('Назва у родовому відмінку', 'title_r'),
+            Text::make('Назва у давальному відмінку', 'title_d'),
+            Text::make('Назва у знахідному відмінку', 'title_z'),
+            Text::make('Назва у орудному відмінку', 'title_o'),
+            Text::make('Назва у місцевому відмінку', 'title_m'),
         ];
     }
 

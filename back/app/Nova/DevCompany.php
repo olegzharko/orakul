@@ -53,7 +53,8 @@ class DevCompany extends Resource
             Text::make('Компанія забудовника', 'title'),
             HasMany::make('Люди', 'member', 'App\Nova\Client'),
             HasMany::make('Доручення', 'proxy', 'App\Nova\Proxy'),
-            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperAddress'),
+            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),
+            HasMany::make('Інвестиційні договори', 'investment_agreement', 'App\Nova\InvestmentAgreement'),
         ];
     }
 

@@ -28,16 +28,6 @@ class Client extends Model implements Sortable
         return $this->belongsTo(PassportType::class, 'passport_type_id');
     }
 
-    public function region()
-    {
-        return $this->belongsTo(Region::class, 'region_id');
-    }
-
-    public function city_type()
-    {
-        return $this->belongsTo(CityType::class, 'city_type_id');
-    }
-
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
@@ -58,13 +48,33 @@ class Client extends Model implements Sortable
         return $this->belongsTo(ClientType::class, 'type');
     }
 
-    public function married_with()
+    public function citizenship()
     {
-        return $this->belongsTo(Client::class, 'married');
+        return $this->belongsTo(Citizenship::class, 'citizenship_id');
+    }
+
+    public function spouse()
+    {
+        return $this->belongsTo(Client::class, 'spouse_id');
     }
 
     public function member()
     {
         return $this->belongsTo(DevCompany::class, 'dev_company_id');
+    }
+
+    public function client_spouse_consent()
+    {
+        return $this->hasMany(ClientSpouseConsent::class);
+    }
+
+    public function contracts()
+    {
+        return $this->belongsToMany(Contract::class);
+    }
+
+    public function representative()
+    {
+        return $this->hasOne(Representative::class, 'client_id');
     }
 }

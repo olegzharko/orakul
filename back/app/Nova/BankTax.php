@@ -2,35 +2,36 @@
 
 namespace App\Nova;
 
-use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\File;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Vyuldashev\NovaMoneyField\Money;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
-class Template extends Resource
+class BankTax extends Resource
 {
-    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Template::class;
+    public static $model = \App\Models\BankTax::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-//    public static $title = 'id';
+    public static $title = 'id';
 
-    public function title()
+    public static $group = "Банк";
+
+    public static function label()
     {
-        return $this->template_type->title;
+        return "Податки";
     }
 
     /**
@@ -42,18 +43,6 @@ class Template extends Resource
         'id',
     ];
 
-    public static $group = "Шаблон документу";
-
-    public static function label()
-    {
-        return "Договір";
-    }
-
-    public static function canSort(NovaRequest $request)
-    {
-        return true;
-    }
-
     /**
      * Get the fields displayed by the resource.
      *
@@ -64,12 +53,11 @@ class Template extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
-            BelongsTo::make('Тип шаблону', 'template_type', 'App\Nova\TemplateType'),
-//            File::make('Шаблон', 'path')->disk('public'),
-            Files::make('Шаблон', 'path')->customPropertiesFields([
-                Markdown::make('Description'),
-            ]),
+            Text::make('Код-ключ', 'alias'),
+            Text::make('Заголовок', 'title'),
+            Textarea::make('Шаблон призначення платежу', 'purpose_of_payment'),
+            Heading::make('<p class="text-success">Податковий відсоток</p>')->asHtml(),
+            Money::make('percent', 'UAH')->storedInMinorUnits(),
         ];
     }
 

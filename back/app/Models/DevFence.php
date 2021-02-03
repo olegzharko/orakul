@@ -13,8 +13,13 @@ class DevFence extends Model
         'date' => 'datetime',
     ];
 
-    public function developer()
+//    public function developer()
+//    {
+//        return $this->belongsTo(Client::class);
+//    }
+
+    public function immovable()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Immovable::class);
     }
 }

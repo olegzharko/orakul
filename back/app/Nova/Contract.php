@@ -5,6 +5,7 @@ namespace App\Nova;
 use App\Models\ClientSpouseConsent;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
@@ -26,7 +27,25 @@ class Contract extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+//    public static $title = 'id';
+
+    public function title()
+    {
+
+        if ($this->notary)
+            $str_notary = $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic;
+        else
+            $str_notary = null;
+
+        $str_client = null;
+        if ($this->clients) {
+            foreach ($this->clients as $client) {
+                $str_client .= $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n . " ";
+            }
+        }
+
+        return $this->event_datetime->format('d.m.y') . " Нотаріус: " . $str_notary . ". Клієнт: " . $str_client;
+    }
 
     /**
      * The columns that should be searched.
@@ -59,27 +78,20 @@ class Contract extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            DateTime::make('Дата зустрічі', 'event_datetime')->timeFormat('HH:mm'),
+            DateTime::make('Дата зустрічі', 'event_datetime')->timeFormat('HH:mm')->onlyOnForms(),
             BelongsTo::make('Місце складання договору', 'event_city', 'App\Nova\City')->onlyOnForms()->nullable(),
-            BelongsTo::make('Тип договору', 'template', 'App\Nova\Template')->onlyOnForms()->nullable(),
-            BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->onlyOnForms()->nullable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->onlyOnForms()->nullable(),
-            BelongsTo::make('Згода подружжя забудовника', 'developer_spouse_consent', 'App\Nova\ClientSpouseConsent')->onlyOnForms()->nullable(),
-            BelongsTo::make('Пункт згоди: подружжя забудовника', 'developer_spouse_word', 'App\Nova\SpouseWord')->onlyOnForms()->nullable(),
-            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy')->onlyOnForms()->nullable(),
-            BelongsTo::make('Підписант', 'assistant', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Менеджер', 'manager', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Клієнт', 'client', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->onlyOnForms()->nullable(),
+            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->nullable(),
             BelongsTo::make('Видавач', 'reader', 'App\Nova\Staff')->onlyOnForms()->nullable(),
             BelongsTo::make('Читач', 'delivery', 'App\Nova\Staff')->onlyOnForms()->nullable(),
-            BelongsTo::make('Оцінка майна', 'pvprice', 'App\Nova\PVPrice')->onlyOnForms()->nullable(),
-            BelongsTo::make('Анкета', 'questionnaire', 'App\Nova\Questionnaire')->onlyOnForms()->nullable(),
-            BelongsTo::make('Запит до забудовника', 'developer_statement', 'App\Nova\DeveloperStatement')->onlyOnForms()->nullable(),
-            BelongsTo::make('Згода подружжя клієнта', 'client_spouse_consent', 'App\Nova\ClientSpouseConsent')->onlyOnForms()->nullable(),
-            BelongsTo::make('Пункт згоди: подружжя клієнта', 'client_spouse_word', 'App\Nova\SpouseWord')->onlyOnForms()->nullable(),
+            BelongsTo::make('Шаблон договору', 'contract_template', 'App\Nova\ContractTemplate')->nullable(),
+            BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->nullable(),
+            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->nullable(),
+            BelongsTo::make('Підписант', 'dev_representative', 'App\Nova\Client')->onlyOnForms()->nullable(),
+            BelongsTo::make('Менеджер', 'manager', 'App\Nova\Client')->onlyOnForms()->nullable(),
             DateTime::make('Дата підписання договору', 'sign_date'),
             Toggle::make('Оброблений', 'ready'),
+            BelongsToMany::make('Клієнти', 'clients', 'App\Nova\Client'),
+
         ];
     }
 
@@ -125,5 +137,18 @@ class Contract extends Resource
     public function actions(Request $request)
     {
         return [];
+    }
+
+    public function get_clients_full_name()
+    {
+        $full_name = null;
+
+        $clients = $this->clients();
+
+        foreach ($clients as $client) {
+            dd($client);
+            $full_name .= $client->surname . " " . $client->name . " " . $client->patronymic . " ";
+        }
+        return $full_name;
     }
 }

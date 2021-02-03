@@ -24,7 +24,12 @@ class City extends Resource
      *
      * @var string
      */
-    public static $title = 'title_n';
+//    public static $title = 'title';
+
+    public function title()
+    {
+        return $this->city_type->short . " " . $this->title;
+    }
 
     /**
      * The columns that should be searched.
@@ -62,11 +67,7 @@ class City extends Resource
             BelongsTo::make('Область', 'region', 'App\Nova\Region')->nullable(),
             BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable(),
             BelongsTo::make('Тип населеного пункту', 'city_type', 'App\Nova\CityType')->nullable(),
-            Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:cities,title_n')->updateRules('unique:cities,title_n,{{resourceId}}'),
-            Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:cities,title_r')->updateRules('unique:cities,title_r,{{resourceId}}'),
-            Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:cities,title_z')->updateRules('unique:cities,title_z,{{resourceId}}'),
-            Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:cities,title_m')->updateRules('unique:cities,title_m,{{resourceId}}'),
-
+            Text::make('Назва у називному відмінку', 'title')->creationRules('unique:cities,title')->updateRules('unique:cities,title,{{resourceId}}'),
         ];
     }
 

@@ -10,12 +10,12 @@ class DeveloperStatement extends Model
     use HasFactory;
 
     protected $casts = [
-        'date' => 'datetime',
+        'sign_date' => 'datetime',
     ];
 
-    public function statement_template()
+    public function template()
     {
-        return $this->belongsTo(StatementTemplate::class);
+        return $this->belongsTo(StatementTemplate::class, "template_id");
     }
 
     public function notary()
@@ -31,5 +31,10 @@ class DeveloperStatement extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 }

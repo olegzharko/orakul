@@ -52,7 +52,8 @@ class DevFence extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
+//            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
+            BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable'),
             DateTime::make('Дата перевірки', 'date'),
             Text::make('Номер перевірки', 'number'),
             Toggle::make('Пройщов перевірку', 'pass'),

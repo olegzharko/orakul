@@ -32,6 +32,6 @@ class Proxy extends Model
 
     public function building()
     {
-        return $this->hasMany(DeveloperAddress::class, 'dev_company_id');
+        return $this->hasMany(DeveloperBuilding::class, 'dev_company_id');
     }
 }

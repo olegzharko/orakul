@@ -55,12 +55,10 @@ class ImmovableOwnership extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable'),
-            Text::make('Номер права власності', 'gov_reg_number')->rules('required'),
-            DateTime::make('Дата права власності', 'gov_reg_date')->required()->locale('uk'),
-            Text::make('Номер витягу на право власності', 'discharge_number'),
+            DateTime::make('Дата запису про право власності', 'gov_reg_date')->required()->locale('uk'),
+            Text::make('Номер запису про право власності', 'gov_reg_number')->rules('required'),
             DateTime::make('Дата витягу на право власності', 'discharge_date')->format('DD.MM.YYYY')->required()->locale('uk'),
-            BelongsTo::make('Відповідальний', 'discharge_resp', 'App\Nova\Notary'),
-//            Text::make('Реєстраційний номер об’єкта нерухомого майна', 'registration_number')->rules('required'),
+            Text::make('Номер витягу на право власності', 'discharge_number'),
         ];
     }
 

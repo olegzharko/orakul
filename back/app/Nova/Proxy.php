@@ -25,7 +25,7 @@ class Proxy extends Resource
      * @var string
      */
 
-    public static $group = "Забудовник";
+    public static $group = "Сторонні угоди";
 
     public function title()
     {
@@ -64,7 +64,7 @@ class Proxy extends Resource
             DateTime::make('Дата реєстрації у нотаріуса', 'reg_date'),
             Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
             HasMany::make('Люди', 'member', 'App\Nova\Client'),
-            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperAddress'),
+            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),
         ];
     }
 

@@ -58,11 +58,12 @@ class DeveloperStatement extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Шаблон запиту', 'statement_template', 'App\Nova\StatementTemplate'),
+            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->creationRules('unique:developer_statements,contract_id')->updateRules('unique:developer_statements,contract_id,{{resourceId}}')->nullable(),
+            BelongsTo::make('Шаблон запиту', 'template', 'App\Nova\StatementTemplate'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
             BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
             BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
-            DateTime::make('Дата підписання згоди', 'date'),
+            DateTime::make('Дата підписання згоди', 'sign_date'),
             Toggle::make('Активн згода', 'active'),
         ];
     }
