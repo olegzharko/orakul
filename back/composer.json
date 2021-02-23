@@ -25,6 +25,7 @@
         "phpoffice/phpspreadsheet": "^1.16",
         "phpoffice/phpword": "^0.17.0",
         "simplesquid/nova-advanced-number-field": "^2.0",
+        "spatie/laravel-translatable": "^4.6",
         "techouse/intl-date-time": "^1.6",
         "vyuldashev/nova-money-field": "^1.3"
     },

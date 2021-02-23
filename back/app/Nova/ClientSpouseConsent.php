@@ -62,7 +62,7 @@ class ClientSpouseConsent extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
-            BelongsToMany::make('Угода', 'contracts', 'App\Nova\Contract')->creationRules('unique:client_spouse_consent_contract,contract_id')->updateRules('unique:client_spouse_consent_contract,contract_id,{{resourceId}}')->nullable(),
+            BelongsToMany::make('Угода', 'contracts', 'App\Nova\Contract')->nullable(),
             BelongsTo::make('Шаблон згоди', 'template', 'App\Nova\ConsentTemplate'),
 
 

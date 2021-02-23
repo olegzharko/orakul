@@ -2,36 +2,37 @@
 
 namespace App\Nova;
 
-use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\File;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Vyuldashev\NovaMoneyField\Money;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
-class ContractTemplate extends Resource
+class BankTaxesList extends Resource
 {
-    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\ContractTemplate::class;
+    public static $model = \App\Models\BankTaxesList::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-//    public static $title = 'id';
+    public static $title = 'id';
 
-    public function title()
+    public static $group = "Банк";
+
+    public static function label()
     {
-        return $this->template_type->title;
+        return "Список податків";
     }
 
     /**
@@ -43,18 +44,6 @@ class ContractTemplate extends Resource
         'id',
     ];
 
-    public static $group = "Шаблон документу";
-
-    public static function label()
-    {
-        return "Договір";
-    }
-
-    public static function canSort(NovaRequest $request)
-    {
-        return true;
-    }
-
     /**
      * Get the fields displayed by the resource.
      *
@@ -65,15 +54,20 @@ class ContractTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
-            BelongsTo::make('Тип шаблону', 'template_type', 'App\Nova\TemplateType'),
-            Select::make('Тип договору', 'type')->options([
-                'main' => 'Основний договір',
-                'preliminary' => 'Попередній договір',
+            Text::make('Код-ключ', 'alias'),
+            Text::make('Заголовок', 'title'),
+            Select::make('Податок сплачує', 'type')->options([
+                'developer' => 'Забудовник',
+                'client' => 'Покупець',
             ])->displayUsingLabels(),
-            Files::make('Шаблон', 'path')->customPropertiesFields([
-                Markdown::make('Description'),
-            ]),
+            Text::make('Назначение платежа', 'appointment_payment'),
+            Text::make('Код та ЄДРПОУ', 'code_and_edrpoy'),
+            Text::make('МФО банка получателя', 'mfo'),
+            Text::make('Счет получателя', 'bank_account'),
+            Text::make('Наименование получателя', 'name_recipient'),
+            Text::make('ОКПО получателя', 'okpo'),
+            Heading::make('<p class="text-success">Податковий відсоток</p>')->asHtml(),
+            Money::make('percent', 'UAH')->storedInMinorUnits(),
         ];
     }
 

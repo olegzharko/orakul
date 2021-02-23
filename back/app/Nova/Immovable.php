@@ -2,7 +2,7 @@
 
 namespace App\Nova;
 
-use App\Models\AppartmentType;
+use App\Models\RoominessType;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Currency;
@@ -88,45 +88,30 @@ class Immovable extends Resource
             Text::make('Реєстраційний номер', 'registration_number'),
 
             Heading::make('<p class="text-success">Повна вартість в гривнях</p>')->asHtml(),
-            Money::make('grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'grn_str'),
-            Text::make('Копійки словами', 'grn_cent_str'),
+            Money::make('grn', 'UAH')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Повна вартість в доларах</p>')->asHtml(),
-            Money::make('dollar_dig', 'USD')->storedInMinorUnits(),
-            Text::make('Долари словами', 'dollar_str'),
-            Text::make('Центи словами', 'dollar_cent_str'),
+            Money::make('dollar', 'USD')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Сума внеску згідно попереднього договору в гривнях</p>')->asHtml(),
-            Money::make('reserve_grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'reserve_grn_str'),
-            Text::make('Копійки словами', 'reserve_grn_cent_str'),
+            Money::make('reserve_grn', 'UAH')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Сума внеску згідно попереднього договору в доларах</p>')->asHtml(),
-            Money::make('reserve_dollar_dig', 'USD')->storedInMinorUnits(),
-            Text::make('Долари словами', 'reserve_dollar_str'),
-            Text::make('Центи словами', 'reserve_dollar_cent_str'),
+            Money::make('reserve_dollar', 'USD')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Вартість 1 кв. м. гривнях</p>')->asHtml(),
-            Money::make('m2_grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'm2_grn_str'),
-            Text::make('Копійки словами', 'm2_grn_cent_str'),
+            Money::make('m2_grn', 'UAH')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Вартість 1 кв. м. доларах</p>')->asHtml(),
-            Money::make('m2_dollar_dig', 'USD')->storedInMinorUnits(),
-            Text::make('Долари словами', 'm2_dollar_str'),
-            Text::make('Центи словами', 'm2_dollar_cent_str'),
+            Money::make('m2_dollar', 'USD')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Загальні данні</p>')->asHtml(),
-            BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\AppartmentType')->nullable(),
-            AdvancedNumber::make('Загальна площа', 'total_space_dig')->thousandsSeparator(',')->decimals(1),
-            Text::make('Загальна площа словами', 'total_space_str'),
-            AdvancedNumber::make('Житлова площа', 'living_space_dig')->thousandsSeparator(',')->decimals(1),
-            Text::make('Житлова площа словами', 'living_space_str'),
+            BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\RoominessType')->nullable(),
+            AdvancedNumber::make('Загальна площа', 'total_space')->thousandsSeparator(',')->decimals(1),
+            AdvancedNumber::make('Житлова площа', 'living_space')->thousandsSeparator(',')->decimals(1),
             AdvancedNumber::make('Номер поверху цифрою', 'floor_dig'),
             Text::make('Номер поверху словами', 'floor_str'),
-            AdvancedNumber::make('Номер секції цифрою', 'section_dig'),
-            Text::make('Номер секції словами', 'section_str'),
+            AdvancedNumber::make('Номер секції цифрою', 'section'),
 
             HasOne::make('Забезпечувальний платіж', 'security_payment', 'App\Nova\SecurityPayment'),
 

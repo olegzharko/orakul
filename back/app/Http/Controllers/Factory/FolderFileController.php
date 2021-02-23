@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Factory;
 
-use App\Models\KeyWord;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\KeyWord;
 use URL;
 
 class FolderFileController extends Controller
@@ -27,9 +28,11 @@ class FolderFileController extends Controller
     public $consent_template_title;
     public $developer_statement;
     public $questionnaires;
-    public $bank_account;
+    public $bank_account_payment;
+    public $bank_taxes_payment;
     public $spouses_male;
-    public $file_type;
+    public $file_type_docx;
+    public $file_type_excel;
 
     public function __construct($contract)
     {
@@ -52,9 +55,11 @@ class FolderFileController extends Controller
         $this->consent_template_title = null;
         $this->developer_statement = null;
         $this->questionnaires = null;
-        $this->bank_account = null;
+        $this->bank_account_payment = null;
+        $this->bank_taxes_payment = null;
         $this->spouses_male = null;
-        $this->file_type = ".docx";
+        $this->file_type_docx = ".docx";
+        $this->file_type_excel = ".xlsx";
 
         $this->set_value();
         $this->save_folder();
@@ -122,8 +127,12 @@ class FolderFileController extends Controller
             $this->questionnaires = $this->contract->questionnaire->template->title;
         }
 
-        if ($this->contract->bank_account && $this->contract->bank_account->template) {
-            $this->bank_account = $this->contract->bank_account->template->title;
+        if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template) {
+            $this->bank_account_payment = $this->contract->bank_account_payment->template->title;
+        }
+
+        if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template) {
+            $this->bank_taxes_payment = $this->contract->bank_taxes_payment->template->title;
         }
     }
 
@@ -160,8 +169,8 @@ class FolderFileController extends Controller
     public function contract_title()
     {
         $title = null;
-        $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type}".
-        $title = trim($title);
+        $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type_docx}".
+            $title = trim($title);
 
         $template = $this->file_path($this->contract->contract_template);
         $this->create_file_for_contract($template, $title);
@@ -178,9 +187,9 @@ class FolderFileController extends Controller
         }
 
         $title = "{$this->generate_path}/"
-               . "{$this->consent_template_title}"
-               . "{$this->file_type}"
-               . "";
+            . "{$this->consent_template_title}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($consent->template);
         $this->create_file_for_contract($template, $title);
@@ -191,9 +200,9 @@ class FolderFileController extends Controller
     {
         $title = null;
         $title = "{$this->generate_path}/"
-               . "{$this->developer_statement} {$this->subscriber} {$this->client_surname}"
-               . "{$this->file_type}"
-               . "";
+            . "{$this->developer_statement} {$this->subscriber} {$this->client_surname}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($this->contract->developer_statement->template);
         $this->create_file_for_contract($template, $title);
@@ -204,9 +213,9 @@ class FolderFileController extends Controller
     {
         $title = null;
         $title = "{$this->generate_path}/"
-               . "{$this->questionnaires} {$this->subscriber} {$this->client_surname}"
-               . "{$this->file_type}"
-               . "";
+            . "{$this->questionnaires} {$this->subscriber} {$this->client_surname}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($this->contract->questionnaire->template);
         $this->create_file_for_contract($template, $title);
@@ -217,11 +226,24 @@ class FolderFileController extends Controller
     {
         $title = null;
         $title = "{$this->generate_path}/"
-            . "{$this->bank_account}"
-            . "{$this->file_type}"
+            . "{$this->bank_account_payment}"
+            . "{$this->file_type_docx}"
             . "";
 
-        $template = $this->file_path($this->contract->bank_account->template);
+        $template = $this->file_path($this->contract->bank_account_payment->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function bank_taxes_title()
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "{$this->bank_taxes_payment}"
+            . "{$this->file_type_excel}"
+            . "";
+
+        $template = $this->file_path($this->contract->bank_taxes_payment->template);
         $this->create_file_for_contract($template, $title);
         return $title;
     }

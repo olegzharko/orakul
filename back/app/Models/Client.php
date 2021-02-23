@@ -25,7 +25,7 @@ class Client extends Model implements Sortable
 
     public function passport_type()
     {
-        return $this->belongsTo(PassportType::class, 'passport_type_id');
+        return $this->belongsTo(PassportTemplate::class, 'passport_type_id');
     }
 
     public function city()
@@ -43,6 +43,10 @@ class Client extends Model implements Sortable
         return $this->belongsTo(BuildingType::class, 'building_type_id');
     }
 
+    public function apartment_type()
+    {
+        return $this->belongsTo(ApartmentType::class, 'apartment_type_id');
+    }
     public function client_type()
     {
         return $this->belongsTo(ClientType::class, 'type');

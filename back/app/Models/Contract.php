@@ -51,11 +51,6 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Client::class, 'manager_id');
     }
 
-//    public function client()
-//    {
-//        return $this->belongsTo(Client::class, 'client_id');
-//    }
-
     public function clients()
     {
         return $this->belongsToMany(Client::class);
@@ -91,9 +86,14 @@ class Contract extends Model implements Sortable
         return $this->belongsToMany(ClientSpouseConsent::class);
     }
 
-    public function bank_account()
+    public function bank_account_payment()
     {
-        return $this->hasOne(BankAccount::class, 'contract_id');
+        return $this->hasOne(BankAccountPayment::class, 'contract_id');
+    }
+
+    public function bank_taxes_payment()
+    {
+        return $this->hasOne(BankTaxesPayment::class, 'contract_id');
     }
 
     public function final_sign_date()

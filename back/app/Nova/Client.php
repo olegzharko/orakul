@@ -98,10 +98,10 @@ class Client extends Resource
             Text::make('Ім\'я', 'name_r')->rules('required')->hideFromIndex(),
             Text::make('По батькові', 'patronymic_r')->hideFromIndex(),
 
-            Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
-            Text::make('Прізвище', 'surname_d')->rules('required')->hideFromIndex(),
-            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
-            Text::make('По батькові', 'patronymic_d')->hideFromIndex(),
+//            Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
+//            Text::make('Прізвище', 'surname_d')->rules('required')->hideFromIndex(),
+//            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
+//            Text::make('По батькові', 'patronymic_d')->hideFromIndex(),
 
             Heading::make('<p class="text-success">Орудний відмінок</p>')->asHtml(),
             Text::make('Прізвище', 'surname_o')->rules('required')->hideFromIndex(),
@@ -125,7 +125,7 @@ class Client extends Resource
     {
         return [
             BelongsTo::make('Громадянсво', 'citizenship', 'App\Nova\Citizenship')->nullable(),
-            BelongsTo::make('Одружений(а) з', 'spouse', 'App\Nova\Client')->creationRules('unique:clients,married')->updateRules('unique:clients,married,{{resourceId}}')->nullable(),
+            BelongsTo::make('Одружений(а) з', 'spouse', 'App\Nova\Client')->creationRules('unique:clients,spouse_id')->updateRules('unique:clients,spouse_id,{{resourceId}}')->nullable(),
             BelongsTo::make('Відноситься до компанії забудовника', 'member', 'App\Nova\DevCompany')->nullable(),
         ];
     }
@@ -142,7 +142,7 @@ class Client extends Resource
             Heading::make('<p class="text-success">Код</p>')->asHtml(),
             Text::make('ІНН', 'tax_code')->creationRules('unique:clients,tax_code')->updateRules('unique:clients,tax_code,{{resourceId}}'),
             Heading::make('<p class="text-success">Паспорт</p>')->asHtml(),
-            BelongsTo::make('Тип паспорту', 'passport_type', 'App\Nova\PassportType')->nullable(),
+            BelongsTo::make('Тип паспорту', 'passport_type', 'App\Nova\PassportTemplate')->nullable(),
             Text::make('Серія/Номер паспорта', 'passport_code'),
             DateTime::make('Дата видачі', 'passport_date'),
             Text::make('Орган що видав паспорт', 'passport_department'),
@@ -159,7 +159,8 @@ class Client extends Resource
             Text::make('Назва вулиці', 'address'),
             BelongsTo::make('Тип будинку', 'building_type', 'App\Nova\BuildingType')->nullable(),
             Text::make('Номер будинку', 'building'),
-            Text::make('Номер квартири', 'apartment'),
+            BelongsTo::make('Тип житлового приміщення', 'apartment_type', 'App\Nova\ApartmentType')->nullable(),
+            Text::make('Номер житлового приміщення', 'apartment_num'),
         ];
     }
 

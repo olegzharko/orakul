@@ -1,17 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Factory;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\Models\ApartmentType;
 use App\Models\Client;
+use App\Models\ClientContract;
 use App\Models\ClientType;
 use App\Models\Contract;
 use App\Models\DayConvert;
+use App\Models\GenderWord;
+use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
+use App\Models\NumericConvert;
 use App\Models\YearConvert;
-use Illuminate\Http\Request;
 
 class GeneratorController extends Controller
 {
@@ -20,6 +27,7 @@ class GeneratorController extends Controller
     public $contract;
     public $pack_contract;
     public $consents_id;
+    public $convert;
 
     public function __construct()
     {
@@ -28,6 +36,7 @@ class GeneratorController extends Controller
         $this->contract = null;
         $this->pack_contract = null;
         $this->consents_id = [];
+        $this->convert = new ConvertController();
     }
 
     public function creat_contract(Request $request)
@@ -51,15 +60,16 @@ class GeneratorController extends Controller
                 $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id);
                 $this->word->creat_files();
             } else {
-                dd("Warning: There are no new deal for user: $user_id!");
+                dd("Warning: There are no new deal for user: $client_id!");
             }
         } else {
-            dd("Warning: There are no user_id: $user_id!");
+            dd("Warning: There are no user_id: $client_id!");
         }
     }
 
     public function get_contract_by_client_id($client_id = null)
     {
+        $contracts_id = ClientContract::where('client_id', $client_id)->pluck('contract_id');
         $contract = Contract::select(
             'contracts.id',
             'contracts.event_datetime',
@@ -73,9 +83,9 @@ class GeneratorController extends Controller
             'contracts.sign_date',
         );
 
-        $contract = $contract->where(function ($query) use ($client_id) {
+        $contract = $contract->where(function ($query) use ($client_id, $contracts_id) {
             if ($client_id)
-                $query = $query->where('client_id', $client_id);
+                $query = $query->whereIn('id', $contracts_id);
             else
                 $query = $query->where('contracts.ready', false); // 0
 
@@ -126,9 +136,11 @@ class GeneratorController extends Controller
             $district = "$district_title $district_type_short, ";
         }
 
+
+
         if ($c->city && $c->city->city_type) {
             $city_type_short = trim($c->city->city_type->short);
-            $city_title = trim($c->city->title_n);
+            $city_title = trim($c->city->title);
             $city = "$city_type_short $city_title, ";
         }
 
@@ -139,37 +151,22 @@ class GeneratorController extends Controller
 
             $building_type_short = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
-            $apartment = $c->apartment ? ", " . trim(KeyWord::where('key', 'apartment')->value('short')) . " " . trim($c->apartment) : null;
 
-            $building = "$building_type_short $building_num" . "$apartment";
+            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
+
+            $building = "$building_type_short $building_num" . "$apartment_full";
         }
 
 
         $full_address = ""
-                    . "$region"
-                    . "$district"
-                    . "$city"
-                    . "$address"
-                    . "$building";
+            . "$region"
+            . "$district"
+            . "$city"
+            . "$address"
+            . "$building";
         $full_address = trim($full_address);
 
         return $full_address;
-    }
-
-    public function get_number_format_thousand($price)
-    {
-        $price_thousand = null;
-        $price_thousand = number_format(floor($price / 100), 0, ".",  " " );
-
-        return $price_thousand;
-    }
-
-    public function get_number_format_decimal($price)
-    {
-        $price_decimal = null;
-        $price_decimal = sprintf("%02d", number_format($price % 100));
-
-        return $price_decimal;
     }
 
     public function notification($type, $message)
@@ -184,7 +181,7 @@ class GeneratorController extends Controller
         // Отримати тип клієнта - забудовник
         $client_type_dev_owner = ClientType::where('key', 'developer')->value('id');
 
-        $this->contract->immovable = Immovable::get_immovable($this->contract->immovable);
+        $this->contract->immovable = $this->get_immovable($this->contract->immovable);
         $this->contract->dev_company->owner = $this->contract->dev_company->member->where('type', $client_type_dev_owner)->first();
 
         // для перевірки заборони на продавця використовується орієнтир через нерухомість, а не на пряму через власника
@@ -192,20 +189,35 @@ class GeneratorController extends Controller
         $this->contract->immovable_ownership = ImmovableOwnership::get_immovable_ownership($this->contract->immovable->id);
     }
 
-    public function convert_date_to_string($document, $date)
+    public function get_immovable($immovable)
     {
-        $document->str_day = null;
-        $document->str_month = null;
-        $document->str_year = null;
+        $immovable->fence = ImmFence::where('immovable_id', $immovable->id)->first();
+        $immovable->address = $this->full_ascending_address_r($immovable);
 
-        if ($date) {
-            $num_day = $date->format('d');
-            $num_month = $date->format('m');
-            $num_year = $date->format('Y');
+        return $immovable;
+    }
 
-            $document->str_day = DayConvert::convert($num_day);
-            $document->str_month = MonthConvert::convert($num_month);
-            $document->str_year = YearConvert::convert($num_year);
-        }
+    public function full_ascending_address_r($immovable)
+    {
+        $imm_num = $immovable->immovable_number;
+        $imm_num_str = $this->convert->number_to_string($immovable->immovable_number);
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
+        $imm_addr_type_r = $immovable->developer_building->address_type->title_n;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_city_type_m = $immovable->developer_building->city->city_type->title_n;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_dis_title_r = $immovable->developer_building->city->district->title_n;
+        $imm_reg_title_r = $immovable->developer_building->city->region->title_n;
+
+        $address = "$imm_addr_type_r $imm_addr_title "
+            . "$imm_build_num ($imm_build_num_str), "
+            . "$imm_city_type_m $imm_city_title_n, "
+            . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_n')) . ", "
+            . "$imm_reg_title_r " . trim(KeyWord::where('key', 'region')->value('title_n')) . " "
+            . "";
+
+        return $address;
     }
 }
+
