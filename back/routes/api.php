@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('rooms', [CalendarController::class, 'rooms']);
+Route::get('calendar', [CalendarController::class, 'calendar']);
 
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);

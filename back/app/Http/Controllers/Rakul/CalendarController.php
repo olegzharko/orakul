@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CalendarController extends BaseController
 {
-    public function rooms()
+    public function calendar()
     {
         $rooms = Room::select('title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
