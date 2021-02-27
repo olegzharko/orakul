@@ -22,11 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('calendar', [CalendarController::class, 'calendar']);
 
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('calendar', [CalendarController::class, 'calendar']);
     Route::resource('posts', PostController::class);
 });
