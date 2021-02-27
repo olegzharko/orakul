@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Factory;
 
-use App\Models\KeyWord;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\KeyWord;
 use URL;
 
 class FolderFileController extends Controller
@@ -168,7 +169,8 @@ class FolderFileController extends Controller
     public function contract_title()
     {
         $title = null;
-        $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type_docx}".
+        $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type_docx}";
+
         $title = trim($title);
 
         $template = $this->file_path($this->contract->contract_template);
@@ -186,9 +188,9 @@ class FolderFileController extends Controller
         }
 
         $title = "{$this->generate_path}/"
-               . "{$this->consent_template_title}"
-               . "{$this->file_type_docx}"
-               . "";
+            . "{$this->consent_template_title}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($consent->template);
         $this->create_file_for_contract($template, $title);
@@ -199,9 +201,9 @@ class FolderFileController extends Controller
     {
         $title = null;
         $title = "{$this->generate_path}/"
-               . "{$this->developer_statement} {$this->subscriber} {$this->client_surname}"
-               . "{$this->file_type_docx}"
-               . "";
+            . "{$this->developer_statement} {$this->subscriber} {$this->client_surname}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($this->contract->developer_statement->template);
         $this->create_file_for_contract($template, $title);
@@ -212,9 +214,9 @@ class FolderFileController extends Controller
     {
         $title = null;
         $title = "{$this->generate_path}/"
-               . "{$this->questionnaires} {$this->subscriber} {$this->client_surname}"
-               . "{$this->file_type_docx}"
-               . "";
+            . "{$this->questionnaires} {$this->subscriber} {$this->client_surname}"
+            . "{$this->file_type_docx}"
+            . "";
 
         $template = $this->file_path($this->contract->questionnaire->template);
         $this->create_file_for_contract($template, $title);

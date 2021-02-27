@@ -1,6 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Factory;
+
+
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 use App\Models\ApartmentType;
 use App\Models\Client;
@@ -16,7 +21,6 @@ use App\Models\KeyWord;
 use App\Models\MonthConvert;
 use App\Models\NumericConvert;
 use App\Models\YearConvert;
-use Illuminate\Http\Request;
 
 class GeneratorController extends Controller
 {
@@ -157,11 +161,11 @@ class GeneratorController extends Controller
 
 
         $full_address = ""
-                    . "$region"
-                    . "$district"
-                    . "$city"
-                    . "$address"
-                    . "$building";
+            . "$region"
+            . "$district"
+            . "$city"
+            . "$address"
+            . "$building";
         $full_address = trim($full_address);
 
         return $full_address;
@@ -218,3 +222,4 @@ class GeneratorController extends Controller
         return $address;
     }
 }
+

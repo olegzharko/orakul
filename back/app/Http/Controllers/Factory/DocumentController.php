@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Factory;
 
 use App\Models\CityType;
 use App\Models\GenderWord;
