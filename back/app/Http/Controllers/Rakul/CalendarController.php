@@ -15,12 +15,16 @@ class CalendarController extends BaseController
         $rooms = Room::select('title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
 
-        $contract = Contract::orderBy('event_datetime')->get();
-        $contract = $this->convert_room($contract);
+        $contracts = Contract::orderBy('event_datetime')->get();
+        if ($contracts)
+            $contracts = $this->convert_room($contracts);
+        else
+            $contract = null;
 
         $result = [
             'rooms' => $rooms,
             'work_time' => $time,
+            'contracts' => $contracts,
         ];
 
         return $this->sendResponse($result, 'кімнати');
