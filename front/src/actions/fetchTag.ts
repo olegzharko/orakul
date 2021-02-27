@@ -1,5 +1,5 @@
 import getToken from '../services/getToken';
-import { setToken } from '../store/actions';
+import { setToken } from '../store/token/actions';
 
 const fetchTag = async (dispatch: any) => {
   const token = await getToken();

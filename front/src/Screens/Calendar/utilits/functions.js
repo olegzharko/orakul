@@ -1,13 +1,4 @@
-export const getHours = (startTime, endTime) => {
-  const arr = [];
-
-  while (startTime <= endTime) {
-    arr.push(`${startTime}:00`);
-    startTime = (startTime * 60 + 60) / 60;
-  }
-
-  return arr;
-};
+/* eslint-disable import/prefer-default-export */
 
 export const getCorrectDate = (current) => {
   let day = new Date().getDate();

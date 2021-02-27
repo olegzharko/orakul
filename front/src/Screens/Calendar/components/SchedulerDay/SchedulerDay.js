@@ -11,8 +11,8 @@ const SchedulerDay = ({ day, hours }) => (
       <p>{`${days[day]}(${getCorrectDate(day)})`}</p>
     </div>
     <div className="scheduler__timeLine">
-      {hours.map((item) => (
-        <p key={item}>{item}</p>
+      {hours.map(({ time }) => (
+        <p key={time}>{time}</p>
       ))}
     </div>
   </div>

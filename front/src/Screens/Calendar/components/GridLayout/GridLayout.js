@@ -2,17 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './GridLayout.scss';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import $ from 'jquery';
-import { useSelector, useDispatch } from 'react-redux';
-
-// redux
-import { setLayouts } from '../../../../store/actions';
+import { useSelector } from 'react-redux';
 
 const ReactGridLayout = WidthProvider(RGL);
 
 export default function GridLayout() {
   const [dragAndDropWidth, setDragAndDropWidth] = useState(1200);
   const layouts = useSelector((state) => state.layouts);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setDragAndDropWidth($('.scheduler__appointments').width());
@@ -28,11 +24,8 @@ export default function GridLayout() {
 
       return item;
     });
-    dispatch(setLayouts(newLayouts));
-  };
-
-  const handleDoubleClick = () => {
-    console.log('double');
+    // eslint-disable-next-line no-console
+    console.log(newLayouts);
   };
 
   if (layouts.length === 0) {
@@ -53,12 +46,7 @@ export default function GridLayout() {
       onDragStop={handleDrag}
     >
       {layouts.map(({ i, title }) => (
-        <div
-          key={i}
-          className="appointment"
-          style={{}}
-          onDoubleClick={handleDoubleClick}
-        >
+        <div key={i} className="appointment" style={{}}>
           <div className="appointment__title">{title}</div>
           <table className="appointment__table">
             <tbody>
