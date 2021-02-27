@@ -62,9 +62,7 @@ class PropertyValuationPrice extends Resource
             BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable'),
             BelongsTo::make('Оцінка від', 'property_valuation', 'App\Nova\PropertyValuation'),
             DateTime::make('Дата оцінки', 'date'),
-            Money::make('grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'grn_str'),
-            Text::make('Копійки словами', 'grn_cent_str'),
+            Money::make('grn', 'UAH')->storedInMinorUnits(),
         ];
     }
 

@@ -59,22 +59,16 @@ class SecurityPayment extends Resource
             Text::make('Реєстраційний номер', 'reg_num'),
 
             Heading::make('<p class="text-success">Перша частина забезпечувального платежу у гривнях</p>')->asHtml(),
-            Money::make('first_part_grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'first_part_grn_str'),
-            Text::make('Копійки словами', 'first_part_grn_cent_str'),
+            Money::make('first_part_grn', 'UAH')->storedInMinorUnits(),
+
             Heading::make('<p class="text-success">Перша частина забезпечувального платіж у доларах</p>')->asHtml(),
-            Money::make('first_part_dollar_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Долари словами', 'first_part_dollar_str'),
-            Text::make('Центі словами', 'first_part_dollar_cent_str'),
+            Money::make('first_part_dollar', 'UAH')->storedInMinorUnits(),
 
             Heading::make('<p class="text-success">Друга частина забезпечувального платежу у гривнях</p>')->asHtml(),
-            Money::make('last_part_grn_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'last_part_grn_str'),
-            Text::make('Копійки словами', 'last_part_grn_cent_str'),
+            Money::make('last_part_grn', 'UAH')->storedInMinorUnits(),
+
             Heading::make('<p class="text-success">Друга частина забезпечувального платіж у доларах</p>')->asHtml(),
-            Money::make('last_part_dollar_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Долари словами', 'last_part_dollar_str'),
-            Text::make('Центі словами', 'last_part_dollar_cent_str'),
+            Money::make('last_part_dollar', 'UAH')->storedInMinorUnits(),
         ];
     }
 

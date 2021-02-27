@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -54,13 +55,8 @@ class NumericConvert extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Пропис цифрою', 'original')->creationRules('unique:numeric_converts,original')->updateRules('unique:numeric_converts,original,{{resourceId}}'),
-            Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:numeric_converts,title_n')->updateRules('unique:numeric_converts,title_n,{{resourceId}}'),
-            Text::make('Назва у родовому відмінку', 'title_r'),
-            Text::make('Назва у давальному відмінку', 'title_d'),
-            Text::make('Назва у знахідному відмінку', 'title_z'),
-            Text::make('Назва у орудному відмінку', 'title_o'),
-            Text::make('Назва у місцевому відмінку', 'title_m'),
+            Number::make('Пропис цифрою', 'original')->creationRules('unique:numeric_converts,original')->updateRules('unique:numeric_converts,original,{{resourceId}}'),
+            Text::make('Назва у називному відмінку', 'title')->creationRules('unique:numeric_converts,title')->updateRules('unique:numeric_converts,title,{{resourceId}}'),
         ];
     }
 

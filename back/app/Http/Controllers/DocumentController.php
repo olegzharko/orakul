@@ -7,12 +7,17 @@ use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MainInfoType;
 use App\Models\MonthConvert;
+use App\Models\BankTaxesList;
+use App\Models\Service;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpWord\TemplateProcessor;
 use URL;
 
 class DocumentController extends GeneratorController
 {
     public $ff;
+    public $convert;
     public $client;
     public $total_clients;
     public $consent;
@@ -22,6 +27,7 @@ class DocumentController extends GeneratorController
     public $developer_statement_generate_file;
     public $questionnaire_generate_file;
     public $bank_account_generate_file;
+    public $bank_taxes_generate_file;
     public $style_bold;
     public $style_color;
     public $style_color_and_bold;
@@ -41,7 +47,7 @@ class DocumentController extends GeneratorController
         // $this->client = $client;
         $this->client = null;
         $this->total_clients = null;
-
+        $this->convert = new ConvertController();
         $this->consent = null;
         $this->consents_id = $consents_id;
         $this->contract_generate_file = null;
@@ -49,6 +55,7 @@ class DocumentController extends GeneratorController
         $this->developer_statement_generate_file = null;
         $this->questionnaire_generate_file = null;
         $this->bank_account_generate_file = null;
+        $this->bank_taxes_generate_file = null;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
@@ -93,15 +100,25 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Заява від забудовника відсутня");
 
-                if ($this->contract->bank_account)
+                if ($this->contract->bank_account_payment)
                     $this->bank_account_template_set_data();
                 else
                     $this->notification("Warning", "Рахунок відсутній");
 
+                if ($this->contract->bank_account_payment)
+                    $this->bank_account_template_set_data();
+                else
+                    $this->notification("Warning", "Рахунок відсутній");
+
+                if ($this->contract->bank_taxes_payment)
+                    $this->bank_taxes_template_set_data();
+                else
+                    $this->notification("Warning", "Податки відсутні");
+
                 $this->total_clients--;
             }
 
-            if ($this->client->client_spouse_consent) {
+            if ($this->client && $this->client->client_spouse_consent) {
                 foreach ($this->client->client_spouse_consent as $this->consent) {
                     // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
                     if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
@@ -121,7 +138,7 @@ class DocumentController extends GeneratorController
     {
         $this->contract_generate_file = $this->ff->contract_title();
 
-        $this->convert_date_to_string($this->contract, $this->contract->sign_date);
+        $this->convert->date_to_string($this->contract, $this->contract->sign_date);
         // містить шаблон для паспорту
         $this->set_full_info_template($this->contract_generate_file);
         $this->set_spouse_word_template_part();
@@ -145,7 +162,7 @@ class DocumentController extends GeneratorController
         $this->questionnaire_generate_file = $this->ff->questionnaire_title();
 
         $this->set_full_info_template($this->questionnaire_generate_file);
-        $this->convert_date_to_string($this->contract->questionnaire, $this->contract->questionnaire->sign_date);
+        $this->convert->date_to_string($this->contract->questionnaire, $this->contract->questionnaire->sign_date);
         $this->set_passport_template_part($this->questionnaire_generate_file);
         $this->set_current_document_notary($this->questionnaire_generate_file, $this->contract->questionnaire->notary);
         $this->set_sign_date($this->questionnaire_generate_file, $this->contract->questionnaire);
@@ -163,7 +180,7 @@ class DocumentController extends GeneratorController
     {
         $this->developer_statement_generate_file = $this->ff->developer_statement_title();
 
-        $this->convert_date_to_string($this->contract->developer_statement, $this->contract->developer_statement->sign_date);
+        $this->convert->date_to_string($this->contract->developer_statement, $this->contract->developer_statement->sign_date);
         $this->set_passport_template_part($this->developer_statement_generate_file);
         $this->set_current_document_notary($this->developer_statement_generate_file, $this->contract->developer_statement->notary);
         $this->set_sign_date($this->developer_statement_generate_file, $this->contract->developer_statement);
@@ -182,7 +199,7 @@ class DocumentController extends GeneratorController
     {
         $this->consent_generate_file = $this->ff->consent_title($this->consent);
 
-        $this->convert_date_to_string($this->consent, $this->consent->sign_date);
+        $this->convert->date_to_string($this->consent, $this->consent->sign_date);
         $this->set_passport_template_part($this->consent_generate_file);
         $this->set_current_document_notary($this->consent_generate_file, $this->consent->notary);
         $this->set_consent_married_template_part();
@@ -211,6 +228,29 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->bank_account_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->bank_account_generate_file);
+
+        unset($word);
+
+        echo "<br>";
+    }
+
+    public function bank_taxes_template_set_data()
+    {
+        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title();
+
+        $this->set_passport_template_part($this->bank_taxes_generate_file);
+
+        /*
+         * В податкових рахунках використовується дата підписання Угоди $this->contract
+         * */
+        $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
+
+        $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
+        $sheet = $spreadsheet->getActiveSheet();
+        $this->set_taxes_data($sheet);
+        $writer = new Xlsx($spreadsheet);
+        $file_name = $this->bank_taxes_generate_file;
+        $writer->save($file_name);
 
         unset($word);
 
@@ -326,7 +366,10 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->contract_generate_file);
 
         if ($this->consent && $this->consent->contract_spouse_word) {
-            $word->setValue('cl-sp-word', $this->consent->contract_spouse_word->text);
+            if ($this->total_clients == 1)
+                $word->setValue('cl-sp-word', $this->consent->contract_spouse_word->text);
+            else
+                $word->setValue('cl-sp-word', $this->consent->contract_spouse_word->text . "<w:br/>\${cl-sp-word}");
         } else {
             $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
         }
@@ -599,6 +642,8 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - ПІБ
              * */
+            $word->setValue('dev-full-name-n', $this->get_full_name_n($this->contract->dev_company->owner));
+
             $word->setValue('dev-surname-n', $this->contract->dev_company->owner->surname_n);
             $word->setValue('dev-name-n', $this->contract->dev_company->owner->name_n);
             $word->setValue('dev-patr-n', $this->contract->dev_company->owner->patronymic_n);
@@ -683,6 +728,8 @@ class DocumentController extends GeneratorController
     {
         if ($this->contract && $this->contract->dev_representative) {
 
+            $word->setValue('dev-rep-full-name-n', $this->get_full_name_n($this->contract->dev_representative));
+
             $word->setValue('dev-rep-surname-n', $this->contract->dev_representative->surname_n);
             $word->setValue('dev-rep-name-n', $this->contract->dev_representative->name_n);
             $word->setValue('dev-rep-patr-n', $this->contract->dev_representative->patronymic_n);
@@ -716,6 +763,9 @@ class DocumentController extends GeneratorController
             /*
              * Клієнт - ПІБ
              * */
+            $word->setValue('cl-full-name-n', $this->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ', $this->get_full_name_n($this->client));
+
             $word->setValue('cl-surname-n', $this->client->surname_n);
             $word->setValue('cl-name-n', $this->client->name_n);
             $word->setValue('cl-patr-n', $this->client->patronymic_n);
@@ -746,10 +796,10 @@ class DocumentController extends GeneratorController
 
             $word->setValue('cl-birthday', $this->display_date($this->client->birthday));
 
-            $word->setValue('cl-gender-r', KeyWord::where('key', $this->client->gender)->value('title_r'));
-            $word->setValue('cl-gender-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
-            $word->setValue('cl-gender-o', KeyWord::where('key', $this->client->gender)->value('title_o'));
-            $word->setValue('cl-gender-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+            $word->setValue('cl-gender-sp-role-r', KeyWord::where('key', $this->client->gender)->value('title_r'));
+            $word->setValue('cl-gender-sp-role-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
+            $word->setValue('cl-gender-sp-role-o', KeyWord::where('key', $this->client->gender)->value('title_o'));
+            $word->setValue('cl-gender-sp-role-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
 
             if ($this->client->spouse)
                 $cl_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->spouse->gender);
@@ -769,6 +819,9 @@ class DocumentController extends GeneratorController
 
             $cl_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->gender);
             $word->setValue('cl-gender-which-adj', $this->set_style_color($cl_gender_which_adjective));
+
+            $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->gender);
+            $word->setValue('cl-gender-acq', $this->set_style_color($cl_gender_acquainted));
 
             /*
              * Клієнт - IПН
@@ -801,6 +854,7 @@ class DocumentController extends GeneratorController
             /*
              * Представник - ПІБ
              * */
+            $word->setValue('cr-full-name-n', $this->get_full_name_n($this->client->representative->confidant));
             $word->setValue('cr-surname-n', $this->client->representative->confidant->surname_n);
             $word->setValue('cr-name-n', $this->client->representative->confidant->name_n);
             $word->setValue('cr-patr-n', $this->client->representative->confidant->patronymic_n);
@@ -856,6 +910,10 @@ class DocumentController extends GeneratorController
             $cr_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->representative->confidant->gender);
             $word->setValue('cr-gender-which-adj', $this->set_style_color($cr_gender_which_adjective));
 
+            $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->representative->confidant->gender);
+            $word->setValue('cr-gender-acq', $this->set_style_color($cl_gender_acquainted));
+
+            $word->setValue('cr-citizenship', $this->get_citizenship($this->client->representative->confidant));
             /*
              * Представник - контактні данні
              * */
@@ -877,9 +935,13 @@ class DocumentController extends GeneratorController
             /*
              * Подружжя клієнта - ПІБ
              * */
+
+            $word->setValue('cs-full-name-n', $this->get_full_name_n($this->client->spouse));
+
             $word->setValue('cs-surname-n', $this->client->spouse->surname_n);
             $word->setValue('cs-name-n', $this->client->spouse->name_n);
             $word->setValue('cs-patr-n', $this->client->spouse->patronymic_n);
+
             $word->setValue('cs-surname-r', $this->client->spouse->surname_r);
             $word->setValue('cs-name-r', $this->client->spouse->name_r);
             $word->setValue('cs-patr-r', $this->client->spouse->patronymic_r);
@@ -914,14 +976,14 @@ class DocumentController extends GeneratorController
             /*
              * Подружжя клієнта - стать Ч/Ж
              * */
-            $word->setValue('cs-gender-o', KeyWord::where('key', $this->client->spouse->gender)->value('title_o'));
-            $word->setValue('cs-gender-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->spouse->gender)->value('title_o')));
+            $word->setValue('cs-gender-sp-role-o', KeyWord::where('key', $this->client->spouse->gender)->value('title_o'));
+            $word->setValue('cs-gender-sp-role-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->spouse->gender)->value('title_o')));
 
             $cs_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->spouse->gender);
             $word->setValue('cs-gender-pronoun', $cs_gender_pronoun);
             $word->setValue('cs-gender-pronoun-up', $this->mb_ucfirst($cs_gender_pronoun));
 
-            $cs_gender_mine = GenderWord::where('alias', "mine")->value($this->client->spouse->gender);
+            $cs_gender_mine = GenderWord::where('alias', "mine")->value($this->client->gender);
             $word->setValue('cs-gender-mine', $cs_gender_mine);
             $word->setValue('cs-gender-mine-up', $this->mb_ucfirst($cs_gender_mine));
 
@@ -933,6 +995,9 @@ class DocumentController extends GeneratorController
 
             $cs_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->spouse->gender);
             $word->setValue('cs-gender-which-adj', $this->set_style_color($cs_gender_which_adjective));
+
+            $cs_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->spouse->gender);
+            $word->setValue('cs-gender-acq', $this->set_style_color($cs_gender_acquainted));
 
             $word->setValue('cs-citizenship', $this->get_citizenship($this->client->spouse));
         } else {
@@ -1000,6 +1065,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-type-n', $this->contract->immovable->immovable_type->title_n);
             $word->setValue('imm-type-z', $this->contract->immovable->immovable_type->title_z);
             $word->setValue('imm-type-r', $this->contract->immovable->immovable_type->title_r);
+            $word->setValue('imm-type-o', $this->contract->immovable->immovable_type->title_r);
 
             if ($this->contract->immovable->roominess)
                 $word->setValue('imm-app-type-title', $this->contract->immovable->roominess->title);
@@ -1009,14 +1075,12 @@ class DocumentController extends GeneratorController
             /*
              * Об'єкт - адреса
              * */
-            $word->setValue('imm-full-asc-addr-r', $this->contract->immovable->immovable_full_ascending_address_r);
-            $word->setValue('imm-building-addr', $this->contract->immovable->building_address);
-            $word->setValue('imm-full-des-addr-n', $this->contract->immovable->immovable_full_descending_address_n);
+            $word->setValue('imm-full-addr', $this->contract->immovable->address);
 
             $word->setValue('imm-num', $this->contract->immovable->immovable_number);
-            $word->setValue('imm-num-str', $this->contract->immovable->immovable_number_string);
+            $word->setValue('imm-num-str', $this->convert->number_to_string($this->contract->immovable->immovable_number));
             $word->setValue('imm-build-num', $this->contract->immovable->developer_building->number); // исправить на number_dig
-            $word->setValue('imm-build-num-str', $this->contract->immovable->building_number_string); // привязать к developer_building(address) как number_str
+            $word->setValue('imm-build-num-str', $this->convert->number_to_string($this->contract->immovable->developer_building->number)); // привязать к developer_building(address) как number_str
             $word->setValue('imm-addr-type-n', $this->contract->immovable->developer_building->address_type->title_n); // building
             $word->setValue('imm-addr-type-r', $this->contract->immovable->developer_building->address_type->title_r); // building
             $word->setValue('imm-addr-title', $this->contract->immovable->developer_building->title); // building
@@ -1027,19 +1091,17 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-dis-title-r', $this->contract->immovable->developer_building->city->district->title_r); // building
             $word->setValue('imm-reg-title-n', $this->contract->immovable->developer_building->city->region->title_n); // building
             $word->setValue('imm-reg-title-r', $this->contract->immovable->developer_building->city->region->title_r); // building
-            $word->setValue('imm-floor-dig', $this->contract->immovable->floor_dig); // building
-            $word->setValue('imm-floor-str', $this->contract->immovable->floor_str); // building
-            $word->setValue('imm-section-dig', $this->contract->immovable->section_dig); // building
-            $word->setValue('imm-section-str', $this->contract->immovable->section_str); // building
+            $word->setValue('imm-floor-dig', $this->contract->immovable->floor); // building
+            $word->setValue('imm-floor-str', KeyWord::where('key', 'floor_' . $this->contract->immovable->floor)->value('title_d')); // building
+            $word->setValue('imm-section-dig', $this->contract->immovable->section); // building
+            $word->setValue('imm-section-str', $this->convert->number_to_string($this->contract->immovable->section)); // building
             $word->setValue('imm-complex', $this->contract->immovable->developer_building->complex); // building
 
             /*
              * Об'єкт - загальна та житлова проща
              * */
-            $word->setValue('imm-total-space-dig', $this->contract->immovable->total_space_dig);
-            $word->setValue('imm-total-space-str', $this->contract->immovable->total_space_str);
-            $word->setValue('imm-living-space-dig', $this->contract->immovable->living_space_dig);
-            $word->setValue('imm-living-space-str', $this->contract->immovable->living_space_str);
+            $word->setValue('imm-total-space',  $this->convert->get_convert_space($this->contract->immovable->total_space));
+            $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
             /*
              * Дата підключеня до коммунікацій / Введення в експлуатацію
@@ -1119,14 +1181,11 @@ class DocumentController extends GeneratorController
     public function set_property_valuation_prices($word)
     {
         if ($this->contract->immovable->pvprice) {
-            $word->setValue('pvprice-date', $this->display_date($this->contract->immovable->pvprice->date));
+            $word->setValue('pv-price-date', $this->display_date($this->contract->immovable->pvprice->date));
             $word->setValue('pv-title', $this->contract->immovable->pvprice->property_valuation->title);
             $word->setValue('pv-certificate', $this->contract->immovable->pvprice->property_valuation->certificate);
             $word->setValue('pv-date', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
-            $word->setValue('pvprice-grn-dig', $this->get_number_format_thousand($this->contract->immovable->pvprice->grn_dig));
-            $word->setValue('pvprice-grn-str', $this->contract->immovable->pvprice->grn_str);
-            $word->setValue('pvprice-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->pvprice->grn_dig));
-            $word->setValue('pvprice-grn-cent-str', $this->cent_str($this->contract->immovable->pvprice->grn_dig, $this->contract->immovable->pvprice->grn_cent_str));
+            $word->setValue('pv-price-grn', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
         } else {
             $this->notification("Warning", "Оцінка: відсутня інформація від оціночної компанії");
         }
@@ -1139,35 +1198,12 @@ class DocumentController extends GeneratorController
      * */
     public function set_developer_price($word)
     {
-        $word->setValue('price-grn-dig', $this->get_number_format_thousand($this->contract->immovable->grn_dig));
-        $word->setValue('price-grn-str', $this->contract->immovable->grn_str);
-        $word->setValue('price-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->grn_dig));
-        $word->setValue('price-grn-cent-str', $this->cent_str($this->contract->immovable->grn_dig, $this->contract->immovable->grn_cent_str));
-
-        $word->setValue('price-dollar-dig', $this->get_number_format_thousand($this->contract->immovable->dollar_dig));
-        $word->setValue('price-dollar-str', $this->contract->immovable->dollar_str);
-        $word->setValue('price-dollar-cent-dig', $this->get_number_format_decimal($this->contract->immovable->dollar_dig));
-        $word->setValue('price-dollar-cent-str', $this->cent_str($this->contract->immovable->dollar_dig, $this->contract->immovable->dollar_cent_str));
-
-        $word->setValue('reserve-grn-dig', $this->get_number_format_thousand($this->contract->immovable->reserve_grn_dig));
-        $word->setValue('reserve-grn-str', $this->contract->immovable->reserve_grn_str);
-        $word->setValue('reserve-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->reserve_grn_dig));
-        $word->setValue('reserve-grn-cent-str', $this->cent_str($this->contract->immovable->reserve_grn_dig, $this->contract->immovable->reserve_grn_cent_str));
-
-        $word->setValue('reserve-dollar-dig', $this->get_number_format_thousand($this->contract->immovable->reserve_dollar_dig));
-        $word->setValue('reserve-dollar-str', $this->contract->immovable->reserve_dollar_str);
-        $word->setValue('reserve-dollar-cent-dig', $this->get_number_format_decimal($this->contract->immovable->reserve_dollar_dig));
-        $word->setValue('reserve-dollar-cent-str', $this->cent_str($this->contract->immovable->reserve_dollar_dig, $this->contract->immovable->reserve_dollar_cent_str));
-
-        $word->setValue('m2-grn-dig', $this->get_number_format_thousand($this->contract->immovable->m2_grn_dig));
-        $word->setValue('m2-grn-str', $this->contract->immovable->m2_grn_str);
-        $word->setValue('m2-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->m2_grn_dig));
-        $word->setValue('m2-grn-cent-str', $this->cent_str($this->contract->immovable->m2_grn_dig, $this->contract->immovable->m2_grn_cent_str));
-
-        $word->setValue('m2-dollar-dig', $this->get_number_format_thousand($this->contract->immovable->m2_dollar_dig));
-        $word->setValue('m2-dollar-str', $this->contract->immovable->m2_dollar_str);
-        $word->setValue('m2-dollar-cent-dig', $this->get_number_format_decimal($this->contract->immovable->m2_dollar_dig));
-        $word->setValue('m2-dollar-cent-str', $this->cent_str($this->contract->immovable->m2_dollar_dig, $this->contract->immovable->m2_dollar_cent_str));
+        $word->setValue('price-grn', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
+        $word->setValue('price-dollar', $this->convert->get_convert_price($this->contract->immovable->dollar, 'dollar'));
+        $word->setValue('reserve-grn', $this->convert->get_convert_price($this->contract->immovable->reserve_grn, 'grn'));
+        $word->setValue('reserve-dollar', $this->convert->get_convert_price($this->contract->immovable->reserve_dollar, 'dollar'));
+        $word->setValue('m2-grn',  $this->convert->get_convert_price($this->contract->immovable->m2_grn, 'grn'));
+        $word->setValue('m2-dollar', $this->convert->get_convert_price($this->contract->immovable->m2_dollar, 'dollar'));
 
         return $word;
     }
@@ -1181,25 +1217,10 @@ class DocumentController extends GeneratorController
             $word->setValue('secur-sign-date', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
             $word->setValue('secur-reg-num', $this->contract->immovable->security_payment->reg_num);
 
-            $word->setValue('secur-first-grn-dig', $this->get_number_format_thousand($this->contract->immovable->security_payment->first_part_grn_dig));
-            $word->setValue('secur-first-grn-str', $this->contract->immovable->security_payment->first_part_grn_str);
-            $word->setValue('secur-first-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->security_payment->first_part_grn_dig));
-            $word->setValue('secur-first-grn-cent-str', $this->cent_str($this->contract->immovable->security_payment->first_part_grn_dig, $this->contract->immovable->security_payment->first_part_grn_cent_str));
-
-            $word->setValue('secur-first-dollar-dig', $this->get_number_format_thousand($this->contract->immovable->security_payment->first_part_dollar_dig));
-            $word->setValue('secur-first-dollar-str', $this->contract->immovable->security_payment->first_part_dollar_str);
-            $word->setValue('secur-first-dollar-cent-dig', $this->get_number_format_decimal($this->contract->immovable->security_payment->first_part_dollar_dig));
-            $word->setValue('secur-first-dollar-cent-str', $this->cent_str($this->contract->immovable->security_payment->first_part_dollar_dig, $this->contract->immovable->security_payment->first_part_dollar_cent_str));
-
-            $word->setValue('secur-last-grn-dig', $this->get_number_format_thousand($this->contract->immovable->security_payment->last_part_grn_dig));
-            $word->setValue('secur-last-grn-str', $this->contract->immovable->security_payment->last_part_grn_str);
-            $word->setValue('secur-last-grn-cent-dig', $this->get_number_format_decimal($this->contract->immovable->security_payment->last_part_grn_dig));
-            $word->setValue('secur-last-grn-cent-str', $this->cent_str($this->contract->immovable->security_payment->last_part_grn_dig, $this->contract->immovable->security_payment->last_part_grn_cent_str));
-
-            $word->setValue('secur-last-dollar-dig', $this->get_number_format_thousand($this->contract->immovable->security_payment->last_part_dollar_dig));
-            $word->setValue('secur-last-dollar-str', $this->contract->immovable->security_payment->last_part_dollar_str);
-            $word->setValue('secur-last-dollar-cent-dig', $this->get_number_format_decimal($this->contract->immovable->security_payment->last_part_dollar_dig));
-            $word->setValue('secur-last-dollar-cent-str', $this->cent_str($this->contract->immovable->security_payment->last_part_dollar_dig, $this->contract->immovable->security_payment->last_part_dollar_cent_str));
+            $word->setValue('secur-first-grn', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_grn, 'grn'));
+            $word->setValue('secur-first-dollar', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
+            $word->setValue('secur-last-grn', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
+            $word->setValue('secur-last-dollar', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
             $word->setValue('secur-final-date', $this->contract->immovable->security_payment->grn_cent_str);
         } else {
@@ -1217,10 +1238,7 @@ class DocumentController extends GeneratorController
         if ($this->contract->immovable && $this->contract->immovable->exchange_rate) {
             $word->setValue('imm-exch-link', $this->contract->immovable->exchange_rate->web_site_link);
             $word->setValue('imm-exch-root', $this->contract->immovable->exchange_rate->web_site_root);
-            $word->setValue('imm-exch-dig', $this->get_number_format_thousand($this->contract->immovable->exchange_rate->rate_dig));
-            $word->setValue('imm-exch-str', $this->contract->immovable->exchange_rate->rate_str);
-            $word->setValue('imm-exch-cent-dig', $this->get_number_format_decimal($this->contract->immovable->exchange_rate->rate_dig));
-            $word->setValue('imm-exch-cent-str', $this->contract->immovable->exchange_rate->rate_cent_str);
+            $word->setValue('imm-exch', $this->convert->exchange_price($this->contract->immovable->exchange_rate->rate));
         } else {
             $this->notification("Warning", "Курс долара: інформація відсутня");
         }
@@ -1292,7 +1310,7 @@ class DocumentController extends GeneratorController
                 $imm_type_r = $contract->immovable->immovable_type->title_r;
                 $imm_num_dig = $contract->immovable->immovable_number;
                 $imm_num_str = $contract->immovable->immovable_number_string;
-                $imm_full_address = $contract->immovable->building_address;
+                $imm_full_address = $contract->immovable->address;
                 $imm[$imm_full_address][$imm_num_dig] = "$imm_type_r $imm_num_dig ($imm_num_str)";
             }
         }
@@ -1301,6 +1319,9 @@ class DocumentController extends GeneratorController
         return $result;
     }
 
+    /*
+     * Для відображення декількох адрес підряд, наприклад, в заяві-згоді.
+     * */
     public function immovable_type_num_line($imm)
     {
         $line = "";
@@ -1309,7 +1330,6 @@ class DocumentController extends GeneratorController
             $building = array_values($building);
             $last_key = array_key_last($building);
             foreach ($building as $number => $type_num) {
-
                 if ($number == $last_key) {
                     $line .= " та $type_num";
                 } elseif (count($building) > 2 && $number == $last_key - 1) {
@@ -1364,18 +1384,6 @@ class DocumentController extends GeneratorController
         return $string;
     }
 
-    public function cent_str($price, $cent_str)
-    {
-        $str = null;
-
-        if (intval($this->get_number_format_decimal($price)))
-            $str = " ($cent_str)";
-        else
-            $str = "";
-
-        return $str;
-    }
-
     public function display_date($date)
     {
         $result = null;
@@ -1415,15 +1423,54 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    /*
-     * Шаблон адреси для нерухомості
-     * в будинку номер ${imm-build-num}
-     * (${imm-build-num-str})
-     * по ${imm-addr-type-r}
-     * ${imm-addr-title}
-     * у ${imm-city-type-r}
-     * ${imm-city-title-n},
-     * ${imm-dis-title-r}
-     * ${imm-reg-title-r} області
-     * */
+    public function get_full_name_n($client)
+    {
+        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+
+        return $full_name;
+    }
+
+    public function set_taxes_data($sheet)
+    {
+        $developer = null;
+
+        $price = sprintf("%.2f", $this->contract->immovable->grn/100);
+        $sheet->setCellValue("J1", $price);
+        $taxes = BankTaxesList::get();
+
+        $i = 2;
+        foreach ($taxes as $tax) {
+            if ($tax->type == 'developer') {
+                $pay_buy_client = $this->contract->dev_company->owner;
+            } else {
+                $pay_buy_client = $this->client;
+            }
+
+            $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
+            $this->notification('Warning', $price * $percent . " " . $i);
+            $sheet->setCellValue("A{$i}", $price * $percent);
+            $sheet->setCellValue("B{$i}", $this->get_full_name_n($pay_buy_client));
+            $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
+            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->get_full_name_n($pay_buy_client);
+            $sheet->setCellValue("E{$i}", $full_tax_info);
+
+            $sheet->setCellValue("F{$i}", $tax->mfo);
+            $sheet->setCellValue("G{$i}", $tax->bank_account);
+            $sheet->setCellValue("H{$i}", $tax->name_recipient);
+            $sheet->setCellValue("I{$i}", $tax->okpo);
+            $i++;
+        }
+
+        $sheet->setCellValue("A8", "покупець");
+        $sheet->setCellValue("B8", $this->get_full_name_n($this->client));
+        $sheet->setCellValue("C8", $this->client->tax_code);
+        $sheet->setCellValue("B9", "продавець");
+        $sheet->setCellValue("B9", $this->get_full_name_n($this->contract->dev_company->owner));
+        $sheet->setCellValue("C9", $this->contract->dev_company->owner->tax_code);
+        $sheet->setCellValue("B10", $this->contract->immovable->address);
+        $sheet->setCellValue("B11", $price);
+        $sheet->setCellValue("B13", $this->client->phone);
+
+        return $sheet;
+    }
 }

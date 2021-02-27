@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
-class AppartmentType extends Model implements Sortable
+class PassportTemplate extends Model implements Sortable
 {
     use HasFactory, SortableTrait;
 
