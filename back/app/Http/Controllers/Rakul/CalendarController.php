@@ -16,7 +16,7 @@ class CalendarController extends BaseController
 
         $result = [
             'rooms' => $rooms,
-            'time' => $time,
+            'work_time' => $time,
         ];
 
         return $this->sendResponse($result, 'кімнати');
