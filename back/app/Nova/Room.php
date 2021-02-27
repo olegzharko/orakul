@@ -6,24 +6,23 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use OptimistDigital\NovaSortable\Traits\HasSortableRows;
+use Naif\Toggle\Toggle;
 
-class TemplateType extends Resource
+class Room extends Resource
 {
-    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\TemplateType::class;
+    public static $model = \App\Models\Room::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -34,18 +33,9 @@ class TemplateType extends Resource
         'id',
     ];
 
-    public static $group = "Типи";
-
-
-
     public static function label()
     {
-        return "Тип договору";
-    }
-
-    public static function canSort(NovaRequest $request)
-    {
-        return true;
+        return "Переговорні кімната";
     }
 
     /**
@@ -58,8 +48,10 @@ class TemplateType extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Заголовок', 'title'),
-            Text::make('Скорочено, для назви файлу', 'short_title'),
+            Text::make('Кімната', 'title'),
+            Toggle::make('Активувати', 'active'),
+
+
         ];
     }
 
