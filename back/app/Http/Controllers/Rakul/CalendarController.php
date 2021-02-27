@@ -49,7 +49,7 @@ class CalendarController extends BaseController
                     $contracts[$key]->x = array_search($contract->room->id, $rooms);
                     $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
 
-                    echo "[" . $contracts[$key]->x . "] [" . $contracts[$key]->y . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
+//                    echo "[" . $contracts[$key]->x . "] [" . $contracts[$key]->y . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
                 }
             }
         }
