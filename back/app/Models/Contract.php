@@ -31,6 +31,10 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Immovable::class, 'immovable_id');
     }
 
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
     public function event_city()
     {
         return $this->belongsTo(City::class, 'event_city_id');

@@ -79,6 +79,7 @@ class Contract extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             DateTime::make('Дата зустрічі', 'event_datetime')->timeFormat('HH:mm')->onlyOnForms(),
+            BelongsTo::make('Кімната', 'room', 'App\Nova\Room'),
             BelongsTo::make('Місце складання договору', 'event_city', 'App\Nova\City')->onlyOnForms()->nullable(),
             BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->nullable(),
             BelongsTo::make('Видавач', 'reader', 'App\Nova\Staff')->onlyOnForms()->nullable(),
