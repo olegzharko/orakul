@@ -1,0 +1,55 @@
+.scheduler {
+  overflow: hidden;
+
+  &__weekDay {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: black;
+    }
+  }
+
+  &__day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__day > p {
+    word-break: break-all;
+}
+
+  &__timeLine {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    p {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(224, 224, 224, 1);
+      }
+    }
+  }
+}

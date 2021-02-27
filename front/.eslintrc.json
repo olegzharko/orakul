@@ -21,6 +21,8 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-param-reassign": "off",
+        "react/jsx-props-no-spreading": "off",
         "comma-dangle": ["warn"],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
         "no-use-before-define": "off",
@@ -34,7 +36,7 @@
               "ts": "never",
               "tsx": "never"
             }
-         ]
+        ]
     },
     "settings": {
         "import/resolver": {
