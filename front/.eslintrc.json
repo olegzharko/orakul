@@ -21,7 +21,9 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "comma-dangle": ["warn"],
+        "no-param-reassign": "off",
+        "react/jsx-props-no-spreading": "off",
+        "comma-dangle": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["error"],
@@ -34,7 +36,7 @@
               "ts": "never",
               "tsx": "never"
             }
-         ]
+        ]
     },
     "settings": {
         "import/resolver": {

@@ -1,0 +1,65 @@
+@import '../../../../../../../../constants';
+
+.scheduler {
+
+  &__dragAndDrop {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0!important;
+    position: absolute;
+  
+    & > .react-grid-placeholder {
+      z-index: 0;
+      opacity: .5;
+      background-color: rgb(255, 44, 44);
+    }
+  }
+
+  .appointment {
+    position: relative;
+    color: black;
+    padding: 5px 12px;
+    box-sizing: border-box; 
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    z-index: 1;
+  
+    &:hover &__table {
+      opacity: 1;
+    }
+  
+    &__title {
+  
+    }
+  
+    &__table {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      background-color: grey;
+      border-collapse: collapse;
+      transition: all .3s ease-in-out;
+      -webkit-transition: all .3s ease-in-out;
+      -moz-transition: all .3s ease-in-out;
+      -ms-transition: all .3s ease-in-out;
+      -o-transition: all .3s ease-in-out;
+      
+      td {
+        border-right: $border;
+        text-align: center;
+        box-sizing: border-box;
+        color: white;
+      }
+    }
+  }
+}
+
+
+
+
+
