@@ -1,0 +1,91 @@
+@import '../../../../../../constants';
+
+body, p {
+  margin: 0;
+}
+
+.scheduler {
+  background-color: #FAFAFA;
+  border-radius: 10px;
+  box-shadow: inset 0px -1px 0px #EEEEEE;
+  
+  &__header {
+    display: flex;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    border-bottom: $border;
+    border-right: $border;
+    
+    & > div > table {
+      width: 100%;
+      border-collapse: collapse;
+
+      tr {
+        height: 100%;
+      }
+
+      td {
+        text-align: center;
+        height: 56px;
+      }
+    }
+
+    & > div:first-child {
+      width: 10%;
+    }
+
+    & > div:nth-child(2) {
+      width: 90%;
+    }
+  }
+
+  &__dayBar {
+    width: 10%;
+  }
+
+  &__body {
+    display: flex;
+  }
+
+  &__appointments {
+    width: 90%;
+    position: relative;
+  }
+
+  &__bodyTable {
+
+    table {
+      border-collapse: collapse;
+    }
+
+    table, tr {
+      width: 100%;
+    }
+
+    tr:nth-child(9n + 9) {
+      border-bottom: $border_hard;
+    }
+
+    td {
+      border-bottom: $border;
+      border-right: $border;
+      border-left: $border;
+      height: 75px;
+      box-sizing: border-box;
+      transition: all .4s ease-in-out;
+      -webkit-transition: all .4s ease-in-out;
+      -moz-transition: all .4s ease-in-out;
+      -ms-transition: all .4s ease-in-out;
+      -o-transition: all .4s ease-in-out;
+      cursor: crosshair;
+
+      &:hover {
+        background-color: #eee;
+      }
+    }
+  }
+}
