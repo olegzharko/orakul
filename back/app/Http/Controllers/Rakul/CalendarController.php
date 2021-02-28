@@ -96,7 +96,6 @@ class CalendarController extends BaseController
             }
         }
 
-        dd($result);
         return $result;
 
     }
