@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PassportAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Rakul\CalendarController;
+use App\Http\Controllers\Rakul\CardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +30,10 @@ Route::post('login', [PassportAuthController::class, 'login']);
 
 Route::group(['prefix' => 'local'], function () {
     Route::get('calendar', [CalendarController::class, 'calendar']);
-
+    Route::resource('calendar/cards', CardController::class);
 });
 Route::middleware('auth:api')->group(function () {
     Route::get('calendar', [CalendarController::class, 'calendar']);
     Route::resource('posts', PostController::class);
+    Route::resource('cards', CardController::class);
 });
