@@ -39,6 +39,7 @@ class CalendarController extends BaseController
 
         $i = 0;
         $date = null;
+        $result = [];
         foreach ($contracts as $key => $contract) {
             if ($contract->event_datetime) {
                 if (array_search($contract->room->id, $rooms) && array_search($contract->event_datetime->format('H:i'), $times)) {
@@ -52,12 +53,24 @@ class CalendarController extends BaseController
                     }
                     $contracts[$key]->x = array_search($contract->room->id, $rooms);
                     $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
+                    $result[$key]['contract_id'] = $contracts[$key]->id;
+                    $result[$key]['x'] = array_search($contract->room->id, $rooms);
+                    $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
+                    $result[$key]['color'] = 'red';
+                    $result[$key]['title'] = 'Корол 2 прим 185 (осн) Імекова - Пішина (без банку)';
+                    $result[$key]['short_info'] = [
+                        'notary' => 'ОВ',
+                        'notary_assistant_reader' => 'ГК',
+                        'notary_assistant_giver' => 'БМ',
+                        'developer_assistant' => 'ВВ',
+                    ];
 
 //                    echo "[" . $contracts[$key]->x . "] [" . $contracts[$key]->y . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
                 }
             }
         }
 
-        return $contracts;
+        return $result;
+
     }
 }
