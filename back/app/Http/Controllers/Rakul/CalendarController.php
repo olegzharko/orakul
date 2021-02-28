@@ -53,7 +53,7 @@ class CalendarController extends BaseController
                     }
                     $contracts[$key]->x = array_search($contract->room->id, $rooms);
                     $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
-                    $result[$key]['i'] = $contracts[$key]->id;
+                    $result[$key]['i'] = strval($contracts[$key]->id);
                     $result[$key]['x'] = array_search($contract->room->id, $rooms);
                     $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
                     $result[$key]['w'] = array_search($contract->room->id, $rooms);
