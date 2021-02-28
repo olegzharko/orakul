@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Contract;
 use App\Models\Room;
 use App\Models\Time;
+use App\Models\WorkDay;
 use App\Nova\DevCompany;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,10 @@ class CalendarController extends BaseController
     {
         $rooms = Room::select('title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
+        $work_days_and_date = $this->get_day_and_date();
 
         $contracts = Contract::orderBy('event_datetime')->get();
+
         if ($contracts)
             $contracts = $this->convert_room($contracts);
         else
@@ -25,7 +28,8 @@ class CalendarController extends BaseController
         $result = [
             'rooms' => $rooms,
             'work_time' => $time,
-            'contract_groups' => $contracts,
+            'day_and_date' => $work_days_and_date,
+            'contracts' => $contracts,
         ];
 
         return $this->sendResponse($result, 'кімнати');
@@ -33,35 +37,17 @@ class CalendarController extends BaseController
 
     public function convert_room($contracts)
     {
-        $week = [
-            '-',
-            'Пн',
-            'Вт',
-            'Ср',
-            'Чт',
-            'Пт',
-            'Сб',
-            'Нд',
-        ];
-        $prev_date = null;
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
 
         $height = count($times);
 
-        $i = 0;
         $date = null;
-        $result = [];
+        $prev_date = null;
+        $i = 0;
         $j = 0;
         foreach ($contracts as $key => $contract) {
             if ($contract->event_datetime) {
-                if ($prev_date == null || $prev_date < strtotime($contract->event_datetime->format('d.m.Y'))) {
-                    $j++;
-                    $result[$j]['day'] = $week[$contract->event_datetime->format('w')];
-                    $result[$j]['date'] = $contract->event_datetime->format('d.m');
-                    $result[$j]['contracts'] = [];
-                }
-
                 if (in_array($contract->room->id, $rooms) && in_array($contract->event_datetime->format('H:i'), $times)) {
                     if ($date == null)
                         $date = strtotime($contract->event_datetime->format('d.m.Y'));
@@ -73,14 +59,14 @@ class CalendarController extends BaseController
                     }
                     $contracts[$key]->x = array_search($contract->room->id, $rooms);
                     $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
-                    $result[$j]['contracts'][$key]['i'] = strval($contracts[$key]->id);
-                    $result[$j]['contracts'][$key]['x'] = array_search($contract->room->id, $rooms);
-                    $result[$j]['contracts'][$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
-                    $result[$j]['contracts'][$key]['w'] = 1;
-                    $result[$j]['contracts'][$key]['h'] = 1;
-                    $result[$j]['contracts'][$key]['color'] = $contract->dev_company->color;
-                    $result[$j]['contracts'][$key]['title'] = 'Корол 2 прим 185 (осн) Імекова - Пішина (без банку)';
-                    $result[$j]['contracts'][$key]['short_info'] = [
+                    $result[$key]['i'] = strval($contracts[$key]->id);
+                    $result[$key]['x'] = array_search($contract->room->id, $rooms);
+                    $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
+                    $result[$key]['w'] = 1;
+                    $result[$key]['h'] = 1;
+                    $result[$key]['color'] = $contract->dev_company->color;
+                    $result[$key]['title'] = 'Корол 2 прим 185 (осн) Імекова - Пішина (без банку)';
+                    $result[$key]['short_info'] = [
                         'notary' => 'ОВ',
                         'notary_assistant_reader' => 'ГК',
                         'notary_assistant_giver' => 'БМ',
@@ -94,6 +80,24 @@ class CalendarController extends BaseController
         }
 
         return $result;
+    }
 
+    public function get_day_and_date()
+    {
+        $week = WorkDay::where('active', true)->orderBy('num')->pluck('short', 'num')->toArray();
+
+        $d = 0;
+        $date = new \DateTime();
+        while ($d < 31) {
+            $day_num = $date->format('w');
+            if (isset($week[$day_num])) {
+                $result[$d]['day'] = $week[$date->format('w')];
+                $result[$d]['date'] = $date->format('d.m');
+                $d++;
+            }
+            $date = $date->modify('+1 day');
+        }
+
+        return $result;
     }
 }
