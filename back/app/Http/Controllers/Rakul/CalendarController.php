@@ -68,7 +68,7 @@ class CalendarController extends BaseController
                         'notary_assistant_giver' => 'БМ',
                         'developer_assistant' => 'ВВ',
                     ];
-                    echo "[" . $result[$key]['x'] . "] [" . $result[$key]['y'] . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
+//                    echo "[" . $result[$key]['x'] . "] [" . $result[$key]['y'] . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
                 }
             }
         }
