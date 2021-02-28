@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Contract;
 use App\Models\Room;
 use App\Models\Time;
+use App\Nova\DevCompany;
 use Illuminate\Http\Request;
 
 class CalendarController extends BaseController
@@ -58,7 +59,7 @@ class CalendarController extends BaseController
                     $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
                     $result[$key]['w'] = 1;
                     $result[$key]['h'] = 1;
-                    $result[$key]['color'] = 'red';
+                    $result[$key]['color'] = $contract->dev_company->color;
                     $result[$key]['title'] = 'Корол 2 прим 185 (осн) Імекова - Пішина (без банку)';
                     $result[$key]['short_info'] = [
                         'notary' => 'ОВ',
