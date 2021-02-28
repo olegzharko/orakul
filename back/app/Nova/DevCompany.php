@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Timothyasp\Color\Color;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class DevCompany extends Resource
@@ -51,6 +52,7 @@ class DevCompany extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Компанія забудовника', 'title'),
+            Color::make("Колір", "color"),
             HasMany::make('Люди', 'member', 'App\Nova\Client'),
             HasMany::make('Доручення', 'proxy', 'App\Nova\Proxy'),
             HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),

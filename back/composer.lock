@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00a81f0b25a4876dc1ac3f0f04533162",
+    "content-hash": "7571be724ecefeb7fb330194c788b6be",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -8442,6 +8442,53 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/2.2.3"
             },
             "time": "2020-07-13T06:12:54+00:00"
+        },
+        {
+            "name": "timothyasp/nova-color-field",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/timothyasp/nova-color-field.git",
+                "reference": "6cc39bab252070d57019360ab3eb6b6637f994f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/timothyasp/nova-color-field/zipball/6cc39bab252070d57019360ab3eb6b6637f994f6",
+                "reference": "6cc39bab252070d57019360ab3eb6b6637f994f6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Timothyasp\\Color\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Timothyasp\\Color\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova Color Picker field.",
+            "keywords": [
+                "color picker",
+                "field",
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/timothyasp/nova-color-field/issues",
+                "source": "https://github.com/timothyasp/nova-color-field/tree/1.0.4"
+            },
+            "time": "2020-10-26T16:36:00+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
