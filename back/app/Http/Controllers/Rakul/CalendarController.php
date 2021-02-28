@@ -53,9 +53,11 @@ class CalendarController extends BaseController
                     }
                     $contracts[$key]->x = array_search($contract->room->id, $rooms);
                     $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
-                    $result[$key]['contract_id'] = $contracts[$key]->id;
+                    $result[$key]['i'] = $contracts[$key]->id;
                     $result[$key]['x'] = array_search($contract->room->id, $rooms);
                     $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
+                    $result[$key]['w'] = array_search($contract->room->id, $rooms);
+                    $result[$key]['h'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
                     $result[$key]['color'] = 'red';
                     $result[$key]['title'] = 'Корол 2 прим 185 (осн) Імекова - Пішина (без банку)';
                     $result[$key]['short_info'] = [
