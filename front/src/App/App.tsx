@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
 import { useApp } from './useApp';
-import CalendarScreen from '../Screens/Calendar';
+import SchedulerScreen from '../Screens/SchedulerScreen';
 
 const App: React.FC = () => {
   useApp();
 
-  return <CalendarScreen />;
+  return <SchedulerScreen />;
 };
 
 export default App;

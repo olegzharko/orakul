@@ -1,60 +1,56 @@
+/* eslint-disable object-curly-newline */
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import './GridLayout.scss';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import $ from 'jquery';
-import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default function GridLayout() {
+export default function GridLayout({ appointments, cols, handleDrag }) {
   const [dragAndDropWidth, setDragAndDropWidth] = useState(1200);
-  const layouts = useSelector((state) => state.layouts);
 
   useEffect(() => {
     setDragAndDropWidth($('.scheduler__appointments').width());
   }, []);
 
-  const handleDrag = (all, current) => {
+  const onDrag = (all, current) => {
     const currentApp = all.find((item) => item.i === current.i);
-    const newLayouts = layouts.map((item) => {
-      if (item.i === current.i) {
-        item.x = currentApp.x;
-        item.y = currentApp.y;
-      }
-
-      return item;
-    });
-    // eslint-disable-next-line no-console
-    console.log(newLayouts);
+    handleDrag(currentApp);
   };
 
-  if (layouts.length === 0) {
+  if (!appointments) {
     return <span>Loading...</span>;
   }
 
   return (
     <ReactGridLayout
       className="scheduler__dragAndDrop"
-      cols={6}
-      rowHeight={48}
+      cols={cols}
+      rowHeight={75}
       width={dragAndDropWidth}
       margin={[0, 0]}
       containerPadding={[0, 0]}
       verticalCompact={false}
       preventCollision
-      layout={layouts}
-      onDragStop={handleDrag}
+      layout={appointments}
+      onDragStop={onDrag}
     >
-      {layouts.map(({ i, title }) => (
-        <div key={i} className="appointment" style={{}}>
+      {appointments.map(({ i, title, color, short_info }) => (
+        <div
+          key={i}
+          className="appointment"
+          style={{ borderLeft: `4px solid ${color}` }}
+        >
           <div className="appointment__title">{title}</div>
           <table className="appointment__table">
             <tbody>
               <tr>
-                <td>СВ</td>
-                <td>КВ</td>
-                <td>ОВ</td>
-                <th>ЛК</th>
+                {Object.values(short_info).map((item) => (
+                  <td key={uuidv4()}>{item}</td>
+                ))}
               </tr>
             </tbody>
           </table>

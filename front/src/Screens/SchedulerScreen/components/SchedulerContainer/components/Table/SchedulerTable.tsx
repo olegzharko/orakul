@@ -1,25 +1,25 @@
 import React from 'react';
 import './index.scss';
 import { v4 as uuidv4 } from 'uuid';
-import { useCalendarScreen } from './useCalendarScreen';
-import Loader from '../../components/Loader';
+import { useSchedulerTable } from './useSchedulerTable';
+import Loader from '../../../../../../components/Loader';
 
 // components
 import SchedulerDay from './components/SchedulerDay/SchedulerDay';
 import GridLayout from './components/GridLayout/GridLayout';
 import GridTable from './components/GridTable/GridTable';
 
-const CalendarScreen = () => {
+const SchedulerTable = () => {
   const {
     shouldLoad,
     rooms,
     hours,
     tableRaws,
-    tableCells,
+    tableColumns,
     days,
-  } = useCalendarScreen();
-
-  // dispatch(setLayouts(data.map((prop) => ({ ...prop, w: 1, h: 1 }))));
+    appointments,
+    handleAppointmentDrag,
+  } = useSchedulerTable();
 
   if (shouldLoad) {
     return <Loader />;
@@ -48,17 +48,21 @@ const CalendarScreen = () => {
       </div>
       <div className="scheduler__body">
         <div className="scheduler__dayBar">
-          {days.map((item) => (
+          {days.map((item: any) => (
             <SchedulerDay day={item} hours={hours} key={uuidv4()} />
           ))}
         </div>
         <div className="scheduler__appointments">
-          <GridTable raws={tableRaws} cells={tableCells} />
-          {/* <GridLayout /> */}
+          <GridTable raws={tableRaws} columns={tableColumns} />
+          <GridLayout
+            appointments={appointments}
+            cols={tableColumns.length}
+            handleDrag={handleAppointmentDrag}
+          />
         </div>
       </div>
     </div>
   );
 };
 
-export default CalendarScreen;
+export default SchedulerTable;
