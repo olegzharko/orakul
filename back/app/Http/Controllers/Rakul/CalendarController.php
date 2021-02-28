@@ -60,7 +60,6 @@ class CalendarController extends BaseController
                     $result[$j]['day'] = $week[$contract->event_datetime->format('w')];
                     $result[$j]['date'] = $contract->event_datetime->format('d.m');
                     $result[$j]['contracts'] = [];
-                    echo $j . "<br>";
                 }
 
                 if (in_array($contract->room->id, $rooms) && in_array($contract->event_datetime->format('H:i'), $times)) {
@@ -90,8 +89,6 @@ class CalendarController extends BaseController
 
                     $prev_date = strtotime($contract->event_datetime->format('d.m.Y'));
 //                    echo "[" . $contracts[$key]->x . "] [" . $contracts[$key]->y . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
-                } else {
-                    dd($contract, $contract->room->id, $rooms, in_array($contract->room->id, $rooms), in_array($contract->event_datetime->format('H:i'), $times));
                 }
             }
         }
