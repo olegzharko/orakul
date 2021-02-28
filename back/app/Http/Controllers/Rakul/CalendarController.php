@@ -37,31 +37,27 @@ class CalendarController extends BaseController
 
     public function convert_room($contracts)
     {
+        $result = [];
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
+        $time_length = count($times);
+        $current_date = date('d.m.Y');
+        $current_date = "01.03.2021";////////////////////DEL ME/////////////////////////
+        $current_date = strtotime($current_date);
 
-        $height = count($times);
-
-        $date = null;
-        $prev_date = null;
-        $i = 0;
-        $j = 0;
         foreach ($contracts as $key => $contract) {
-            if ($contract->event_datetime) {
+            if ($contract->event_datetime && $current_date <= strtotime($contract->event_datetime->format('d.m.Y'))) {
                 if (in_array($contract->room->id, $rooms) && in_array($contract->event_datetime->format('H:i'), $times)) {
-                    if ($date == null)
-                        $date = strtotime($contract->event_datetime->format('d.m.Y'));
-                    if ($date < strtotime($contract->event_datetime->format('d.m.Y'))) {
-                        $days_in_seconds = strtotime($contract->event_datetime->format('d.m.Y')) - $date;
-                        intval(round($days_in_seconds / (60 * 60 * 24)));
-                        $i = $i + $height * intval(round($days_in_seconds / (60 * 60 * 24)));
-                        $date = strtotime($contract->event_datetime->format('d.m.Y'));
-                    }
-                    $contracts[$key]->x = array_search($contract->room->id, $rooms);
-                    $contracts[$key]->y = $i + array_search($contract->event_datetime->format('H:i'), $times);
+
+                    $time_height = array_search($contract->event_datetime->format('H:i'), $times);
+                    $day_height = strtotime($contract->event_datetime->format('d.m.Y')) - $current_date;
+                    $day_height = intval(round($day_height / (60 * 60 * 24)));
                     $result[$key]['i'] = strval($contracts[$key]->id);
                     $result[$key]['x'] = array_search($contract->room->id, $rooms);
-                    $result[$key]['y'] = $i + array_search($contract->event_datetime->format('H:i'), $times);
+                    if ($day_height)
+                        $result[$key]['y'] = $time_height + $time_length * $day_height;
+                    else
+                        $result[$key]['y'] = $time_height;
                     $result[$key]['w'] = 1;
                     $result[$key]['h'] = 1;
                     $result[$key]['color'] = $contract->dev_company->color;
@@ -72,13 +68,12 @@ class CalendarController extends BaseController
                         'notary_assistant_giver' => 'БМ',
                         'developer_assistant' => 'ВВ',
                     ];
-
-                    $prev_date = strtotime($contract->event_datetime->format('d.m.Y'));
-//                    echo "[" . $contracts[$key]->x . "] [" . $contracts[$key]->y . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
+                    echo "[" . $result[$key]['x'] . "] [" . $result[$key]['y'] . "] - <br>" . $contract->room->id . "<br>" . $contract->event_datetime->format('d.m.Y H:i') . "<br>";
                 }
             }
         }
 
+        dd($result);
         return $result;
     }
 
