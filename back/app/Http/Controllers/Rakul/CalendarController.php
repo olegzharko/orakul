@@ -13,7 +13,7 @@ class CalendarController extends BaseController
 {
     public function calendar()
     {
-        $rooms = Room::select('title', 'sort_order')->where('active', true)->get();
+        $rooms = Room::select('id as room_id', 'title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
         $work_days_and_date = $this->get_day_and_date();
 
