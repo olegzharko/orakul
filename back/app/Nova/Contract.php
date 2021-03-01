@@ -43,8 +43,8 @@ class Contract extends Resource
                 $str_client .= $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n . " ";
             }
         }
-
-        return $this->event_datetime->format('d.m.y') . " Нотаріус: " . $str_notary . ". Клієнт: " . $str_client;
+        $date = $this->event_datetime ? $this->event_datetime->format('d.m.y') : null;
+        return $date . " Нотаріус: " . $str_notary . ". Клієнт: " . $str_client;
     }
 
     /**
@@ -78,17 +78,10 @@ class Contract extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            DateTime::make('Дата зустрічі', 'event_datetime')->timeFormat('HH:mm')->onlyOnForms(),
-            BelongsTo::make('Кімната', 'room', 'App\Nova\Room'),
-            BelongsTo::make('Місце складання договору', 'event_city', 'App\Nova\City')->onlyOnForms()->nullable(),
-            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->nullable(),
             BelongsTo::make('Видавач', 'reader', 'App\Nova\Staff')->onlyOnForms()->nullable(),
             BelongsTo::make('Читач', 'delivery', 'App\Nova\Staff')->onlyOnForms()->nullable(),
             BelongsTo::make('Шаблон договору', 'contract_template', 'App\Nova\ContractTemplate')->nullable(),
             BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->nullable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->nullable(),
-            BelongsTo::make('Підписант', 'dev_representative', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Менеджер', 'manager', 'App\Nova\Client')->onlyOnForms()->nullable(),
             DateTime::make('Дата підписання договору', 'sign_date'),
             Toggle::make('Оброблений', 'ready'),
             BelongsToMany::make('Клієнти', 'clients', 'App\Nova\Client'),
@@ -147,7 +140,6 @@ class Contract extends Resource
         $clients = $this->clients();
 
         foreach ($clients as $client) {
-            dd($client);
             $full_name .= $client->surname . " " . $client->name . " " . $client->patronymic . " ";
         }
         return $full_name;
