@@ -2,16 +2,21 @@
 /* eslint-disable import/prefer-default-export */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import fetchCalendarData from '../../../../../../actions/fetchCalendarData';
+import fetchAppointments from '../../../../../../actions/fetchAppointments';
+import fetchSchedulerSettings from '../../../../../../actions/fetchSchedulerSettings';
+import { State } from '../../../../../../store/types';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
   const token = useSelector((state: any) => state.token.token);
-  const { options, isLoading } = useSelector((state: any) => state.calendar);
+  const { options, isLoading, appointments } = useSelector(
+    (state: State) => state.calendar
+  );
 
   useEffect(() => {
     if (token && !isLoading) {
-      fetchCalendarData(dispatch, token);
+      fetchSchedulerSettings(dispatch, token);
+      fetchAppointments(dispatch, token);
     }
   }, [token]);
 
@@ -34,10 +39,6 @@ export const useSchedulerTable = () => {
     () => new Array(hours?.length * days?.length || 0).fill(1),
     [hours]
   );
-
-  const appointments = useMemo(() => Object.values(options?.contracts || {}), [
-    options,
-  ]);
 
   const handleAppointmentDrag = useCallback(
     (appointment) => {

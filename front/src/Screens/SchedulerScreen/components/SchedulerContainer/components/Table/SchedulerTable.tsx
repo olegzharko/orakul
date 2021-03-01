@@ -2,7 +2,7 @@ import React from 'react';
 import './index.scss';
 import { v4 as uuidv4 } from 'uuid';
 import { useSchedulerTable } from './useSchedulerTable';
-import Loader from '../../../../../../components/Loader';
+import Loader from '../../../../../../components/Loader/Loader';
 
 // components
 import SchedulerDay from './components/SchedulerDay/SchedulerDay';

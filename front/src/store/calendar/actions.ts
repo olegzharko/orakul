@@ -1,10 +1,16 @@
 export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
+  SET_APPOINTMENTS: 'SET_APPOINTMENTS',
   SET_IS_LOADING: 'SET_IS_LOADING',
 };
 
-export const setCalendarOptions = (payload: any) => ({
+export const setSchedulerOptions = (payload: any) => ({
   type: ACTIONS.SET_OPTIONS,
+  payload,
+});
+
+export const setAppointments = (payload: any) => ({
+  type: ACTIONS.SET_APPOINTMENTS,
   payload,
 });
 

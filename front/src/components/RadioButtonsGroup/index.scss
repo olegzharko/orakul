@@ -1,0 +1,40 @@
+@import '../../constants.scss';
+
+.radio-buttons-group {
+  width: 100%;
+  display: flex;
+
+  &__element {
+    flex-grow: 1;
+  
+    &:not(:first-child):not(:last-child) {
+      margin: 0 6px;
+    }
+
+    .input {
+      display: none;
+
+      &:checked + .label {
+        background-color: $primary;
+        color: white;
+      }
+    }
+
+    .label {
+      @include form_text;
+      border: $border_primary;
+      border-radius: 4px;
+      color: $primary;
+      height: 42px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all .3s ease-in;
+      -webkit-transition: all .3s ease-in;
+      -moz-transition: all .3s ease-in;
+      -ms-transition: all .3s ease-in;
+      -o-transition: all .3s ease-in;
+}
+  }
+}
