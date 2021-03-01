@@ -3,43 +3,38 @@
 namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\Controller;
+use App\Models\CardContract;
 use App\Models\Contract;
 use App\Models\Immovable;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-    public function add_contracts($clients, $developer, $assistant, $manager, $immovables_id)
-    {
-        foreach ($clients as $client) {
-            $this->create($client, $developer, $assistant, $manager, $immovables_id);
-        }
-    }
-
-    public function create($client, $developer, $assistant, $manager, $immovables_id)
+    public function add_contracts_on_immovabel($card_id, $immovables_id)
     {
         foreach ($immovables_id as $imm_id) {
-            if ($this->fresh_contract($developer, $imm_id)) {
-                $imm = new Contract();
-                $imm->immovable_id = $imm_id;
-                $imm->dev_company_id = $developer ? $developer->id : null;
-                $imm->dev_representative_id = $assistant ? $assistant->id : null;
-                $imm->manager_id = $manager ? $manager->id : null;
-                $imm->save();
+            $contract = Contract::where('immovable_id', $imm_id)->first();
+
+            if (!$contract) {
+                $contract = new Contract();
+                $contract->immovable_id = $imm_id;
+                $contract->save();
+
+                if ($contract) {
+                    $card_contract_exist = CardContract::where('card_id', $card_id)->where('contract_id', $contract->id)->first();
+                    if (!$card_contract_exist) {
+                        $card_contract = new CardContract();
+                        $card_contract->card_id = $card_id;
+                        $card_contract->contract_id = $contract->id;
+                        $card_contract->save();
+                    } else {
+                        echo "ID катки та договору вже використувуються<br>";
+
+                    }
+                } else {
+                    echo "Договір не був створений<br>";
+                }
             }
         }
-    }
-
-    public function fresh_contract($developer, $imm_id)
-    {
-        $contract = Contract::where([
-            'immovable_id' => $imm_id,
-            'dev_company_id' => $developer->id,
-        ])->first();
-
-        if ($contract)
-            return false;
-        else
-            return true;
     }
 }

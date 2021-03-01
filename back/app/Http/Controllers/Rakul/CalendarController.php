@@ -7,7 +7,6 @@ use App\Models\Contract;
 use App\Models\Room;
 use App\Models\Time;
 use App\Models\WorkDay;
-use App\Nova\DevCompany;
 use Illuminate\Http\Request;
 
 class CalendarController extends BaseController
@@ -42,7 +41,6 @@ class CalendarController extends BaseController
         $times = Time::where('active', true)->pluck('time')->toArray();
         $time_length = count($times);
         $current_date = date('d.m.Y');
-        $current_date = "01.03.2021";////////////////////DEL ME/////////////////////////
         $current_date = strtotime($current_date);
 
         foreach ($contracts as $key => $contract) {
