@@ -42,6 +42,7 @@ class CardController extends BaseController
 
         $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date)->get();
 
+
         foreach ($cards as $key => $card) {
             if (in_array($card->date_time->format('H:i'), $times)) {
                 $time_height = array_search($card->date_time->format('H:i'), $times);
