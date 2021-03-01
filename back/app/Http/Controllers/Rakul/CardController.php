@@ -68,8 +68,15 @@ class CardController extends BaseController
      * */
     public function show($id)
     {
-        dd('show');
+        $card = Card::find($id);
 
+        if (!$card) {
+            return $this->sendError("Картка по ID $id відсутня");
+        }
+        $contracts = $card->contracts;
+        dd($contracts);
+
+        dd($id, $card);
     }
 
     /*

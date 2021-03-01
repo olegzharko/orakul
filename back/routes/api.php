@@ -31,7 +31,6 @@ Route::post('login', [PassportAuthController::class, 'login']);
 
 Route::group(['prefix' => 'local'], function () {
     Route::get('calendar', [CalendarController::class, 'calendar']);
-    Route::get('import', [CalendarController::class, 'import']);
     Route::resource('cards', CardController::class);
     Route::get('global_text', [TextController::class, 'global_text']);
 });
