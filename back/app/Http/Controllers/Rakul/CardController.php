@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Card;
+use App\Models\CardClient;
 use App\Models\ClientType;
 use App\Models\ContractType;
 use App\Models\DevCompany;
@@ -69,15 +70,52 @@ class CardController extends BaseController
      * */
     public function show($id)
     {
-        $card = Card::find($id);
+        $card = Card::select(
+            'id',
+            'room_id',
+            'date_time',
+            'notary_id',
+            'dev_company_id',
+            'dev_representative_id',
+            'dev_manager_id',
+        )->find($id);
 
         if (!$card) {
             return $this->sendError("Картка по ID $id відсутня");
         }
-        $contracts = $card->contracts;
-        dd($contracts);
+        $contracts = $card->has_contracts;
 
-        dd($id, $card);
+        $result_contract = [];
+        if (count($contracts)) {
+            foreach ($contracts as $key => $contr) {
+                $result_contract[$key]['contract_type_id'] = $contr->contract->type_id;
+                $result_contract[$key]['developer_building_id'] = $contr->contract->immovable->developer_building_id;
+                $result_contract[$key]['immovable_type_id'] = $contr->contract->immovable->immovable_type_id;
+                $result_contract[$key]['immovable_number'] = $contr->contract->immovable->immovable_number;
+                $result_contract[$key]['bank'] = $contr->contract->bank;
+                $result_contract[$key]['proxy'] = $contr->contract->proxy;
+            }
+        }
+
+        $clients = CardClient::where('card_id', $card->id)->get();
+
+        $result_clients = [];
+        if ($clients) {
+            foreach ($clients as $key => $cl) {
+                $result_clients[$key]['full_name'] = $cl->full_name;
+                $result_clients[$key]['phone'] = $cl->phone;
+            }
+        }
+
+        unset($card['has_contracts']);
+        $result = [
+            'card' => $card,
+            'contract' => $result_contract,
+            'clients' => $result_clients,
+        ];
+
+        return $this->sendResponse($result, 'Карта з ID:' . $id);
+
     }
 
     /*
@@ -294,20 +332,21 @@ class CardController extends BaseController
         if ($card->notary)
             $dev_representative_short = $this->get_short_name($card->dev_representative);
 
-        $contracts = $card->contracts;
+        $contracts = $card->has_contracts;
         $reader = [];
         $delivery = [];
-        foreach ($contracts as $contract) {
-            $reader = $contract->contract->reader;
+        foreach ($contracts as $contr) {
+            $reader = $contr->contract->reader;
             if ($reader) {
                 $reader[] = $this->get_short_name($reader);
             }
 
-            $delivery = $contract->contract->delivery;
+            $delivery = $contr->contract->delivery;
             if ($delivery) {
                 $delivery[] = $this->get_short_name($delivery);
             }
         }
+
         $result = [
             'notary' => $notary_short,
             'developer_assistant' => $dev_representative_short,

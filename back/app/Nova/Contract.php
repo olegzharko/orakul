@@ -78,10 +78,13 @@ class Contract extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Тип договору', 'contract_type', 'App\Nova\ContractType')->onlyOnForms()->nullable(),
             BelongsTo::make('Видавач', 'reader', 'App\Nova\Staff')->onlyOnForms()->nullable(),
             BelongsTo::make('Читач', 'delivery', 'App\Nova\Staff')->onlyOnForms()->nullable(),
             BelongsTo::make('Шаблон договору', 'contract_template', 'App\Nova\ContractTemplate')->nullable(),
             BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->nullable(),
+            Toggle::make('Банк', 'bank'),
+            Toggle::make('Довіреність', 'proxy'),
             DateTime::make('Дата підписання договору', 'sign_date'),
             Toggle::make('Оброблений', 'ready'),
             BelongsToMany::make('Клієнти', 'clients', 'App\Nova\Client'),

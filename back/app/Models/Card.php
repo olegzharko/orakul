@@ -43,7 +43,7 @@ class Card extends Model
         return $this->belongsTo(Client::class, 'dev_representative_id');
     }
 
-    public function contracts()
+    public function has_contracts()
     {
         return $this->hasMany(CardContract::class, 'card_id');
     }
