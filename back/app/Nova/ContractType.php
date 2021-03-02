@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\Text;
+use Naif\Toggle\Toggle;
 
 class ContractType extends Resource
 {
@@ -44,6 +45,7 @@ class ContractType extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Ключ', 'alias'),
             Text::make('Тип договору', 'title'),
+            Toggle::make('Активний', 'active'),
         ];
     }
 

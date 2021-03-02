@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Factory\ConvertController;
 use App\Models\Card;
 use App\Models\CardClient;
+use App\Models\CardContract;
 use App\Models\ClientType;
 use App\Models\ContractType;
 use App\Models\DevCompany;
@@ -12,6 +14,7 @@ use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Contract;
 use App\Models\Time;
 use App\Models\Room;
 use Validator;
@@ -22,12 +25,14 @@ class CardController extends BaseController
     public $immovable;
     public $contract;
     public $client;
+    public $convert;
 
     public function __construct()
     {
         $this->immovable = new ImmovableController();
         $this->contract = new ContractController();
         $this->client = new ClientController();
+        $this->convert = new ConvertController();
     }
     /*
      * GET
@@ -83,34 +88,61 @@ class CardController extends BaseController
         if (!$card) {
             return $this->sendError("Картка по ID $id відсутня");
         }
+
+        if ($card->date_time) {
+            $card->date = $card->date_time->format('H:i');
+            $card->time = $card->date_time->format('d.m');
+            unset($card->date_time);
+        } else {
+            $card->date = null;
+            $card->time = null;
+        }
+
         $contracts = $card->has_contracts;
 
-        $result_contract = [];
+        $result_contract_immovable = [];
+        $clients_id_by_contract = [];
         if (count($contracts)) {
             foreach ($contracts as $key => $contr) {
-                $result_contract[$key]['contract_type_id'] = $contr->contract->type_id;
-                $result_contract[$key]['developer_building_id'] = $contr->contract->immovable->developer_building_id;
-                $result_contract[$key]['immovable_type_id'] = $contr->contract->immovable->immovable_type_id;
-                $result_contract[$key]['immovable_number'] = $contr->contract->immovable->immovable_number;
-                $result_contract[$key]['bank'] = $contr->contract->bank;
-                $result_contract[$key]['proxy'] = $contr->contract->proxy;
+                // в договорі може бути відсутній клієнт, так як на рецепції утворюється котороткий запис ПІБ та номер телефону
+                if ($contr->contract->clients) {
+                    $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());;
+                }
+                $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->type_id;
+                $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
+                $result_contract_immovable[$key]['immovable_id'] = $contr->contract->immovable->id;
+                $result_contract_immovable[$key]['imm_type_id'] = $contr->contract->immovable->immovable_type_id;
+                $result_contract_immovable[$key]['imm_number'] = $contr->contract->immovable->immovable_number;
+                $result_contract_immovable[$key]['bank'] = $contr->contract->bank;
+                $result_contract_immovable[$key]['proxy'] = $contr->contract->proxy;
             }
         }
 
-        $clients = CardClient::where('card_id', $card->id)->get();
-
         $result_clients = [];
-        if ($clients) {
-            foreach ($clients as $key => $cl) {
-                $result_clients[$key]['full_name'] = $cl->full_name;
-                $result_clients[$key]['phone'] = $cl->phone;
+        $clients_id_by_contract = array_unique($clients_id_by_contract);
+        if ($clients_id_by_contract) {
+            $clients = Client::find($clients_id_by_contract);
+            if ($clients) {
+                foreach ($clients as $key => $cl) {
+                    $result_clients[$key]['full_name'] = $this->convert->get_full_name($cl);
+                    $result_clients[$key]['phone'] = $cl->phone;
+                }
+            }
+        } else {
+            $clients = CardClient::where('card_id', $card->id)->get();
+
+            if ($clients) {
+                foreach ($clients as $key => $cl) {
+                    $result_clients[$key]['full_name'] = $cl->full_name;
+                    $result_clients[$key]['phone'] = $cl->phone;
+                }
             }
         }
 
         unset($card['has_contracts']);
         $result = [
             'card' => $card,
-            'contract' => $result_contract,
+            'immovables' => $result_contract_immovable,
             'clients' => $result_clients,
         ];
 
@@ -147,9 +179,31 @@ class CardController extends BaseController
     /*
      * PUT with param
      * */
-    public function update(Request $request, $id)
+    public function update(Request $r, $id)
     {
-        dd('update');
+        if ($card = Card::where('id', $id)->where('generator_step', false)->first()) {
+
+            $validator = $this->validate_data($r);
+
+            if (count($validator->errors()->getMessages())) {
+                return $this->sendError('Форма передає помилкові дані', $validator->errors());
+            }
+
+            $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
+            if (count($contracts_id)) {
+                $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id');
+                $updated_immovables_id = $this->immovable->get_updated_immovables_id($r);
+
+                // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
+                $immovables_id_for_delete = array_values(array_diff($old_immovables_id, $updated_immovables_id));
+                $this->immovable->delete_immovables_by_id($immovables_id_for_delete);
+                $this->contract->delete_contracts_by_immovables_id($immovables_id_for_delete);
+            }
+            return $this->sendResponse('', 'Запис оновлено успішно');
+        } else {
+            return $this->sendError('Не вдалось знайки картку');
+        }
+
 
     }
 
@@ -158,9 +212,26 @@ class CardController extends BaseController
      * */
     public function destroy($id)
     {
+        if (Card::where('id', $id)->where('generator_step', false)->first()) {
+            $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
+            if (count($contracts_id)) {
+                $immovables_id_for_delete = Contract::whereIn('id', $contracts_id)->pluck('immovable_id');
 
+                // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
+                $this->immovable->delete_immovables_by_id($immovables_id_for_delete);
+                $this->contract->delete_contracts_by_immovables_id($immovables_id_for_delete);
+            }
+            Card::where('id', $id)->delete();
+            return $this->sendResponse('', 'Картка та належні дані по нерухомісті та договрам були успішно видалені');
+        } else {
+            if (Card::where('id', $id)->where('generator_step', true)->first()) {
+                return $this->sendError('Картка передана в обробку менеджеру');
+            }
+            if (!Card::find($id)) {
+                return $this->sendError('Не вдалось знайки картку');
+            }
+        }
     }
-
 
     public function validate_data($r)
     {
@@ -258,11 +329,13 @@ class CardController extends BaseController
                     $immovalbe_validator = Validator::make([
                         'contract_type_id' => $imm['contract_type_id'],
                         'building_id' => $imm['building_id'],
+                        'immovable_id' => $imm['immovable_id'],
                         'imm_type_id' => $imm['imm_type_id'],
                         'imm_num' => $imm['imm_num'],
                     ], [
                         'contract_type_id' => ['required', 'numeric'],
                         'building_id' => ['required', 'numeric'],
+                        'immovable_id' => ['numeric', 'nullable'],
                         'imm_type_id' => ['required', 'numeric'],
                         'imm_num' => ['required', 'numeric'],
                     ], [
@@ -272,6 +345,7 @@ class CardController extends BaseController
                         'imm_num.required' => 'Необхідно вказати номер нерухомості',
                         'contract_type_id.numeric' => 'ID типу договору має бути у числовому форматі',
                         'building_id.numeric' => 'ID будівлі забудовника має бути у числовому форматі',
+                        'immovable_id.numeric' => 'ID нерухомості має бути у числовому форматі',
                         'imm_type_id.numeric' => 'ID типу нерухомості має бути у числовому форматі',
                         'imm_num.numeric' => 'Номер нерухомості має бути у числовому форматі',
                     ]);
@@ -328,9 +402,9 @@ class CardController extends BaseController
         $dev_representative_short = "**";
 
         if ($card->notary)
-            $notary_short = $this->get_short_name($card->notary);
+            $notary_short = $this->convert->get_short_name($card->notary);
         if ($card->notary)
-            $dev_representative_short = $this->get_short_name($card->dev_representative);
+            $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
 
         $contracts = $card->has_contracts;
         $reader = [];
@@ -338,31 +412,22 @@ class CardController extends BaseController
         foreach ($contracts as $contr) {
             $reader = $contr->contract->reader;
             if ($reader) {
-                $reader[] = $this->get_short_name($reader);
+                $reader[] = $this->convert->get_short_name($reader);
             }
 
             $delivery = $contr->contract->delivery;
             if ($delivery) {
-                $delivery[] = $this->get_short_name($delivery);
+                $delivery[] = $this->convert->get_short_name($delivery);
             }
         }
 
         $result = [
             'notary' => $notary_short,
-            'developer_assistant' => $dev_representative_short,
+            'dev_representative_id' => $dev_representative_short,
             'notary_assistant_reader' => $reader ? implode("-", $reader) : $reader_short,
             'notary_assistant_giver' => $delivery ? implode("-", $delivery) : $giver_short,
         ];
 
         return $result;
-    }
-
-    public function get_short_name($person)
-    {
-        $str = null;
-
-        if ($person)
-            $str = mb_substr($person->name_n, 0, 1) . mb_substr($person->patronymic_n, 0, 1);
-        return $str;
     }
 }

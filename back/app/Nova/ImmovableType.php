@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class ImmovableType extends Resource
@@ -60,6 +61,7 @@ class ImmovableType extends Resource
             Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:immovable_types,title_n')->updateRules('unique:immovable_types,title_n,{{resourceId}}'),
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:immovable_types,title_r')->updateRules('unique:immovable_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:immovable_types,title_z')->updateRules('unique:immovable_types,title_z,{{resourceId}}'),
+            Toggle::make('Додати на форму календаря', 'form'),
         ];
     }
 

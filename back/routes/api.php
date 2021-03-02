@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\Rakul\CalendarController;
 use App\Http\Controllers\Rakul\CardController;
 use App\Http\Controllers\Rakul\TextController;
+use App\Http\Controllers\Rakul\FilterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,9 @@ Route::group(['prefix' => 'local'], function () {
     Route::get('calendar', [CalendarController::class, 'calendar']);
     Route::resource('cards', CardController::class);
     Route::get('global_text', [TextController::class, 'global_text']);
+    Route::group(['prefix' => 'filter'], function () {
+        Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
+    });
 });
 
 Route::middleware('auth:api')->group(function () {
@@ -40,4 +44,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('global_text', [TextController::class, 'global_text']);
     Route::resource('posts', PostController::class);
     Route::resource('cards', CardController::class);
+
+    Route::group(['prefix' => 'filter'], function () {
+        Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
+    });
 });

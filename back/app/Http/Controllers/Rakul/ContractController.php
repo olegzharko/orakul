@@ -37,4 +37,9 @@ class ContractController extends Controller
             }
         }
     }
+
+    public function delete_contracts_by_immovables_id($immovables_id)
+    {
+        Contract::whereIn('immovable_id', $immovables_id)->delete();
+    }
 }

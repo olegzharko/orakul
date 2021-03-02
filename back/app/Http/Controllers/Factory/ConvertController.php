@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Factory;
 
-use Illuminate\Http\Request;
-
 use App\Models\DayConvert;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
 use App\Models\YearConvert;
-use App\Nova\NumericConvert;
 
 class ConvertController extends GeneratorController
 {
@@ -466,6 +463,37 @@ class ConvertController extends GeneratorController
             $document->str_month = MonthConvert::convert($num_month);
             $document->str_year = YearConvert::convert($num_year);
         }
+    }
+
+    public function get_short_name($person)
+    {
+        $str = null;
+
+        if ($person)
+            $str = mb_substr($person->name_n, 0, 1) . mb_substr($person->patronymic_n, 0, 1);
+        return $str;
+    }
+
+    public function get_full_name($person)
+    {
+        $str = null;
+
+        if ($person) {
+            $str = $person->surname_n . " " . $person->name_n . " " . $person->patronymic_n;
+        }
+
+        return $str;
+    }
+
+    public function get_full_address($building)
+    {
+        $str = null;
+
+        if ($building) {
+            $str = $building->address_type->short . " " .  $building->title . " " . $building->number;
+        }
+
+        return $str;
     }
 }
 

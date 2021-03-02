@@ -18,9 +18,7 @@ class ImmovableController extends BaseController
         $immovables = $r['immovables'];
 
         foreach ($immovables as $value) {
-            if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
-                $imm_id[] =  $this->create($value, $r);
-            }
+            $imm_id[] =  $this->create($value, $r);
         }
 
         return $imm_id;
@@ -28,17 +26,43 @@ class ImmovableController extends BaseController
 
     public function create($value, $r)
     {
-        $imm = $this->imm_exist($value);
+        if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
 
-        if (!$imm) {
-            $imm = new Immovable();
-            $imm->developer_building_id = $value->building_id;
-            $imm->immovable_type_id = $value->imm_type_id;
-            $imm->immovable_number = $value->imm_num;
-            $imm->save();
+            $imm = $this->imm_exist($value);
+
+            if (!$imm) {
+                $imm = new Immovable();
+                $imm->developer_building_id = $value->building_id;
+                $imm->immovable_type_id = $value->imm_type_id;
+                $imm->immovable_number = $value->imm_num;
+                $imm->save();
+            }
         }
 
         return $imm->id;
+    }
+
+    public function edit_immovables($immovables_id, $r)
+    {
+        $imm_id = [];
+        $immovables = $r['immovables'];
+
+        foreach ($immovables as $value) {
+            if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
+                $imm_id[] =  $this->update($immovables_id, $value, $r);
+            }
+        }
+
+        return $imm_id;
+    }
+
+    public function update($value)
+    {
+        $imm = Immovable::where('id', $value->immovable_id)->update([
+            'developer_building_id' => $value->building_id,
+            'immovable_type_id' => $value->imm_type_id,
+            'immovable_number' => $value->imm_num,
+        ]);
     }
 
     public function imm_exist($value)
@@ -49,8 +73,9 @@ class ImmovableController extends BaseController
             'immovable_number' => $value->imm_num,
         ])->first();
 
-        if ($imm)
+        if ($imm) {
             return $imm;
+        }
         else {
             return false;
         }
@@ -79,5 +104,27 @@ class ImmovableController extends BaseController
         } else {
             return true;
         }
+    }
+
+    public function get_updated_immovables_id($r)
+    {
+        $updated_immovables_id = [];
+
+        $immovables = $r['immovables'];
+        foreach ($immovables as $value) {
+            if ($value->immovable_id == null) {
+                $this->create($value, $r);
+            } else {
+                $updated_immovables_id[] = $value->immovable_id;
+                $this->update($value, $r);
+            }
+        }
+
+        return $updated_immovables_id;
+    }
+
+    public function delete_immovables_by_id($immovables_id)
+    {
+        Immovable::whereIn('id', $immovables_id)->delete();
     }
 }

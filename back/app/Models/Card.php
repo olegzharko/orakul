@@ -64,4 +64,16 @@ class Card extends Model
 
         return $card->id;
     }
+
+    public function update_card($id, $r)
+    {
+        Card::where('id', $id)->update([
+            'notary_id' => $r['notary_id'],
+            'room_id' => $r['room_id'],
+            'date_time' => new \DateTime($r['date_time']),
+            'dev_company_id' => $r['dev_company_id'],
+            'dev_representative_id' => $r['dev_representative_id'],
+            'dev_manager_id' => $r['dev_manager_id'],
+        ]);
+    }
 }
