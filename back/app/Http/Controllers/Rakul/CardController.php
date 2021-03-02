@@ -203,8 +203,6 @@ class CardController extends BaseController
         } else {
             return $this->sendError('Не вдалось знайки картку');
         }
-
-
     }
 
     /*
