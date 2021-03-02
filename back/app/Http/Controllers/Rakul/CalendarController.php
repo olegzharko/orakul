@@ -23,7 +23,7 @@ class CalendarController extends BaseController
     }
     public function calendar()
     {
-        $rooms = Room::select('id as room_id', 'title', 'sort_order')->where('active', true)->get();
+        $rooms = Room::select('id', 'title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
         $work_days_and_date = $this->get_day_and_date();
         $form_date = $this->form_data();
@@ -75,7 +75,7 @@ class CalendarController extends BaseController
 
         $notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
         foreach ($notary as $key => $value) {
-            $convert_notary[$key]['notary_id'] = $value->id;
+            $convert_notary[$key]['id'] = $value->id;
             $convert_notary[$key]['title'] = $this->convert->get_short_name($value);
         }
 
