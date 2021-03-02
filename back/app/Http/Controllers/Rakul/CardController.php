@@ -191,7 +191,7 @@ class CardController extends BaseController
 
             $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
             if (count($contracts_id)) {
-                $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id');
+                $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id')->toArray();
                 $updated_immovables_id = $this->immovable->get_updated_immovables_id($r);
 
                 // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
