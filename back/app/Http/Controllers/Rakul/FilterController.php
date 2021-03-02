@@ -64,6 +64,6 @@ class FilterController extends BaseController
           'building' => $result_building,
         ];
 
-        return $this->sendResponse($result, 'Додаткова інформація по забудовнику ID' . $id);
+        return $this->sendResponse($result, 'Додаткова інформація по забудовнику ID: ' . $id);
     }
 }
