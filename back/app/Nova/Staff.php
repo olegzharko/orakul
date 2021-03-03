@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class Staff extends Resource
@@ -61,10 +62,14 @@ class Staff extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Тип співробітника', 'staff_type', 'App\Nova\StaffType'),
             Text::make('Прізвище', 'surname')->rules('required'),
             Text::make('Ім\'я', 'name')->rules('required'),
             Text::make('По батькові', 'patronymic')->rules('required'),
+            Toggle::make('Менеджер', 'manager'),
+            Toggle::make('Читач', 'reader'),
+            Toggle::make('Видавач', 'accompanying'),
+            Toggle::make('Реєстратор', 'registrar'),
+            Toggle::make('Писар', 'clerk'),
         ];
     }
 

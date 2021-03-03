@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'enable-existing-media' => false,
+    'enable-existing-media' => true,
 ];

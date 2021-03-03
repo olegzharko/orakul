@@ -2,20 +2,20 @@
 
 namespace App\Nova;
 
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Naif\Toggle\Toggle;
 
-class Card extends Resource
+class Slide extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Card::class;
+    public static $model = \App\Models\Slide::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -43,13 +43,8 @@ class Card extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            DateTime::make('Дата зустрічі', 'datetime')->timeFormat('HH:mm')->onlyOnForms(),
-            BelongsTo::make('Кімната', 'room', 'App\Nova\Room'),
-            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->nullable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->nullable(),
-            BelongsTo::make('Підписант', 'dev_representative', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Менеджер', 'manager', 'App\Nova\Client')->onlyOnForms()->nullable(),
-            BelongsTo::make('Місце складання договору', 'city', 'App\Nova\City')->onlyOnForms()->nullable(),
+            Images::make('Фото', 'path'),
+            Toggle::make('Активувати', 'active'),
         ];
     }
 

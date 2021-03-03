@@ -59,7 +59,7 @@ class CalendarController extends BaseController
 
     public function form_data()
     {
-        $result = [];
+        $result = null;
         $convert_developer = [];
         $convert_notary = [];
 

@@ -39,35 +39,17 @@ class CardController extends BaseController
      * */
     public function index()
     {
+        $result = null;
         $date = new \DateTime();
 
-        $result = [];
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
-        $time_length = count($times);
 
-        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date)->get();
+        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date)->where('cancelled', false)->get();
 
+        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
 
-        foreach ($cards as $key => $card) {
-            if (in_array($card->date_time->format('H:i'), $times)) {
-                $time_height = array_search($card->date_time->format('H:i'), $times);
-                $day_height = $this->count_days($card, $date);
-                $result[$key]['i'] = strval($card->id);
-                $result[$key]['x'] = array_search($card->room->id, $rooms);
-                if ($day_height)
-                    $result[$key]['y'] = $time_height + $time_length * $day_height;
-                else
-                    $result[$key]['y'] = $time_height;
-                $result[$key]['w'] = 1;
-                $result[$key]['h'] = 1;
-                $result[$key]['color'] = $card->dev_company->color;
-                $result[$key]['title'] = $this->get_card_title($card);
-                $result[$key]['short_info'] = $this->get_card_short_info($card);
-            }
-        }
-
-        return $this->sendResponse($result, 'Картки з договорами');
+        return $this->sendResponse($result, 'Усі картки з договорами');
     }
 
     /*
@@ -425,6 +407,32 @@ class CardController extends BaseController
             'notary_assistant_reader' => $reader ? implode("-", $reader) : $reader_short,
             'notary_assistant_giver' => $delivery ? implode("-", $delivery) : $giver_short,
         ];
+
+        return $result;
+    }
+
+    public function get_cards_in_calendar_format($cards, $rooms, $times, $date)
+    {
+        $result = [];
+        $time_length = count($times);
+
+        foreach ($cards as $key => $card) {
+            if (in_array($card->date_time->format('H:i'), $times)) {
+                $time_height = array_search($card->date_time->format('H:i'), $times);
+                $day_height = $this->count_days($card, $date);
+                $result[$key]['i'] = strval($card->id);
+                $result[$key]['x'] = array_search($card->room->id, $rooms);
+                if ($day_height)
+                    $result[$key]['y'] = $time_height + $time_length * $day_height;
+                else
+                    $result[$key]['y'] = $time_height;
+                $result[$key]['w'] = 1;
+                $result[$key]['h'] = 1;
+                $result[$key]['color'] = $card->dev_company->color;
+                $result[$key]['title'] = $this->get_card_title($card);
+                $result[$key]['short_info'] = $this->get_card_short_info($card);
+            }
+        }
 
         return $result;
     }

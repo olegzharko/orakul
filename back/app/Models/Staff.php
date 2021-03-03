@@ -15,10 +15,4 @@ class Staff extends Model implements Sortable
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
     ];
-
-    public function staff_type()
-    {
-        return $this->belongsTo(StaffType::class, 'staff_type_id');
-    }
-
 }

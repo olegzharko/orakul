@@ -9,6 +9,8 @@ class Card extends Model
 {
     use HasFactory;
 
+    protected $table = 'cards';
+
     protected $casts = [
         'date_time' => 'datetime',
     ];
@@ -48,9 +50,14 @@ class Card extends Model
         return $this->hasMany(CardContract::class, 'card_id');
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
     public static function new_card($r)
     {
-        $work_city = City::where('notary', 1)->first();
+        $work_city = \App\Nova\City::where('notary', 1)->first();
 
         $card = new Card();
         $card->notary_id = $r['notary_id'];
