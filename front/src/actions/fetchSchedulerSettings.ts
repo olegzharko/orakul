@@ -1,5 +1,5 @@
 import getCalendar from '../services/getCalendar';
-import { setSchedulerOptions, setIsLoading } from '../store/calendar/actions';
+import { setSchedulerOptions, setIsLoading } from '../store/scheduler/actions';
 
 const fetchSchedulerSettings = async (dispatch: any, token: string) => {
   dispatch(setIsLoading(true));

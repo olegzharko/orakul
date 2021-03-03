@@ -8,9 +8,9 @@ import { State } from '../../../../../../store/types';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state: any) => state.token.token);
+  const { token } = useSelector((state: State) => state.token);
   const { options, isLoading, appointments } = useSelector(
-    (state: State) => state.calendar
+    (state: State) => state.scheduler
   );
 
   useEffect(() => {

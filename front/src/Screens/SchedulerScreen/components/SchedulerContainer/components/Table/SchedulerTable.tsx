@@ -22,7 +22,11 @@ const SchedulerTable = () => {
   } = useSchedulerTable();
 
   if (shouldLoad) {
-    return <Loader />;
+    return (
+      <div className="scheduler">
+        <Loader />
+      </div>
+    );
   }
 
   return (

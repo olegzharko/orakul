@@ -6,6 +6,9 @@ $border: 1px solid #E5E5E5;
 $border_primary: 1px solid $primary;
 $border_hard: 2px solid black;
 
+// Transitions
+$transition_default: all .4s ease-in;
+
 @mixin primary_title {
   font-family: 'Playfair Display', serif;
   font-style: normal;

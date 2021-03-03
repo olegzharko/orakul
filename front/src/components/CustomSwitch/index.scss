@@ -1,0 +1,23 @@
+@import '../../constants.scss';
+
+.MuiFormControlLabel-root {
+  margin: 0!important;
+}
+
+.MuiTypography-root.MuiFormControlLabel-label {
+  @include form_text;
+}
+
+.MuiSwitch-colorPrimary.Mui-checked {
+  color: $primary!important;
+}
+
+.MuiSwitch-colorPrimary.Mui-checked + .MuiSwitch-track {
+  background-color: $primary!important;
+}
+
+.custom-switch {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

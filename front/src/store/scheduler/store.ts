@@ -1,15 +1,17 @@
 import { REDUX_ACTION } from '../types';
 import { ACTIONS } from './actions';
 
-export type CalendarState = {
+export type SchedulerState = {
   options: any;
-  isLoading: boolean;
   appointments: any;
+  developersInfo: any;
+  isLoading: boolean;
 };
 
-const initialState: CalendarState = {
+const initialState: SchedulerState = {
   options: null,
   appointments: [],
+  developersInfo: {},
   isLoading: false,
 };
 
@@ -19,6 +21,8 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
       return { ...state, options: action.payload };
     case ACTIONS.SET_APPOINTMENTS:
       return { ...state, appointments: action.payload };
+    case ACTIONS.SET_DEVELOPERS_INFO:
+      return { ...state, developersInfo: action.payload };
     case ACTIONS.SET_IS_LOADING:
       return { ...state, isLoading: action.payload };
     default:

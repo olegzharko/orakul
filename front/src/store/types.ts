@@ -1,4 +1,4 @@
-import { CalendarState } from './calendar/store';
+import { SchedulerState } from './scheduler/store';
 import { TokenState } from './token/store';
 
 export type REDUX_ACTION = {
@@ -7,6 +7,6 @@ export type REDUX_ACTION = {
 };
 
 export type State = {
-  calendar: CalendarState;
+  scheduler: SchedulerState;
   token: TokenState;
 };
