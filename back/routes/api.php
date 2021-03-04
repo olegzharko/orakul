@@ -9,6 +9,7 @@ use App\Http\Controllers\Rakul\CardController;
 use App\Http\Controllers\Rakul\TextController;
 use App\Http\Controllers\Rakul\FilterController;
 use \App\Http\Controllers\Rakul\SlidesController;
+use \App\Http\Controllers\Rakul\SearchController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,6 +51,7 @@ Route::group(['prefix' => 'local'], function () {
         Route::get('contract_type/{type}', [FilterController::class, 'cards_by_contract_type']);
         Route::get('preliminary', [FilterController::class, 'cards_with_preliminary_contract']);
         Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
+        Route::get('search', [SearchController::class, 'search']);
     });
 });
 
@@ -68,5 +70,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('contract_type/{type}', [FilterController::class, 'cards_by_contract_type']);
         Route::get('preliminary', [FilterController::class, 'cards_with_preliminary_contract']);
         Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
+        Route::post('search', [SearchController::class, 'search']);
     });
 });
