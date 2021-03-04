@@ -96,8 +96,6 @@ class CalendarController extends BaseController
             'notary' => $convert_notary,
         ];
 
-        dd($result);
-
         return $result;
     }
 }
