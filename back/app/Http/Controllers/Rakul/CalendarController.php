@@ -61,9 +61,15 @@ class CalendarController extends BaseController
     {
         $result = null;
         $convert_developer = [];
+        $convert_contract_type = [];
+        $convert_immovable_type = [];
         $convert_notary = [];
 
-        $contract_type = ContractType::select('id', 'alias')->where('active', true)->pluck('id', 'alias');
+        $contract_type = ContractType::select('id', 'title')->where('active', true)->get();
+        foreach ($contract_type as $key => $value) {
+            $convert_contract_type[$key]['id'] = $value->id;
+            $convert_contract_type[$key]['title'] = $value->title;
+        }
 
         $developer = DevCompany::where('active', true)->get();
         foreach ($developer as $key => $value) {
@@ -71,7 +77,11 @@ class CalendarController extends BaseController
             $convert_developer[$key]['title'] = $value->title;
         }
 
-        $immovable_type = ImmovableType::where('form', true)->pluck('id', 'alias');
+        $immovable_type = ImmovableType::select('id', 'short')->where('form', true)->get();
+        foreach ($immovable_type as $key => $value) {
+            $convert_immovable_type[$key]['id'] = $value->id;
+            $convert_immovable_type[$key]['title'] = $value->short;
+        }
 
         $notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
         foreach ($notary as $key => $value) {
@@ -80,11 +90,13 @@ class CalendarController extends BaseController
         }
 
         $result = [
-            'contract_type' => $contract_type,
+            'contract_type' => $convert_contract_type,
             'developer' => $convert_developer,
-            'immovable_type' => $immovable_type,
+            'immovable_type' => $convert_immovable_type,
             'notary' => $convert_notary,
         ];
+
+        dd($result);
 
         return $result;
     }
