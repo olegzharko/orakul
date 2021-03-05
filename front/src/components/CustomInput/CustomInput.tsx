@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
-import React, { memo } from 'react';
+import React, { useState } from 'react';
 import './index.scss';
 import { TextField } from '@material-ui/core';
 
@@ -17,7 +17,10 @@ const CustomInput = ({
   value = '',
   type = 'string',
 }: Props) => {
+  const [text, setText] = useState(value);
+
   const handleChange = (event: any) => {
+    setText(event.target.value);
     onChange(event.target.value);
   };
 
@@ -25,7 +28,7 @@ const CustomInput = ({
     <TextField
       label={label}
       variant="outlined"
-      value={value}
+      value={text}
       onChange={handleChange}
       type={type}
       className="custom-input"
@@ -33,4 +36,4 @@ const CustomInput = ({
   );
 };
 
-export default memo(CustomInput);
+export default CustomInput;

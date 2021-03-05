@@ -1,61 +1,90 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { SelectItem, ImmovableItem } from '../../useForm';
 
 export type Props = {
-  initValues: ImmovableItem | {};
+  item: ImmovableItem;
   contracts: SelectItem[];
   immovableTypes: SelectItem[];
   building: SelectItem[];
   index: number;
-  onChange: (index: number, value: any) => void;
+  onChange: (index: number, value: ImmovableItem, input?: boolean) => void;
+  onAddClick: () => void;
 };
 
-export const useImmovable = ({ index, onChange }: Props) => {
+export const useImmovable = ({ index, onChange, item }: Props) => {
   // State
-  const [selectedContract] = useState<any>();
-  const [selectedBuilding] = useState();
-  const [selectedImmovableType] = useState();
-  const [bank] = useState(false);
-  const [proxy] = useState(false);
-  const [immNum] = useState();
+  const [selectedContract] = useState(item.contract_type_id || undefined);
+  const [selectedBuilding] = useState(item.building_id || undefined);
+  const [selectedImmovableType] = useState(item.imm_type_id || undefined);
+  const [bank] = useState(item.bank || false);
+  const [proxy] = useState(item.proxy || false);
+  const [immNum] = useState(item.imm_num || undefined);
 
   // onChange functions
-  const onContractChange = (id: number) => {
-    onChange(index, {
-      contract_type_id: id,
-    });
-  };
+  const onContractChange = useCallback(
+    (id: number) => {
+      onChange(index, {
+        ...item,
+        contract_type_id: id,
+      });
+    },
+    [onChange, index, item]
+  );
 
-  const onBuildingChange = (id: string) => {
-    onChange(index, {
-      building_id: +id,
-    });
-  };
+  const onBuildingChange = useCallback(
+    (id: string) => {
+      onChange(index, {
+        ...item,
+        building_id: +id,
+      });
+    },
+    [onChange, index, item]
+  );
 
-  const onImmovableTypeChange = (id: number) => {
-    onChange(index, {
-      immovable_id: id,
-    });
-  };
+  const onImmovableTypeChange = useCallback(
+    (id: number) => {
+      onChange(index, {
+        ...item,
+        imm_type_id: id,
+      });
+    },
+    [onChange, index, item]
+  );
 
-  const onBankChange = (val: boolean) => {
-    onChange(index, {
-      bank: val,
-    });
-  };
+  const onBankChange = useCallback(
+    (val: boolean) => {
+      onChange(index, {
+        ...item,
+        bank: val,
+      });
+    },
+    [onChange, index, item]
+  );
 
-  const onProxyChange = (val: boolean) => {
-    onChange(index, {
-      proxy: val,
-    });
-  };
+  const onProxyChange = useCallback(
+    (val: boolean) => {
+      onChange(index, {
+        ...item,
+        proxy: val,
+      });
+    },
+    [onChange, index, item]
+  );
 
-  const onImmNumChange = (val: string) => {
-    onChange(index, {
-      imm_num: +val,
-    });
-  };
+  const onImmNumChange = useCallback(
+    (val: string) => {
+      onChange(
+        index,
+        {
+          ...item,
+          imm_num: +val,
+        },
+        true
+      );
+    },
+    [onChange, index, item]
+  );
 
   return {
     selectedContract,

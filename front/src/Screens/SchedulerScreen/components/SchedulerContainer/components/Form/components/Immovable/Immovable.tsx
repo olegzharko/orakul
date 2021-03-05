@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { memo } from 'react';
 import RadioButtonsGroup from '../../../../../../../../components/RadioButtonsGroup';
 import CustomSelect from '../../../../../../../../components/CustomSelect';
 import CustomSwitch from '../../../../../../../../components/CustomSwitch/CustomSwitch';
@@ -16,7 +16,7 @@ const Immovable = (props: Props) => {
       <RadioButtonsGroup
         buttons={props.contracts}
         onChange={meta.onContractChange}
-        initial={meta.selectedContract}
+        selected={meta.selectedContract}
       />
 
       <div className="mv12">
@@ -31,7 +31,7 @@ const Immovable = (props: Props) => {
       <RadioButtonsGroup
         buttons={props.immovableTypes}
         onChange={meta.onImmovableTypeChange}
-        initial={meta.selectedImmovableType}
+        selected={meta.selectedImmovableType}
       />
 
       <div className="mv12">
@@ -59,11 +59,11 @@ const Immovable = (props: Props) => {
         />
 
         <div style={{ marginLeft: '12px' }}>
-          <AddFormButton onClick={() => console.log('click')} />
+          <AddFormButton onClick={props.onAddClick} />
         </div>
       </div>
     </>
   );
 };
 
-export default Immovable;
+export default memo(Immovable);

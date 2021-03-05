@@ -13,7 +13,6 @@ export type SelectItem = {
 export type ImmovableItem = {
   contract_type_id: number | null;
   building_id: number | null;
-  immovable_id: number | null;
   imm_type_id: number | null;
   imm_num: number | null;
   bank: boolean;
@@ -22,15 +21,14 @@ export type ImmovableItem = {
 
 export type ImmovableItemKey = keyof ImmovableItem;
 
-// const immovableItem: ImmovableItem = {
-//   contract_type_id: null,
-//   building_id: null,
-//   immovable_id: null,
-//   imm_type_id: null,
-//   imm_num: null,
-//   bank: false,
-//   proxy: false,
-// };
+const immovableItem: ImmovableItem = {
+  contract_type_id: null,
+  building_id: null,
+  imm_type_id: null,
+  imm_num: null,
+  bank: false,
+  proxy: false,
+};
 
 type ImmovableItems = ImmovableItem[];
 
@@ -46,8 +44,7 @@ export const useForm = () => {
   const [devCompanyId, setDevCompanyId] = useState();
   const [devRepresentativeId, setDevRepresentativeId] = useState();
   const [devManagerId, setDevManagerId] = useState();
-  const [initImmovables] = useState<ImmovableItems | object[]>([{}]);
-  const [immovables, setImmovables] = useState<ImmovableItems>([]);
+  const [immovables, setImmovables] = useState<ImmovableItems>([immovableItem]);
 
   // Form Memo Values
   const shouldLoad = useMemo(() => isLoading || !options, [options, isLoading]);
@@ -112,14 +109,21 @@ export const useForm = () => {
   );
 
   const onImmovablesChange = useCallback(
-    (index: number, value: any) => {
-      immovables[index] = { ...immovables[index], ...value };
-      setImmovables([...immovables]);
+    (index: number, value: any, input: boolean = false) => {
+      immovables[index] = value;
+      if (input) {
+        setImmovables(immovables);
+      } else {
+        setImmovables([...immovables]);
+      }
     },
     [immovables]
   );
 
-  console.log(immovables);
+  const onAddImmovables = useCallback(() => {
+    immovables.push(immovableItem);
+    setImmovables([...immovables]);
+  }, [immovables]);
 
   return {
     shouldLoad,
@@ -128,7 +132,7 @@ export const useForm = () => {
     developers,
     manager,
     building,
-    initImmovables,
+    immovables,
     contracts,
     immovableTypes,
     selectedNotaryId: notary,
@@ -140,5 +144,6 @@ export const useForm = () => {
     onRepresentativeChange,
     onManagerChange,
     onImmovablesChange,
+    onAddImmovables,
   };
 };

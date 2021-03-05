@@ -12,11 +12,11 @@ type Button = {
 type Props = {
   buttons: Button[];
   onChange: (id: number) => void;
-  initial?: number;
+  selected?: number;
 };
 
-export const RadioButtonsGroup = ({ buttons, onChange, initial }: Props) => {
-  const [selected, setSelected] = useState(initial || buttons[0].id);
+export const RadioButtonsGroup = ({ buttons, onChange, selected }: Props) => {
+  const [selectedValue, setSelected] = useState(selected || buttons[0].id);
 
   const handleChange = (id: number) => {
     setSelected(id);
@@ -32,7 +32,7 @@ export const RadioButtonsGroup = ({ buttons, onChange, initial }: Props) => {
             id={title}
             name={title}
             value={id}
-            checked={selected === id}
+            checked={selectedValue === id}
             onChange={() => handleChange(id)}
             className="input"
           />

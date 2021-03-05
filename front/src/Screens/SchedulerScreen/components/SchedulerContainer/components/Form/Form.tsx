@@ -33,7 +33,7 @@ const SchedulerForm = () => {
           <RadioButtonsGroup
             buttons={meta.notaries}
             onChange={meta.onNotaryChange}
-            initial={meta.selectedNotaryId}
+            selected={meta.selectedNotaryId}
           />
         </div>
 
@@ -65,19 +65,18 @@ const SchedulerForm = () => {
         </div>
 
         <div className="mv12">
-          {meta.initImmovables.map(
-            (item: ImmovableItem | object, index: number) => (
-              <Immovable
-                initValues={item}
-                contracts={meta.contracts}
-                immovableTypes={meta.immovableTypes}
-                building={meta.building}
-                index={index}
-                key={uuidv4()}
-                onChange={meta.onImmovablesChange}
-              />
-            )
-          )}
+          {meta.immovables.map((item: ImmovableItem, index: number) => (
+            <Immovable
+              item={item}
+              contracts={meta.contracts}
+              immovableTypes={meta.immovableTypes}
+              building={meta.building}
+              index={index}
+              key={uuidv4()}
+              onChange={meta.onImmovablesChange}
+              onAddClick={meta.onAddImmovables}
+            />
+          ))}
         </div>
 
         <div className="mv12">

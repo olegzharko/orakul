@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState, memo } from 'react';
 import { FormControlLabel, Switch } from '@material-ui/core';
 import './index.scss';
 
@@ -11,7 +11,10 @@ type Props = {
 };
 
 const CustomSwitch = ({ label, onChange, selected }: Props) => {
+  const [value, setValue] = useState(selected || false);
+
   const handleChange = (event: any) => {
+    setValue(event.target.checked);
     onChange(event.target.checked);
   };
 
@@ -19,7 +22,7 @@ const CustomSwitch = ({ label, onChange, selected }: Props) => {
     <FormControlLabel
       control={(
         <Switch
-          checked={selected}
+          checked={value}
           onChange={handleChange}
           name="checkedB"
           color="primary"
@@ -32,4 +35,4 @@ const CustomSwitch = ({ label, onChange, selected }: Props) => {
   );
 };
 
-export default CustomSwitch;
+export default memo(CustomSwitch);
