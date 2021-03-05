@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unused-prop-types */
 import React, { useState, memo } from 'react';
@@ -11,10 +12,11 @@ type Button = {
 type Props = {
   buttons: Button[];
   onChange: (id: number) => void;
+  initial?: number;
 };
 
-export const RadioButtonsGroup = ({ buttons, onChange }: Props) => {
-  const [selected, setSelected] = useState(buttons[0].id);
+export const RadioButtonsGroup = ({ buttons, onChange, initial }: Props) => {
+  const [selected, setSelected] = useState(initial || buttons[0].id);
 
   const handleChange = (id: number) => {
     setSelected(id);

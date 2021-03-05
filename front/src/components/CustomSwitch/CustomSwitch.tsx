@@ -1,28 +1,25 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
+import React from 'react';
 import { FormControlLabel, Switch } from '@material-ui/core';
 import './index.scss';
-import React, { useState } from 'react';
 
 type Props = {
   label: string
-  onChange: (val: boolean) => void
+  onChange: (val: boolean) => void;
+  selected: boolean;
 };
 
-const CustomSwitch = ({ label, onChange }: Props) => {
-  const [checked, setChecked] = useState<boolean>(false);
-
+const CustomSwitch = ({ label, onChange, selected }: Props) => {
   const handleChange = (event: any) => {
-    const val = event.target.checked;
-    setChecked(val);
-    onChange(val);
+    onChange(event.target.checked);
   };
 
   return (
     <FormControlLabel
       control={(
         <Switch
-          checked={checked}
+          checked={selected}
           onChange={handleChange}
           name="checkedB"
           color="primary"

@@ -1,32 +1,36 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
-import React, { useState } from 'react';
+import React, { memo } from 'react';
 import './index.scss';
 import { TextField } from '@material-ui/core';
 
 type Props = {
   label: string;
   onChange: (value: string) => void;
+  value?: string | number;
+  type?: string;
 };
 
-const CustomInput = ({ label, onChange }: Props) => {
-  const [text, setText] = useState<string>('');
-
+const CustomInput = ({
+  label,
+  onChange,
+  value = '',
+  type = 'string',
+}: Props) => {
   const handleChange = (event: any) => {
-    const { value } = event.target;
-    setText(value);
-    onChange(value);
+    onChange(event.target.value);
   };
 
   return (
     <TextField
       label={label}
       variant="outlined"
-      value={text}
+      value={value}
       onChange={handleChange}
+      type={type}
       className="custom-input"
     />
   );
 };
 
-export default CustomInput;
+export default memo(CustomInput);

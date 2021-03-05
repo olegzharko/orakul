@@ -21,6 +21,9 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "import/prefer-default-export": "off",
+        "no-unused-expressions": "off",
+        "react/require-default-props": "off",
         "react/no-unused-prop-types": "off",
         "jsx-a11y/label-has-associated-control": "off",
         "camelcase": "off",

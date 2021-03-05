@@ -16,14 +16,12 @@ type Props = {
   onChange: (value: string) => void;
   data: Data[];
   label: string;
+  selectedValue?: string;
 };
 
-const CustomSelect = ({ onChange, data, label }: Props) => {
-  const [selectedValue, setSelectedValue] = useState('');
-
+const CustomSelect = ({ onChange, data, label, selectedValue }: Props) => {
   const handleChange = (event: any) => {
     const val = event.target.value;
-    setSelectedValue(val);
     onChange(val);
   };
 
@@ -31,7 +29,7 @@ const CustomSelect = ({ onChange, data, label }: Props) => {
     <FormControl variant="outlined" className="customSelect">
       <InputLabel>{label}</InputLabel>
       <Select
-        value={selectedValue}
+        value={selectedValue || ''}
         onChange={handleChange}
         disabled={data.length === 0}
       >

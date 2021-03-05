@@ -1,10 +1,38 @@
 /* eslint-disable arrow-body-style */
-/* eslint-disable import/prefer-default-export */
 import { useMemo, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../../../../../store/types';
 import fetchDeveloperInfo from '../../../../../../actions/fetchDeveloperInfo';
 import { setDevelopersInfo } from '../../../../../../store/scheduler/actions';
+
+export type SelectItem = {
+  id: number;
+  title: string;
+};
+
+export type ImmovableItem = {
+  contract_type_id: number | null;
+  building_id: number | null;
+  immovable_id: number | null;
+  imm_type_id: number | null;
+  imm_num: number | null;
+  bank: boolean;
+  proxy: boolean;
+};
+
+export type ImmovableItemKey = keyof ImmovableItem;
+
+// const immovableItem: ImmovableItem = {
+//   contract_type_id: null,
+//   building_id: null,
+//   immovable_id: null,
+//   imm_type_id: null,
+//   imm_num: null,
+//   bank: false,
+//   proxy: false,
+// };
+
+type ImmovableItems = ImmovableItem[];
 
 export const useForm = () => {
   const dispatch = useDispatch();
@@ -13,14 +41,19 @@ export const useForm = () => {
     (state: State) => state.scheduler
   );
 
-  const [responseData, setResponseData] = useState({
-    notary_id: null,
-    dev_company_id: null,
-    dev_representative_id: null,
-    developer_manager_id: null,
-  });
+  // Form State
+  const [notary, setNotary] = useState();
+  const [devCompanyId, setDevCompanyId] = useState();
+  const [devRepresentativeId, setDevRepresentativeId] = useState();
+  const [devManagerId, setDevManagerId] = useState();
+  const [initImmovables] = useState<ImmovableItems | object[]>([{}]);
+  const [immovables, setImmovables] = useState<ImmovableItems>([]);
+
+  // Form Memo Values
+  const shouldLoad = useMemo(() => isLoading || !options, [options, isLoading]);
 
   const notaries = useMemo(() => options?.form_data.notary, [options]);
+
   const developers = useMemo(() => options?.form_data.developer, [options]);
 
   const manager = useMemo(() => developersInfo?.manager || [], [
@@ -35,22 +68,23 @@ export const useForm = () => {
     developersInfo,
   ]);
 
+  const contracts = useMemo(() => options?.form_data.contract_type, [options]);
+
+  const immovableTypes = useMemo(() => options?.form_data.immovable_type, [
+    options,
+  ]);
+
+  // Form onChange functions
   const onNotaryChange = useCallback(
     (value) => {
-      setResponseData({
-        ...responseData,
-        notary_id: value,
-      });
+      setNotary(value);
     },
-    [responseData]
+    [notary]
   );
 
   const onDeveloperChange = useCallback(
     (value) => {
-      setResponseData({
-        ...responseData,
-        dev_company_id: value,
-      });
+      setDevCompanyId(value);
 
       if (!value) {
         dispatch(setDevelopersInfo({}));
@@ -60,32 +94,32 @@ export const useForm = () => {
         fetchDeveloperInfo(dispatch, token, value);
       }
     },
-    [token, responseData]
+    [token, devCompanyId]
   );
 
   const onRepresentativeChange = useCallback(
     (value) => {
-      setResponseData({
-        ...responseData,
-        dev_representative_id: value,
-      });
+      setDevRepresentativeId(value);
     },
-    [responseData]
+    [devRepresentativeId]
   );
 
   const onManagerChange = useCallback(
     (value) => {
-      setResponseData({
-        ...responseData,
-        developer_manager_id: value,
-      });
+      setDevManagerId(value);
     },
-    [responseData]
+    [devManagerId]
   );
 
-  console.log(responseData);
+  const onImmovablesChange = useCallback(
+    (index: number, value: any) => {
+      immovables[index] = { ...immovables[index], ...value };
+      setImmovables([...immovables]);
+    },
+    [immovables]
+  );
 
-  const shouldLoad = useMemo(() => isLoading || !options, [options, isLoading]);
+  console.log(immovables);
 
   return {
     shouldLoad,
@@ -94,9 +128,17 @@ export const useForm = () => {
     developers,
     manager,
     building,
+    initImmovables,
+    contracts,
+    immovableTypes,
+    selectedNotaryId: notary,
+    selectedDeveloperId: devCompanyId,
+    selectedDevRepresentativeId: devRepresentativeId,
+    selecedDevManagerId: devManagerId,
     onNotaryChange,
     onDeveloperChange,
     onRepresentativeChange,
     onManagerChange,
+    onImmovablesChange,
   };
 };

@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import RadioButtonsGroup from '../../../../../../components/RadioButtonsGroup';
 import CustomSelect from '../../../../../../components/CustomSelect';
 import Immovable from './components/Immovable';
 import './index.scss';
 import Clients from './components/Clients/Clients';
 import PrimaryButton from '../../../../../../components/PrimaryButton';
-import { useForm } from './useForm';
+import { ImmovableItem, useForm } from './useForm';
 import Loader from '../../../../../../components/Loader/Loader';
 
 const SchedulerForm = () => {
@@ -32,6 +33,7 @@ const SchedulerForm = () => {
           <RadioButtonsGroup
             buttons={meta.notaries}
             onChange={meta.onNotaryChange}
+            initial={meta.selectedNotaryId}
           />
         </div>
 
@@ -40,6 +42,7 @@ const SchedulerForm = () => {
             label="Забудовник"
             data={meta.developers}
             onChange={meta.onDeveloperChange}
+            selectedValue={meta.selectedDeveloperId}
           />
         </div>
 
@@ -48,6 +51,7 @@ const SchedulerForm = () => {
             onChange={meta.onRepresentativeChange}
             data={meta.representative}
             label="Підписант"
+            selectedValue={meta.selectedDevRepresentativeId}
           />
         </div>
 
@@ -56,11 +60,24 @@ const SchedulerForm = () => {
             onChange={meta.onManagerChange}
             data={meta.manager}
             label="Менеджер"
+            selectedValue={meta.selecedDevManagerId}
           />
         </div>
 
         <div className="mv12">
-          <Immovable />
+          {meta.initImmovables.map(
+            (item: ImmovableItem | object, index: number) => (
+              <Immovable
+                initValues={item}
+                contracts={meta.contracts}
+                immovableTypes={meta.immovableTypes}
+                building={meta.building}
+                index={index}
+                key={uuidv4()}
+                onChange={meta.onImmovablesChange}
+              />
+            )
+          )}
         </div>
 
         <div className="mv12">
