@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unused-prop-types */
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import './index.scss';
 
 type Button = {
@@ -11,15 +11,24 @@ type Button = {
 
 type Props = {
   buttons: Button[];
+  unicId: string;
   onChange: (id: number) => void;
   selected?: number;
 };
 
-export const RadioButtonsGroup = ({ buttons, onChange, selected }: Props) => {
-  const [selectedValue, setSelected] = useState(selected || buttons[0].id);
+export const RadioButtonsGroup = ({
+  buttons,
+  onChange,
+  selected,
+  unicId,
+}: Props) => {
+  const [selectedValue, setSelectedValue] = useState(selected || buttons[0].id);
+
+  useEffect(() => {
+    setSelectedValue(selected || buttons[0].id);
+  }, [selected]);
 
   const handleChange = (id: number) => {
-    setSelected(id);
     onChange(id);
   };
 
@@ -29,14 +38,13 @@ export const RadioButtonsGroup = ({ buttons, onChange, selected }: Props) => {
         <div className="radio-buttons-group__element">
           <input
             type="radio"
-            id={title}
-            name={title}
+            id={unicId + title}
             value={id}
             checked={selectedValue === id}
             onChange={() => handleChange(id)}
             className="input"
           />
-          <label htmlFor={title} className="label">
+          <label htmlFor={unicId + title} className="label">
             {title}
           </label>
         </div>

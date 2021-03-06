@@ -1,13 +1,14 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { memo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import RadioButtonsGroup from '../../../../../../components/RadioButtonsGroup';
 import CustomSelect from '../../../../../../components/CustomSelect';
-import Immovable from './components/Immovable';
 import './index.scss';
 import Clients from './components/Clients/Clients';
 import PrimaryButton from '../../../../../../components/PrimaryButton';
-import { ImmovableItem, useForm } from './useForm';
 import Loader from '../../../../../../components/Loader/Loader';
+import ImmovableContainer from './components/ImmovableContainer';
+import { useForm } from './useForm';
 
 const SchedulerForm = () => {
   const meta = useForm();
@@ -26,7 +27,12 @@ const SchedulerForm = () => {
       <div className="schedulerForm__forms">
         <div className="schedulerForm__header">
           <p className="title">Новий запис</p>
-          <img src="/icons/clear.svg" alt="clear icon" className="clear-icon" />
+          <img
+            src="/icons/clear.svg"
+            alt="clear icon"
+            className="clear-icon"
+            onClick={meta.onClearAll}
+          />
         </div>
 
         <div className="mv12">
@@ -34,6 +40,7 @@ const SchedulerForm = () => {
             buttons={meta.notaries}
             onChange={meta.onNotaryChange}
             selected={meta.selectedNotaryId}
+            unicId="notaries"
           />
         </div>
 
@@ -64,24 +71,17 @@ const SchedulerForm = () => {
           />
         </div>
 
-        <div className="mv12">
-          {meta.immovables.map((item: ImmovableItem, index: number) => (
-            <Immovable
-              item={item}
-              contracts={meta.contracts}
-              immovableTypes={meta.immovableTypes}
-              building={meta.building}
-              index={index}
-              key={uuidv4()}
-              onChange={meta.onImmovablesChange}
-              onAddClick={meta.onAddImmovables}
-            />
-          ))}
-        </div>
+        <ImmovableContainer
+          immovables={meta.immovables}
+          onChange={meta.onImmovablesChange}
+          onAdd={meta.onAddImmovables}
+        />
 
-        <div className="mv12">
-          <Clients />
-        </div>
+        <Clients
+          clients={meta.clients}
+          onChange={meta.onClientsChange}
+          onAdd={meta.onAddClients}
+        />
 
         <div className="mv12">
           <PrimaryButton

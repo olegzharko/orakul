@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { TextField } from '@material-ui/core';
 
@@ -18,6 +18,10 @@ const CustomInput = ({
   type = 'string',
 }: Props) => {
   const [text, setText] = useState(value);
+
+  useEffect(() => {
+    setText(value);
+  }, [value]);
 
   const handleChange = (event: any) => {
     setText(event.target.value);

@@ -1,22 +1,37 @@
-import * as React from 'react';
+/* eslint-disable react/destructuring-assignment */
+import React, { memo } from 'react';
 import AddFormButton from '../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../components/CustomInput/CustomInput';
+import { Props, useClients } from './useClients';
 
-const Clients = () => (
-  <>
-    <CustomInput label="ПІБ" onChange={(val) => console.log(val)} />
+const Clients = (props: Props) => {
+  const meta = useClients(props);
 
-    <div className="mv12 df-jc-sb">
-      <CustomInput
-        label="Номер телефону"
-        onChange={(val) => console.log(val)}
-      />
+  return (
+    <div className="mv12">
+      {props.clients.map((item, index) => (
+        <>
+          <CustomInput
+            label="ПІБ"
+            value={item.full_name}
+            onChange={(val) => meta.onNameChange(index, val)}
+          />
 
-      <div style={{ marginLeft: '12px' }}>
-        <AddFormButton onClick={() => console.log('click')} />
-      </div>
+          <div className="mv12 df-jc-sb">
+            <CustomInput
+              label="Номер телефону"
+              value={item.phone}
+              onChange={(val) => meta.onPhoneChange(index, val)}
+            />
+
+            <div style={{ marginLeft: '12px' }}>
+              <AddFormButton onClick={props.onAdd} />
+            </div>
+          </div>
+        </>
+      ))}
     </div>
-  </>
-);
+  );
+};
 
-export default Clients;
+export default memo(Clients);

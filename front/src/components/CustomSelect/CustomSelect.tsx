@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-unused-vars */
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import './index.scss';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -21,6 +21,10 @@ type Props = {
 
 const CustomSelect = ({ onChange, data, label, selectedValue }: Props) => {
   const [selected, setSelected] = useState(selectedValue || '');
+
+  useEffect(() => {
+    setSelected(selectedValue || '');
+  }, [selectedValue]);
 
   const handleChange = (event: any) => {
     const val = event.target.value;
