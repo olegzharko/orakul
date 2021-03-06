@@ -10,6 +10,9 @@ use App\Http\Controllers\Rakul\TextController;
 use App\Http\Controllers\Rakul\FilterController;
 use \App\Http\Controllers\Rakul\SlidesController;
 use \App\Http\Controllers\Rakul\SearchController;
+use \App\Http\Controllers\Rakul\SortController;
+use \App\Http\Controllers\Rakul\ManagerController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,20 +41,20 @@ Route::post('password/update', [PassportAuthController::class, 'password_update'
 
 
 Route::group(['prefix' => 'local'], function () {
-    Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
+    Route::get('global_text', [TextController::class, 'global_text']);
     Route::get('logout', [PassportAuthController::class, 'logout']);
+    Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('calendar', [CalendarController::class, 'calendar']);
     Route::resource('cards', CardController::class);
-    Route::get('global_text', [TextController::class, 'global_text']);
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
-        Route::get('total', [CardController::class, 'index']);
-        Route::get('ready', [FilterController::class, 'cards_ready']);
-        Route::get('contract_type/{type}', [FilterController::class, 'cards_by_contract_type']);
-        Route::get('preliminary', [FilterController::class, 'cards_with_preliminary_contract']);
-        Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
-        Route::get('search', [SearchController::class, 'search']);
+        Route::get('total', [ManagerController::class, 'total_cards']);
+        Route::get('ready', [ManagerController::class, 'ready_cards']);
+        Route::get('contract_type/{type}/{page}', [ManagerController::class, 'cards_by_contract_type']);
+        Route::get('cancelled/{page}', [ManagerController::class, 'cancelled_cards']);
+        Route::post('search', [SearchController::class, 'search']);
+        Route::post('sort/{page}', [SortController::class, 'sort']);
     });
 });
 
@@ -65,11 +68,11 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
-        Route::get('total', [CardController::class, 'index']);
-        Route::get('ready', [FilterController::class, 'cards_ready']);
-        Route::get('contract_type/{type}', [FilterController::class, 'cards_by_contract_type']);
-        Route::get('preliminary', [FilterController::class, 'cards_with_preliminary_contract']);
-        Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
+        Route::get('total', [ManagerController::class, 'total_cards']);
+        Route::get('ready', [ManagerController::class, 'ready_cards']);
+        Route::get('contract_type/{type}/{page}', [ManagerController::class, 'cards_by_contract_type']);
+        Route::get('cancelled/{page}', [ManagerController::class, 'cancelled_cards']);
         Route::post('search', [SearchController::class, 'search']);
+        Route::post('sort/{page}', [SortController::class, 'sort']);
     });
 });

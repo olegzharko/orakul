@@ -12,6 +12,7 @@ use App\Models\ContractType;
 use App\Models\DevCompany;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
+use App\Models\WorkDay;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Contract;
@@ -34,6 +35,7 @@ class CardController extends BaseController
         $this->client = new ClientController();
         $this->convert = new ConvertController();
     }
+
     /*
      * GET
      * */
@@ -49,7 +51,7 @@ class CardController extends BaseController
 
         $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
 
-        return $this->sendResponse($result, 'Усі картки з договорами');
+        return $this->sendResponse($result, 'Картки з договорами');
     }
 
     /*
@@ -435,5 +437,38 @@ class CardController extends BaseController
         }
 
         return $result;
+    }
+
+    public function get_cards_in_generator_format($cards)
+    {
+        $group = [];
+        $result = [];
+        $week = WorkDay::pluck('title', 'num');
+        $i = 0;
+        foreach ($cards as $key => $card) {
+            $result['id'] = $card->id;
+            $result['color'] = $card->dev_company->color;
+            $result['title'] = $this->get_card_title($card);
+            $result['short_info'] = $this->get_card_short_info($card);
+            $result['instructions'] = $this->get_card_instructions($card);
+
+            if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
+                $group[$i]['cards'][] = $result;
+            } else {
+                $i++;
+                $group[$i] = [];
+                $group[$i]['day'] = $week[$card->date_time->format('w')];
+                $group[$i]['date'] = $card->date_time->format('d.m.');
+                $group[$i]['cards'] = [];
+                $group[$i]['cards'][] = $result;
+            }
+        }
+
+        return $group;
+    }
+
+    public function get_card_instructions($card)
+    {
+        return ['Паспорт', 'ІПН', 'Стать покупця'];
     }
 }

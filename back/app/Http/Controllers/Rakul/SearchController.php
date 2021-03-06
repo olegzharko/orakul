@@ -36,29 +36,32 @@ class SearchController extends BaseController
         }
 
         $text = $r->text;
+        $page = $r->page;
 
-        $result = $this->get_query_to_cards($text);
+        $result = $this->get_query_to_cards($text, $page);
 
-        dd($result);
-
-        return $this->sendResponse($result, 'За ключовими словами було знайдено наступне');
+        return $this->sendResponse($result, 'Для сторінки ' . $page . ', за ключовими словами: ' . $text . ', було знайдено наступне');
     }
 
     public function validate_data($r)
     {
         $validator = Validator::make([
             'text' => $r['text'],
+            'page' => $r['page'],
         ], [
             'text' => ['required', 'string'],
+            'page' => ['required', 'string'],
         ], [
             'text.required' => 'Необхідно передати дані в параметрі text',
-            'text.string' => 'Необхідно передати ID менеджера забудовника в числовому форматі',
+            'text.string' => 'Тип данних для поля text - string',
+            'page.required' => 'Необхідно передати дані в параметрі page',
+            'page.string' => 'Необхідно передати slug сторінки з якої робиться пошук',
         ]);
 
         return $validator;
     }
 
-    public function get_query_to_cards($text)
+    public function get_query_to_cards($text, $page)
     {
         $result = null;
         $date = new \DateTime();
@@ -112,7 +115,12 @@ class SearchController extends BaseController
 
         $cards = $this->search_text_in_query($query, $text);
 
-        $result = $this->card->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+        if ($page == 'calendar') {
+            $result = $this->card->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+        }
+        elseif ($page == 'generator') {
+            $result = $this->card->get_cards_in_generator_format($cards);
+        }
 
         return $result;
     }
