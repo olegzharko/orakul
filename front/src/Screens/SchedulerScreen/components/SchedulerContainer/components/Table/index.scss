@@ -1,10 +1,7 @@
 @import '../../../../../../constants';
 
-body, p {
-  margin: 0;
-}
-
 .scheduler {
+  min-height: 100vh;
   background-color: #FAFAFA;
   border-radius: 10px;
   box-shadow: inset 0px -1px 0px #EEEEEE;
@@ -66,21 +63,13 @@ body, p {
       width: 100%;
     }
 
-    tr:nth-child(9n + 9) {
-      border-bottom: $border_hard;
-    }
-
     td {
       border-bottom: $border;
       border-right: $border;
       border-left: $border;
       height: 75px;
       box-sizing: border-box;
-      transition: all .4s ease-in-out;
-      -webkit-transition: all .4s ease-in-out;
-      -moz-transition: all .4s ease-in-out;
-      -ms-transition: all .4s ease-in-out;
-      -o-transition: all .4s ease-in-out;
+      transition: $transition_default;
       cursor: crosshair;
 
       &:hover {

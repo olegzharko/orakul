@@ -1,0 +1,20 @@
+@import '../../constants.scss';
+
+.primary-button {
+  @include form_text;
+  border-radius: 5px;
+  width: 100%;
+  color: white;
+  font-weight: bold;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $primary;
+  transition: $transition_default;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .7;
+  }
+}

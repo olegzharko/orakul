@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './index.scss';
 import { useApp } from './useApp';
 import SchedulerScreen from '../Screens/SchedulerScreen';
 

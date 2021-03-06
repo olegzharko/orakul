@@ -1,2 +1,27 @@
+// Colors
+$primary: #165153; 
+
+// Borders
 $border: 1px solid #E5E5E5;
+$border_primary: 1px solid $primary;
 $border_hard: 2px solid black;
+
+// Transitions
+$transition_default: all .4s ease-in;
+
+@mixin primary_title {
+  font-family: 'Playfair Display', serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+  color: $primary;
+}
+
+@mixin form_text {
+  font-family: 'Montserrat', serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+}

@@ -1,0 +1,21 @@
+button {
+  border: none;
+  outline: none;
+}
+
+body, p {
+  margin: 0;
+}
+
+.mv12 {
+  margin: 12px 0;
+}
+
+.df {
+  display: flex;
+}
+
+.df-jc-sb {
+  display: flex;
+  justify-content: space-between;
+}

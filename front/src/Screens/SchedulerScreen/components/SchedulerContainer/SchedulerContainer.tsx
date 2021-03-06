@@ -12,9 +12,7 @@ const SchedulerContainer = () => (
       <SchedulerFilter />
       <SchedulerTable />
     </div>
-    <div className="scheduler__form">
-      <SchedulerForm />
-    </div>
+    <SchedulerForm />
   </div>
 );
 
