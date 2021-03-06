@@ -1,10 +1,10 @@
 import { combineReducers, createStore } from 'redux';
 import token from './token/store';
-import calendar from './calendar/store';
+import scheduler from './scheduler/store';
 
 const reducer = combineReducers({
   token,
-  calendar,
+  scheduler,
 });
 
 export default createStore(reducer);
