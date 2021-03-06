@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Factory\DocumentController;
 use \App\Http\Controllers\Factory\GeneratorController;
 use \App\Http\Controllers\Factory\ConvertController;
+use \App\Http\Controllers\React\ViewController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,9 +16,7 @@ use \App\Http\Controllers\Factory\ConvertController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ViewController::class, 'index']);
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);
 Route::get('test_price_convert', [ConvertController::class, 'test_price_convert']);
