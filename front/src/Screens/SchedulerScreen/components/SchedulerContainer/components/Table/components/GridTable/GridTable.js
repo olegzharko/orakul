@@ -13,7 +13,7 @@ export default function GridTable({ raws, columns }) {
               {columns.map((day, cellIndex) => (
                 <GridTableCell
                   rawsQuantity={raws.length}
-                  row={rowIndex}
+                  raw={rowIndex}
                   cell={cellIndex}
                   key={uuidv4()}
                 />

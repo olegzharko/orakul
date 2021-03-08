@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { memo } from 'react';
-import RadioButtonsGroup from '../../../../../../components/RadioButtonsGroup';
-import CustomSelect from '../../../../../../components/CustomSelect';
+import RadioButtonsGroup from '../../../../../../../../components/RadioButtonsGroup';
+import CustomSelect from '../../../../../../../../components/CustomSelect';
 import './index.scss';
 import Clients from './components/Clients/Clients';
-import PrimaryButton from '../../../../../../components/PrimaryButton';
-import Loader from '../../../../../../components/Loader/Loader';
+import PrimaryButton from '../../../../../../../../components/PrimaryButton';
+import Loader from '../../../../../../../../components/Loader/Loader';
 import ImmovableContainer from './components/ImmovableContainer';
 import { useForm } from './useForm';
 
@@ -22,7 +22,7 @@ const SchedulerForm = () => {
   }
 
   return (
-    <div className="scheduler__form schedulerForm">
+    <div className="schedulerForm">
       <div className="schedulerForm__tabs" />
       <div className="schedulerForm__forms">
         <div className="schedulerForm__header">
@@ -84,10 +84,7 @@ const SchedulerForm = () => {
         />
 
         <div className="mv12">
-          <PrimaryButton
-            label="Створити"
-            onClick={() => console.log('click')}
-          />
+          <PrimaryButton label="Створити" onClick={meta.onFormCreate} />
         </div>
       </div>
     </div>

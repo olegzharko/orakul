@@ -5,6 +5,7 @@ export type SchedulerState = {
   options: any;
   appointments: any;
   developersInfo: any;
+  newSelectedAppointment: any;
   isLoading: boolean;
 };
 
@@ -12,6 +13,7 @@ const initialState: SchedulerState = {
   options: null,
   appointments: [],
   developersInfo: {},
+  newSelectedAppointment: null,
   isLoading: false,
 };
 
@@ -25,6 +27,8 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
       return { ...state, developersInfo: action.payload };
     case ACTIONS.SET_IS_LOADING:
       return { ...state, isLoading: action.payload };
+    case ACTIONS.SET_SELECTED_NEW_APPOINTMENT:
+      return { ...state, newSelectedAppointment: action.payload };
     default:
       return state;
   }

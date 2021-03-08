@@ -2,6 +2,7 @@ export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
   SET_APPOINTMENTS: 'SET_APPOINTMENTS',
   SET_DEVELOPERS_INFO: 'SET_DEVELOPERS_INFO',
+  SET_SELECTED_NEW_APPOINTMENT: 'SET_SELECTED_NEW_APPOINTMENT',
   SET_IS_LOADING: 'SET_IS_LOADING',
 };
 
@@ -17,6 +18,11 @@ export const setAppointments = (payload: any) => ({
 
 export const setDevelopersInfo = (payload: any) => ({
   type: ACTIONS.SET_DEVELOPERS_INFO,
+  payload,
+});
+
+export const setSelectedNewAppointment = (payload: any) => ({
+  type: ACTIONS.SET_SELECTED_NEW_APPOINTMENT,
   payload,
 });
 

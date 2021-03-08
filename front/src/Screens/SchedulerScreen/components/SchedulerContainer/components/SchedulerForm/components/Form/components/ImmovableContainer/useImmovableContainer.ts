@@ -1,7 +1,10 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../../../../../../store/types';
-import { ImmovableItem, ImmovableItems } from '../../types';
+import { State } from '../../../../../../../../../../store/types';
+import {
+  ImmovableItem,
+  ImmovableItems,
+} from '../../../../../../../../../../types';
 
 export type Props = {
   immovables: ImmovableItems;
