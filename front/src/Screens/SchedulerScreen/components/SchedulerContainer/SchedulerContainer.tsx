@@ -4,7 +4,7 @@ import './index.scss';
 // Components
 import SchedulerTable from './components/Table/SchedulerTable';
 import SchedulerFilter from './components/Filter';
-import SchedulerForm from './components/Form';
+import SchedulerForm from './components/SchedulerForm';
 
 const SchedulerContainer = () => (
   <div className="scheduler__container">

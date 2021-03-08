@@ -2,18 +2,26 @@
 /* eslint-disable arrow-body-style */
 import { useMemo, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../../../../../../store/types';
-import fetchDeveloperInfo from '../../../../../../actions/fetchDeveloperInfo';
-import { setDevelopersInfo } from '../../../../../../store/scheduler/actions';
+import { State } from '../../../../../../../../store/types';
+import fetchDeveloperInfo from '../../../../../../../../actions/fetchDeveloperInfo';
+import { setDevelopersInfo } from '../../../../../../../../store/scheduler/actions';
+import { clientItem, immovableItem } from './types';
+import createNewCard from '../../../../../../../../actions/createNewCard';
 import {
-  ClientItem, clientItem, immovableItem, ImmovableItems
-} from './types';
+  ClientItem,
+  ImmovableItem,
+  ImmovableItems,
+  NewCard
+} from '../../../../../../../../types';
 
 export const useForm = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.token);
   const { options, developersInfo, isLoading } = useSelector(
     (state: State) => state.scheduler
+  );
+  const newSelectedAppointment = useSelector(
+    (state: State) => state.scheduler.newSelectedAppointment
   );
 
   // Form State
@@ -89,12 +97,15 @@ export const useForm = () => {
     [clients]
   );
 
+  // Form CTA
+
   const onClearAll = useCallback(() => {
     setNotary(undefined);
     setDevCompanyId(undefined);
     setDevRepresentativeId(undefined);
     setDevManagerId(undefined);
     setImmovables([immovableItem]);
+    setClients([clientItem]);
   }, []);
 
   const onAddImmovables = useCallback(() => {
@@ -105,14 +116,39 @@ export const useForm = () => {
     setClients([...clients, clientItem]);
   }, [clients]);
 
-  console.log({
-    notary_id: notary,
-    dev_company_id: devCompanyId,
-    dev_representative_id: devRepresentativeId,
-    dev_manager_id: devManagerId,
+  const onFormCreate = useCallback(() => {
+    const date = newSelectedAppointment.date.split('.').reverse().join('.');
+    const date_time = `${newSelectedAppointment.year}.${date} ${newSelectedAppointment.time}`;
+
+    const formatImmovables = immovables.map((item: ImmovableItem) => ({
+      ...item,
+      contract_type_id: item.contract_type_id || options.form_data.immovable_type[0].id,
+      imm_type_id: item.imm_type_id || options.form_data.immovable_type[0].id,
+    }));
+
+    const data: NewCard = {
+      immovables: formatImmovables,
+      clients,
+      date_time,
+      dev_company_id: devCompanyId,
+      dev_representative_id: devRepresentativeId,
+      dev_manager_id: devManagerId,
+      room_id: newSelectedAppointment.room,
+      notary_id: notary,
+    };
+
+    if (token) {
+      createNewCard(dispatch, token, data);
+    }
+  }, [
+    devCompanyId,
+    devRepresentativeId,
+    devManagerId,
+    newSelectedAppointment,
+    notary,
     immovables,
     clients
-  });
+  ]);
 
   return {
     shouldLoad,
@@ -135,5 +171,6 @@ export const useForm = () => {
     onClientsChange,
     onAddClients,
     onClearAll,
+    onFormCreate,
   };
 };

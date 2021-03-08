@@ -1,7 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { memo } from 'react';
-import AddFormButton from '../../../../../../../../components/AddFormButton';
-import CustomInput from '../../../../../../../../components/CustomInput/CustomInput';
+import AddFormButton from '../../../../../../../../../../components/AddFormButton';
+import CustomInput from '../../../../../../../../../../components/CustomInput/CustomInput';
 import { Props, useClients } from './useClients';
 
 const Clients = (props: Props) => {

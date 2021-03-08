@@ -1,12 +1,15 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
 import React, { memo } from 'react';
-import AddFormButton from '../../../../../../../../components/AddFormButton';
-import CustomInput from '../../../../../../../../components/CustomInput';
-import CustomSelect from '../../../../../../../../components/CustomSelect';
-import CustomSwitch from '../../../../../../../../components/CustomSwitch';
-import RadioButtonsGroup from '../../../../../../../../components/RadioButtonsGroup';
-import { ImmovableItem, ImmovableItems } from '../../types';
+import AddFormButton from '../../../../../../../../../../components/AddFormButton';
+import CustomInput from '../../../../../../../../../../components/CustomInput';
+import CustomSelect from '../../../../../../../../../../components/CustomSelect';
+import CustomSwitch from '../../../../../../../../../../components/CustomSwitch';
+import RadioButtonsGroup from '../../../../../../../../../../components/RadioButtonsGroup';
+import {
+  ImmovableItems,
+  ImmovableItem,
+} from '../../../../../../../../../../types';
 import { useImmovableContainer } from './useImmovableContainer';
 
 type Props = {

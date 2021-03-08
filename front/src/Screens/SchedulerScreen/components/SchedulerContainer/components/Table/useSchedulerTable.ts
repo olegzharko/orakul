@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import fetchAppointments from '../../../../../../actions/fetchAppointments';
 import fetchSchedulerSettings from '../../../../../../actions/fetchSchedulerSettings';
 import { State } from '../../../../../../store/types';
+import formatAppointmentDate from './utils/formatAppointmentDate';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
@@ -42,11 +43,7 @@ export const useSchedulerTable = () => {
 
   const handleAppointmentDrag = useCallback(
     (appointment) => {
-      const { y } = appointment;
-      const { day } = days[Math.floor(y / hours.length)];
-      const { time } = hours[y % hours.length];
-      // eslint-disable-next-line no-console
-      console.log(day, time);
+      formatAppointmentDate(hours, rooms, days, appointment.y, appointment.x);
     },
     [hours, days]
   );

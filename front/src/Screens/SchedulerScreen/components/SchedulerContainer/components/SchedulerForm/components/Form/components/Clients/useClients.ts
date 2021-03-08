@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { ClientItem } from '../../types';
+import { ClientItem } from '../../../../../../../../../../types';
 
 export type Props = {
   clients: ClientItem[];
