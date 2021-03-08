@@ -48,6 +48,7 @@ class CalendarController extends BaseController
             $day_num = $date->format('w');
             if (isset($week[$day_num])) {
                 $result[$d]['day'] = $week[$date->format('w')];
+                $result[$d]['year'] = $week[$date->format('Y')];
                 $result[$d]['date'] = $date->format('d.m');
                 $d++;
             }
