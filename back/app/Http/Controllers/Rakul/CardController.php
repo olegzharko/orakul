@@ -245,13 +245,11 @@ class CardController extends BaseController
         ]);
 
 //        $r['immovables'] = json_decode($r['immovables']);
-        $r['immovables'] = $r['immovables'];
         if ($js_error = json_last_error()) {
             $validator->getMessageBag()->add('immovables', 'JSON Помилка №' . $js_error . ' - ' . json_last_error_msg());
         }
 
 //        $r['clients'] = json_decode($r['clients']);
-        $r['clients'] = $r['clients'];
         if ($js_error = json_last_error()) {
             $validator->getMessageBag()->add('clients', 'JSON Помилка №' . $js_error . ' - ' . json_last_error_msg());
         }
