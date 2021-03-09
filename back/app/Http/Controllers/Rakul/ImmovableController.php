@@ -44,6 +44,7 @@ class ImmovableController extends BaseController
                 $result['id'] = $imm->id;
                 $result['bank'] = $value['bank'];
                 $result['proxy'] = $value['proxy'];
+                $result['contract_type_id'] = $value['contract_type_id'];
             }
         }
 

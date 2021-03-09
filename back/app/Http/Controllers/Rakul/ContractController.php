@@ -20,6 +20,7 @@ class ContractController extends Controller
                 $contract->immovable_id = $imm['id'];
                 $contract->bank = $imm['bank'];
                 $contract->proxy = $imm['proxy'];
+                $contract->type_id = $imm['contract_type_id'];
                 $contract->save();
 
                 if ($contract) {
