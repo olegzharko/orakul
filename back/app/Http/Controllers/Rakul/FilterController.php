@@ -58,7 +58,8 @@ class FilterController extends BaseController
         $result_manager = null;
         $result_building = null;
 
-        $developer = DevCompany::find($id);
+        if (!$developer = DevCompany::find($id))
+            return $this->sendError("Забудовника з ID: $id не було знайдено!");
 
         if ($developer) {
             $cl_type_representative_id = ClientType::where('key', 'representative')->value('id');
