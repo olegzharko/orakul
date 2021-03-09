@@ -61,16 +61,22 @@ class FilterController extends BaseController
         $developer = DevCompany::find($id);
 
         if ($developer) {
-            $dev_representative_id = ClientType::where('key', 'representative')->value('id');
-            $dev_manager_id = ClientType::where('key', 'manager')->value('id');
+            $cl_type_representative_id = ClientType::where('key', 'representative')->value('id');
+            $cl_type_manager_id = ClientType::where('key', 'manager')->value('id');
 
-            $dev_representative = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')->where('type', $dev_representative_id)->get();
+            $dev_representative = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')
+                ->where('type', $cl_type_representative_id)
+                ->where('dev_company_id', $developer->id)
+                ->get();
             foreach ($dev_representative as $key => $representative) {
                 $result_representative[$key]['id'] = $representative->id;
                 $result_representative[$key]['title'] = $this->convert->get_full_name($representative);
             }
 
-            $dev_manager = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')->where('type', $dev_manager_id)->get();
+            $dev_manager = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')
+                ->where('type', $cl_type_manager_id)
+                ->where('dev_company_id', $developer->id)
+                ->get();
             foreach ($dev_manager as $key => $manager) {
                 $result_manager[$key]['id'] = $manager->id;
                 $result_manager[$key]['title'] = $this->convert->get_full_name($manager);
