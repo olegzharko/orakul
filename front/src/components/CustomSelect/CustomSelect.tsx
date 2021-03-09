@@ -16,7 +16,7 @@ type Props = {
   onChange: (value: string) => void;
   data: Data[];
   label: string;
-  selectedValue?: string | undefined | number;
+  selectedValue?: string | null | number;
 };
 
 const CustomSelect = ({ onChange, data, label, selectedValue }: Props) => {

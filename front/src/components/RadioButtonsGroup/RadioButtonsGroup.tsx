@@ -13,7 +13,7 @@ type Props = {
   buttons: Button[];
   unicId: string;
   onChange: (id: number) => void;
-  selected?: number;
+  selected?: number | null;
 };
 
 export const RadioButtonsGroup = ({

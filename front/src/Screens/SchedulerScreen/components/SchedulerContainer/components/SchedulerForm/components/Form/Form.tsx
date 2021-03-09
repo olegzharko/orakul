@@ -75,6 +75,7 @@ const SchedulerForm = () => {
           immovables={meta.immovables}
           onChange={meta.onImmovablesChange}
           onAdd={meta.onAddImmovables}
+          onRemove={meta.onRemoveImmovable}
         />
 
         <Clients
@@ -84,7 +85,11 @@ const SchedulerForm = () => {
         />
 
         <div className="mv12">
-          <PrimaryButton label="Створити" onClick={meta.onFormCreate} />
+          <PrimaryButton
+            label="Створити"
+            onClick={meta.onFormCreate}
+            disabled={!meta.activeAddButton}
+          />
         </div>
       </div>
     </div>

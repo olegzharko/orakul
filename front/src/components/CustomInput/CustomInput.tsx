@@ -7,7 +7,7 @@ import { TextField } from '@material-ui/core';
 type Props = {
   label: string;
   onChange: (value: string) => void;
-  value?: string | number;
+  value?: string | number | null;
   type?: string;
 };
 
@@ -17,10 +17,10 @@ const CustomInput = ({
   value = '',
   type = 'string',
 }: Props) => {
-  const [text, setText] = useState(value);
+  const [text, setText] = useState(value || '');
 
   useEffect(() => {
-    setText(value);
+    setText(value || '');
   }, [value]);
 
   const handleChange = (event: any) => {

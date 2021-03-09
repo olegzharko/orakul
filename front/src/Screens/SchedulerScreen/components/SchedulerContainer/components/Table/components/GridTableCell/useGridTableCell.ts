@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable operator-linebreak */
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
@@ -8,6 +10,7 @@ export type Props = {
   rawsQuantity: number;
   raw: number;
   cell: number;
+  selected: boolean;
 };
 
 export const useGridTableCell = ({ raw, cell }: Props) => {
@@ -20,7 +23,7 @@ export const useGridTableCell = ({ raw, cell }: Props) => {
 
   const onClick = useCallback(() => {
     const payload = formatAppointmentDate(hours, rooms, days, raw, cell);
-    dispatch(setSelectedNewAppointment(payload));
+    dispatch(setSelectedNewAppointment({ ...payload, raw, cell }));
   }, [hours, rooms, days, raw, cell]);
 
   return { onClick };

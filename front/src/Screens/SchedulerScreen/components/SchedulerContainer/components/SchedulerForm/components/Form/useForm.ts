@@ -4,7 +4,7 @@ import { useMemo, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
 import fetchDeveloperInfo from '../../../../../../../../actions/fetchDeveloperInfo';
-import { setDevelopersInfo } from '../../../../../../../../store/scheduler/actions';
+import { setDevelopersInfo, setSelectedNewAppointment } from '../../../../../../../../store/scheduler/actions';
 import { clientItem, immovableItem } from './types';
 import createNewCard from '../../../../../../../../actions/createNewCard';
 import {
@@ -25,10 +25,10 @@ export const useForm = () => {
   );
 
   // Form State
-  const [notary, setNotary] = useState<number>();
-  const [devCompanyId, setDevCompanyId] = useState();
-  const [devRepresentativeId, setDevRepresentativeId] = useState();
-  const [devManagerId, setDevManagerId] = useState();
+  const [notary, setNotary] = useState<number | null>(null);
+  const [devCompanyId, setDevCompanyId] = useState<number | null>(null);
+  const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
+  const [devManagerId, setDevManagerId] = useState<number | null>(null);
   const [immovables, setImmovables] = useState<ImmovableItems>([immovableItem]);
   const [clients, setClients] = useState<ClientItem[]>([clientItem]);
 
@@ -100,10 +100,10 @@ export const useForm = () => {
   // Form CTA
 
   const onClearAll = useCallback(() => {
-    setNotary(undefined);
-    setDevCompanyId(undefined);
-    setDevRepresentativeId(undefined);
-    setDevManagerId(undefined);
+    setNotary(null);
+    setDevCompanyId(null);
+    setDevRepresentativeId(null);
+    setDevManagerId(null);
     setImmovables([immovableItem]);
     setClients([clientItem]);
   }, []);
@@ -112,9 +112,19 @@ export const useForm = () => {
     setImmovables([...immovables, immovableItem]);
   }, [immovables]);
 
+  const onRemoveImmovable = useCallback((index: number) => {
+    setImmovables((prev) => prev.filter((item, mapIndex) => mapIndex !== index));
+  }, [immovables]);
+
   const onAddClients = useCallback(() => {
     setClients([...clients, clientItem]);
   }, [clients]);
+
+  const activeAddButton = useMemo(() => {
+    return Boolean(devCompanyId)
+    && immovables.length
+    && immovables.every((item: ImmovableItem) => item.building_id && item.imm_num);
+  }, [devCompanyId, immovables]);
 
   const onFormCreate = useCallback(() => {
     const date = newSelectedAppointment.date.split('.').reverse().join('.');
@@ -134,11 +144,17 @@ export const useForm = () => {
       dev_representative_id: devRepresentativeId,
       dev_manager_id: devManagerId,
       room_id: newSelectedAppointment.room,
-      notary_id: notary,
+      notary_id: notary || notaries[0].id,
     };
 
     if (token) {
-      createNewCard(dispatch, token, data);
+      createNewCard(dispatch, token, data)
+        .then(({ success }: any) => {
+          if (success) {
+            onClearAll();
+          }
+        });
+      dispatch(setSelectedNewAppointment(null));
     }
   }, [
     devCompanyId,
@@ -162,12 +178,14 @@ export const useForm = () => {
     selecedDevManagerId: devManagerId,
     immovables,
     clients,
+    activeAddButton,
     onNotaryChange,
     onDeveloperChange,
     onRepresentativeChange,
     onManagerChange,
     onImmovablesChange,
     onAddImmovables,
+    onRemoveImmovable,
     onClientsChange,
     onAddClients,
     onClearAll,
