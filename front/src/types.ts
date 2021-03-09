@@ -1,8 +1,8 @@
 export type ImmovableItem = {
-  contract_type_id: number | undefined;
-  building_id: number | undefined;
-  imm_type_id: number | undefined;
-  imm_num: number | undefined;
+  contract_type_id: number | null;
+  building_id: number | null;
+  imm_type_id: number | null;
+  imm_num: number | null;
   bank: boolean;
   proxy: boolean;
 };
@@ -15,17 +15,17 @@ export type SelectItem = {
 };
 
 export type ClientItem = {
-  phone: string;
-  full_name: string;
+  phone: string | null;
+  full_name: string | null;
 };
 
 export type NewCard = {
   immovables: ImmovableItems;
   clients: ClientItem[];
   date_time: string;
-  dev_company_id: number | undefined;
-  dev_representative_id: number | undefined;
-  dev_manager_id: number | undefined;
+  dev_company_id: number | null;
+  dev_representative_id: number | null;
+  dev_manager_id: number | null;
   room_id: number;
-  notary_id: number | undefined;
+  notary_id: number | null;
 };

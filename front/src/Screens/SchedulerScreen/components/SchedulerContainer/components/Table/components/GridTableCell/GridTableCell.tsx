@@ -10,7 +10,10 @@ const GridLayoutCell = (props: Props) => {
   return (
     <td
       onClick={onClick}
-      style={{ width: `calc(100% / ${props.rawsQuantity})` }}
+      style={{
+        width: `calc(100% / ${props.rawsQuantity})`,
+        backgroundColor: props.selected ? '#E5E5E5' : '',
+      }}
     />
   );
 };

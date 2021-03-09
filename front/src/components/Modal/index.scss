@@ -1,0 +1,23 @@
+@import '../../constants.scss';
+
+.modal-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .modal {
+    padding: 50px 80px;
+    border: none;
+    outline: none;
+    @include primary_title;
+    color: white;
+  }
+
+  .modal-success {
+    background-color: green;
+  }
+
+  .modal-failed {
+    background-color: red;
+  }
+}

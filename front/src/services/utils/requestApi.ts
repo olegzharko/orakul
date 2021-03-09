@@ -38,7 +38,7 @@ const requestApi = async (options: RequestOptions) => {
     );
   }
 
-  return json.data;
+  return json;
 };
 
 export default requestApi;

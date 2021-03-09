@@ -1,22 +1,15 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
 import React, { memo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import AddFormButton from '../../../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../components/CustomSelect';
 import CustomSwitch from '../../../../../../../../../../components/CustomSwitch';
 import RadioButtonsGroup from '../../../../../../../../../../components/RadioButtonsGroup';
-import {
-  ImmovableItems,
-  ImmovableItem,
-} from '../../../../../../../../../../types';
-import { useImmovableContainer } from './useImmovableContainer';
-
-type Props = {
-  onAdd: () => void;
-  immovables: ImmovableItems;
-  onChange: (index: number, value: ImmovableItem) => void;
-};
+import RemoveFormButton from '../../../../../../../../../../components/RemoveFormButton';
+import { ImmovableItem } from '../../../../../../../../../../types';
+import { useImmovableContainer, Props } from './useImmovableContainer';
 
 const ImmovableContainer = (props: Props) => {
   const meta = useImmovableContainer(props);
@@ -67,14 +60,21 @@ const ImmovableContainer = (props: Props) => {
             <CustomInput
               key="test"
               label="Номер приміщення"
-              type="number"
               onChange={(val) => meta.onImmNumChange(index, val)}
               value={item.imm_num}
             />
 
-            <div style={{ marginLeft: '12px' }}>
-              <AddFormButton onClick={props.onAdd} />
-            </div>
+            {props.immovables.length > 1 && (
+              <div style={{ marginLeft: '12px' }}>
+                <RemoveFormButton onClick={props.onRemove} index={index} />
+              </div>
+            )}
+
+            {index === props.immovables.length - 1 && (
+              <div style={{ marginLeft: '12px' }}>
+                <AddFormButton onClick={props.onAdd} />
+              </div>
+            )}
           </div>
         </>
       ))}

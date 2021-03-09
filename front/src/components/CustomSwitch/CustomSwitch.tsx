@@ -14,7 +14,7 @@ const CustomSwitch = ({ label, onChange, selected }: Props) => {
   const [value, setValue] = useState(selected || false);
 
   const handleChange = (event: any) => {
-    setValue(event.target.checked);
+    setValue(event.target.checked || false);
     onChange(event.target.checked);
   };
 

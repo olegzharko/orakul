@@ -5,10 +5,15 @@ import './index.scss';
 type Props = {
   label: string;
   onClick: () => void;
+  disabled: boolean;
 };
 
-const PrimaryButton = ({ label, onClick }: Props) => (
-  <button className="primary-button" onClick={onClick}>
+const PrimaryButton = ({ label, onClick, disabled }: Props) => (
+  <button
+    className={`primary-button ${disabled ? 'disabled' : ''}`}
+    onClick={onClick}
+    disabled={disabled}
+  >
     {label}
   </button>
 );

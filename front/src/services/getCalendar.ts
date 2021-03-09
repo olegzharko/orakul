@@ -8,7 +8,7 @@ export default async function getCalendar(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    return data;
+    return data.data;
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err);

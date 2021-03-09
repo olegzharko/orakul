@@ -1,0 +1,21 @@
+@import '../../constants.scss';
+
+.remove-form-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 56px;
+  width: 56px;
+  border: $border;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: $transition_default;
+
+  &:hover {
+    opacity: .5;
+  }
+
+  & > img {
+    width: 15px;
+  }
+}
