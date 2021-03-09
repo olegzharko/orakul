@@ -47,7 +47,7 @@ class CardController extends BaseController
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
 
-        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date)->where('cancelled', false)->get();
+        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date->format('Y.m.d'))->where('cancelled', false)->get();
 
         $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
 
@@ -145,7 +145,8 @@ class CardController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $date_time = new \DateTime($r['date_time']);
+//        $date_time = new \DateTime($r['date_time']);
+        $date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
 
         if (Card::where('room_id', $r['room_id'])->where('date_time', $date_time)->first()) {
             return $this->sendError('Кімната: ' . $r['room_id'] . " на " . $r['date_time'] . " зайнята.");
@@ -153,8 +154,8 @@ class CardController extends BaseController
 
         $card_id = Card::new_card($r);
 
-        $immovables_id = $this->immovable->add_immovables($r);
-        $this->contract->add_contracts_on_immovabel($card_id, $immovables_id);
+        $immovables_info = $this->immovable->add_immovables($r);
+        $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
         $this->client->add_card_clients($card_id, $r['clients']);
 
         return $this->sendResponse('', 'Запис створено успішно');
@@ -217,6 +218,8 @@ class CardController extends BaseController
 
     public function validate_data($r)
     {
+        $r['date_time'] = implode(". ", explode(" ", $r['date_time']));
+//        $r['date_time'] = "2021.03.09. 10:00";
         $validator = Validator::make([
             'notary_id' => $r['notary_id'],
             'room_id' => $r['room_id'],
@@ -227,7 +230,7 @@ class CardController extends BaseController
         ], [
             'notary_id' => ['required', 'numeric'],
             'room_id' => ['required', 'numeric'],
-            'date_time' => ['required', 'date_format:d.m.Y H:i'],
+            'date_time' => ['required', 'date_format:Y.m.d. H:i'],
             'dev_company_id' => ['required', 'numeric'],
             'dev_representative_id' => ['numeric', 'nullable'],
             'dev_manager_id' => ['numeric', 'nullable'],
@@ -238,7 +241,7 @@ class CardController extends BaseController
             'dev_company_id.required' => 'Необхідно вибрати компанію забудовника',
             'notary_id.numeric' => 'Необхідно передати ID нотаріса в числовому форматі',
             'room_id.numeric' => 'Необхідно передати ID кімнати в числовому форматі',
-            'date_time.date_format' => 'Необхідно передати дату у форматі d.m.Y H:i Приклад: ' . date('d.m.Y H') . ":00",
+            'date_time.date_format' => 'Необхідно передати дату у форматі Y.m.d. H:i Приклад: ' . date('Y.m.d H') . ":00",
             'dev_company_id.numeric' => 'Необхідно передати ID компанії забудовника в числовому форматі',
             'dev_representative_id.numeric' => 'Необхідно передати ID представника забудовника в числовому форматі',
             'dev_manager_id.numeric' => 'Необхідно передати ID менеджера забудовника в числовому форматі',
@@ -288,7 +291,8 @@ class CardController extends BaseController
 
         // Дата та час укладання угоди
         if (!isset($errors['date_time'])) {
-            $date_time = new \DateTime($r['date_time']);
+//            dd('in', \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']));
+            $date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
             $time = $date_time ? $date_time->format('H:i') : null;
             $card_time = Time::where('time', $time)->where('active', true)->first();
             if (!$card_time) {
@@ -308,16 +312,18 @@ class CardController extends BaseController
             foreach ($r['immovables'] as $imm) {
                 if (isset($imm) && !empty($imm)) {
                     $imm = json_decode(json_encode($imm), true);
+
+                    // Добвавить проверку полей Bank and Proxy на boolean value
                     $immovalbe_validator = Validator::make([
                         'contract_type_id' => $imm['contract_type_id'],
                         'building_id' => $imm['building_id'],
-                        'immovable_id' => $imm['immovable_id'],
+//                        'immovable_id' => $imm['immovable_id'],
                         'imm_type_id' => $imm['imm_type_id'],
                         'imm_num' => $imm['imm_num'],
                     ], [
                         'contract_type_id' => ['required', 'numeric'],
                         'building_id' => ['required', 'numeric'],
-                        'immovable_id' => ['numeric', 'nullable'],
+//                        'immovable_id' => ['numeric', 'nullable'],
                         'imm_type_id' => ['required', 'numeric'],
                         'imm_num' => ['required', 'numeric'],
                     ], [
@@ -327,7 +333,7 @@ class CardController extends BaseController
                         'imm_num.required' => 'Необхідно вказати номер нерухомості',
                         'contract_type_id.numeric' => 'ID типу договору має бути у числовому форматі',
                         'building_id.numeric' => 'ID будівлі забудовника має бути у числовому форматі',
-                        'immovable_id.numeric' => 'ID нерухомості має бути у числовому форматі',
+//                        'immovable_id.numeric' => 'ID нерухомості має бути у числовому форматі',
                         'imm_type_id.numeric' => 'ID типу нерухомості має бути у числовому форматі',
                         'imm_num.numeric' => 'Номер нерухомості має бути у числовому форматі',
                     ]);

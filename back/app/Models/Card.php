@@ -57,13 +57,13 @@ class Card extends Model
 
     public static function new_card($r)
     {
-        $work_city = \App\Nova\City::where('notary', 1)->first();
+        $work_city = \App\Models\City::where('notary', 1)->first();
 
         $card = new Card();
         $card->notary_id = $r['notary_id'];
         $card->room_id = $r['room_id'];
         $card->city_id = $work_city ? $work_city->id: null;
-        $card->date_time = new \DateTime($r['date_time']);
+        $card->date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
         $card->dev_company_id = $r['dev_company_id'];
         $card->dev_representative_id = $r['dev_representative_id'];
         $card->dev_manager_id = $r['dev_manager_id'];

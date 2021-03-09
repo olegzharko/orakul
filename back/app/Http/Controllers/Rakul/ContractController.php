@@ -10,14 +10,16 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-    public function add_contracts_on_immovabel($card_id, $immovables_id)
+    public function add_contracts_on_immovabel($card_id, $immovables_info)
     {
-        foreach ($immovables_id as $imm_id) {
-            $contract = Contract::where('immovable_id', $imm_id)->first();
+        foreach ($immovables_info as $imm) {
+            $contract = Contract::where('immovable_id', $imm['id'])->first();
 
             if (!$contract) {
                 $contract = new Contract();
-                $contract->immovable_id = $imm_id;
+                $contract->immovable_id = $imm['id'];
+                $contract->bank = $imm['bank'];
+                $contract->proxy = $imm['proxy'];
                 $contract->save();
 
                 if ($contract) {

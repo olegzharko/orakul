@@ -15,8 +15,8 @@ class ClientController extends Controller
             foreach ($clients as $client) {
                 $card_client = new CardClient();
                 $card_client->card_id = $card_id;
-                $card_client->full_name = $client->full_name;
-                $card_client->phone = $client->phone;
+                $card_client->full_name = $client['full_name'];
+                $card_client->phone = $client['phone'];
                 $card_client->save();
             }
         }

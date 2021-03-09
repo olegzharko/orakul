@@ -26,20 +26,28 @@ class ImmovableController extends BaseController
 
     public function create($value, $r)
     {
+        $result = [];
+
         if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
 
             $imm = $this->imm_exist($value);
 
             if (!$imm) {
                 $imm = new Immovable();
-                $imm->developer_building_id = $value->building_id;
-                $imm->immovable_type_id = $value->imm_type_id;
-                $imm->immovable_number = $value->imm_num;
+                $imm->developer_building_id = $value['building_id'];
+                $imm->immovable_type_id = $value['imm_type_id'];
+                $imm->immovable_number = $value['imm_num'];
                 $imm->save();
+            }
+
+            if ($imm && $imm->id) {
+                $result['id'] = $imm->id;
+                $result['bank'] = $value['bank'];
+                $result['proxy'] = $value['proxy'];
             }
         }
 
-        return $imm->id;
+        return $result;
     }
 
     public function edit_immovables($immovables_id, $r)
@@ -58,19 +66,19 @@ class ImmovableController extends BaseController
 
     public function update($value)
     {
-        $imm = Immovable::where('id', $value->immovable_id)->update([
-            'developer_building_id' => $value->building_id,
-            'immovable_type_id' => $value->imm_type_id,
-            'immovable_number' => $value->imm_num,
+        $imm = Immovable::where('id', $value['immovable_id'])->update([
+            'developer_building_id' => $value['building_id'],
+            'immovable_type_id' => $value['imm_type_id'],
+            'immovable_number' => $value['imm_num'],
         ]);
     }
 
     public function imm_exist($value)
     {
         $imm = Immovable::where([
-            'developer_building_id' => $value->building_id,
-            'immovable_type_id' => $value->imm_type_id,
-            'immovable_number' => $value->imm_num,
+            'developer_building_id' => $value['building_id'],
+            'immovable_type_id' => $value['imm_type_id'],
+            'immovable_number' => $value['imm_num'],
         ])->first();
 
         if ($imm) {
@@ -84,7 +92,7 @@ class ImmovableController extends BaseController
     public function developer_building_exist($value, $r)
     {
         $developer = DevCompany::find($r['dev_company_id']);
-        $developer_building = DeveloperBuilding::where('id', $value->building_id)->first();
+        $developer_building = DeveloperBuilding::where('id', $value['building_id'])->first();
 
         if (!$developer_building || $developer_building->dev_company->id != $developer->id) { // dev_company
             echo "Будинок відсутній або належить іншому забудовнику<br>";
@@ -96,7 +104,7 @@ class ImmovableController extends BaseController
 
     public function immovable_type_exist($value)
     {
-        $imm_type = ImmovableType::find($value->imm_type_id);
+        $imm_type = ImmovableType::find($value['imm_type_id']);
 
         if (!$imm_type) {
             echo "Невідомий тип нерухомості<br>";
