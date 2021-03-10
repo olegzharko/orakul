@@ -161,7 +161,7 @@ class CardController extends BaseController
         $date = new \DateTime();
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
-        $card = Card::where('id', $card_id)->get();
+        $card = Card::where('id', $card_id)->first();
 
         $result = $this->get_single_card_in_calendar_format($card, $rooms, $times, $date);
 
