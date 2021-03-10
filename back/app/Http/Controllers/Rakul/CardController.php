@@ -225,7 +225,7 @@ class CardController extends BaseController
 
     public function validate_data($r)
     {
-        $r['date_time'] = implode(". ", explode(" ", $r['date_time']));
+//        $r['date_time'] = implode(". ", explode(" ", $r['date_time']));
 //        $r['date_time'] = "2021.03.09. 10:00";
         $validator = Validator::make([
             'notary_id' => $r['notary_id'],
