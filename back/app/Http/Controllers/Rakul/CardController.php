@@ -158,7 +158,14 @@ class CardController extends BaseController
         $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
         $this->client->add_card_clients($card_id, $r['clients']);
 
-        return $this->sendResponse('', 'Запис створено успішно');
+        $date = new \DateTime();
+        $rooms = Room::where('active', true)->pluck('id')->toArray();
+        $times = Time::where('active', true)->pluck('time')->toArray();
+        $cards = Card::where('id', $card_id)->get();
+
+        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+
+        return $this->sendResponse($result, 'Запис створено успішно');
     }
 
     /*
