@@ -45,6 +45,7 @@ Route::group(['prefix' => 'local'], function () {
     Route::get('logout', [PassportAuthController::class, 'logout']);
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('calendar', [CalendarController::class, 'calendar']);
+    Route::put('cards/move/{id}', [CardController::class, 'move']);
     Route::resource('cards', CardController::class);
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);
@@ -64,6 +65,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('calendar', [CalendarController::class, 'calendar']);
     Route::get('global_text', [TextController::class, 'global_text']);
     Route::resource('posts', PostController::class);
+    Route::put('cards/move/{id}', [CardController::class, 'move']);
     Route::resource('cards', CardController::class);
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);

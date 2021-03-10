@@ -198,6 +198,41 @@ class CardController extends BaseController
     }
 
     /*
+ * PUT after move
+ * */
+    public function move(Request $r, $id)
+    {
+        if ($card = Card::where('id', $id)->first()) {
+
+            $validator = Validator::make([
+                'room_id' => $r['room_id'],
+                'date_time' => $r['date_time']
+            ], [
+                'room_id' => ['required', 'numeric'],
+                'date_time' => ['required', 'date_format:Y.m.d. H:i'],
+            ], [
+                'room_id.required' => 'Необхідно вибрати кімнату',
+                'date_time.required' => 'Дата відсутня',
+                'room_id.numeric' => 'Необхідно передати ID кімнати в числовому форматі',
+                'date_time.date_format' => 'Необхідно передати дату у форматі Y.m.d. H:i Приклад: ' . date('Y.m.d. H') . ":00",
+            ]);
+
+            if (count($validator->errors()->getMessages())) {
+                return $this->sendError('Форма передає помилкові дані', $validator->errors());
+            }
+
+            Card::where('id', $id)->update([
+                'room_id' => $r['room_id'],
+                'date_time' => $r['date_time'],
+            ]);
+
+            return $this->sendResponse('', 'Запис ID: ' . $id . ' оновлено успішно');
+        } else {
+            return $this->sendError('Не вдалось знайки картку');
+        }
+    }
+
+    /*
      * DELETE
      * */
     public function destroy($id)
@@ -226,7 +261,6 @@ class CardController extends BaseController
     public function validate_data($r)
     {
 //        $r['date_time'] = implode(". ", explode(" ", $r['date_time']));
-//        $r['date_time'] = "2021.03.09. 10:00";
         $validator = Validator::make([
             'notary_id' => $r['notary_id'],
             'room_id' => $r['room_id'],
@@ -248,7 +282,7 @@ class CardController extends BaseController
             'dev_company_id.required' => 'Необхідно вибрати компанію забудовника',
             'notary_id.numeric' => 'Необхідно передати ID нотаріса в числовому форматі',
             'room_id.numeric' => 'Необхідно передати ID кімнати в числовому форматі',
-            'date_time.date_format' => 'Необхідно передати дату у форматі Y.m.d. H:i Приклад: ' . date('Y.m.d H') . ":00",
+            'date_time.date_format' => 'Необхідно передати дату у форматі Y.m.d. H:i Приклад: ' . date('Y.m.d. H') . ":00",
             'dev_company_id.numeric' => 'Необхідно передати ID компанії забудовника в числовому форматі',
             'dev_representative_id.numeric' => 'Необхідно передати ID представника забудовника в числовому форматі',
             'dev_manager_id.numeric' => 'Необхідно передати ID менеджера забудовника в числовому форматі',
