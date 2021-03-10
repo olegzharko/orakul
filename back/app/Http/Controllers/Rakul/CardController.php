@@ -161,9 +161,9 @@ class CardController extends BaseController
         $date = new \DateTime();
         $rooms = Room::where('active', true)->pluck('id')->toArray();
         $times = Time::where('active', true)->pluck('time')->toArray();
-        $cards = Card::where('id', $card_id)->get();
+        $card = Card::where('id', $card_id)->get();
 
-        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+        $result = $this->get_single_card_in_calendar_format($card, $rooms, $times, $date);
 
         return $this->sendResponse($result, 'Запис створено успішно');
     }
@@ -447,6 +447,30 @@ class CardController extends BaseController
                 $result[$key]['title'] = $this->get_card_title($card);
                 $result[$key]['short_info'] = $this->get_card_short_info($card);
             }
+        }
+
+        return $result;
+    }
+
+    public function get_single_card_in_calendar_format($card, $rooms, $times, $date)
+    {
+        $result = [];
+        $time_length = count($times);
+
+        if (in_array($card->date_time->format('H:i'), $times)) {
+            $time_height = array_search($card->date_time->format('H:i'), $times);
+            $day_height = $this->count_days($card, $date);
+            $result['i'] = strval($card->id);
+            $result['x'] = array_search($card->room->id, $rooms);
+            if ($day_height)
+                $result['y'] = $time_height + $time_length * $day_height;
+            else
+                $result['y'] = $time_height;
+            $result['w'] = 1;
+            $result['h'] = 1;
+            $result['color'] = $card->dev_company->color;
+            $result['title'] = $this->get_card_title($card);
+            $result['short_info'] = $this->get_card_short_info($card);
         }
 
         return $result;
