@@ -360,23 +360,23 @@ class CardController extends BaseController
                         'building_id' => $imm['building_id'],
 //                        'immovable_id' => $imm['immovable_id'],
                         'imm_type_id' => $imm['imm_type_id'],
-                        'imm_num' => $imm['imm_num'],
+                        'imm_number' => $imm['imm_number'],
                     ], [
                         'contract_type_id' => ['required', 'numeric'],
                         'building_id' => ['required', 'numeric'],
 //                        'immovable_id' => ['numeric', 'nullable'],
                         'imm_type_id' => ['required', 'numeric'],
-                        'imm_num' => ['required', 'numeric'],
+                        'imm_number' => ['required', 'numeric'],
                     ], [
                         'contract_type_id.required' => 'Необхідно вибрати тип договору',
                         'building_id.required' => 'Необхідно вибрати будівлю забудовника',
                         'imm_type_id.required' => 'Необхідно вибрати тип нерухомості',
-                        'imm_num.required' => 'Необхідно вказати номер нерухомості',
+                        'imm_number.required' => 'Необхідно вказати номер нерухомості',
                         'contract_type_id.numeric' => 'ID типу договору має бути у числовому форматі',
                         'building_id.numeric' => 'ID будівлі забудовника має бути у числовому форматі',
 //                        'immovable_id.numeric' => 'ID нерухомості має бути у числовому форматі',
                         'imm_type_id.numeric' => 'ID типу нерухомості має бути у числовому форматі',
-                        'imm_num.numeric' => 'Номер нерухомості має бути у числовому форматі',
+                        'imm_number.numeric' => 'Номер нерухомості має бути у числовому форматі',
                     ]);
 
                     $immovable_errors = $immovalbe_validator->errors()->messages();
