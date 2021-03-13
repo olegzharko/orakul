@@ -219,12 +219,11 @@ class CardController extends BaseController
                 'date_time' => $r['date_time']
             ], [
                 'room_id' => ['required', 'numeric'],
-                'date_time' => ['required', 'date_format:Y.m.d. H:i'],
+                'date_time' => ['required'],
             ], [
                 'room_id.required' => 'Необхідно вибрати кімнату',
                 'date_time.required' => 'Дата відсутня',
                 'room_id.numeric' => 'Необхідно передати ID кімнати в числовому форматі',
-                'date_time.date_format' => 'Необхідно передати дату у форматі Y.m.d. H:i Приклад: ' . date('Y.m.d. H') . ":00",
             ]);
 
             if (count($validator->errors()->getMessages())) {
