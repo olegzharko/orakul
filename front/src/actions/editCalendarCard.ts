@@ -1,5 +1,5 @@
 import editCalendarCardService from '../services/editCalendarCard';
-import { setModalInfo } from '../store/scheduler/actions';
+import { setEditAppointmens, setModalInfo } from '../store/scheduler/actions';
 import { NewCard } from '../types';
 
 const editCalendarCard = async (
@@ -8,15 +8,23 @@ const editCalendarCard = async (
   bodyData: NewCard,
   id: number
 ) => {
-  const res = await editCalendarCardService(token, bodyData, id);
+  const { success, message, data } = await editCalendarCardService(
+    token,
+    bodyData,
+    id
+  );
 
   dispatch(
     setModalInfo({
       open: true,
-      success: res.success,
-      message: res.message,
+      success,
+      message,
     })
   );
+
+  if (success) {
+    dispatch(setEditAppointmens(data));
+  }
 };
 
 export default editCalendarCard;

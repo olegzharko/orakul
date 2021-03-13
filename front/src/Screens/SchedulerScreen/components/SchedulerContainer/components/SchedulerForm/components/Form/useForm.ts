@@ -74,6 +74,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   useEffect(() => {
     if (initialValues) {
       setEdit(true);
+      setNotary(initialValues.card.notary_id);
       setDevCompanyId(initialValues.card.dev_company_id);
       setDevRepresentativeId(initialValues.card.dev_representative_id);
       setDevManagerId(initialValues.card.dev_manager_id);
@@ -197,7 +198,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     if (token) {
       if (edit) {
         editCalendarCard(dispatch, token, data, selectedCard.i);
-        setEdit(false);
+        setEdit(true);
       } else {
         createNewCard(dispatch, token, data)
           .then(({ success }: any) => {
@@ -212,10 +213,11 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     devCompanyId,
     devRepresentativeId,
     devManagerId,
-    selectedCard,
     notary,
     immovables,
-    clients
+    clients,
+    edit,
+    selectedCard,
   ]);
 
   const onCloseForm = useCallback(() => {

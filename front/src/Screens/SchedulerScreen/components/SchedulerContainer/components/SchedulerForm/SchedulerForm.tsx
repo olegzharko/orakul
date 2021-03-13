@@ -18,7 +18,7 @@ const SchedulerForm = () => {
         >
           {meta.newSelectedAppointment
             ? `${meta.newSelectedAppointment.day} ${meta.newSelectedAppointment.time} ${meta.newSelectedAppointment.date}`
-            : ''}
+            : 'Виберіть дату'}
         </div>
 
         {meta.oldSelectedAppointment && meta.editAppointmentData && (
