@@ -29,18 +29,18 @@ class ImmovableController extends BaseController
 
         if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
 
-            $imm = $this->imm_exist($value);
+//            $imm = $this->imm_exist($value);
 
-            if (!$imm) {
+//            if (!$imm) {
                 $imm = new Immovable();
                 $imm->developer_building_id = $value['building_id'];
                 $imm->immovable_type_id = $value['imm_type_id'];
                 $imm->immovable_number = $value['imm_number'];
                 $imm->save();
-            }
+//            }
 
             if ($imm && $imm->id) {
-                $result['id'] = $imm->id;
+                $result['immovable_id'] = $imm->id;
                 $result['bank'] = $value['bank'];
                 $result['proxy'] = $value['proxy'];
                 $result['contract_type_id'] = $value['contract_type_id'];
@@ -136,7 +136,7 @@ class ImmovableController extends BaseController
         $immovables = $r['immovables'];
 
         foreach ($immovables as $value) {
-            if ($value['immovable_id'] == null) {
+            if (!isset($value['immovable_id']) || isset($value['immovable_id']) && empty($value['immovable_id'])) {
                 $this->create($value, $r);
             } else {
                 $updated_immovables_id[] = $value['immovable_id'];

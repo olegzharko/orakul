@@ -13,30 +13,19 @@ class ContractController extends Controller
     public function add_contracts_on_immovabel($card_id, $immovables_info)
     {
         foreach ($immovables_info as $imm) {
-            $contract = Contract::where('immovable_id', $imm['id'])->first();
 
-            if (!$contract) {
+            if (!$contract = Contract::where('immovable_id', $imm['immovable_id'])->first()) {
                 $contract = new Contract();
-                $contract->immovable_id = $imm['id'];
+                $contract->immovable_id = $imm['immovable_id'];
                 $contract->bank = $imm['bank'];
                 $contract->proxy = $imm['proxy'];
                 $contract->type_id = $imm['contract_type_id'];
                 $contract->save();
 
-                if ($contract) {
-                    $card_contract_exist = CardContract::where('card_id', $card_id)->where('contract_id', $contract->id)->first();
-                    if (!$card_contract_exist) {
-                        $card_contract = new CardContract();
-                        $card_contract->card_id = $card_id;
-                        $card_contract->contract_id = $contract->id;
-                        $card_contract->save();
-                    } else {
-                        echo "ID катки та договору вже використувуються<br>";
-
-                    }
-                } else {
-                    echo "Договір не був створений<br>";
-                }
+                $card_contract = new CardContract();
+                $card_contract->card_id = $card_id;
+                $card_contract->contract_id = $contract->id;
+                $card_contract->save();
             }
         }
     }
