@@ -14,11 +14,12 @@ const SchedulerTable = () => {
     shouldLoad,
     rooms,
     hours,
-    tableRaws,
+    tableRows,
     tableColumns,
     days,
     appointments,
     handleAppointmentDrag,
+    onAppointmentClick,
   } = useSchedulerTable();
 
   if (shouldLoad) {
@@ -57,11 +58,12 @@ const SchedulerTable = () => {
           ))}
         </div>
         <div className="scheduler__appointments">
-          <GridTable raws={tableRaws} columns={tableColumns} />
+          <GridTable rows={tableRows} columns={tableColumns} />
           <GridLayout
             appointments={appointments}
             cols={tableColumns.length}
             handleDrag={handleAppointmentDrag}
+            handleClick={onAppointmentClick}
           />
         </div>
       </div>

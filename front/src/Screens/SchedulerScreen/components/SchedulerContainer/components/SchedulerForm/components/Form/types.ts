@@ -6,7 +6,7 @@ export const immovableItem: ImmovableItem = {
   contract_type_id: null,
   building_id: null,
   imm_type_id: null,
-  imm_num: null,
+  imm_number: null,
   bank: false,
   proxy: false,
 };

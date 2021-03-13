@@ -2,12 +2,6 @@
 
 .schedulerForm {
 
-  &__tabs {
-    width: 100%;
-    height: 56px;
-    background-color: grey;
-  }
-
   &__forms {
     padding: 15px 55px;
   }
@@ -24,5 +18,11 @@
     .clear-icon {
       cursor: pointer;
     }
+  }
+
+  &__editButton {
+    background-color: white!important;
+    color: $primary!important;
+    border: $border_primary;
   }
 }

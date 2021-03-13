@@ -9,6 +9,7 @@ type Props = {
   onChange: (value: string) => void;
   value?: string | number | null;
   type?: string;
+  disabled?: boolean;
 };
 
 const CustomInput = ({
@@ -16,6 +17,7 @@ const CustomInput = ({
   onChange,
   value = '',
   type = 'string',
+  disabled,
 }: Props) => {
   const [text, setText] = useState(value || '');
 
@@ -36,6 +38,7 @@ const CustomInput = ({
       onChange={handleChange}
       type={type}
       className="custom-input"
+      disabled={disabled || false}
     />
   );
 };

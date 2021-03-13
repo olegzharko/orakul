@@ -26,12 +26,8 @@
     cursor: pointer;
     z-index: 1;
   
-    &:hover &__table {
+    &:hover .appointment__table {
       opacity: 1;
-    }
-  
-    &__title {
-  
     }
   
     &__table {

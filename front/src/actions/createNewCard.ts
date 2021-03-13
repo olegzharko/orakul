@@ -4,6 +4,7 @@ import { NewCard } from '../types';
 
 const createNewCard = async (dispatch: any, token: string, data: NewCard) => {
   const res = await createNewCardService(token, data);
+
   dispatch(
     setModalInfo({
       open: true,
@@ -11,7 +12,11 @@ const createNewCard = async (dispatch: any, token: string, data: NewCard) => {
       message: res.message,
     })
   );
-  dispatch(addNewAppointment(res.data));
+
+  if (res.success) {
+    dispatch(addNewAppointment(res.data));
+  }
+
   return { success: res.success };
 };
 

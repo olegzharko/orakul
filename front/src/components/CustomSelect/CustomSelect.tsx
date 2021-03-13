@@ -17,9 +17,16 @@ type Props = {
   data: Data[];
   label: string;
   selectedValue?: string | null | number;
+  disabled?: boolean;
 };
 
-const CustomSelect = ({ onChange, data, label, selectedValue }: Props) => {
+const CustomSelect = ({
+  onChange,
+  data,
+  label,
+  selectedValue,
+  disabled,
+}: Props) => {
   const [selected, setSelected] = useState(selectedValue || '');
 
   useEffect(() => {
@@ -38,7 +45,7 @@ const CustomSelect = ({ onChange, data, label, selectedValue }: Props) => {
       <Select
         value={selected}
         onChange={handleChange}
-        disabled={data.length === 0}
+        disabled={disabled || data.length === 0}
       >
         <MenuItem value="">
           <em>Выбрать</em>
