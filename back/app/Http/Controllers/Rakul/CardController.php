@@ -212,6 +212,8 @@ class CardController extends BaseController
     {
         if ($card = Card::where('id', $card_id)->first()) {
 
+            $r['date_time'] = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
+
             $validator = Validator::make([
                 'room_id' => $r['room_id'],
                 'date_time' => $r['date_time']
