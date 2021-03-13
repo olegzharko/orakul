@@ -199,9 +199,9 @@ class CardController extends BaseController
     /*
  * PUT after move
  * */
-    public function move(Request $r, $id)
+    public function move(Request $r, $card_id)
     {
-        if ($card = Card::where('id', $id)->first()) {
+        if ($card = Card::where('id', $card_id)->first()) {
 
             $validator = Validator::make([
                 'room_id' => $r['room_id'],
@@ -220,12 +220,14 @@ class CardController extends BaseController
                 return $this->sendError('Форма передає помилкові дані', $validator->errors());
             }
 
-            Card::where('id', $id)->update([
+            Card::where('id', $card_id)->update([
                 'room_id' => $r['room_id'],
                 'date_time' => $r['date_time'],
             ]);
 
-            return $this->sendResponse('', 'Запис ID: ' . $id . ' оновлено успішно');
+            $result = $this->get_single_card_in_calendar_format($card_id);
+
+            return $this->sendResponse($result, 'Запис ID: ' . $id . ' оновлено успішно');
         } else {
             return $this->sendError('Не вдалось знайки картку');
         }
