@@ -42,6 +42,16 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
         ...state,
         appointments: [...state.appointments, action.payload],
       };
+    case ACTIONS.EDIT_APPOINTMENTS:
+      return {
+        ...state,
+        appointments: [
+          ...state.appointments.filter(
+            (item: any) => item.i !== action.payload.i
+          ),
+          action.payload,
+        ],
+      };
     case ACTIONS.SET_DEVELOPERS_INFO:
       return { ...state, developersInfo: action.payload };
     case ACTIONS.SET_IS_LOADING:
