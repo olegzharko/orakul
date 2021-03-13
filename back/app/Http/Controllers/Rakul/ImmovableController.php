@@ -121,10 +121,10 @@ class ImmovableController extends BaseController
 
         $immovables = $r['immovables'];
         foreach ($immovables as $value) {
-            if ($value->immovable_id == null) {
+            if ($value['immovable_id'] == null) {
                 $this->create($value, $r);
             } else {
-                $updated_immovables_id[] = $value->immovable_id;
+                $updated_immovables_id[] = $value['immovable_id'];
                 $this->update($value, $r);
             }
         }
