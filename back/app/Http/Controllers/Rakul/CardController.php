@@ -158,12 +158,7 @@ class CardController extends BaseController
         $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
         $this->client->add_card_clients($card_id, $r['clients']);
 
-        $date = new \DateTime();
-        $rooms = Room::where('active', true)->pluck('id')->toArray();
-        $times = Time::where('active', true)->pluck('time')->toArray();
-        $card = Card::where('id', $card_id)->first();
-
-        $result = $this->get_single_card_in_calendar_format($card, $rooms, $times, $date);
+        $result = $this->get_single_card_in_calendar_format($card_id);
 
         return $this->sendResponse($result, 'Запис створено успішно');
     }
@@ -171,9 +166,9 @@ class CardController extends BaseController
     /*
      * PUT with param
      * */
-    public function update(Request $r, $id)
+    public function update(Request $r, $card_id)
     {
-        if ($card = Card::where('id', $id)->where('generator_step', false)->first()) {
+        if ($card = Card::where('id', $card_id)->where('generator_step', false)->first()) {
 
             $validator = $this->validate_data($r);
 
@@ -181,7 +176,7 @@ class CardController extends BaseController
                 return $this->sendError('Форма передає помилкові дані', $validator->errors());
             }
 
-            $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
+            $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
             if (count($contracts_id)) {
                 $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id')->toArray();
                 $updated_immovables_id = $this->immovable->get_updated_immovables_id($r);
@@ -191,8 +186,12 @@ class CardController extends BaseController
                 $this->immovable->delete_immovables_by_id($immovables_id_for_delete);
                 $this->contract->delete_contracts_by_immovables_id($immovables_id_for_delete);
             }
-            return $this->sendResponse('', 'Запис оновлено успішно');
-        } else {
+
+            $result = $this->get_single_card_in_calendar_format($card_id);
+            return $this->sendResponse($result, 'Запис оновлено успішно');
+        } elseif (Card::where('id', $card_id)->where('generator_step', true)->first()) {
+            return $this->sendError('Картка готова до видачі. Зміни з боку рецепції неможливі');
+        }else {
             return $this->sendError('Не вдалось знайки картку');
         }
     }
@@ -486,8 +485,13 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_single_card_in_calendar_format($card, $rooms, $times, $date)
+    public function get_single_card_in_calendar_format($card_id)
     {
+        $date = new \DateTime();
+        $rooms = Room::where('active', true)->pluck('id')->toArray();
+        $times = Time::where('active', true)->pluck('time')->toArray();
+        $card = Card::where('id', $card_id)->first();
+
         $result = [];
         $time_length = count($times);
 
