@@ -422,6 +422,8 @@ class CardController extends BaseController
         $current_date = $date->getTimestamp();
 
         $day_height = strtotime($card->date_time->format('d.m.Y')) - $current_date;
+        if ($day_height < 0)
+            $day_height = 0;
         $day_height = intval(round($day_height / (60 * 60 * 24)));
 
         return $day_height;
