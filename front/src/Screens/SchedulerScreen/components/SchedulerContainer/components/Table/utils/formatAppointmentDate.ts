@@ -10,7 +10,7 @@ const formatAppointmentDate = (
   const room = rooms[cell].id;
   return {
     day,
-    date,
+    date: date.split('.').reverse().join('.'),
     year,
     time,
     room,

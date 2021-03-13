@@ -2,6 +2,7 @@
 /* eslint-disable operator-linebreak */
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 import { State } from '../../../../../../../../store/types';
 import formatAppointmentDate from '../../utils/formatAppointmentDate';
 import { setSelectedNewAppointment } from '../../../../../../../../store/scheduler/actions';
@@ -23,6 +24,11 @@ export const useGridTableCell = ({ raw, cell }: Props) => {
 
   const onClick = useCallback(() => {
     const payload = formatAppointmentDate(hours, rooms, days, raw, cell);
+    const isBefore = moment(
+      `${payload.year}.${payload.date}. ${payload.time}`
+    ).isBefore(moment());
+
+    if (isBefore) return;
     dispatch(setSelectedNewAppointment({ ...payload, raw, cell }));
   }, [hours, rooms, days, raw, cell]);
 
