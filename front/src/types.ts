@@ -2,7 +2,7 @@ export type ImmovableItem = {
   contract_type_id: number | null;
   building_id: number | null;
   imm_type_id: number | null;
-  imm_num: number | null;
+  imm_number: number | null;
   bank: boolean;
   proxy: boolean;
 };

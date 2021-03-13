@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable object-curly-newline */
 /* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
@@ -9,7 +11,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default function GridLayout({ appointments, cols, handleDrag }) {
+export default function GridLayout({
+  appointments,
+  cols,
+  handleDrag,
+  handleClick,
+}) {
   const [dragAndDropWidth, setDragAndDropWidth] = useState(1200);
 
   useEffect(() => {
@@ -38,17 +45,18 @@ export default function GridLayout({ appointments, cols, handleDrag }) {
       layout={appointments}
       onDragStop={onDrag}
     >
-      {appointments.map(({ i, title, color, short_info }) => (
+      {appointments.map((appointment) => (
         <div
-          key={i}
+          key={appointment.i}
           className="appointment"
-          style={{ borderLeft: `4px solid ${color}` }}
+          style={{ borderLeft: `4px solid ${appointment.color}` }}
+          onClick={() => handleClick(appointment)}
         >
-          <div className="appointment__title">{title}</div>
+          <div className="appointment__title">{appointment.title}</div>
           <table className="appointment__table">
             <tbody>
               <tr>
-                {Object.values(short_info).map((item) => (
+                {Object.values(appointment.short_info).map((item) => (
                   <td key={uuidv4()}>{item}</td>
                 ))}
               </tr>

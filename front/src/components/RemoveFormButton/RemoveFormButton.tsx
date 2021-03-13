@@ -5,16 +5,24 @@ import './index.scss';
 type Props = {
   onClick: (index: number) => void;
   index: number;
+  disabled?: boolean;
 };
 
-const RemoveFormButton = ({ onClick, index }: Props) => (
-  <div
-    className="remove-form-button"
-    onClick={() => onClick(index)}
-    onKeyPress={() => onClick(index)}
-  >
-    <img src="/icons/minus.svg" alt="minus" />
-  </div>
-);
+const RemoveFormButton = ({ onClick, index, disabled }: Props) => {
+  const handleClick = () => {
+    if (disabled) return;
+    onClick(index);
+  };
+
+  return (
+    <div
+      className={`remove-form-button ${disabled ? 'disabled' : ''}`}
+      onClick={handleClick}
+      onKeyPress={() => onClick(index)}
+    >
+      <img src="/icons/minus.svg" alt="minus" />
+    </div>
+  );
+};
 
 export default RemoveFormButton;

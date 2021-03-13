@@ -4,12 +4,24 @@ import './index.scss';
 
 type Props = {
   onClick: () => void;
+  disabled?: boolean;
 };
 
-const AddFormButton = ({ onClick }: Props) => (
-  <div className="add-form-button" onClick={onClick} onKeyPress={onClick}>
-    <img src="/icons/plus.svg" alt="plus" />
-  </div>
-);
+const AddFormButton = ({ onClick, disabled }: Props) => {
+  const handleClick = () => {
+    if (disabled) return;
+    onClick();
+  };
+
+  return (
+    <div
+      className={`add-form-button ${disabled ? 'disabled' : ''}`}
+      onClick={handleClick}
+      onKeyPress={handleClick}
+    >
+      <img src="/icons/plus.svg" alt="plus" />
+    </div>
+  );
+};
 
 export default AddFormButton;

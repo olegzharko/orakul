@@ -1,10 +1,13 @@
 import { useCallback } from 'react';
+import { CodeFixAction } from 'typescript';
 import { ClientItem } from '../../../../../../../../../../types';
 
 export type Props = {
   clients: ClientItem[];
   onChange: (index: number, value: ClientItem) => void;
   onAdd: () => void;
+  onRemove: (index: number) => void;
+  disabled?: boolean;
 };
 
 export const useClients = ({ onChange, clients }: Props) => {

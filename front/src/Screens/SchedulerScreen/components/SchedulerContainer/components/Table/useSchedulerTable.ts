@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchAppointments from '../../../../../../actions/fetchAppointments';
+import fetchCalendarCard from '../../../../../../actions/fetchCalendarCard';
 import fetchSchedulerSettings from '../../../../../../actions/fetchSchedulerSettings';
+import { setSelectedOldAppointment } from '../../../../../../store/scheduler/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
 
@@ -36,7 +38,7 @@ export const useSchedulerTable = () => {
 
   const days = useMemo(() => options?.day_and_date, [options]);
 
-  const tableRaws = useMemo(
+  const tableRows = useMemo(
     () => new Array(hours?.length * days?.length || 0).fill(1),
     [hours]
   );
@@ -48,14 +50,33 @@ export const useSchedulerTable = () => {
     [hours, days]
   );
 
+  const onAppointmentClick = useCallback(
+    async ({ x, y, i }: any) => {
+      const payload = formatAppointmentDate(hours, rooms, days, y, x);
+
+      if (token) {
+        await fetchCalendarCard(dispatch, token, i);
+      }
+
+      dispatch(
+        setSelectedOldAppointment({
+          ...payload,
+          i,
+        })
+      );
+    },
+    [hours, rooms, days]
+  );
+
   return {
     shouldLoad,
     rooms,
     hours,
-    tableRaws,
+    tableRows,
     tableColumns,
     days,
     appointments,
     handleAppointmentDrag,
+    onAppointmentClick,
   };
 };
