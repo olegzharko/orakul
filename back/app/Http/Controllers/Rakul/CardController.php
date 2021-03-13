@@ -90,7 +90,7 @@ class CardController extends BaseController
             foreach ($contracts as $key => $contr) {
                 // в договорі може бути відсутній клієнт, так як на рецепції утворюється котороткий запис ПІБ та номер телефону
                 if ($contr->contract->clients) {
-                    $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());;
+                    $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());
                 }
                 $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->type_id;
                 $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
@@ -179,13 +179,23 @@ class CardController extends BaseController
             $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
             if (count($contracts_id)) {
                 $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id')->toArray();
-                $updated_immovables_id = $this->immovable->get_updated_immovables_id($r);
+                $updated_immovables_id = $this->immovable->create_or_update_immovables_with_id($r);
 
                 // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
                 $immovables_id_for_delete = array_values(array_diff($old_immovables_id, $updated_immovables_id));
                 $this->immovable->delete_immovables_by_id($immovables_id_for_delete);
                 $this->contract->delete_contracts_by_immovables_id($immovables_id_for_delete);
+                $this->client->update_card_client($card_id, $r['clients']);
             }
+
+            Card::where('id', $card_id)->update([
+                'notary_id' => $r['notary_id'],
+                'room_id' => $r['room_id'],
+                'date_time' => $r['date_time'],
+                'dev_company_id' => $r['dev_company_id'],
+                'dev_representative_id' => $r['dev_representative_id'],
+                'dev_manager_id' => $r['dev_manager_id'],
+            ]);
 
             $result = $this->get_single_card_in_calendar_format($card_id);
             return $this->sendResponse($result, 'Запис оновлено успішно');

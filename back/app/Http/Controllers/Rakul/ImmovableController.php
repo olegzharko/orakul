@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
+use App\Models\Contract;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use App\Models\Immovable;
 use App\Models\ImmovableType;
-use Illuminate\Http\Request;
 
 class ImmovableController extends BaseController
 {
@@ -36,7 +35,7 @@ class ImmovableController extends BaseController
                 $imm = new Immovable();
                 $imm->developer_building_id = $value['building_id'];
                 $imm->immovable_type_id = $value['imm_type_id'];
-                $imm->immovable_number = $value['imm_num'];
+                $imm->immovable_number = $value['imm_number'];
                 $imm->save();
             }
 
@@ -67,11 +66,26 @@ class ImmovableController extends BaseController
 
     public function update($value)
     {
+        $result = [];
+
         $imm = Immovable::where('id', $value['immovable_id'])->update([
             'developer_building_id' => $value['building_id'],
             'immovable_type_id' => $value['imm_type_id'],
-            'immovable_number' => $value['imm_num'],
+            'immovable_number' => $value['imm_number'],
         ]);
+
+        if ($imm) {
+            Contract::where('immovable_id', $value['immovable_id'])->update([
+               'type_id' => $value['contract_type_id'],
+               'bank' => $value['bank'],
+               'proxy' => $value['proxy'],
+            ]);
+
+            $result['id'] = $value['immovable_id'];
+            $result['contract_type_id'] = $value['contract_type_id'];
+        }
+
+        return $result;
     }
 
     public function imm_exist($value)
@@ -79,7 +93,7 @@ class ImmovableController extends BaseController
         $imm = Immovable::where([
             'developer_building_id' => $value['building_id'],
             'immovable_type_id' => $value['imm_type_id'],
-            'immovable_number' => $value['imm_num'],
+            'immovable_number' => $value['imm_number'],
         ])->first();
 
         if ($imm) {
@@ -115,7 +129,7 @@ class ImmovableController extends BaseController
         }
     }
 
-    public function get_updated_immovables_id($r)
+    public function create_or_update_immovables_with_id($r)
     {
         $updated_immovables_id = [];
 

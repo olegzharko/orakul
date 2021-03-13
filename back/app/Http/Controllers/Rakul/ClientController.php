@@ -21,4 +21,11 @@ class ClientController extends Controller
             }
         }
     }
+
+    public function update_card_client($card_id, $clients)
+    {
+        CardClient::where('card_id', $card_id)->delete();
+
+        $this->add_card_clients($card_id, $clients);
+    }
 }
