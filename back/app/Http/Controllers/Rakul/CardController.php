@@ -237,7 +237,7 @@ class CardController extends BaseController
 
             $result = $this->get_single_card_in_calendar_format($card_id);
 
-            return $this->sendResponse($result, 'Запис ID: ' . $card_id . ' оновлено успішно');
+            return $this->sendResponse($result, 'Запис ID: ' . $card_id . ' перемістився успішно');
         } else {
             return $this->sendError('Не вдалось знайки картку');
         }
