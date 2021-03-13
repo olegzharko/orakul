@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 type RequestOptions = {
   url: string;
-  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH';
+  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
   bodyData?: any;
   headers?: {};
 };
@@ -27,16 +27,16 @@ const requestApi = async (options: RequestOptions) => {
   const res: any = await fetch(url, params);
   const json: any = await res.json();
 
-  if (!json.success) {
-    const { status, message } = res;
-    throw new Error(
-      `[${status}, ${message}] Could not fetch on URL (${url}) data:\n${JSON.stringify(
-        json,
-        null,
-        2
-      )}`
-    );
-  }
+  // if (!json.success) {
+  //   const { status, message } = res;
+  //   throw new Error(
+  //     `[${status}, ${message}] Could not fetch on URL (${url}) data:\n${JSON.stringify(
+  //       json,
+  //       null,
+  //       2
+  //     )}`
+  //   );
+  // }
 
   return json;
 };

@@ -7,7 +7,7 @@ import formatAppointmentDate from '../../utils/formatAppointmentDate';
 import { setSelectedNewAppointment } from '../../../../../../../../store/scheduler/actions';
 
 export type Props = {
-  rawsQuantity: number;
+  rowsQuantity: number;
   raw: number;
   cell: number;
   selected: boolean;

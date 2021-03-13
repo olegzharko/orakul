@@ -11,6 +11,11 @@
   cursor: pointer;
   transition: $transition_default;
 
+  &.disabled {
+    opacity: .5;
+    cursor: default;
+  }
+
   &:hover {
     opacity: .5;
   }

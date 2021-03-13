@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { memo } from 'react';
@@ -8,10 +10,10 @@ import Clients from './components/Clients/Clients';
 import PrimaryButton from '../../../../../../../../components/PrimaryButton';
 import Loader from '../../../../../../../../components/Loader/Loader';
 import ImmovableContainer from './components/ImmovableContainer';
-import { useForm } from './useForm';
+import { useForm, Props } from './useForm';
 
-const SchedulerForm = () => {
-  const meta = useForm();
+const SchedulerForm = (props: Props) => {
+  const meta = useForm(props);
 
   if (meta.shouldLoad) {
     return (
@@ -23,21 +25,39 @@ const SchedulerForm = () => {
 
   return (
     <div className="schedulerForm">
-      <div className="schedulerForm__tabs" />
       <div className="schedulerForm__forms">
         <div className="schedulerForm__header">
-          <p className="title">Новий запис</p>
-          <img
-            src="/icons/clear.svg"
-            alt="clear icon"
-            className="clear-icon"
-            onClick={meta.onClearAll}
-          />
+          <p className="title">
+            {meta.insideEdit || props.edit
+              ? `Запис № ${props.selectedCard.i}`
+              : 'Новий запис'}
+          </p>
+          {meta.insideEdit ? (
+            <img
+              src="/icons/x.svg"
+              alt="clear icon"
+              className="clear-icon"
+              onClick={meta.onCloseForm}
+            />
+          ) : (
+            <img
+              src="/icons/clear.svg"
+              alt="clear icon"
+              className="clear-icon"
+              onClick={meta.onClearAll}
+            />
+          )}
         </div>
 
         <div className="mv12">
           <RadioButtonsGroup
-            buttons={meta.notaries}
+            buttons={
+              meta.insideEdit
+                ? meta.notaries.filter(
+                    ({ id }: any) => id === meta.selectedNotaryId
+                  )
+                : meta.notaries
+            }
             onChange={meta.onNotaryChange}
             selected={meta.selectedNotaryId}
             unicId="notaries"
@@ -50,6 +70,7 @@ const SchedulerForm = () => {
             data={meta.developers}
             onChange={meta.onDeveloperChange}
             selectedValue={meta.selectedDeveloperId}
+            disabled={meta.insideEdit || false}
           />
         </div>
 
@@ -59,6 +80,7 @@ const SchedulerForm = () => {
             data={meta.representative}
             label="Підписант"
             selectedValue={meta.selectedDevRepresentativeId}
+            disabled={meta.insideEdit || false}
           />
         </div>
 
@@ -68,6 +90,7 @@ const SchedulerForm = () => {
             data={meta.manager}
             label="Менеджер"
             selectedValue={meta.selecedDevManagerId}
+            disabled={meta.insideEdit || false}
           />
         </div>
 
@@ -76,20 +99,34 @@ const SchedulerForm = () => {
           onChange={meta.onImmovablesChange}
           onAdd={meta.onAddImmovables}
           onRemove={meta.onRemoveImmovable}
+          disabled={meta.insideEdit || false}
         />
 
         <Clients
           clients={meta.clients}
           onChange={meta.onClientsChange}
           onAdd={meta.onAddClients}
+          onRemove={meta.onRemoveClient}
+          disabled={meta.insideEdit || false}
         />
 
         <div className="mv12">
-          <PrimaryButton
-            label="Створити"
-            onClick={meta.onFormCreate}
-            disabled={!meta.activeAddButton}
-          />
+          {meta.insideEdit && (
+            <PrimaryButton
+              label="Редагувати"
+              onClick={() => meta.setEdit(false)}
+              disabled={!meta.activeAddButton}
+              className="schedulerForm__editButton"
+            />
+          )}
+
+          {!meta.insideEdit && (
+            <PrimaryButton
+              label={`${props.edit ? 'Зберегти' : 'Створити'}`}
+              onClick={meta.onFormCreate}
+              disabled={!meta.activeAddButton}
+            />
+          )}
         </div>
       </div>
     </div>

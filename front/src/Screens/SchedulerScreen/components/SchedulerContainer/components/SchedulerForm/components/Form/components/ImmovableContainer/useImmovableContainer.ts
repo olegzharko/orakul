@@ -11,6 +11,7 @@ export type Props = {
   onChange: (index: number, value: ImmovableItem) => void;
   onAdd: () => void;
   onRemove: (index: number) => void;
+  disabled?: boolean;
 };
 
 export const useImmovableContainer = ({ immovables, onChange }: Props) => {
@@ -83,7 +84,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
     (index: number, val: string) => {
       onChange(index, {
         ...immovables[index],
-        imm_num: +val,
+        imm_number: +val,
       });
     },
     [immovables]

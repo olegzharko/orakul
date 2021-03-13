@@ -1,0 +1,28 @@
+@import '../../../../../../constants.scss';
+
+.schedulerForm {
+
+  &__tabs {
+    width: 100%;
+    height: 56px;
+    border-bottom: $border;
+    display: flex;
+    
+
+    .item {
+      @include form_text;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      cursor: pointer;
+      transition: $transition_default;
+    }
+
+    .selected {
+      background-color: #C0C1C1;
+      cursor: default;
+    }
+  }
+};

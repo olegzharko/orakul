@@ -1,12 +1,27 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable arrow-body-style */
-import { useMemo, useState, useCallback } from 'react';
+import {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect
+} from 'react';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
 import fetchDeveloperInfo from '../../../../../../../../actions/fetchDeveloperInfo';
-import { setDevelopersInfo, setSelectedNewAppointment } from '../../../../../../../../store/scheduler/actions';
+
+import {
+  setDevelopersInfo,
+  setEditAppointmentData,
+  setSelectedNewAppointment,
+  setSelectedOldAppointment
+} from '../../../../../../../../store/scheduler/actions';
+
 import { clientItem, immovableItem } from './types';
 import createNewCard from '../../../../../../../../actions/createNewCard';
+import editCalendarCard from '../../../../../../../../actions/editCalendarCard';
+
 import {
   ClientItem,
   ImmovableItem,
@@ -14,18 +29,22 @@ import {
   NewCard
 } from '../../../../../../../../types';
 
-export const useForm = () => {
+export type Props = {
+  selectedCard: any,
+  initialValues?: any,
+  edit?: boolean,
+}
+
+export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.token);
   const { options, developersInfo, isLoading } = useSelector(
     (state: State) => state.scheduler
   );
-  const newSelectedAppointment = useSelector(
-    (state: State) => state.scheduler.newSelectedAppointment
-  );
+  const [insideEdit, setEdit] = useState<boolean>(edit || false);
 
   // Form State
-  const [notary, setNotary] = useState<number | null>(null);
+  const [notary, setNotary] = useState<number | null>(initialValues?.card.notary_id || null);
   const [devCompanyId, setDevCompanyId] = useState<number | null>(null);
   const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
   const [devManagerId, setDevManagerId] = useState<number | null>(null);
@@ -51,6 +70,29 @@ export const useForm = () => {
   const onNotaryChange = useCallback((value) => {
     setNotary(value);
   }, []);
+
+  useEffect(() => {
+    if (initialValues) {
+      setEdit(true);
+      setDevCompanyId(initialValues.card.dev_company_id);
+      setDevRepresentativeId(initialValues.card.dev_representative_id);
+      setDevManagerId(initialValues.card.dev_manager_id);
+      setImmovables(
+        initialValues.immovables.length === 0
+          ? [immovableItem]
+          : initialValues.immovables
+      );
+      setClients(
+        initialValues.clients.length === 0
+          ? [clientItem]
+          : initialValues.clients
+      );
+    }
+
+    if (initialValues?.card.dev_company_id && token) {
+      fetchDeveloperInfo(dispatch, token, initialValues.card.dev_company_id);
+    }
+  }, [initialValues]);
 
   const onDeveloperChange = useCallback(
     (value) => {
@@ -98,7 +140,6 @@ export const useForm = () => {
   );
 
   // Form CTA
-
   const onClearAll = useCallback(() => {
     setNotary(null);
     setDevCompanyId(null);
@@ -113,27 +154,33 @@ export const useForm = () => {
   }, [immovables]);
 
   const onRemoveImmovable = useCallback((index: number) => {
-    setImmovables((prev) => prev.filter((item, mapIndex) => mapIndex !== index));
+    setImmovables((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
   }, [immovables]);
 
   const onAddClients = useCallback(() => {
     setClients([...clients, clientItem]);
   }, [clients]);
 
+  const onRemoveClient = useCallback((index: number) => {
+    setClients((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
+  }, [clients]);
+
   const activeAddButton = useMemo(() => {
     return Boolean(devCompanyId)
     && immovables.length
-    && immovables.every((item: ImmovableItem) => item.building_id && item.imm_num);
-  }, [devCompanyId, immovables]);
+    && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
+    && selectedCard;
+  }, [devCompanyId, immovables, selectedCard]);
 
   const onFormCreate = useCallback(() => {
-    const date = newSelectedAppointment.date.split('.').reverse().join('.');
-    const date_time = `${newSelectedAppointment.year}.${date} ${newSelectedAppointment.time}`;
+    const date = selectedCard.date.split('.').reverse().join('.');
+    const date_time = `${selectedCard.year}.${date}. ${selectedCard.time}`;
 
     const formatImmovables = immovables.map((item: ImmovableItem) => ({
       ...item,
       contract_type_id: item.contract_type_id || options.form_data.immovable_type[0].id,
       imm_type_id: item.imm_type_id || options.form_data.immovable_type[0].id,
+      imm_num: item.imm_number
     }));
 
     const data: NewCard = {
@@ -143,28 +190,38 @@ export const useForm = () => {
       dev_company_id: devCompanyId,
       dev_representative_id: devRepresentativeId,
       dev_manager_id: devManagerId,
-      room_id: newSelectedAppointment.room,
+      room_id: selectedCard.room,
       notary_id: notary || notaries[0].id,
     };
 
     if (token) {
-      createNewCard(dispatch, token, data)
-        .then(({ success }: any) => {
-          if (success) {
-            onClearAll();
-          }
-        });
-      dispatch(setSelectedNewAppointment(null));
+      if (edit) {
+        editCalendarCard(dispatch, token, data, selectedCard.i);
+        setEdit(false);
+      } else {
+        createNewCard(dispatch, token, data)
+          .then(({ success }: any) => {
+            if (success) {
+              onClearAll();
+            }
+          });
+        dispatch(setSelectedNewAppointment(null));
+      }
     }
   }, [
     devCompanyId,
     devRepresentativeId,
     devManagerId,
-    newSelectedAppointment,
+    selectedCard,
     notary,
     immovables,
     clients
   ]);
+
+  const onCloseForm = useCallback(() => {
+    dispatch(setSelectedOldAppointment(null));
+    dispatch(setEditAppointmentData(null));
+  }, []);
 
   return {
     shouldLoad,
@@ -179,6 +236,7 @@ export const useForm = () => {
     immovables,
     clients,
     activeAddButton,
+    insideEdit,
     onNotaryChange,
     onDeveloperChange,
     onRepresentativeChange,
@@ -186,9 +244,12 @@ export const useForm = () => {
     onImmovablesChange,
     onAddImmovables,
     onRemoveImmovable,
+    onRemoveClient,
     onClientsChange,
     onAddClients,
     onClearAll,
     onFormCreate,
+    onCloseForm,
+    setEdit,
   };
 };

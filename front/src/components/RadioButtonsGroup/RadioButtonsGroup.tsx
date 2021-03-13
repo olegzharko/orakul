@@ -35,7 +35,11 @@ export const RadioButtonsGroup = ({
   return (
     <div className="radio-buttons-group">
       {buttons.map(({ id, title }: Button) => (
-        <div className="radio-buttons-group__element">
+        <div
+          className={`radio-buttons-group__element ${
+            buttons.length === 1 ? 'edit' : ''
+          }`}
+        >
           <input
             type="radio"
             id={unicId + title}

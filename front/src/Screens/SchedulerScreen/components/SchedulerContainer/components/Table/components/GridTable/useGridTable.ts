@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
 
 export type Props = {
-  raws: any;
+  rows: any;
   columns: any;
 };
 
