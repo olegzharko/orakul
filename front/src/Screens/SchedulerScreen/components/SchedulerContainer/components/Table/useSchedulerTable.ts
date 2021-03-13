@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable import/prefer-default-export */
 import { useCallback, useEffect, useMemo } from 'react';
@@ -8,6 +9,7 @@ import fetchSchedulerSettings from '../../../../../../actions/fetchSchedulerSett
 import { setSelectedOldAppointment } from '../../../../../../store/scheduler/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
+import moveCalendarCard from '../../../../../../actions/moveCalendarCard';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
@@ -45,9 +47,26 @@ export const useSchedulerTable = () => {
 
   const handleAppointmentDrag = useCallback(
     (appointment) => {
-      formatAppointmentDate(hours, rooms, days, appointment.y, appointment.x);
+      const { year, date, time, room } = formatAppointmentDate(
+        hours,
+        rooms,
+        days,
+        appointment.y,
+        appointment.x
+      );
+
+      const date_time = `${year}.${date}. ${time}`;
+
+      const data = {
+        date_time,
+        room_id: room,
+      };
+
+      if (token) {
+        moveCalendarCard(dispatch, token, data, appointment.i);
+      }
     },
-    [hours, days]
+    [hours, days, rooms, days]
   );
 
   const onAppointmentClick = useCallback(

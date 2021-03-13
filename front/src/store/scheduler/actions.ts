@@ -8,6 +8,7 @@ export const ACTIONS = {
   SET_IS_LOADING: 'SET_IS_LOADING',
   ADD_NEW_APPOINTMENT: 'ADD_NEW_APPOINTMENT',
   SET_MODAL_INFO: 'SET_MODAL_INFO',
+  EDIT_APPOINTMENTS: 'EDIT_APPOINTMENTS',
 };
 
 export const setSchedulerOptions = (payload: any) => ({
@@ -42,6 +43,11 @@ export const addNewAppointment = (payload: any) => ({
 
 export const setEditAppointmentData = (payload: any) => ({
   type: ACTIONS.SET_EDIT_APPOINTMENT_DATA,
+  payload,
+});
+
+export const setEditAppointmens = (payload: any) => ({
+  type: ACTIONS.EDIT_APPOINTMENTS,
   payload,
 });
 

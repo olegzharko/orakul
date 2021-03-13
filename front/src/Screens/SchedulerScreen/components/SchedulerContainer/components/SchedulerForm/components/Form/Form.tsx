@@ -115,7 +115,7 @@ const SchedulerForm = (props: Props) => {
             <PrimaryButton
               label="Редагувати"
               onClick={() => meta.setEdit(false)}
-              disabled={!meta.activeAddButton}
+              disabled={props.edit ? false : !meta.activeAddButton}
               className="schedulerForm__editButton"
             />
           )}
