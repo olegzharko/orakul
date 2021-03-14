@@ -46,8 +46,8 @@ class SortController extends BaseController
         $cards = $this->card->get_all_calendar_cards();
 
         foreach ($cards as $key => $card) {
-            if (!in_array($card->id, $search_cards_id))
-                $cards[$key]->title = "";
+            if (!in_array($card['id'], $search_cards_id))
+                $cards[$key]['title'] = "";
         }
 
         return  $this->sendResponse($result, 'Картки після сортування');
