@@ -28,6 +28,7 @@
       td {
         text-align: center;
         height: 56px;
+        @include primary_title;
       }
     }
 
