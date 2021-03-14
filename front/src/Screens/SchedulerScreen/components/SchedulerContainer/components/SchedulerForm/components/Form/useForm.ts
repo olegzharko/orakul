@@ -174,8 +174,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   }, [devCompanyId, immovables, selectedCard]);
 
   const onFormCreate = useCallback(() => {
-    const date = selectedCard.date.split('.').reverse().join('.');
-    const date_time = `${selectedCard.year}.${date}. ${selectedCard.time}`;
+    const date_time = `${selectedCard.year}.${selectedCard.date}. ${selectedCard.time}`;
 
     const formatImmovables = immovables.map((item: ImmovableItem) => ({
       ...item,
