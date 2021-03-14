@@ -3,7 +3,7 @@ import './index.scss';
 
 // Components
 import SchedulerTable from './components/Table/SchedulerTable';
-import SchedulerFilter from './components/Filter';
+import SchedulerFilter from './components/SchedulerFilter';
 import SchedulerForm from './components/SchedulerForm';
 
 const SchedulerContainer = () => (

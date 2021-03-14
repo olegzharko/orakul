@@ -9,6 +9,7 @@ export const ACTIONS = {
   ADD_NEW_APPOINTMENT: 'ADD_NEW_APPOINTMENT',
   SET_MODAL_INFO: 'SET_MODAL_INFO',
   EDIT_APPOINTMENTS: 'EDIT_APPOINTMENTS',
+  SET_FILTER_INITIAL_DATA: 'SET_FILTER_INITIAL_DATA',
 };
 
 export const setSchedulerOptions = (payload: any) => ({
@@ -53,6 +54,11 @@ export const setEditAppointmens = (payload: any) => ({
 
 export const setModalInfo = (payload: any) => ({
   type: ACTIONS.SET_MODAL_INFO,
+  payload,
+});
+
+export const setFilterInitialData = (payload: any) => ({
+  type: ACTIONS.SET_FILTER_INITIAL_DATA,
   payload,
 });
 
