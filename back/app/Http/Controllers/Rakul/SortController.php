@@ -28,10 +28,7 @@ class SortController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $search_cards_id = DB::table('cards')
-            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
-            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
-            ->where(function ($query) use ($r) {
+        $search_cards_id = Card::where(function ($query) use ($r) {
                 if ($r['notary_id'])
                     $query = $query->where('cards.notary_id', $r['notary_id']);
                 if ($r['dev_company_id'])
@@ -44,7 +41,7 @@ class SortController extends BaseController
                     $query = $query->where('contracts.accompanying_id', $r['accompanying_id']);
 
             return $query;
-        })->pluck('id');
+        })->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')->pluck('id');
 
         $cards = $this->card->get_all_calendar_cards();
 
