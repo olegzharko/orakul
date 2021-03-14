@@ -42,14 +42,8 @@ class CardController extends BaseController
     public function index()
     {
         $result = null;
-        $date = new \DateTime();
 
-        $rooms = Room::where('active', true)->pluck('id')->toArray();
-        $times = Time::where('active', true)->pluck('time')->toArray();
-
-        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date->format('Y.m.d'))->where('cancelled', false)->get();
-
-        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+        $result = $this->get_all_calendar_cards();
 
         return $this->sendResponse($result, 'Картки з договорами');
     }
@@ -559,5 +553,19 @@ class CardController extends BaseController
     public function get_card_instructions($card)
     {
         return ['Паспорт', 'ІПН', 'Стать покупця'];
+    }
+
+    public function get_all_calendar_cards()
+    {
+        $date = new \DateTime();
+
+        $rooms = Room::where('active', true)->pluck('id')->toArray();
+        $times = Time::where('active', true)->pluck('time')->toArray();
+
+        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date->format('Y.m.d'))->where('cancelled', false)->get();
+
+        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+
+        return $result;
     }
 }
