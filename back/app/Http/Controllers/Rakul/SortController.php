@@ -43,11 +43,11 @@ class SortController extends BaseController
             return $query;
         })->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')->pluck('cards.id')->toArray();
 
-        $cards = $this->card->get_all_calendar_cards();
+        $result = $this->card->get_all_calendar_cards();
 
-        foreach ($cards as $key => $card) {
+        foreach ($result as $key => $card) {
             if (!in_array($card['i'], $search_cards_id))
-                $cards[$key]['title'] = "";
+                $result[$key]['title'] = "";
         }
 
         return  $this->sendResponse($result, 'Картки після сортування');
