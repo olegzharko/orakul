@@ -14,6 +14,7 @@ export type SchedulerState = {
     success: boolean;
     message: string;
   };
+  filterInitialData: any;
 };
 
 const initialState: SchedulerState = {
@@ -29,6 +30,7 @@ const initialState: SchedulerState = {
     message: '',
   },
   isLoading: false,
+  filterInitialData: null,
 };
 
 const reducer = (state = initialState, action: REDUX_ACTION) => {
@@ -63,7 +65,9 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
     case ACTIONS.SET_EDIT_APPOINTMENT_DATA:
       return { ...state, editAppointmentData: action.payload };
     case ACTIONS.SET_MODAL_INFO:
-      return { ...state, modalInfo: { ...action.payload } };
+      return { ...state, modalInfo: action.payload };
+    case ACTIONS.SET_FILTER_INITIAL_DATA:
+      return { ...state, filterInitialData: action.payload };
     default:
       return state;
   }
