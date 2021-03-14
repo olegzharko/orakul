@@ -5,6 +5,7 @@
   &__filter {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     box-sizing: border-box;
     padding: 12px 0;
 
@@ -13,8 +14,18 @@
       margin-left: 30px;
       display: flex;
       align-items: center;
-      flex-grow: 1;
       flex-wrap: wrap;
+
+      &__clear {
+        cursor: pointer;
+        transition: $transition_default;
+        border: $border;
+        height: 40px;
+
+        &:hover {
+          opacity: .5;
+        }
+      }
 
       &__select {
 

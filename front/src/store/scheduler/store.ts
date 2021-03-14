@@ -15,6 +15,7 @@ export type SchedulerState = {
     message: string;
   };
   filterInitialData: any;
+  schedulerLock: boolean;
 };
 
 const initialState: SchedulerState = {
@@ -31,6 +32,7 @@ const initialState: SchedulerState = {
   },
   isLoading: false,
   filterInitialData: null,
+  schedulerLock: true,
 };
 
 const reducer = (state = initialState, action: REDUX_ACTION) => {
@@ -68,6 +70,8 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
       return { ...state, modalInfo: action.payload };
     case ACTIONS.SET_FILTER_INITIAL_DATA:
       return { ...state, filterInitialData: action.payload };
+    case ACTIONS.SET_SCHEDULER_LOCK:
+      return { ...state, schedulerLock: action.payload };
     default:
       return state;
   }

@@ -10,6 +10,7 @@ export const ACTIONS = {
   SET_MODAL_INFO: 'SET_MODAL_INFO',
   EDIT_APPOINTMENTS: 'EDIT_APPOINTMENTS',
   SET_FILTER_INITIAL_DATA: 'SET_FILTER_INITIAL_DATA',
+  SET_SCHEDULER_LOCK: 'SET_SCHEDULER_LOCK',
 };
 
 export const setSchedulerOptions = (payload: any) => ({
@@ -59,6 +60,11 @@ export const setModalInfo = (payload: any) => ({
 
 export const setFilterInitialData = (payload: any) => ({
   type: ACTIONS.SET_FILTER_INITIAL_DATA,
+  payload,
+});
+
+export const setSchedulerLock = (payload: boolean) => ({
+  type: ACTIONS.SET_SCHEDULER_LOCK,
   payload,
 });
 
