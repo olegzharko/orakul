@@ -41,7 +41,7 @@ class SortController extends BaseController
                     $query = $query->where('contracts.accompanying_id', $r['accompanying_id']);
 
             return $query;
-        })->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')->pluck('cards.id');
+        })->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')->pluck('cards.id')->toArray();
 
         $cards = $this->card->get_all_calendar_cards();
 
