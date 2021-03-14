@@ -1,13 +1,11 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable object-curly-newline */
-/* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import './GridLayout.scss';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import $ from 'jquery';
 import { v4 as uuidv4 } from 'uuid';
+import { useSelector } from 'react-redux';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -18,6 +16,7 @@ export default function GridLayout({
   handleClick,
 }) {
   const [dragAndDropWidth, setDragAndDropWidth] = useState(1200);
+  const { schedulerLock } = useSelector((state) => state.scheduler);
 
   useEffect(() => {
     setDragAndDropWidth($('.scheduler__appointments').width());
@@ -44,6 +43,7 @@ export default function GridLayout({
       preventCollision
       layout={appointments}
       onDragStop={onDrag}
+      isDraggable={!schedulerLock}
     >
       {appointments.map((appointment) => (
         <div

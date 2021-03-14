@@ -1,4 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+/* eslint-disable prettier/prettier */
+import {
+  useEffect, useMemo, useState, useCallback
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
 import fetchSchedulerFilter from '../../../../../../../../actions/fetchSchedulerFilter';
@@ -52,6 +55,15 @@ export const useFilter = () => {
     string | null
   >(null);
 
+  const clearAll = useCallback(() => {
+    setSelectedNotary(null);
+    setSelectedReader(null);
+    setSelectedAccompanying(null);
+    setSelectedContractType(null);
+    setSelectedDeveloper(null);
+    setSelectedRepresentative(null);
+  }, []);
+
   // useEffects
   useEffect(() => {
     setSelectedRepresentative(null);
@@ -95,11 +107,18 @@ export const useFilter = () => {
     contractTypes,
     developers,
     representative,
+    selectedNotary,
+    selectedReader,
+    selectedRepresentative,
+    selectedDeveloper,
+    selectedContractType,
+    selectedAccompanying,
     setSelectedNotary,
     setSelectedReader,
     setSelectedAccompanying,
     setSelectedContractType,
     setSelectedDeveloper,
     setSelectedRepresentative,
+    clearAll,
   };
 };

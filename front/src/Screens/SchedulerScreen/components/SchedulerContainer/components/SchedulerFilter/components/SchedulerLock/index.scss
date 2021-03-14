@@ -1,0 +1,24 @@
+@import '../../../../../../../../constants.scss';
+
+.scheduler {
+
+  &__lock-button {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: $border;
+    border-radius: 5px;
+    transition: $transition_default;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .5;
+    }
+
+    &.unLock {
+      background-color: white;
+    }
+  }
+}

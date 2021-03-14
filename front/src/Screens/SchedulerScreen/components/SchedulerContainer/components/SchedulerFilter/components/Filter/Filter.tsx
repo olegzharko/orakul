@@ -16,6 +16,7 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '115px' }}>
         <CustomSelect
           data={meta.notaries}
+          selectedValue={meta.selectedNotary}
           onChange={meta.setSelectedNotary}
           label="Нотаріус"
           size="small"
@@ -25,6 +26,7 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '90px' }}>
         <CustomSelect
           data={meta.readers}
+          selectedValue={meta.selectedReader}
           onChange={meta.setSelectedReader}
           label="Читач"
           size="small"
@@ -34,6 +36,7 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '110px' }}>
         <CustomSelect
           data={meta.accompanyings}
+          selectedValue={meta.selectedAccompanying}
           onChange={meta.setSelectedAccompanying}
           label="Видавач"
           size="small"
@@ -43,6 +46,7 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '150px' }}>
         <CustomSelect
           data={[]}
+          selectedValue={meta.selectedContractType}
           onChange={meta.setSelectedContractType}
           label="Тип договору"
           size="small"
@@ -52,6 +56,7 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '140px' }}>
         <CustomSelect
           data={meta.developers}
+          selectedValue={meta.selectedDeveloper}
           onChange={meta.setSelectedDeveloper}
           label="Забудовник"
           size="small"
@@ -61,9 +66,19 @@ const Filter = () => {
       <div className="mh6 filter__select" style={{ width: '125px' }}>
         <CustomSelect
           data={meta.representative}
+          selectedValue={meta.selectedRepresentative}
           onChange={meta.setSelectedRepresentative}
           label="Підписант"
           size="small"
+        />
+      </div>
+
+      <div className="mh6 df">
+        <img
+          src="/icons/clear-form.svg"
+          alt="clear form"
+          onClick={meta.clearAll}
+          className="filter__clear"
         />
       </div>
     </div>
