@@ -14,6 +14,7 @@ const SchedulerForm = () => {
       <div className="schedulerForm__tabs">
         <div
           className={`item ${meta.selectedTab === 0 ? 'selected' : ''}`}
+          style={{ backgroundColor: !meta.editAppointmentData ? 'white' : '' }}
           onClick={() => meta.setSelectedTab(0)}
         >
           {meta.newSelectedAppointment

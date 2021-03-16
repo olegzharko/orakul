@@ -1,4 +1,6 @@
-import { combineReducers, createStore } from 'redux';
+/* eslint-disable import/no-extraneous-dependencies */
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import token from './token/store';
 import scheduler from './scheduler/store';
 
@@ -7,4 +9,4 @@ const reducer = combineReducers({
   scheduler,
 });
 
-export default createStore(reducer);
+export default createStore(reducer, applyMiddleware(thunk));

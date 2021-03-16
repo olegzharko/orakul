@@ -9,18 +9,18 @@ import {
 
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
-import fetchDeveloperInfo from '../../../../../../../../actions/fetchDeveloperInfo';
 
 import {
   setDevelopersInfo,
   setEditAppointmentData,
   setSelectedNewAppointment,
-  setSelectedOldAppointment
+  setSelectedOldAppointment,
+  createNewCard,
+  editCalendarCard,
+  fetchDeveloperInfo
 } from '../../../../../../../../store/scheduler/actions';
 
 import { clientItem, immovableItem } from './types';
-import createNewCard from '../../../../../../../../actions/createNewCard';
-import editCalendarCard from '../../../../../../../../actions/editCalendarCard';
 
 import {
   ClientItem,
@@ -90,8 +90,8 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
       );
     }
 
-    if (initialValues?.card.dev_company_id && token) {
-      fetchDeveloperInfo(dispatch, token, initialValues.card.dev_company_id);
+    if (initialValues?.card.dev_company_id) {
+      dispatch(fetchDeveloperInfo(initialValues.card.dev_company_id));
     }
   }, [initialValues]);
 
@@ -103,11 +103,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
         dispatch(setDevelopersInfo({}));
       }
 
-      if (token) {
-        fetchDeveloperInfo(dispatch, token, value);
-      }
+      dispatch(fetchDeveloperInfo(value));
     },
-    [token, devCompanyId]
+    []
   );
 
   const onRepresentativeChange = useCallback(
@@ -196,16 +194,12 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
     if (token) {
       if (edit) {
-        editCalendarCard(dispatch, token, data, selectedCard.i);
+        dispatch(editCalendarCard(data, selectedCard.i));
         setEdit(true);
       } else {
-        createNewCard(dispatch, token, data)
-          .then(({ success }: any) => {
-            if (success) {
-              onClearAll();
-            }
-          });
+        dispatch(createNewCard(data));
         dispatch(setSelectedNewAppointment(null));
+        onClearAll();
       }
     }
   }, [

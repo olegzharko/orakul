@@ -1,0 +1,41 @@
+@import '../../constants.scss';
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $grey;
+  height: 100px;
+  width: 100%;
+
+  &__search {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    box-sizing: border-box;
+    border-radius: 4px;
+    height: 56px;
+    width: 330px;
+
+    input {
+      border: none;
+      outline: none;
+      width: 100%;
+      background-color: transparent;
+      @include form_text;
+      color: $primary;
+      font-size: 16px;
+      line-height: 24px;
+      padding: 10px;
+
+      &::placeholder {
+        color: $primary;
+      }
+    } 
+
+    img {
+      height: 24px;
+    }
+  }
+}

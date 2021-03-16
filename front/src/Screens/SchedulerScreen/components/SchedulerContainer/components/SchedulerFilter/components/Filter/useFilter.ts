@@ -4,10 +4,9 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
-import fetchSchedulerFilter from '../../../../../../../../actions/fetchSchedulerFilter';
-import fetchDeveloperInfo from '../../../../../../../../actions/fetchDeveloperInfo';
 import { SelectItem } from '../../../../../../../../types';
-import fetchAppointmentsByFilter from '../../../../../../../../actions/fetchAppointmentsByFilter';
+import { fetchAppointmentsByFilter, fetchSchedulerFilter } from '../../../../../../../../store/scheduler/actions';
+import getDeveloperInfo from '../../../../../../../../services/getDeveloperInfo';
 
 export const useFilter = () => {
   const dispatch = useDispatch();
@@ -15,9 +14,7 @@ export const useFilter = () => {
   const { filterInitialData } = useSelector((state: State) => state.scheduler);
 
   useEffect(() => {
-    if (token) {
-      fetchSchedulerFilter(dispatch, token);
-    }
+    dispatch(fetchSchedulerFilter());
   }, [token]);
 
   const readers = useMemo(() => filterInitialData?.reader, [filterInitialData]);
@@ -68,12 +65,8 @@ export const useFilter = () => {
   useEffect(() => {
     setSelectedRepresentative(null);
     if (token && selectedDeveloper) {
-      fetchDeveloperInfo(
-        dispatch,
-        token,
-        +selectedDeveloper,
-        true
-      ).then((data) => setRepresentative(data.representative || []));
+      getDeveloperInfo(token, +selectedDeveloper)
+        .then((data) => setRepresentative(data.representative || []));
     }
   }, [selectedDeveloper]);
 
@@ -87,9 +80,7 @@ export const useFilter = () => {
       dev_assistant_id: selectedRepresentative,
     };
 
-    if (token) {
-      fetchAppointmentsByFilter(dispatch, token, data);
-    }
+    dispatch(fetchAppointmentsByFilter(data));
   }, [
     selectedNotary,
     selectedReader,

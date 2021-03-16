@@ -3,13 +3,15 @@
 /* eslint-disable import/prefer-default-export */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import fetchAppointments from '../../../../../../actions/fetchAppointments';
-import fetchCalendarCard from '../../../../../../actions/fetchCalendarCard';
-import fetchSchedulerSettings from '../../../../../../actions/fetchSchedulerSettings';
-import { setSelectedOldAppointment } from '../../../../../../store/scheduler/actions';
+import {
+  setSelectedOldAppointment,
+  fetchAppointments,
+  fetchCalendarCard,
+  fetchSchedulerSettings,
+  moveCalendarCard,
+} from '../../../../../../store/scheduler/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
-import moveCalendarCard from '../../../../../../actions/moveCalendarCard';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
@@ -19,9 +21,9 @@ export const useSchedulerTable = () => {
   );
 
   useEffect(() => {
-    if (token && !isLoading) {
-      fetchSchedulerSettings(dispatch, token);
-      fetchAppointments(dispatch, token);
+    if (!isLoading) {
+      dispatch(fetchSchedulerSettings());
+      dispatch(fetchAppointments());
     }
   }, [token]);
 
@@ -62,9 +64,7 @@ export const useSchedulerTable = () => {
         room_id: room,
       };
 
-      if (token) {
-        moveCalendarCard(dispatch, token, data, appointment.i);
-      }
+      dispatch(moveCalendarCard(data, appointment.i));
     },
     [hours, days, rooms, days]
   );
@@ -73,9 +73,7 @@ export const useSchedulerTable = () => {
     async ({ x, y, i }: any) => {
       const payload = formatAppointmentDate(hours, rooms, days, y, x);
 
-      if (token) {
-        await fetchCalendarCard(dispatch, token, i);
-      }
+      dispatch(fetchCalendarCard(i));
 
       dispatch(
         setSelectedOldAppointment({
