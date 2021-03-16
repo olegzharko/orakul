@@ -1,3 +1,18 @@
+/* eslint-disable consistent-return */
+import { Dispatch } from 'react';
+import { NewCard } from '../../types';
+import { State } from '../types';
+import createNewCardService from '../../services/createNewCard';
+import editCalendarCardService from '../../services/editCalendarCard';
+import getAppointments from '../../services/getAppointments';
+import setSchedulerFilter from '../../services/setSchedulerFilter';
+import getCalendarCard from '../../services/getCalendarCard';
+import getDeveloperInfo from '../../services/getDeveloperInfo';
+import getSchedulerFilter from '../../services/getSchedulerFilter';
+import getCalendar from '../../services/getCalendar';
+import moveCalendarCardService from '../../services/moveCalendarCard';
+import searchAppointmentsServices from '../../services/searchAppointments';
+
 export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
   SET_APPOINTMENTS: 'SET_APPOINTMENTS',
@@ -72,3 +87,177 @@ export const setIsLoading = (payload: boolean) => ({
   type: ACTIONS.SET_IS_LOADING,
   payload,
 });
+
+// Thunk actions
+export const createNewCard = (data: NewCard) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const res = await createNewCardService(token, data);
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success: res.success,
+        message: res.message,
+      })
+    );
+
+    if (res.success) {
+      dispatch(addNewAppointment(res.data));
+    }
+  }
+};
+
+export const editCalendarCard = (bodyData: NewCard, id: number) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const { success, message, data } = await editCalendarCardService(
+      token,
+      bodyData,
+      id
+    );
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success,
+        message,
+      })
+    );
+
+    if (success) {
+      dispatch(setEditAppointmens(data));
+    }
+  }
+};
+
+export const fetchAppointments = () => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    dispatch(setIsLoading(true));
+    const data = await getAppointments(token);
+
+    dispatch(setAppointments(Object.values(data)));
+    dispatch(setIsLoading(false));
+  }
+};
+
+export const fetchAppointmentsByFilter = (bodyData: any) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const { data, success } = await setSchedulerFilter(token, bodyData);
+
+    if (success) {
+      dispatch(setAppointments(Object.values(data)));
+    }
+  }
+};
+
+export const fetchCalendarCard = (id: string) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const data = await getCalendarCard(token, id);
+    dispatch(setEditAppointmentData(data));
+  }
+};
+
+export const fetchDeveloperInfo = (
+  id: number,
+  notDispatch: boolean = false
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const data = await getDeveloperInfo(token, id);
+
+    if (!notDispatch) {
+      dispatch(setDevelopersInfo(data));
+    }
+  }
+};
+
+export const fetchSchedulerFilter = () => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const data = await getSchedulerFilter(token);
+    dispatch(setFilterInitialData(data));
+  }
+};
+
+export const fetchSchedulerSettings = () => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    dispatch(setIsLoading(true));
+    const data = await getCalendar(token);
+    dispatch(setSchedulerOptions(data));
+    dispatch(setIsLoading(false));
+  }
+};
+
+export const moveCalendarCard = (
+  bodyData: {
+    date_time: string;
+    room_id: number;
+  },
+  id: number
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const { success, data } = await moveCalendarCardService(
+      token,
+      bodyData,
+      id
+    );
+
+    if (success) {
+      dispatch(setEditAppointmens(data));
+    }
+  }
+};
+
+export const searchAppointments = (text: string, page: string) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().token;
+
+  if (token) {
+    const { success, data } = await searchAppointmentsServices(token, {
+      text,
+      page,
+    });
+
+    if (success) {
+      dispatch(setAppointments(data));
+    }
+  }
+};

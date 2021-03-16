@@ -1,9 +1,12 @@
+@import '../../../../constants.scss';
+
 .scheduler {
+  position: relative;
 
   &__container {
     position: relative;
     display: flex;
-    background-color: #E5E5E5;
+    background-color: $grey_light;
   }
 
   &__dataView {
@@ -16,7 +19,7 @@
   &__form {
     width: 30%;
     height: 100vh;
-    position: fixed;
+    position: sticky;
     overflow-y: scroll;
     right: 0;
     top: 0;
