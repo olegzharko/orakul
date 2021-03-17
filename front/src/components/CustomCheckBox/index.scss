@@ -1,0 +1,5 @@
+@import '../../constants.scss';
+
+.custom-checkBox {
+  @include form_text;
+}
