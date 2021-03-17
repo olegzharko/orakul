@@ -1,0 +1,48 @@
+@import "../../constants.scss";
+
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  &__container {
+    height: 500px;
+    display: flex;
+  }
+
+  &__carousel {
+    position: relative;
+    height: 100%;
+    width: 630px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 450px;
+    border-radius: 10px;
+    background-color: $grey;
+    margin-left: 24px;
+    padding: 65px 40px;
+    box-sizing: border-box;
+
+    & > div {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .MuiInputLabel-outlined.MuiInputLabel-shrink {
+      background-color: $grey;
+    }
+
+    .link {
+      @include form_text;
+      color: $grey_green;
+    }
+  }
+}
