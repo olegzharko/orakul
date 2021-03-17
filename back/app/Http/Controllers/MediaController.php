@@ -12,13 +12,16 @@ class MediaController extends Controller
         foreach ($model as $key => $value) {
             if ($value = $value->getMedia($media)) {
                 if ($image = $value->first()) {
-                    $model[$key]->image = str_replace(URL::to('/'), '', $image->getUrl());
+//                    $model[$key]->image = str_replace(URL::to('/'), '', $image->getUrl());
+                    $model[$key]->image = $image->getUrl();
+
                     unset($model[$key]->media);
                 } else {
                     $model[$key]->image = "";
                 }
             }
         }
+
         return $model;
     }
 }
