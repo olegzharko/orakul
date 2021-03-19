@@ -16,7 +16,7 @@ use \App\Http\Controllers\React\ViewController;
 |
 */
 
-Route::get('/', [ViewController::class, 'index']);
+Route::get('*', [ViewController::class, 'index']);
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);
 Route::get('test_price_convert', [ConvertController::class, 'test_price_convert']);
@@ -27,5 +27,5 @@ Route::get('clear', function () {
     Artisan::call('cache:clear');
 });
 
-Route::get('creat/contract', [GeneratorController::class, 'creat_contract']);
+Route::get('creat/contract', [GeneratorController::class, 'creat_contract_by_client_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
