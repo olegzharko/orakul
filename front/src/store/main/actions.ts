@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux';
 import getToken from '../../services/getToken';
+import login from '../../services/login/Login';
 import { State } from '../types';
 
 export const ACTIONS = {
@@ -16,4 +17,17 @@ export const setToken = (payload: string) => ({
 export const fetchToken = () => async (dispatch: Dispatch<any>) => {
   const token = await getToken();
   dispatch(setToken(token));
+};
+
+export const sendLogin = (data: { email: string; password: string }) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main;
+
+  if (token) {
+    const res = await login(token, data);
+
+    console.log(res);
+  }
 };
