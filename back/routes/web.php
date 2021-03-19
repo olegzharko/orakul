@@ -30,4 +30,4 @@ Route::get('clear', function () {
 Route::get('creat/contract', [GeneratorController::class, 'creat_contract_by_client_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
 
-Route::any('/', [ViewController::class, 'index']);
+Route::any('(:any)', [ViewController::class, 'index']);
