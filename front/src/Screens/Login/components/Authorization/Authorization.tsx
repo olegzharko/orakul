@@ -9,33 +9,38 @@ import PrimaryButton from '../../../../components/PrimaryButton';
 import { useAuthorization } from './useAuthorization';
 
 const Authorization = () => {
-  const { images } = useAuthorization();
+  const meta = useAuthorization();
 
   return (
     <div className="login__container">
       <div className="login__carousel">
-        {!images && <Loader />}
-        {images && <Carousel images={images} />}
+        {!meta.images && <Loader />}
+        {meta.images && <Carousel images={meta.images} />}
       </div>
       <div className="login__form">
         <img src="/icons/logo-full.svg" alt="Rakul" />
 
         <div className="mv12">
-          <CustomInput label="E-mail" onChange={(val) => console.log(val)} />
+          <CustomInput
+            label="E-mail"
+            value={meta.email}
+            onChange={meta.setEmail}
+          />
         </div>
 
         <div className="mv12">
           <CustomPasswordInput
-            label="Password"
-            onChange={(val) => console.log(val)}
+            label="Пароль"
+            value={meta.password}
+            onChange={meta.setPassword}
           />
         </div>
 
         <div className="mv12">
           <PrimaryButton
             label="Авторизуватися"
-            onClick={() => console.log('click')}
-            disabled={false}
+            onClick={meta.handleLogin}
+            disabled={meta.disabledButton}
           />
         </div>
 

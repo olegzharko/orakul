@@ -1,5 +1,5 @@
 import { SchedulerState } from './scheduler/store';
-import { TokenState } from './token/store';
+import { MainState } from './main/store';
 
 export type REDUX_ACTION = {
   type: string;
@@ -8,5 +8,5 @@ export type REDUX_ACTION = {
 
 export type State = {
   scheduler: SchedulerState;
-  token: TokenState;
+  main: MainState;
 };

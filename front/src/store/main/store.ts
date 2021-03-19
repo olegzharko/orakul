@@ -1,11 +1,11 @@
 import { REDUX_ACTION } from '../types';
 import { ACTIONS } from './actions';
 
-export type TokenState = {
+export type MainState = {
   token: null | string;
 };
 
-const initialState: TokenState = {
+const initialState: MainState = {
   token: null,
 };
 

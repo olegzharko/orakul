@@ -37,7 +37,7 @@ export type Props = {
 
 export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.token);
+  const { token } = useSelector((state: State) => state.main);
   const { options, developersInfo, isLoading } = useSelector(
     (state: State) => state.scheduler
   );
@@ -224,10 +224,6 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     representative,
     developers,
     manager,
-    selectedNotaryId: notary,
-    selectedDeveloperId: devCompanyId,
-    selectedDevRepresentativeId: devRepresentativeId,
-    selecedDevManagerId: devManagerId,
     immovables,
     clients,
     activeAddButton,
@@ -246,5 +242,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     onFormCreate,
     onCloseForm,
     setEdit,
+    selectedNotaryId: notary,
+    selectedDeveloperId: devCompanyId,
+    selectedDevRepresentativeId: devRepresentativeId,
+    selecedDevManagerId: devManagerId,
   };
 };

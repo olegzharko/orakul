@@ -10,7 +10,7 @@ import getDeveloperInfo from '../../../../../../../../services/getDeveloperInfo'
 
 export const useFilter = () => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.token);
+  const { token } = useSelector((state: State) => state.main);
   const { filterInitialData } = useSelector((state: State) => state.scheduler);
 
   useEffect(() => {

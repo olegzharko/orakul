@@ -43,7 +43,7 @@ const CustomPasswordInput = ({ label, onChange, value = '' }: Props) => {
 
   return (
     <FormControl variant="outlined" className="custom-input">
-      <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+      <InputLabel htmlFor="outlined-adornment-password">{label}</InputLabel>
       <OutlinedInput
         id="outlined-adornment-password"
         type={showPassword ? 'text' : 'password'}
