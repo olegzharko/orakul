@@ -93,7 +93,7 @@ export const createNewCard = (data: NewCard) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const res = await createNewCardService(token, data);
@@ -116,7 +116,7 @@ export const editCalendarCard = (bodyData: NewCard, id: number) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const { success, message, data } = await editCalendarCardService(
@@ -143,7 +143,7 @@ export const fetchAppointments = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     dispatch(setIsLoading(true));
@@ -158,7 +158,7 @@ export const fetchAppointmentsByFilter = (bodyData: any) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const { data, success } = await setSchedulerFilter(token, bodyData);
@@ -173,7 +173,7 @@ export const fetchCalendarCard = (id: string) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const data = await getCalendarCard(token, id);
@@ -185,7 +185,7 @@ export const fetchDeveloperInfo = (
   id: number,
   notDispatch: boolean = false
 ) => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const data = await getDeveloperInfo(token, id);
@@ -200,7 +200,7 @@ export const fetchSchedulerFilter = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const data = await getSchedulerFilter(token);
@@ -212,7 +212,7 @@ export const fetchSchedulerSettings = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     dispatch(setIsLoading(true));
@@ -229,7 +229,7 @@ export const moveCalendarCard = (
   },
   id: number
 ) => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const { success, data } = await moveCalendarCardService(
@@ -248,7 +248,7 @@ export const searchAppointments = (text: string, page: string) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().token;
+  const { token } = getState().main;
 
   if (token) {
     const { success, data } = await searchAppointmentsServices(token, {
