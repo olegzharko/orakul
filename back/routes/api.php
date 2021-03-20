@@ -33,7 +33,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('check/user', [PassportAuthController::class, 'check_user']);
+Route::get('check/user/auth', [PassportAuthController::class, 'check_user']);
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 Route::get('slides', [SlidesController::class, 'slides']);
