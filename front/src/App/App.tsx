@@ -1,9 +1,10 @@
 import React from 'react';
 import './index.scss';
-import { Switch, Route } from 'react-router-dom';
 import { useApp } from './useApp';
-import SchedulerScreen from '../Screens/SchedulerScreen';
-import Login from '../Screens/Login';
+import Scheduler from '../Screens/SchedulerScreen';
+import Dashboard from '../Screens/DashboardScreen';
+import Login from '../Screens/LoginScreen';
+import { UserTypes } from '../types';
 
 const App: React.FC = () => {
   const { type } = useApp();
@@ -12,7 +13,15 @@ const App: React.FC = () => {
     return <Login />;
   }
 
-  return <SchedulerScreen />;
+  if (type === UserTypes.RECEPTION) {
+    return <Scheduler />;
+  }
+
+  if (type === UserTypes.PRINTER) {
+    return <Dashboard />;
+  }
+
+  return null;
 };
 
 export default App;

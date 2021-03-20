@@ -5,7 +5,7 @@ import './index.scss';
 import ForgotPassword from './components/ForgotPassword';
 import UpdatePassword from './components/UpdatePassword';
 
-const Login = () => (
+const LoginScreen = () => (
   <main className="login">
     <Switch>
       <Route path="/forgot" exact>
@@ -19,4 +19,4 @@ const Login = () => (
   </main>
 );
 
-export default Login;
+export default LoginScreen;
