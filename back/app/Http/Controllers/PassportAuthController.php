@@ -62,6 +62,27 @@ class PassportAuthController extends BaseController
         }
     }
 
+    public function check_user()
+    {
+        if (auth()->user()) {
+            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'token' => $token,
+                    'type' => auth()->user()->type,
+                ],
+                'message' => 'Авторизація прошла успішно'
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Користувач не авторизований'
+            ], 401);
+        }
+    }
+
     public function password_forgot(Request $request)
     {
         $request->validate([
