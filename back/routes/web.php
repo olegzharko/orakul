@@ -5,6 +5,8 @@ use \App\Http\Controllers\Factory\DocumentController;
 use \App\Http\Controllers\Factory\GeneratorController;
 use \App\Http\Controllers\Factory\ConvertController;
 use \App\Http\Controllers\React\ViewController;
+use App\Http\Controllers\PassportAuthController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,5 +31,8 @@ Route::get('clear', function () {
 
 Route::get('creat/contract', [GeneratorController::class, 'creat_contract_by_client_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
+
+Route::post('login', [PassportAuthController::class, 'login']);
+Route::get('check/user/auth', [PassportAuthController::class, 'check_user']);
 
 Route::get('/{slug?}', [ViewController::class, 'index']);

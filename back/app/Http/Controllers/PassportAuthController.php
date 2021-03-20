@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
+use Auth;
+use Session;
 
 class PassportAuthController extends BaseController
 {
@@ -44,6 +46,7 @@ class PassportAuthController extends BaseController
         ];
 
         if (auth()->attempt($data)) {
+            Session::put('user', auth()->user()->id);
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
             return response()->json([
                 'success' => true,
