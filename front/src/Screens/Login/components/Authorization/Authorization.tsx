@@ -12,12 +12,16 @@ const Authorization = () => {
   const meta = useAuthorization();
 
   return (
-    <div className="login__container">
+    <div className="login__authorization">
       <div className="login__carousel">
         {!meta.images && <Loader />}
         {meta.images && <Carousel images={meta.images} />}
       </div>
-      <div className="login__form">
+      <form
+        className="login__form"
+        autoComplete="on"
+        onSubmit={meta.handleLogin}
+      >
         <img src="/icons/logo-full.svg" alt="Rakul" />
 
         <div className="mv12">
@@ -47,14 +51,14 @@ const Authorization = () => {
         <div className="mv12">
           <CustomCheckBox
             label="Запам’ятати мене"
-            onChange={(val) => console.log(val)}
+            onChange={meta.setRemember}
           />
         </div>
 
-        <Link to="/login/forgot" className="link">
+        <Link to="/forgot" className="link">
           Забули пароль?
         </Link>
-      </div>
+      </form>
     </div>
   );
 };

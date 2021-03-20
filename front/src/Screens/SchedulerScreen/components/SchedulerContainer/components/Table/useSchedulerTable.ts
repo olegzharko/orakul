@@ -15,7 +15,7 @@ import formatAppointmentDate from './utils/formatAppointmentDate';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.main);
+  const { token } = useSelector((state: State) => state.main.user);
   const { options, isLoading, appointments } = useSelector(
     (state: State) => state.scheduler
   );

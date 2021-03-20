@@ -3,7 +3,7 @@ import './index.scss';
 import { useHeader } from './useHeader';
 
 const Header = () => {
-  const { onSearch, searchText } = useHeader();
+  const { onSearch, onLogout, searchText } = useHeader();
 
   return (
     <div className="header">
@@ -15,6 +15,9 @@ const Header = () => {
           value={searchText}
         />
         <img src="/icons/search.svg" alt="search" />
+      </div>
+      <div className="header__logout">
+        <img src="/icons/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>
   );

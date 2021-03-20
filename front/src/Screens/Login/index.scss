@@ -6,7 +6,7 @@
   justify-content: center;
   height: 100vh;
 
-  &__container {
+  &__authorization {
     height: 500px;
     display: flex;
   }
@@ -35,14 +35,40 @@
       display: flex;
       justify-content: center;
     }
+  }
 
-    .MuiInputLabel-outlined.MuiInputLabel-shrink {
-      background-color: $grey;
+  &__forgot, &__update {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    width: 400px;
+    background-color: $grey;
+    border-radius: 10px;
+    padding: 65px 40px;
+
+    &-title {
+      @include primary_title;
+      text-transform: uppercase;
+    }
+
+    & > div {
+      width: 100%;
     }
 
     .link {
       @include form_text;
       color: $grey_green;
     }
+  }
+
+  .MuiInputLabel-outlined.MuiInputLabel-shrink {
+    background-color: $grey;
+  }
+
+  .link {
+    @include form_text;
+    color: $grey_green;
   }
 }

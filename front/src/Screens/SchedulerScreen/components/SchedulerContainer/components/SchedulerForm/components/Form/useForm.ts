@@ -37,7 +37,7 @@ export type Props = {
 
 export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.main);
+  const { token } = useSelector((state: State) => state.main.user);
   const { options, developersInfo, isLoading } = useSelector(
     (state: State) => state.scheduler
   );

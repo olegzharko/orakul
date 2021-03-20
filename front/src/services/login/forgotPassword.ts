@@ -3,13 +3,12 @@ import requestApi from '../utils/requestApi';
 
 type BodyData = {
   email: string;
-  password: string;
 };
 
-export default async function login(bodyData: BodyData) {
+export default async function forgotPassword(bodyData: BodyData) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/login`,
+      url: `${DEFAULT_URL}/api/password/forgot`,
       method: 'POST',
       bodyData,
     });

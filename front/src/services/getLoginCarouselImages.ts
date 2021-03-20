@@ -1,11 +1,10 @@
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
-export default async function getLoginCarouselImages(token: string) {
+export default async function getLoginCarouselImages() {
   try {
     const data = await requestApi({
       url: `${DEFAULT_URL}/api/slides`,
-      headers: { Authorization: `Bearer ${token}` },
     });
 
     return data.data;
