@@ -6,7 +6,10 @@ const Header = () => {
   const { onSearch, onLogout, searchText } = useHeader();
 
   return (
-    <div className="header">
+    <div className="header container">
+      <div className="header__logo">
+        <img src="/icons/logo.svg" alt="logo" />
+      </div>
       <div className="header__search">
         <input
           type="text"
@@ -16,7 +19,7 @@ const Header = () => {
         />
         <img src="/icons/search.svg" alt="search" />
       </div>
-      <div className="header__logout">
+      <div className="header__control">
         <img src="/icons/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>

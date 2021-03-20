@@ -10,16 +10,22 @@ import useDebounce from './utils/useDebounce';
 export const useHeader = () => {
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState<string>('');
+  const [count, setCount] = useState<number>(0);
 
   const debouncedValue = useDebounce(searchText, 1000);
 
   useEffect(() => {
+    if (!count) {
+      setCount((prev: number) => prev + 1);
+      return;
+    }
+
     dispatch(searchAppointments(debouncedValue, 'calendar'));
   }, [debouncedValue]);
 
-  const onSearch = useCallback(() => (e: ChangeEvent<HTMLInputElement>) => {
+  const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-  }, []);
+  }, [searchText]);
 
   const onLogout = useCallback(() => {
     localStorage.clear();

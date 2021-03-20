@@ -1,8 +1,9 @@
+import { UserTypes } from '../../types';
 import { REDUX_ACTION } from '../types';
 import { ACTIONS } from './actions';
 
 export type User = {
-  type: string | null;
+  type: UserTypes | null;
   token: null | string;
 };
 

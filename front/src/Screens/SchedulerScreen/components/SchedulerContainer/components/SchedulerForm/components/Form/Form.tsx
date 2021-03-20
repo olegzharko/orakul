@@ -17,7 +17,7 @@ const SchedulerForm = (props: Props) => {
 
   if (meta.shouldLoad) {
     return (
-      <div className="scheduler__form schedulerForm">
+      <div className="schedulerForm">
         <Loader />
       </div>
     );
