@@ -6,18 +6,13 @@ import SchedulerScreen from '../Screens/SchedulerScreen';
 import Login from '../Screens/Login';
 
 const App: React.FC = () => {
-  useApp();
+  const { type } = useApp();
 
-  return (
-    <Switch>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/scheduler">
-        <SchedulerScreen />
-      </Route>
-    </Switch>
-  );
+  if (!type) {
+    return <Login />;
+  }
+
+  return <SchedulerScreen />;
 };
 
 export default App;

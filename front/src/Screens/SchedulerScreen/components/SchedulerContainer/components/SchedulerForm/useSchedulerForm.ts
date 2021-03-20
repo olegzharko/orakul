@@ -1,13 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { useSelector, useDispatch } from 'react-redux';
-import { useMemo, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 import { State } from '../../../../../../store/types';
-import { setModalInfo } from '../../../../../../store/scheduler/actions';
 
 export const useSchedulerForm = () => {
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const dispatch = useDispatch();
   const newSelectedAppointment = useSelector(
     (state: State) => state.scheduler.newSelectedAppointment
   );
@@ -26,26 +24,10 @@ export const useSchedulerForm = () => {
     setSelectedTab(0);
   }, [newSelectedAppointment]);
 
-  const modalInfo = useSelector((state: State) => state.scheduler.modalInfo);
-
-  const modalProps = useMemo(
-    () => ({
-      ...modalInfo,
-      handleClose: () => dispatch(
-        setModalInfo({
-          ...modalInfo,
-          open: false
-        })
-      ),
-    }),
-    [modalInfo]
-  );
-
   return {
     newSelectedAppointment,
     oldSelectedAppointment,
     editAppointmentData,
-    modalProps,
     selectedTab,
     setSelectedTab
   };

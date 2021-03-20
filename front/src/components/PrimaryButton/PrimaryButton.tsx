@@ -5,7 +5,7 @@ import './index.scss';
 
 type Props = {
   label: string;
-  onClick: () => void;
+  onClick: (e: any) => void;
   disabled: boolean;
   className?: string;
 };
