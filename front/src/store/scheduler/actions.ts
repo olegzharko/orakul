@@ -4,37 +4,27 @@ import { NewCard } from '../../types';
 import { State } from '../types';
 import createNewCardService from '../../services/createNewCard';
 import editCalendarCardService from '../../services/editCalendarCard';
-import getAppointments from '../../services/getAppointments';
-import setSchedulerFilter from '../../services/setSchedulerFilter';
 import getCalendarCard from '../../services/getCalendarCard';
 import getDeveloperInfo from '../../services/getDeveloperInfo';
 import getSchedulerFilter from '../../services/getSchedulerFilter';
 import getCalendar from '../../services/getCalendar';
 import moveCalendarCardService from '../../services/moveCalendarCard';
-import searchAppointmentsServices from '../../services/searchAppointments';
 import { setModalInfo } from '../main/actions';
+import { addNewAppointment, setEditAppointmens } from '../appointments/actions';
 
 export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
-  SET_APPOINTMENTS: 'SET_APPOINTMENTS',
   SET_DEVELOPERS_INFO: 'SET_DEVELOPERS_INFO',
   SET_SELECTED_NEW_APPOINTMENT: 'SET_SELECTED_NEW_APPOINTMENT',
   SET_SELECTED_OLD_APPOINTMENT: 'SET_SELECTED_OLD_APPOINTMENT',
   SET_EDIT_APPOINTMENT_DATA: 'SET_EDIT_APPOINTMENT_DATA',
   SET_IS_LOADING: 'SET_IS_LOADING',
-  ADD_NEW_APPOINTMENT: 'ADD_NEW_APPOINTMENT',
-  EDIT_APPOINTMENTS: 'EDIT_APPOINTMENTS',
   SET_FILTER_INITIAL_DATA: 'SET_FILTER_INITIAL_DATA',
   SET_SCHEDULER_LOCK: 'SET_SCHEDULER_LOCK',
 };
 
 export const setSchedulerOptions = (payload: any) => ({
   type: ACTIONS.SET_OPTIONS,
-  payload,
-});
-
-export const setAppointments = (payload: any) => ({
-  type: ACTIONS.SET_APPOINTMENTS,
   payload,
 });
 
@@ -53,18 +43,8 @@ export const setSelectedOldAppointment = (payload: any) => ({
   payload,
 });
 
-export const addNewAppointment = (payload: any) => ({
-  type: ACTIONS.ADD_NEW_APPOINTMENT,
-  payload,
-});
-
 export const setEditAppointmentData = (payload: any) => ({
   type: ACTIONS.SET_EDIT_APPOINTMENT_DATA,
-  payload,
-});
-
-export const setEditAppointmens = (payload: any) => ({
-  type: ACTIONS.EDIT_APPOINTMENTS,
   payload,
 });
 
@@ -84,29 +64,6 @@ export const setIsLoading = (payload: boolean) => ({
 });
 
 // Thunk actions
-export const createNewCard = (data: NewCard) => async (
-  dispatch: Dispatch<any>,
-  getState: () => State
-) => {
-  const { token } = getState().main.user;
-
-  if (token) {
-    const res = await createNewCardService(token, data);
-
-    dispatch(
-      setModalInfo({
-        open: true,
-        success: res.success,
-        message: res.message,
-      })
-    );
-
-    if (res.success) {
-      dispatch(addNewAppointment(res.data));
-    }
-  }
-};
-
 export const editCalendarCard = (bodyData: NewCard, id: number) => async (
   dispatch: Dispatch<any>,
   getState: () => State
@@ -130,36 +87,6 @@ export const editCalendarCard = (bodyData: NewCard, id: number) => async (
 
     if (success) {
       dispatch(setEditAppointmens(data));
-    }
-  }
-};
-
-export const fetchAppointments = () => async (
-  dispatch: Dispatch<any>,
-  getState: () => State
-) => {
-  const { token } = getState().main.user;
-
-  if (token) {
-    dispatch(setIsLoading(true));
-    const data = await getAppointments(token);
-
-    dispatch(setAppointments(Object.values(data)));
-    dispatch(setIsLoading(false));
-  }
-};
-
-export const fetchAppointmentsByFilter = (bodyData: any) => async (
-  dispatch: Dispatch<any>,
-  getState: () => State
-) => {
-  const { token } = getState().main.user;
-
-  if (token) {
-    const { data, success } = await setSchedulerFilter(token, bodyData);
-
-    if (success) {
-      dispatch(setAppointments(Object.values(data)));
     }
   }
 };
@@ -239,20 +166,25 @@ export const moveCalendarCard = (
   }
 };
 
-export const searchAppointments = (text: string, page: string) => async (
+export const createNewCard = (data: NewCard) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
   const { token } = getState().main.user;
 
   if (token) {
-    const { success, data } = await searchAppointmentsServices(token, {
-      text,
-      page,
-    });
+    const res = await createNewCardService(token, data);
 
-    if (success) {
-      dispatch(setAppointments(data));
+    dispatch(
+      setModalInfo({
+        open: true,
+        success: res.success,
+        message: res.message,
+      })
+    );
+
+    if (res.success) {
+      dispatch(addNewAppointment(res.data));
     }
   }
 };

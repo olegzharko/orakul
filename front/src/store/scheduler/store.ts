@@ -3,7 +3,6 @@ import { ACTIONS } from './actions';
 
 export type SchedulerState = {
   options: any;
-  appointments: any;
   developersInfo: any;
   newSelectedAppointment: any;
   oldSelectedAppointment: any;
@@ -15,7 +14,6 @@ export type SchedulerState = {
 
 const initialState: SchedulerState = {
   options: null,
-  appointments: [],
   developersInfo: {},
   newSelectedAppointment: null,
   oldSelectedAppointment: null,
@@ -29,23 +27,6 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
   switch (action.type) {
     case ACTIONS.SET_OPTIONS:
       return { ...state, options: action.payload };
-    case ACTIONS.SET_APPOINTMENTS:
-      return { ...state, appointments: action.payload };
-    case ACTIONS.ADD_NEW_APPOINTMENT:
-      return {
-        ...state,
-        appointments: [...state.appointments, action.payload],
-      };
-    case ACTIONS.EDIT_APPOINTMENTS:
-      return {
-        ...state,
-        appointments: [
-          ...state.appointments.filter(
-            (item: any) => item.i !== action.payload.i
-          ),
-          action.payload,
-        ],
-      };
     case ACTIONS.SET_DEVELOPERS_INFO:
       return { ...state, developersInfo: action.payload };
     case ACTIONS.SET_IS_LOADING:

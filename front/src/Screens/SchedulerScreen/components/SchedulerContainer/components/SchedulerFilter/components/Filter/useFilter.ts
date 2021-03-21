@@ -1,11 +1,11 @@
-/* eslint-disable prettier/prettier */
 import {
   useEffect, useMemo, useState, useCallback
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { State } from '../../../../../../../../store/types';
 import { SelectItem } from '../../../../../../../../types';
-import { fetchAppointmentsByFilter, fetchSchedulerFilter } from '../../../../../../../../store/scheduler/actions';
+import { fetchSchedulerFilter } from '../../../../../../../../store/scheduler/actions';
+import { fetchAppointmentsByFilter } from '../../../../../../../../store/appointments/actions';
 import getDeveloperInfo from '../../../../../../../../services/getDeveloperInfo';
 
 export const useFilter = () => {

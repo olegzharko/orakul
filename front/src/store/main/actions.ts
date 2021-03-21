@@ -46,10 +46,19 @@ export const sendLogin = (
   },
   remember: boolean
 ) => async (dispatch: Dispatch<any>) => {
-  const { success, data } = await login(bodyData);
+  const { success, message, data } = await login(bodyData);
+
   if (success) {
     dispatch(setToken(data.token));
     dispatch(setUser(data));
+  } else {
+    dispatch(
+      setModalInfo({
+        success,
+        message,
+        open: true,
+      })
+    );
   }
 
   if (remember) localStorage.setItem('user', JSON.stringify(data));
