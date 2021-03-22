@@ -35,7 +35,7 @@ class FilterController extends BaseController
 //        $contract_type = ContractType::select('id', 'alias')->where('active', true)->pluck('id', 'alias')->toArray();
         $contract_type = ContractType::select('id', 'alias')->where('active', true)->get();
         $developer = $this->get_developer();
-        $sort_type = SortType::select('id', 'alias', 'title')->get();
+        $sort_type = SortType::select('id', 'title')->get();
 
         $result = [
             'notary' => $notary,
