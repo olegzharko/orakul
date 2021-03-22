@@ -1,7 +1,7 @@
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
-export default async function getSchedulerFilter(token: string) {
+export default async function getFilterData(token: string) {
   try {
     const data = await requestApi({
       url: `${DEFAULT_URL}/api/filter/dropdown`,

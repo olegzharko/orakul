@@ -6,7 +6,6 @@ import createNewCardService from '../../services/createNewCard';
 import editCalendarCardService from '../../services/editCalendarCard';
 import getCalendarCard from '../../services/getCalendarCard';
 import getDeveloperInfo from '../../services/getDeveloperInfo';
-import getSchedulerFilter from '../../services/getSchedulerFilter';
 import getCalendar from '../../services/getCalendar';
 import moveCalendarCardService from '../../services/moveCalendarCard';
 import { setModalInfo } from '../main/actions';
@@ -19,7 +18,6 @@ export const ACTIONS = {
   SET_SELECTED_OLD_APPOINTMENT: 'SET_SELECTED_OLD_APPOINTMENT',
   SET_EDIT_APPOINTMENT_DATA: 'SET_EDIT_APPOINTMENT_DATA',
   SET_IS_LOADING: 'SET_IS_LOADING',
-  SET_FILTER_INITIAL_DATA: 'SET_FILTER_INITIAL_DATA',
   SET_SCHEDULER_LOCK: 'SET_SCHEDULER_LOCK',
 };
 
@@ -45,11 +43,6 @@ export const setSelectedOldAppointment = (payload: any) => ({
 
 export const setEditAppointmentData = (payload: any) => ({
   type: ACTIONS.SET_EDIT_APPOINTMENT_DATA,
-  payload,
-});
-
-export const setFilterInitialData = (payload: any) => ({
-  type: ACTIONS.SET_FILTER_INITIAL_DATA,
   payload,
 });
 
@@ -115,18 +108,6 @@ export const fetchDeveloperInfo = (
     if (!notDispatch) {
       dispatch(setDevelopersInfo(data));
     }
-  }
-};
-
-export const fetchSchedulerFilter = () => async (
-  dispatch: Dispatch<any>,
-  getState: () => State
-) => {
-  const { token } = getState().main.user;
-
-  if (token) {
-    const data = await getSchedulerFilter(token);
-    dispatch(setFilterInitialData(data));
   }
 };
 

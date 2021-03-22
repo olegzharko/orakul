@@ -1,0 +1,65 @@
+@import '../../constants.scss';
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 14px;
+
+    .title {
+      @include filter_title;
+    }
+  }
+
+  &__clear {
+    cursor: pointer;
+    transition: $transition_default;
+    border: $border;
+    height: 40px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 5px;
+
+    & > img {
+      height: 100%;
+    }
+
+    &:hover {
+      opacity: .5;
+    }
+  }
+
+  &__select {
+    margin: 10px 0;
+
+    .MuiInputLabel-outlined.MuiInputLabel-shrink {
+      background-color: white;
+    }
+  }
+
+  &.horizontal {
+    flex-direction: row;
+    margin-left: 20px;
+
+    .filter__header {
+      width: max-content;
+      margin: 0 15px 0 0;
+    }
+
+    .filter__clear {
+      background-color: $grey_thin;
+      border-color: $grey;
+      margin-left: 10px;
+    }
+
+    .filter__select {
+      margin: 0 6px;
+    }
+  }
+}

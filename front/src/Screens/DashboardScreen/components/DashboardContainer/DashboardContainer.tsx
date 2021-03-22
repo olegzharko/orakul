@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.scss';
 import Dashboard from './components/Dashboard';
-import Filter from './components/Filter';
+import Filter from './components/FilterContainer';
 import { useModal } from '../../../../components/Modal/useModal';
 import Modal from '../../../../components/Modal';
 

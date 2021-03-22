@@ -21,6 +21,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "react/destructuring-assignment": "off",
         "prettier/prettier": "off",
         "object-curly-newline": "off",
         "import/no-extraneous-dependencies": "off",

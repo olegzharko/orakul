@@ -1,14 +1,15 @@
-import { NewCard } from '../types';
+import { FilterData } from '../store/types';
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
 export default async function setSchedulerFilter(
+  place: string,
   token: string,
-  bodyData: NewCard
+  bodyData: FilterData
 ) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/filter/sort/calendar`,
+      url: `${DEFAULT_URL}/api/filter/sort/${place}`,
       headers: { Authorization: `Bearer ${token}` },
       method: 'POST',
       bodyData,

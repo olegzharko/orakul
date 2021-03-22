@@ -1,11 +1,8 @@
 import { Dispatch } from 'redux';
+import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
 import setSchedulerFilter from '../../services/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
-import createNewCardService from '../../services/createNewCard';
-import { State } from '../types';
-import { NewCard } from '../../types';
-import { setModalInfo } from '../main/actions';
 
 export const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
@@ -49,14 +46,14 @@ export const fetchAppointments = () => async (
   }
 };
 
-export const fetchAppointmentsByFilter = (bodyData: any) => async (
+export const fetchAppointmentsByFilter = (place: string, bodyData: FilterData) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
   const { token } = getState().main.user;
 
   if (token) {
-    const { data, success } = await setSchedulerFilter(token, bodyData);
+    const { data, success } = await setSchedulerFilter(place, token, bodyData);
 
     if (success) {
       dispatch(setAppointments(Object.values(data)));

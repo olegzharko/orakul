@@ -3,7 +3,7 @@ import './index.scss';
 
 // Components
 import SchedulerTable from './components/Table/SchedulerTable';
-import SchedulerFilter from './components/SchedulerFilter';
+import SchedulerFilter from './components/SchedulerFilterContainer';
 import SchedulerForm from './components/SchedulerForm';
 import { useModal } from '../../../../components/Modal/useModal';
 import Modal from '../../../../components/Modal';

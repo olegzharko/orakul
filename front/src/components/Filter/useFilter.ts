@@ -2,19 +2,23 @@ import {
   useEffect, useMemo, useState, useCallback
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../../../../../../../../store/types';
-import { SelectItem } from '../../../../../../../../types';
-import { fetchSchedulerFilter } from '../../../../../../../../store/scheduler/actions';
-import { fetchAppointmentsByFilter } from '../../../../../../../../store/appointments/actions';
-import getDeveloperInfo from '../../../../../../../../services/getDeveloperInfo';
+import { FilterData, State } from '../../store/types';
+import { SelectItem } from '../../types';
+import { fetchFilterData } from '../../store/filter/actions';
+import getDeveloperInfo from '../../services/getDeveloperInfo';
 
-export const useFilter = () => {
+export type Props = {
+  onFilterDataChange: (data: FilterData) => void;
+  horizontal?: boolean;
+}
+
+export const useFilter = ({ onFilterDataChange }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
-  const { filterInitialData } = useSelector((state: State) => state.scheduler);
+  const { filterInitialData } = useSelector((state: State) => state.filter);
 
   useEffect(() => {
-    dispatch(fetchSchedulerFilter());
+    dispatch(fetchFilterData());
   }, [token]);
 
   const readers = useMemo(() => filterInitialData?.reader, [filterInitialData]);
@@ -71,7 +75,7 @@ export const useFilter = () => {
   }, [selectedDeveloper]);
 
   useEffect(() => {
-    const data = {
+    const data: FilterData = {
       notary_id: selectedNotary,
       reader_id: selectedReader,
       giver_id: selectedAccompanying,
@@ -80,7 +84,7 @@ export const useFilter = () => {
       dev_assistant_id: selectedRepresentative,
     };
 
-    dispatch(fetchAppointmentsByFilter(data));
+    onFilterDataChange(data);
   }, [
     selectedNotary,
     selectedReader,
