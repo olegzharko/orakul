@@ -33,7 +33,7 @@ class FilterController extends BaseController
         $reader = $this->get_reader_staff();
         $accompanying = $this->get_accompanying_staff();
 //        $contract_type = ContractType::select('id', 'alias')->where('active', true)->pluck('id', 'alias')->toArray();
-        $contract_type = ContractType::select('id', 'alias')->where('active', true)->get();
+        $contract_type = ContractType::select('id', 'title')->where('active', true)->get();
         $developer = $this->get_developer();
         $sort_type = SortType::select('id', 'title')->get();
 
