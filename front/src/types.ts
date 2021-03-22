@@ -29,3 +29,9 @@ export type NewCard = {
   room_id: number;
   notary_id: number | null;
 };
+
+// eslint-disable-next-line no-shadow
+export enum UserTypes {
+  PRINTER = 'printer',
+  RECEPTION = 'reception',
+}

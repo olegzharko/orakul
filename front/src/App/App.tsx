@@ -1,23 +1,27 @@
 import React from 'react';
 import './index.scss';
-import { Switch, Route } from 'react-router-dom';
 import { useApp } from './useApp';
-import SchedulerScreen from '../Screens/SchedulerScreen';
-import Login from '../Screens/Login';
+import Scheduler from '../Screens/SchedulerScreen';
+import Dashboard from '../Screens/DashboardScreen';
+import Login from '../Screens/LoginScreen';
+import { UserTypes } from '../types';
 
 const App: React.FC = () => {
-  useApp();
+  const { type } = useApp();
 
-  return (
-    <Switch>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/scheduler">
-        <SchedulerScreen />
-      </Route>
-    </Switch>
-  );
+  if (!type) {
+    return <Login />;
+  }
+
+  if (type === UserTypes.RECEPTION) {
+    return <Scheduler />;
+  }
+
+  if (type === UserTypes.PRINTER) {
+    return <Dashboard />;
+  }
+
+  return null;
 };
 
 export default App;

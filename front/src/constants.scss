@@ -3,6 +3,8 @@ $primary: #165153;
 $grey_light: #E5E5E5;
 $grey: #C0C1C1;
 $grey_green: #546E7A;
+$light_green: #E8F5E9;
+$green: #04BC00;
 
 // Borders
 $border: 1px solid #E5E5E5;
@@ -27,4 +29,15 @@ $transition_default: all .4s ease-in;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
+}
+
+@mixin filter_title {
+  font-family: 'Montserrat', serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 31px;
+  letter-spacing: 0.83px;
+  text-transform: uppercase;
+  color: #546E7A;
 }

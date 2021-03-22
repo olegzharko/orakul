@@ -5,9 +5,11 @@ import './index.scss';
 import Modal from '../../../../../../components/Modal';
 import Form from './components/Form';
 import { useSchedulerForm } from './useSchedulerForm';
+import { useModal } from '../../../../../../components/Modal/useModal';
 
 const SchedulerForm = () => {
   const meta = useSchedulerForm();
+  const { modalProps } = useModal();
 
   return (
     <div className="schedulerForm scheduler__form">
@@ -44,7 +46,7 @@ const SchedulerForm = () => {
         />
       )}
 
-      <Modal {...meta.modalProps} />
+      <Modal {...modalProps} />
     </div>
   );
 };

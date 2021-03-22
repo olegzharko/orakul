@@ -7,6 +7,12 @@ body, p {
   margin: 0;
 }
 
+.container {
+  box-sizing: border-box;
+  padding: 0 30px;
+  width: 100%;
+}
+
 .mv12 {
   margin: 12px 0;
 }

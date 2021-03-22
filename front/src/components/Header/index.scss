@@ -3,7 +3,7 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background-color: $grey;
   height: 100px;
   width: 100%;
@@ -36,6 +36,15 @@
 
     img {
       height: 24px;
+    }
+  }
+
+  &__control {
+    cursor: pointer;
+    transition: $transition_default;
+
+    &:hover {
+      opacity: .5;
     }
   }
 }

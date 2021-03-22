@@ -6,11 +6,10 @@ type BodyData = {
   password: string;
 };
 
-export default async function login(token: string, bodyData: BodyData) {
+export default async function login(bodyData: BodyData) {
   try {
     const data = await requestApi({
       url: `${DEFAULT_URL}/api/login`,
-      headers: { Authorization: `Bearer ${token}` },
       method: 'POST',
       bodyData,
     });

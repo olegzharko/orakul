@@ -9,11 +9,6 @@ export type SchedulerState = {
   oldSelectedAppointment: any;
   editAppointmentData: any;
   isLoading: boolean;
-  modalInfo: {
-    open: boolean;
-    success: boolean;
-    message: string;
-  };
   filterInitialData: any;
   schedulerLock: boolean;
 };
@@ -25,11 +20,6 @@ const initialState: SchedulerState = {
   newSelectedAppointment: null,
   oldSelectedAppointment: null,
   editAppointmentData: null,
-  modalInfo: {
-    open: false,
-    success: false,
-    message: '',
-  },
   isLoading: false,
   filterInitialData: null,
   schedulerLock: true,
@@ -66,8 +56,6 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
       return { ...state, oldSelectedAppointment: action.payload };
     case ACTIONS.SET_EDIT_APPOINTMENT_DATA:
       return { ...state, editAppointmentData: action.payload };
-    case ACTIONS.SET_MODAL_INFO:
-      return { ...state, modalInfo: action.payload };
     case ACTIONS.SET_FILTER_INITIAL_DATA:
       return { ...state, filterInitialData: action.payload };
     case ACTIONS.SET_SCHEDULER_LOCK:
