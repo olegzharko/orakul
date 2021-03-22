@@ -12,6 +12,11 @@ class Questionnaire extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    public $fillable = [
+        'contract_id',
+        'template_id',
+    ];
+
     protected $casts = [
         'sign_date' => 'datetime',
     ];

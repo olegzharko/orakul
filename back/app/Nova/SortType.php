@@ -2,29 +2,26 @@
 
 namespace App\Nova;
 
-use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Markdown;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use \Laravel\Nova\Fields\Text;
 
-class StatementTemplate extends Resource
+class SortType extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\StatementTemplate::class;
+    public static $model = \App\Models\SortType::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -35,11 +32,9 @@ class StatementTemplate extends Resource
         'id',
     ];
 
-    public static $group = "Шаблон документу";
-
     public static function label()
     {
-        return "Запит";
+        return "Сортування";
     }
 
     /**
@@ -52,11 +47,8 @@ class StatementTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Назва', 'title')->rules('required'),
-            BelongsTo::make('Забудовник', 'develoepr', 'App\Nova\DevCompany'),
-            Files::make('Шаблон', 'path')->customPropertiesFields([
-                Markdown::make('Description'),
-            ])->rules('required'),
+            Text::make('Ключ', 'alias'),
+            Text::make('Заголовок', 'title'),
         ];
     }
 

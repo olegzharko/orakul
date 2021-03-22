@@ -43,7 +43,7 @@ Route::post('password/forgot', [PassportAuthController::class, 'password_forgot'
 Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 Route::post('password/update', [PassportAuthController::class, 'password_update'])->name('password.reset');
 
-Route::middleware('auth:api')->group(function () {
+//Route::middleware('auth:api')->group(function () {
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('logout', [PassportAuthController::class, 'logout']);
     Route::get('global_text', [TextController::class, 'global_text']);
@@ -115,4 +115,4 @@ Route::middleware('auth:api')->group(function () {
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
        });
     });
-});
+//});

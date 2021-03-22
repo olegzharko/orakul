@@ -9,6 +9,11 @@ class DeveloperStatement extends Model
 {
     use HasFactory;
 
+    public $fillable = [
+        'contract_id',
+        'template_id',
+    ];
+
     protected $casts = [
         'sign_date' => 'datetime',
     ];

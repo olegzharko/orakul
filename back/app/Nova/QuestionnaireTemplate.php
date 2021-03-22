@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use \Laravel\Nova\Fields\BelongsTo;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
@@ -53,6 +54,7 @@ class QuestionnaireTemplate extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Назва', 'title')->rules('required'),
+            BelongsTo::make('Забудовник', 'develoepr', 'App\Nova\DevCompany'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),

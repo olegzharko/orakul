@@ -3,22 +3,19 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\Controller;
+use App\Models\CardContract;
 use Illuminate\Http\Request;
 
 use App\Models\ApartmentType;
-use App\Models\Client;
+use App\Models\Card;
 use App\Models\ClientContract;
 use App\Models\ClientType;
 use App\Models\Contract;
-use App\Models\DayConvert;
-use App\Models\GenderWord;
 use App\Models\ImmFence;
-use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
 use App\Models\KeyWord;
-use App\Models\MonthConvert;
-use App\Models\NumericConvert;
-use App\Models\YearConvert;
+use App\Models\DevFence;
+use Validator;
 
 class GeneratorController extends Controller
 {
@@ -39,66 +36,71 @@ class GeneratorController extends Controller
         $this->convert = new ConvertController();
     }
 
-    public function creat_contract(Request $request)
+    public function creat_contract_by_card_id($card_id)
     {
-        $client_id = $request->get('user_id');
+        $contracts_id = null;
+        $contracts = null;
 
-        $this->client = Client::find($client_id);
-        if ($this->client) {
-            $this->pack_contract = $this->get_contract_by_client_id($client_id);
+        $validator = Validator::make([
+            'card_id' => $card_id,
+        ], [
+            'card_id' => ['required', 'numeric'],
+        ], [
+            'card_id.required' => 'Необхідно передати CARD_ID',
+            'card_id.numeric' => 'Необхідно передати CARD_ID у числовому форматі',
+        ]);
 
-            if ($this->pack_contract) {
-
-                // Підготувати данні до обробки
-                foreach ($this->pack_contract as $key => $this->contract) {
-                    if (count($this->contract->client_spouse_consent)) {
-                        $this->consents_id = array_unique(array_merge($this->consents_id, $this->contract->client_spouse_consent->pluck('id')->toArray()));
-                    }
-                    $this->pack_contract[$key]->contract = $this->set_data_contract();
-                }
-
-                $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id);
-                $this->word->creat_files();
-            } else {
-                dd("Warning: There are no new deal for user: $client_id!");
-            }
-        } else {
-            dd("Warning: There are no user_id: $client_id!");
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
         }
+
+        $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
+
+        $this->pack_contract = $this->get_contract_by_contract_id($contracts_id);
+
     }
 
-    public function get_contract_by_client_id($client_id = null)
+    public function get_contract_by_contract_id($contracts_id)
     {
-        $contracts_id = ClientContract::where('client_id', $client_id)->pluck('contract_id');
-        $contract = Contract::select(
-            'contracts.id',
-            'contracts.event_datetime',
-            'contracts.contract_template_id',
-            'contracts.event_city_id',
-            'contracts.immovable_id',
-            'contracts.dev_company_id',
-            'contracts.dev_representative_id',
-//            'contracts.client_id',
-            'contracts.notary_id',
-            'contracts.sign_date',
-        );
+        $this->pack_contract = Contract::select(
+                'contracts.id',
+                'cards.date_time as event_datetime',
+                'contracts.contract_template_id',
+                'cards.city_id as event_city_id',
+                'contracts.immovable_id',
+                'cards.dev_company_id as dev_company_id',
+                'cards.dev_representative_id as dev_representative_id',
+    //            'contracts.client_id',
+                'cards.notary_id as notary_id',
+                'contracts.sign_date',
+            )->whereIn('contracts.id', $contracts_id)
+            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
+            ->join('cards', 'cards.id', '=', 'card_contract.card_id')
+            ->get();
 
-        $contract = $contract->where(function ($query) use ($client_id, $contracts_id) {
-            if ($client_id)
-                $query = $query->whereIn('id', $contracts_id);
-            else
-                $query = $query->where('contracts.ready', false); // 0
+        $this->start_generate_contract();
+    }
 
-            return $query;
-        });
+    public function start_generate_contract()
+    {
+        if ($this->pack_contract) {
 
-        $contract = $contract->get();
-        if ( !$contract)
-            dd('Return ERROR alert. There are no record in db');
+            // Підготувати данні до обробки
+            foreach ($this->pack_contract as $key => $this->contract) {
+                if (count($this->contract->client_spouse_consent)) {
+                    $this->consents_id = array_unique(array_merge($this->consents_id, $this->contract->client_spouse_consent->pluck('id')->toArray()));
+                }
+                $this->pack_contract[$key]->contract = $this->set_data_contract();
+            }
 
-        $contract->sortBy('id');
+            $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id);
+            $this->word->creat_files();
+        } else {
+            dd("Увага: Угоди відсутні або не готові не генерації!");
+        }
 
-        return $contract;
+        unset($this->pack_contract);
+        $this->pack_contract = null;
     }
 
     public static function full_address($c)
@@ -185,7 +187,7 @@ class GeneratorController extends Controller
         $this->contract->dev_company->owner = $this->contract->dev_company->member->where('type', $client_type_dev_owner)->first();
 
         // для перевірки заборони на продавця використовується орієнтир через нерухомість, а не на пряму через власника
-        $this->contract->dev_company->owner->fence = \App\Models\DevFence::where('immovable_id', $this->contract->immovable->id)->first();
+        $this->contract->dev_company->owner->fence = DevFence::where('dev_company_id', $this->contract->dev_company->owner->id)->orderBy('date', 'desc')->first();
         $this->contract->immovable_ownership = ImmovableOwnership::get_immovable_ownership($this->contract->immovable->id);
     }
 
@@ -199,6 +201,8 @@ class GeneratorController extends Controller
 
     public function full_ascending_address_r($immovable)
     {
+        $address = null;
+
         $imm_num = $immovable->immovable_number;
         $imm_num_str = $this->convert->number_to_string($immovable->immovable_number);
         $imm_build_num = $immovable->developer_building->number;

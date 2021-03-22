@@ -69,7 +69,7 @@ class Client extends Model implements Sortable
 
     public function client_spouse_consent()
     {
-        return $this->hasMany(ClientSpouseConsent::class);
+        return $this->hasOne(ClientSpouseConsent::class);
     }
 
     public function contracts()

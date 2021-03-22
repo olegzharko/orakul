@@ -9,6 +9,11 @@ class BankAccountPayment extends Model
 {
     use HasFactory;
 
+    public $fillable = [
+        'contract_id',
+        'template_id',
+    ];
+
     public function template()
     {
         return $this->belongsTo(BankAccountTemplate::class, 'template_id');

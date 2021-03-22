@@ -10,6 +10,7 @@ use App\Models\ContractType;
 use App\Models\DeveloperBuilding;
 use App\Models\DevCompany;
 use App\Models\Notary;
+use App\Models\SortType;
 use App\Models\Staff;
 use DB;
 
@@ -31,8 +32,10 @@ class FilterController extends BaseController
         $notary = $this->get_notary();
         $reader = $this->get_reader_staff();
         $accompanying = $this->get_accompanying_staff();
-        $contract_type = ContractType::select('id', 'alias')->where('active', true)->pluck('id', 'alias')->toArray();
-        $developer = $this->get_developer();;
+//        $contract_type = ContractType::select('id', 'alias')->where('active', true)->pluck('id', 'alias')->toArray();
+        $contract_type = ContractType::select('id', 'alias')->where('active', true)->get();
+        $developer = $this->get_developer();
+        $sort_type = SortType::select('id', 'alias', 'title')->get();
 
         $result = [
             'notary' => $notary,
@@ -40,6 +43,7 @@ class FilterController extends BaseController
             'accompanying' => $accompanying,
             'contract_type' => $contract_type,
             'developer' => $developer,
+            'sort_type' => $sort_type,
         ];
 
         return $this->sendResponse($result, 'Фільтер dropdown data');

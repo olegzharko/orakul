@@ -12,4 +12,9 @@ class QuestionnaireTemplate extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+
+    public function develoepr()
+    {
+        return $this->belongsTo(DevCompany::class, 'developer_id');
+    }
 }
