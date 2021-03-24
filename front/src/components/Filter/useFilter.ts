@@ -12,7 +12,7 @@ export type Props = {
   horizontal?: boolean;
 }
 
-export const useFilter = ({ onFilterDataChange }: Props) => {
+export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
   const { filterInitialData } = useSelector((state: State) => state.filter);
@@ -32,6 +32,9 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
     filterInitialData,
   ]);
   const developers = useMemo(() => filterInitialData?.developer, [
+    filterInitialData,
+  ]);
+  const sortType = useMemo(() => filterInitialData?.sort_type, [
     filterInitialData,
   ]);
   const [representative, setRepresentative] = useState<SelectItem[]>([]);
@@ -55,6 +58,7 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
   const [selectedRepresentative, setSelectedRepresentative] = useState<
     string | null
   >(null);
+  const [selectedSortType, setSelectedSortType] = useState<string | null>(null);
 
   const clearAll = useCallback(() => {
     setSelectedNotary(null);
@@ -63,6 +67,7 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
     setSelectedContractType(null);
     setSelectedDeveloper(null);
     setSelectedRepresentative(null);
+    setSelectedSortType(null);
   }, []);
 
   // useEffects
@@ -84,6 +89,10 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
       dev_assistant_id: selectedRepresentative,
     };
 
+    if (!horizontal) {
+      data.sort_type = selectedSortType;
+    }
+
     onFilterDataChange(data);
   }, [
     selectedNotary,
@@ -92,6 +101,7 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
     selectedContractType,
     selectedDeveloper,
     selectedRepresentative,
+    selectedSortType,
   ]);
 
   return {
@@ -102,18 +112,21 @@ export const useFilter = ({ onFilterDataChange }: Props) => {
     contractTypes,
     developers,
     representative,
+    sortType,
     selectedNotary,
     selectedReader,
     selectedRepresentative,
     selectedDeveloper,
     selectedContractType,
     selectedAccompanying,
+    selectedSortType,
     setSelectedNotary,
     setSelectedReader,
     setSelectedAccompanying,
     setSelectedContractType,
     setSelectedDeveloper,
     setSelectedRepresentative,
+    setSelectedSortType,
     clearAll,
   };
 };

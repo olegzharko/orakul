@@ -22,4 +22,5 @@ export type FilterData = {
   contract_type_id: string | null,
   developer_id: string | null,
   dev_assistant_id: string | null,
+  sort_type?: string | null,
 };

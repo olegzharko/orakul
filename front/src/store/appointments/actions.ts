@@ -1,8 +1,10 @@
 import { Dispatch } from 'redux';
+import { UserTypes } from '../../types';
 import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
 import setSchedulerFilter from '../../services/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
+import getAppointmentsForDashboard from '../../services/getAppointmentsForDashboard';
 
 export const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
@@ -31,7 +33,7 @@ export const setEditAppointmens = (payload: any) => ({
   payload,
 });
 
-export const fetchAppointments = () => async (
+export const fetchAppointments = (userType: UserTypes) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
@@ -39,7 +41,13 @@ export const fetchAppointments = () => async (
 
   if (token) {
     dispatch(setIsLoading(true));
-    const data = await getAppointments(token);
+    let data;
+
+    if (userType === 'reception') {
+      data = await getAppointments(token);
+    } else {
+      data = await getAppointmentsForDashboard(token);
+    }
 
     dispatch(setAppointments(Object.values(data)));
     dispatch(setIsLoading(false));

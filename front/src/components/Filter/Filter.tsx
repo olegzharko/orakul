@@ -55,7 +55,7 @@ const Filter = (props: Props) => {
 
       <div className="filter__select" style={{ width: props.horizontal ? '150px' : '100%' }}>
         <CustomSelect
-          data={[]}
+          data={meta.contractTypes}
           selectedValue={meta.selectedContractType}
           onChange={meta.setSelectedContractType}
           label="Тип договору"
@@ -83,21 +83,19 @@ const Filter = (props: Props) => {
         />
       </div>
 
-      <div
-        className="filter__select"
-        style={{
-          width: props.horizontal ? '115px' : '100%',
-          display: props.horizontal ? 'none' : 'flex',
-        }}
-      >
-        <CustomSelect
-          data={meta.notaries}
-          selectedValue={meta.selectedNotary}
-          onChange={meta.setSelectedNotary}
-          label="Нотаріус"
-          size={props.horizontal ? 'small' : 'medium'}
-        />
-      </div>
+      {!props.horizontal && (
+        <div
+          className="filter__select"
+        >
+          <CustomSelect
+            data={meta.sortType}
+            selectedValue={meta.selectedSortType}
+            onChange={meta.setSelectedSortType}
+            label="Сортувати"
+            size="medium"
+          />
+        </div>
+      )}
 
       {props.horizontal && (
         <div className=" df">

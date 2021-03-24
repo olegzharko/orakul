@@ -1,6 +1,13 @@
 .dashboard {
 
   &__space {
+    position: relative;
     width: 80%;
+    padding: 0 77px 50px 24px;
+
+    &__main {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }

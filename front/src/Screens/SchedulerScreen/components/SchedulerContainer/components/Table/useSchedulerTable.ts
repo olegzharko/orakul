@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { UserTypes } from '../../../../../../types';
 import {
   setSelectedOldAppointment,
   fetchCalendarCard,
   fetchSchedulerSettings,
   moveCalendarCard,
 } from '../../../../../../store/scheduler/actions';
-import { fetchAppointments } from '../../../../../../store/appointments/actions';
+import { fetchAppointments, setAppointments } from '../../../../../../store/appointments/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
 
@@ -19,8 +20,10 @@ export const useSchedulerTable = () => {
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchSchedulerSettings());
-      dispatch(fetchAppointments());
+      dispatch(fetchAppointments(UserTypes.RECEPTION));
     }
+
+    return () => { dispatch(setAppointments([])); };
   }, [token]);
 
   const rooms = useMemo(() => options?.rooms, [options]);
