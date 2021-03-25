@@ -8,6 +8,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\ClientType;
+use App\Models\DeveloperBuilding;
 use App\Models\DevFence;
 use Illuminate\Http\Request;
 use App\Models\Immovable;
@@ -15,18 +16,21 @@ use App\Models\DevCompany;
 use App\Models\Contract;
 use App\Models\Client;
 use Laravel\Nova\Fields\DateTime;
+use Validator;
 
 class RegistratorController extends BaseController
 {
     public $tools;
     public $genrator;
     public $convert;
+    public $date;
 
     public function __construct()
     {
         $this->tools = new ToolsController();
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
+        $this->date = new \DateTime();
     }
 
     public function developers()
@@ -35,8 +39,9 @@ class RegistratorController extends BaseController
 
         $dev_companies_query = $this->get_query_dev_company_fence();
 
-        $dev_companies_query = $dev_companies_query->get();
+        $dev_companies = $dev_companies_query->get();
 
+        $result['date_info'] = $this->date->format('d.m.Y');
         $result['devolepr'] = $dev_companies;
 
         return $this->sendResponse($result, 'Забудовники на перевірку реєстратором');
@@ -93,14 +98,41 @@ class RegistratorController extends BaseController
             return $this->sendError('', "Забудовник по ID: $developer_id не знайдений");
         }
 
-        DevFence::where('dev_company_id', $developer_id)->udpate([
+        $validator = $this->validate_data($r);
 
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        DevFence::where('dev_company_id', $developer_id)->update([
+            'date' => $r['date'],
+            'number' => $r['number'],
+            'pass' => $r['pass'],
         ]);
+
+        return $this->sendResponse('', 'Перевірку на заборону для забудовника з ID:' . $developer_id . ' оновлено');
     }
 
     public function immovables()
     {
+        $result = [];
 
+        $immovables_query = $this->get_query_immovables_fence();
+        $immovables = $immovables_query->get();
+
+        $imm_res = [];
+        foreach ($immovables as $key => $imm) {
+            $imm_res[$key]['id'] = $imm->id;
+            $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
+            $imm_res[$key]['date'] = $imm->date;
+            $imm_res[$key]['number'] = $imm->number;
+            $imm_res[$key]['status'] = $imm->status;
+        }
+
+        $result['date_info'] = $this->date->format('d.m.Y');
+        $result['immovables'] = $immovables;
+
+        return $this->sendResponse($result, 'Забудовники на перевірку реєстратором');
     }
 
     public function get_immovable($immovable_id)
@@ -181,5 +213,27 @@ class RegistratorController extends BaseController
         }
 
         return $result;
+    }
+
+    public function get_query_immovables_fence()
+    {
+        $now = new \DateTime();
+
+        $immovables = Contract::select(
+                'developer_buildings.id as building_id',
+                'immovable_types.short as immovable_type',
+                'immovables.id',
+                'immovables.immovable_number',
+                'immovables.registration_number',
+                'imm_fences.date',
+                'imm_fences.number',
+                'imm_fences.pass',
+            )->where('ready', true)->whereDate('sign_date', '>=', $now->format('Y-m-d'))
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id');
+
+        return $immovables;
     }
 }

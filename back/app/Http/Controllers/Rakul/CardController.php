@@ -437,23 +437,24 @@ class CardController extends BaseController
         $giver_short = "**";
         $dev_representative_short = "**";
 
-        if ($card->notary)
-            $notary_short = $this->convert->get_short_name($card->notary);
-        if ($card->notary)
-            $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
+//        if ($card->notary)
+//            $notary_short = $this->convert->get_short_name($card->notary);
+//        if ($card->notary)
+//            $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
 
         $contracts = $card->has_contracts;
         $reader = [];
         $delivery = [];
+
         foreach ($contracts as $contr) {
-            $reader = $contr->contract->reader;
-            if ($reader) {
-                $reader[] = $this->convert->get_short_name($reader);
+            $staff_reader = $contr->contract->reader;
+            if ($staff_reader) {
+                $reader[] = $this->convert->get_short_name($staff_reader);
             }
 
-            $delivery = $contr->contract->delivery;
-            if ($delivery) {
-                $delivery[] = $this->convert->get_short_name($delivery);
+            $staff_delivery = $contr->contract->delivery;
+            if ($staff_delivery) {
+                $delivery[] = $this->convert->get_short_name($staff_delivery);
             }
         }
 
@@ -528,6 +529,7 @@ class CardController extends BaseController
         $result = [];
         $week = WorkDay::pluck('title', 'num');
         $i = 0;
+
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
             $result['color'] = $card->dev_company->color;

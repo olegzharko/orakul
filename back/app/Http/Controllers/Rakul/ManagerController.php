@@ -31,7 +31,9 @@ class ManagerController extends BaseController
      * */
     public function get_cards_id_by_user_role()
     {
-        $result = [];
+//        $result = [];
+
+        $result = Card::pluck('id');
 
         /*
          * query to card by user type

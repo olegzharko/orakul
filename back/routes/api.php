@@ -154,10 +154,10 @@ Route::post('password/update', [PassportAuthController::class, 'password_update'
     Route::group(['prefix' => 'registrator'], function() {
         Route::get('developers', [\App\Http\Controllers\Registrator\RegistratorController::class, 'developers']);
         Route::get('developer/{developer_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'get_developer']);
-        Route::put('developer/{developer_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'udpate_developer']);
+        Route::put('developer/{developer_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'update_developer']);
 
         Route::get('immovables', [\App\Http\Controllers\Registrator\RegistratorController::class, 'immovables']);
         Route::get('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'get_immovable']);
-        Route::put('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'udpate_immovable']);
+        Route::put('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'update_developer']);
     });
 //});
