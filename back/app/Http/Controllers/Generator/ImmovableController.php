@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Generator;
 
+use App\Http\Controllers\API\MinfinController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Factory\GeneratorController;
@@ -27,6 +28,7 @@ use App\Models\PropertyValuationPrice;
 use App\Models\QuestionnaireTemplate;
 use App\Models\Room;
 use App\Models\RoominessType;
+use App\Models\SecurityPayment;
 use App\Models\StatementTemplate;
 use App\Models\Questionnaire;
 use Illuminate\Http\Request;
@@ -40,12 +42,14 @@ class ImmovableController extends BaseController
     public $tools;
     public $generator;
     public $convert;
+    public $minfin;
 
     public function __construct()
     {
         $this->tools = new ToolsController();
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
+        $this->minfin = new MinfinController();
     }
 
     public function main($card_id)
@@ -66,11 +70,8 @@ class ImmovableController extends BaseController
         $result = [];
 
         $immovable = Immovable::find($immovable_id);
-        $immovable_type = ImmovableType::select('id', 'title_n')->get();
-        $developer_building = DeveloperBuilding::where([
-            'dev_company_id' => $immovable->developer_building->dev_company->id,
-            'active' => true,
-        ])->get();
+        $immovable_type = ImmovableType::get_immovable_type();
+        $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
         $building = [];
         foreach ($developer_building as $key => $dev_building) {
@@ -152,7 +153,7 @@ class ImmovableController extends BaseController
             ['rate' => $minfin->rate],
         );
 
-        $result['rate'] = round($minfin->rate / 100, 2);
+        $result['exchange_rate'] = round($minfin->rate / 100, 2);
 
         return $this->sendResponse($result, 'Курс для нерухомості ID:' . $immovable_id);
     }
@@ -170,7 +171,82 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        ExchangeRate::where('immovable_id', $immovable_id)->update([
+            'rate' => $r->exchange_rate * 100,
+        ]);
+
+        $result['exchange_rate'] = $r->exchange_rate;
+
         return $this->sendResponse($result, 'Курс долара оновлено вручну.');
+    }
+
+    public function get_payment($immovable_id)
+    {
+        $result = [];
+
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        $payment = SecurityPayment::firstOrCreate(
+            ['immovable_id' => $immovable_id],
+            ['first_part_grn' => 1000000],
+        );
+
+        $result['sign_date'] = $payment->sign_date ? $payment->sign_date->format('d.m.Y') : null;
+        $result['reg_num'] = $payment->reg_num;
+        $result['first_part_grn'] = $payment->first_part_grn;
+        $result['first_part_dollar'] = $payment->first_part_dollar;
+        $result['last_part_grn'] = $payment->last_part_grn;
+        $result['last_part_dollar'] = $payment->last_part_dollar;
+        $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
+
+        return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id);
+    }
+
+    public function update_payment($immovable_id, Request $r)
+    {
+        $result = [];
+
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        $validator = $this->validate_imm_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
+
+        SecurityPayment::where('immovable_id', $immovable_id)->update([
+            'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
+            'reg_num' => $r['reg_num'],
+            'first_part_grn' => $r['first_part_grn'],
+            'first_part_dollar' => $r['first_part_dollar'],
+            'last_part_grn' => $r['last_part_grn'],
+            'last_part_dollar' => $r['last_part_dollar'],
+            'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d.') : null,
+        ]);
+
+        return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id . ' оновлено.');
+    }
+
+    public function new_exchange($immovable_id)
+    {
+        $result = [];
+
+        $this->minfin->get_rate_exchange();
+
+        $minfin = Exchange::orderBy('created_at', 'desc')->first();
+
+        ExchangeRate::where('immovable_id', $immovable_id)->update([
+            'rate' => $minfin->rate * 100,
+        ]);
+
+        $result['exchange_rate'] = round($minfin->rate / 100, 2);
+
+        return $this->sendResponse($result, 'Курс долара оновлено через minfin.com.ua');
     }
 
     private function get_immovables_by_card($card_id)
@@ -178,18 +254,14 @@ class ImmovableController extends BaseController
         $result = [];
         $contract = null;
 
-        $immovables_id = Card::where('cards.id', $card_id)
-            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
-            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
-            ->leftJoin('immovables', 'contracts.immovable_id', '=', 'immovables.id')
-            ->pluck('immovables.id');
+        $immovables_id = Card::get_card_immovable_id($card_id);
 
-        $immovables = Immovable::whereIn('id', $immovables_id)->get();
+        $immovables = Immovable::get_all_by_id($immovables_id);
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
             $result[$key]['address'] = $this->generator->full_ascending_address_r($immovable);
-            $result[$key]['list'] = ['Тестова інформація 1', 'Тестова інформація 2', 'Тестова інформація 3'];
+            $result[$key]['list'] = ['Тест G інформація 1', 'Тест G інформація 2', 'Тест G інформація 3'];
         }
 
         return $result;
@@ -398,6 +470,12 @@ class ImmovableController extends BaseController
             $r['reg_date'] = \DateTime::createFromFormat('d.m.Y', $r['reg_date']);
         if (isset($r['discharge_date']) && !empty($r['discharge_date']))
             $r['discharge_date'] = \DateTime::createFromFormat('d.m.Y', $r['discharge_date']);
+        if (isset($r['sign_date']) && !empty($r['sign_date']))
+            $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+        if (isset($r['final_date']) && !empty($r['final_date']))
+            $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
+
+
 
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],
@@ -431,7 +509,15 @@ class ImmovableController extends BaseController
             'questionnaire_template_id' => $r['questionnaire_template_id'],
             'statement_template_id' => $r['statement_template_id'],
 
-//            'rate' => $r['rate'],
+            'exchange_rate' => $r['exchange_rate'],
+
+            'sign_date' => $r['sign_date'],
+            'reg_num' => $r['reg_num'],
+            'first_part_grn' => $r['first_part_grn'],
+            'first_part_dollar' => $r['first_part_dollar'],
+            'last_part_grn' => $r['last_part_grn'],
+            'last_part_dollar' => $r['last_part_dollar'],
+            'final_date' => $r['final_date'],
         ], [
             'imm_type_id' => ['numeric', 'nullable'],
             'building_id' => ['numeric', 'nullable'],
@@ -463,6 +549,16 @@ class ImmovableController extends BaseController
             'taxes_template_id' => ['numeric', 'nullable'],
             'questionnaire_template_id' => ['numeric', 'nullable'],
             'statement_template_id' => ['numeric', 'nullable'],
+
+            'exchange_rate' => ['numeric', 'nullable'],
+
+            'sign_date' => ['date_format:Y.m.d.', 'nullable'],
+            'reg_num' => ['numeric', 'nullable'],
+            'first_part_grn' => ['numeric', 'nullable'],
+            'first_part_dollar' => ['numeric', 'nullable'],
+            'last_part_grn' => ['numeric', 'nullable'],
+            'last_part_dollar' => ['numeric', 'nullable'],
+            'final_date' => ['date_format:Y.m.d.', 'nullable'],
         ], [
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
@@ -493,6 +589,8 @@ class ImmovableController extends BaseController
             'taxes_template_id.numeric' => 'Необхідно передати ID шаблону оплати падтків в числовому форматі',
             'questionnaire_template_id.numeric' => 'Необхідно передати ID шаблону анкети в числовому форматі',
             'statement_template_id.numeric' => 'Необхідно передати ID шаблону заяви від забудовника в числовому форматі',
+
+            'exchange_rate.numeric' => 'Необхідно передати курс долара в числовому форматі',
         ]);
 
         $errors = $validator->errors()->messages();

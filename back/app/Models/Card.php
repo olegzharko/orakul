@@ -11,6 +11,10 @@ class Card extends Model
 
     protected $table = 'cards';
 
+    protected $fillable = [
+        'notary_id',
+    ];
+
     protected $casts = [
         'date_time' => 'datetime',
     ];
@@ -62,7 +66,7 @@ class Card extends Model
         $card = new Card();
         $card->notary_id = $r['notary_id'];
         $card->room_id = $r['room_id'];
-        $card->city_id = $work_city ? $work_city->id: null;
+        $card->city_id = $work_city ? $work_city->id : null;
         $card->date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
         $card->dev_company_id = $r['dev_company_id'];
         $card->dev_representative_id = $r['dev_representative_id'];
@@ -72,15 +76,26 @@ class Card extends Model
         return $card->id;
     }
 
-    public function update_card($id, $r)
+//    public static function update_card($id, $r)
+//    {
+//        Card::where('id', $id)->update([
+//            'notary_id' => $r['notary_id'],
+//            'room_id' => $r['room_id'],
+//            'date_time' => new \DateTime($r['date_time']),
+//            'dev_company_id' => $r['dev_company_id'],
+//            'dev_representative_id' => $r['dev_representative_id'],
+//            'dev_manager_id' => $r['dev_manager_id'],
+//        ]);
+//    }
+
+    public static function get_card_immovable_id($card_id)
     {
-        Card::where('id', $id)->update([
-            'notary_id' => $r['notary_id'],
-            'room_id' => $r['room_id'],
-            'date_time' => new \DateTime($r['date_time']),
-            'dev_company_id' => $r['dev_company_id'],
-            'dev_representative_id' => $r['dev_representative_id'],
-            'dev_manager_id' => $r['dev_manager_id'],
-        ]);
+        $immovables_id = Card::where('cards.id', $card_id)
+            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
+            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+            ->leftJoin('immovables', 'contracts.immovable_id', '=', 'immovables.id')
+            ->pluck('immovables.id');
+
+        return $immovables_id;
     }
 }

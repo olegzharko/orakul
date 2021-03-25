@@ -9,6 +9,13 @@ class Representative extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'client_id',
+        'confidant_id',
+        'reg_num',
+        'reg_date',
+    ];
+
     protected $casts = [
         'reg_date' => 'datetime',
     ];

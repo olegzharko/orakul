@@ -47,4 +47,17 @@ class DeveloperBuilding extends Model implements Sortable
     {
         return $this->hasOne(BuildingPermit::class, 'developer_building_id');
     }
+
+    public static function get_developer_company_building($dev_company)
+    {
+        return DeveloperBuilding::where('dev_company_id', $dev_company)->get();;
+    }
+
+    public static function get_developer_building($dev_company_id)
+    {
+            return DeveloperBuilding::where([
+                        'dev_company_id' => $dev_company_id,
+                        'active' => true,
+                    ])->get();
+    }
 }

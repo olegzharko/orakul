@@ -81,4 +81,24 @@ class Client extends Model implements Sortable
     {
         return $this->hasOne(Representative::class, 'client_id');
     }
+
+    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
+    {
+        return Client::where([
+                'dev_company_id' => $dev_company_id,
+                'type' => $employer_type,
+            ])->get();
+    }
+
+    public static function update_by_manager($client)
+    {
+        Client::where('id', $r['client']['id'])->udpate([
+            'id' => $client['id'],
+            'surname' => $client['surname'],
+            'name' => $client['name'],
+            'patronymic' => $client['patronymic'],
+            'phone' => $client['phone'],
+            'email' => $client['email'],
+        ]);
+    }
 }

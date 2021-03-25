@@ -9,6 +9,11 @@ class SecurityPayment extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'immovable_id',
+        'first_part_grn',
+    ];
+
     protected $casts = [
       'sign_date' => 'datetime',
       'final_date' => 'datetime',

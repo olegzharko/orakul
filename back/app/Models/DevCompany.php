@@ -28,4 +28,9 @@ class DevCompany extends Model
     {
         return $this->hasMany(InvestmentAgreement::class, 'dev_company_id');
     }
+
+//    public static function get_active_developer()
+//    {
+//        return DevCompany::select('id', 'title')->where('active', true)->get();
+//    }
 }

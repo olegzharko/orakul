@@ -77,18 +77,26 @@ Route::post('password/update', [PassportAuthController::class, 'password_update'
 
        Route::group(['prefix' => 'immovable'], function() {
             Route::get('main/{card_id}', [ImmovableController::class, 'main']);
+
             Route::get('general/{immovable_id}', [ImmovableController::class, 'get_general']);
             Route::put('general/{immovable_id}', [ImmovableController::class, 'update_general']);
 
             Route::get('exchange/{immovable_id}', [ImmovableController::class, 'get_exchange']);
+            Route::post('exchange/{immovable_id}', [ImmovableController::class, 'new_exchange']);
             Route::put('exchange/{immovable_id}', [ImmovableController::class, 'update_exchange']);
+
+            Route::get('payment/{immovable_id}', [ImmovableController::class, 'get_payment']);
+            Route::put('payment/{immovable_id}', [ImmovableController::class, 'update_payment']);
 
             Route::get('fence/{immovable_id}', [ImmovableController::class, 'get_fence']);
             Route::put('fence/{immovable_id}', [ImmovableController::class, 'update_fence']);
+
             Route::get('valuation/{immovable_id}', [ImmovableController::class, 'get_valuation']);
             Route::put('valuation/{immovable_id}', [ImmovableController::class, 'update_valuation']);
+
             Route::get('ownership/{immovable_id}', [ImmovableController::class, 'get_ownership']);
             Route::put('ownership/{immovable_id}', [ImmovableController::class, 'update_ownership']);
+
             Route::get('template/{immovable_id}', [ImmovableController::class, 'get_template']);
             Route::put('template/{immovable_id}', [ImmovableController::class, 'update_template']);
        });
@@ -107,12 +115,49 @@ Route::post('password/update', [PassportAuthController::class, 'password_update'
             Route::get('passport/{client_id}', [ClientController::class, 'get_passport']);
             Route::put('passport/{client_id}', [ClientController::class, 'update_passport']);
 
-            Route::get('address/{client_id}', [ClientController::class, 'get_address']);
             Route::get('cities/{region_id}', [ClientController::class, 'get_cities']);
+            Route::get('address/{client_id}', [ClientController::class, 'get_address']);
             Route::put('address/{client_id}', [ClientController::class, 'update_address']);
 
-            Route::get('consents/{client_id}', [ClientController::class, 'get_consents']);
+            Route::get('city/create', [ClientController::class, 'start_data_create_city']);
+            Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']);
+            Route::post('city/create', [ClientController::class, 'create_city']);
+
+            Route::get('consents/{client_id}/{card_id}', [ClientController::class, 'get_consents']);
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
+
+            Route::get('representative/{client_id}/{card_id}', [ClientController::class, 'get_representative']);
+            Route::put('representative/{client_id}', [ClientController::class, 'update_representative']);
+
+            Route::get('notaries/{card_id}', [ClientController::class, 'get_notaries']);
+            Route::get('notary/{notary_id}', [ClientController::class, 'get_notary']);
+            Route::put('notary/{notary_id}', [ClientController::class, 'update_notary']);
        });
+    });
+
+    Route::group(['prefix' => 'manager'], function() {
+        Route::get('main/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'main']);
+        Route::put('notary/developer/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_notary_developer']);
+        Route::put('contact/person/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_contact_person']);
+        Route::get('immovables/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'immovable']);
+        Route::get('immovable/{immovable_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_immovable']);
+        Route::put('immovable/{immovable_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_immovable']);
+        Route::get('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_client']);
+        Route::put('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_client']);
+    });
+
+    Route::group(['prefix' => 'assistant'], function() {
+        Route::get('card/settings/{card_id}', [\App\Http\Controllers\Assistant\AssistantController::class, 'get_card_settings']);
+        Route::put('card/settings/{card_id}', [\App\Http\Controllers\Assistant\AssistantController::class, 'update_card_settings']);
+    });
+
+    Route::group(['prefix' => 'registrator'], function() {
+        Route::get('developers', [\App\Http\Controllers\Registrator\RegistratorController::class, 'developers']);
+        Route::get('developer/{developer_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'get_developer']);
+        Route::put('developer/{developer_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'udpate_developer']);
+
+        Route::get('immovables', [\App\Http\Controllers\Registrator\RegistratorController::class, 'immovables']);
+        Route::get('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'get_immovable']);
+        Route::put('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'udpate_immovable']);
     });
 //});

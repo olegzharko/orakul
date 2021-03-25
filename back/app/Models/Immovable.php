@@ -13,6 +13,13 @@ class Immovable extends Model implements Sortable
 {
     use HasFactory, SortableTrait;
 
+    protected $fillable = [
+        'immovable_type_id',
+        'building_id',
+        'immovable_number',
+        'immovable_reg_num',
+    ];
+
     public $sortable = [
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
@@ -51,5 +58,10 @@ class Immovable extends Model implements Sortable
     public function pvprice()
     {
         return $this->hasOne(PropertyValuationPrice::class, 'immovable_id');
+    }
+
+    public static function get_all_by_id($immovables_id)
+    {
+        return Immovable::whereIn('id', $immovables_id)->get();
     }
 }

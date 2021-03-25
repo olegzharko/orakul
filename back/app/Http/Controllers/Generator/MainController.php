@@ -36,6 +36,6 @@ class MainController extends BaseController
         $result['date_info'] = $date_info;
         $result['instructions'] = $instructions;
 
-        return $this->sendResponse($result, "Дані для головної");
+        return $this->sendResponse($result, "Дані для головної створення договору");
     }
 }

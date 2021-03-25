@@ -11,6 +11,12 @@ class Contract extends Model implements Sortable
 {
     use HasFactory, SortableTrait;
 
+    protected $fillable = [
+        'reader_id',
+        'accompanying_id',
+        'printer_id',
+    ];
+
     public $sortable = [
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
@@ -114,5 +120,10 @@ class Contract extends Model implements Sortable
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public static function get_contract_by_immovable($immovable_id)
+    {
+        return Contract::where('immovable_id', $immovable_id)->first();
     }
 }

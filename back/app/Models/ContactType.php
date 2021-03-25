@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SortType extends Model
+class ContactType extends Model
 {
     use HasFactory;
 
-    public static function get_all_sort_type()
+    public static function get_contact_type()
     {
-        return SortType::select('id', 'title')->get();
+        return ContactType::select('id', 'title')->get();
     }
 }

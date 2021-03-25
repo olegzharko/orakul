@@ -9,13 +9,16 @@ use App\Models\AddressType;
 use App\Models\ApartmentType;
 use App\Models\BuildingType;
 use App\Models\Citizenship;
+use App\Models\CityType;
 use App\Models\Client;
 use App\Models\City;
 use App\Models\ClientSpouseConsent;
 use App\Models\ConsentTemplate;
+use App\Models\District;
 use App\Models\MarriageType;
 use App\Models\Notary;
 use App\Models\Region;
+use App\Models\Representative;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -239,7 +242,6 @@ class ClientController extends BaseController
     {
         $result = [];
 
-
         if (!$region = Region::find($region_id)) {
             return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
         }
@@ -249,6 +251,29 @@ class ClientController extends BaseController
         $result['cities'] = $cities;
 
         return $this->sendResponse($result, 'Міста по області ID: ' . $region_id);
+    }
+
+    public function start_data_create_city()
+    {
+        $result = [];
+
+        $result['regions'] = Region::select('id', 'title_n as title')->get();
+        $result['city_type'] = CityType::select('id', 'title_n as title')->get();
+
+        return $this->sendResponse($result, 'Дані для створення населеного пункту');
+    }
+
+    public function district_by_region($region_id)
+    {
+        $result = [];
+
+        if (!$region = Region::find($region_id)) {
+            return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
+        }
+
+        $result['district'] = District::select('id', 'title_n as title')->where('region_id', $region_id)->get();
+
+        return $this->sendResponse($result, 'Райони та територіальні громади ' . $region->title_r . ' обл.' );
     }
 
     public function update_address($client_id, Request $r)
@@ -276,7 +301,34 @@ class ClientController extends BaseController
         return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
     }
 
-    public function get_consents($client_id)
+    public function create_city(Request $r)
+    {
+        $validator = $this->validate_client_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        if ($city = City::where([
+                'region_id' => $r->region_id,
+                'district_id' =>  $r->district_id,
+                'city_type_id' =>  $r->city_type_id,
+                'title' =>  $r->title,
+            ])->first()) {
+            return $this->sendError('', 'Населений пункт існує');
+        }
+
+        $city = new City();
+        $city->region_id = $r->region_id;
+        $city->district_id = $r->district_id;
+        $city->city_type_id = $r->city_type_id;
+        $city->title = $r->title;
+        $city->save();
+
+        return $this->sendResponse('', 'Населений пункт ' . $r->title . ' створено');
+    }
+
+    public function get_consents($client_id, $card_id)
     {
         $result = [];
 
@@ -292,10 +344,18 @@ class ClientController extends BaseController
         $rakul_notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
-            $convert_notary[$key]['title'] = $this->convert->get_short_name($value);
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+        }
+
+        $other_notary = [];
+        $separate_by_card = Notary::select('id', 'name_n', 'patronymic_n')->where('separate_by_card', $card_id)->get();
+        foreach ($separate_by_card as $key => $value) {
+            $other_notary[$key]['id'] = $value->id;
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
         }
 
         $result['rakul_notary'] = $convert_notary;
+        $result['other_notary'] = $other_notary;
         $result['consent_templates'] = $consent_templates;
         $result['married_types'] = $married_types;
         $result['consent_template_id'] = null;
@@ -336,6 +396,9 @@ class ClientController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
+        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+
         ClientSpouseConsent::where('client_id', $client_id)->update([
             'notary_id' => $r['notary_id'],
             'template_id' => $r['consent_template_id'],
@@ -350,6 +413,137 @@ class ClientController extends BaseController
         ]);
 
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
+    }
+
+    public function get_representative($client_id, $card_id)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $representative = Representative::where('client_id', $client_id)->first();
+
+        $convert_notary = [];
+        $rakul_notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+        }
+
+        $other_notary = [];
+        $separate_by_card = Notary::select('id', 'name_n', 'patronymic_n')->where('separate_by_card', $card_id)->get();
+        foreach ($separate_by_card as $key => $value) {
+            $other_notary[$key]['id'] = $value->id;
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+        }
+
+        $result['rakul_notary'] = $convert_notary;
+        $result['other_notary'] = $other_notary;
+        $result['notary_id'] = null;
+        $result['reg_num'] = null;
+        $result['reg_date'] = null;
+
+        return $this->sendResponse($result, 'Дані по довіреності клієнта з ID ' . $client_id);
+    }
+
+    public function update_representative($client_id, Request $r)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $validator = $this->validate_client_data($r);
+
+        Representative::updateOrCreate(
+            [
+                'client_id' => $client_id
+            ],
+            [
+                'reg_num' => $r['reg_num'],
+                'reg_date' => $r['reg_date']
+            ]);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        return $this->sendResponse($result, 'Дані по довіреності клієнта з ID:' . $client_id . ' оновлено');
+    }
+
+    public function get_notaries($card_id)
+    {
+        $result = [];
+        $separate_notary = [];
+
+        $notary = Notary::where('separate_by_card', $card_id)->get();
+
+        foreach ($notary as $key => $value) {
+            $separate_notary[$key]['id'] = $value->id;
+            $separate_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $separate_notary[$key]['list'] = $this->get_notary_list_info($value);
+        }
+
+        $result['notary'] = $separate_notary;
+
+        return $this->sendResponse($result, 'Сторонні нотаріуси для картки з ID:' . $card_id);
+    }
+
+    public function get_notary($notary_id)
+    {
+        $result = [];
+        $separate_notary = [];
+
+        $notary = Notary::select(
+            'surname_n',
+            'name_n',
+            'short_name',
+            'patronymic_n',
+            'short_patronymic',
+            'surname_o',
+            'name_o',
+            'patronymic_o',
+            'activity_n',
+            'activity_o',
+        )->find($notary_id);
+
+        $result['notary'] = $notary;
+
+        return $this->sendResponse($result, 'Сторонні нотаріус з ID:' . $notary_id);
+    }
+
+    public function update_notary($notary_id, Request $r)
+    {
+        $result = [];
+
+        if (!$client = Notary::find($notary_id)) {
+            return $this->sendError('', 'Нотаріус з ID: ' . $client_id . ' відсутній');
+        }
+
+        $validator = $this->validate_client_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        Notary::updateOrCreate(
+            ['id' => $notary_id],[
+                'surname_n' => $r['surname_n'],
+                'name_n' => $r['name_n'],
+                'short_name' => $r['short_name'],
+                'patronymic_n' => $r['patronymic_n'],
+                'short_patronymic' => $r['short_patronymic'],
+                'surname_o' => $r['surname_o'],
+                'name_o' => $r['name_o'],
+                'patronymic_o' => $r['patronymic_o'],
+                'activity_n' => $r['activity_n'],
+                'activity_n' => $r['activity_n'],
+            ]);
+
+        return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
     }
 
     private function get_client_by_card_id($card_id)
@@ -402,6 +596,8 @@ class ClientController extends BaseController
             $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
         if (isset($r['sign_date']) && !empty($r['sign_date']))
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+        if (isset($r['reg_date']) && !empty($r['reg_date']))
+            $r['reg_date'] = \DateTime::createFromFormat('d.m.Y', $r['reg_date']);
 
         $validator = Validator::make([
             'surname_n' => $r['surname_n'],
@@ -425,6 +621,11 @@ class ClientController extends BaseController
             'passport_demographic_code' => $r['passport_demographic_code'],
             'passport_finale_date' => $r['passport_finale_date'] ? $r['passport_finale_date']->format('Y.m.d.') : null,
 
+            'region_id' => $r['region_id'],
+            'district_id' =>  $r['district_id'],
+            'city_type_id' =>  $r['city_type_id'],
+            'title' =>  $r['title'],
+
             'city_id' => $r['city_id'],
             'address_type_id' => $r['address_type_id'],
             'address' => $r['address'],
@@ -443,6 +644,7 @@ class ClientController extends BaseController
             'mar_reg_num' => $r['mar_reg_num'],
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
             'reg_num' => $r['reg_num'],
+            'reg_date' => $r['reg_date'] ? $r['reg_date']->format('Y.m.d.') : null,
         ], [
             'surname_n' => ['string', 'nullable'],
             'name_n' => ['string', 'nullable'],
@@ -465,6 +667,11 @@ class ClientController extends BaseController
             'passport_demographic_code' => ['numeric', 'nullable'],
             'passport_finale_date' => ['date_format:Y.m.d.', 'nullable'],
 
+            'region_id' => ['numeric', 'nullable'],
+            'district_id' => ['numeric', 'nullable'],
+            'city_type_id' => ['numeric', 'nullable'],
+            'title' => ['string', 'nullable'],
+
             'city_id' => ['numeric', 'nullable'],
             'address_type_id' => ['numeric', 'nullable'],
             'address' => ['string', 'nullable'],
@@ -483,6 +690,7 @@ class ClientController extends BaseController
             'mar_reg_num' => ['numeric', 'nullable'],
             'sign_date' => ['date_format:Y.m.d.', 'nullable'],
             'reg_num' => ['numeric', 'nullable'],
+            'reg_date' => ['date_format:Y.m.d.', 'nullable'],
         ], [
             'surname_n.string' => 'Необхідно передати в строковому форматі',
             'name_n.string' => 'Необхідно передати в строковому форматі',
@@ -523,6 +731,7 @@ class ClientController extends BaseController
             'mar_reg_num.numeric' => 'Необхідно передати в числовому форматі',
             'sign_date.date_format' => 'Необхідно передати дату в форматі d.m.Y',
             'reg_num.numeric' => 'Необхідно передати в числовому форматі',
+            'reg_date.date_format' => 'Необхідно передати дату в форматі d.m.Y',
         ]);
 
         $errors = $validator->errors()->messages();
@@ -577,5 +786,16 @@ class ClientController extends BaseController
         }
 
         return $validator;
+    }
+
+    public function get_notary_list_info($notary)
+    {
+        $list = [];
+
+        $list[0] = 'Тест 1';
+        $list[1] = 'Тест 2';
+        $list[2] = 'Тест 3';
+
+        return $list;
     }
 }

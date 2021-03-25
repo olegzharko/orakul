@@ -21,15 +21,17 @@ class MinfinController extends BaseController
         $response = $client->request('GET', 'https://api.minfin.com.ua/nbu/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
 //        $response = $client->request('GET', 'https://api.minfin.com.ua/auction/info/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
 
-        $result = json_decode($response->getBody());
-        if (!$result->usd)
+        $api_data = json_decode($response->getBody());
+        if (!$api_data->usd)
             return $this->sendError('', 'Запит не передав дані');
-        $ask = $result->usd->ask;
+        $ask = $api_data->usd->ask;
         $currency_exchage = round($ask, 2);
 
         $exchange = new Exchange();
         $exchange->rate = $currency_exchage * 100;
         $exchange->save();
+
+        $result['exchange_rate'] = $ask;
 
         return $this->sendResponse($result, 'Новий курс додано до базы даних');
     }

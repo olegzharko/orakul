@@ -15,4 +15,9 @@ class ImmovableType extends Model implements Sortable
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
     ];
+
+    public static function get_immovable_type()
+    {
+        return ImmovableType::select('id', 'title_n as title')->get();;
+    }
 }
