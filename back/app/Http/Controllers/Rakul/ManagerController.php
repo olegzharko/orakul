@@ -42,9 +42,12 @@ class ManagerController extends BaseController
         return $result;
     }
 
-    public function total_cards()
+    public function total_cards($role = null)
     {
-        $cards_id = $this->get_cards_id_by_user_role();
+        $cards_id = null;
+        if ($role)
+            $cards_id = $this->get_cards_id_by_user_role();
+        dd($cards_id);
 
         $cards = Card::where(function ($query) use ($cards_id) {
             if (count($cards_id)) {
