@@ -7,6 +7,8 @@ use App\Models\ContractType;
 use App\Models\Room;
 use App\Models\Time;
 use App\Models\Card;
+use App\Models\User;
+use App\Models\Staff;
 use DB;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,25 +31,27 @@ class ManagerController extends BaseController
     /*
      * Зібрати доступні для користувача id карток
      * */
-    public function get_cards_id_by_user_role()
-    {
-//        $result = [];
-
-        $result = Card::pluck('id');
-
-        /*
-         * query to card by user type
-         * */
-
-        return $result;
-    }
-
-    public function total_cards($role = null)
+    public function get_cards_id_by_user_role($user_id, $type)
     {
         $cards_id = null;
-        if ($role)
-            $cards_id = $this->get_cards_id_by_user_role();
-        dd($cards_id);
+
+        $staff = User::select('staff.*')->where('users.id', $user_id)->where('users.type', $type)
+            ->join('staff', 'staff.user_id', '=', 'users.id')
+            ->first();
+
+        if ($staff) {
+            $cards_id = Card::where('staff_generator_id', $staff->id)->pluck('id');
+        }
+
+        return $cards_id;
+    }
+
+    public function total_cards($user_id, $type)
+    {
+        $cards_id = null;
+
+        if (!$cards_id = $this->get_cards_id_by_user_role($user_id, $type))
+            return $this->sendResponse('', 'Картки для данного юзера відсутні');
 
         $cards = Card::where(function ($query) use ($cards_id) {
             if (count($cards_id)) {
@@ -61,11 +65,13 @@ class ManagerController extends BaseController
         return $this->sendResponse($result, 'Усі картки для менеджера');
     }
 
-    public function ready_cards()
+    public function ready_cards($user_id, $type)
     {
         $result = null;
 
-        $cards_id = $this->get_cards_id_by_user_role();
+        if (!$cards_id = $this->get_cards_id_by_user_role($user_id, $type))
+            return $this->sendResponse('', 'Картки для данного юзера відсутні');
+
 
         $cards = Card::where(function ($query) use ($cards_id) {
             if (count($cards_id)) {
@@ -80,16 +86,19 @@ class ManagerController extends BaseController
 
     }
 
-    public function cards_by_contract_type($type, $page)
+    public function cards_by_contract_type($contract_type, $page, $user_id, $type)
     {
         $result = null;
+        $cards_id = [];
 
-        $cards_id = $this->get_cards_id_by_user_role();
+        if ($page != 'calendar' && !$cards_id = $this->get_cards_id_by_user_role($user_id, $type))
+            return $this->sendResponse('', 'Картки для данного юзера відсутні');
 
-        if (!$contract_type_id = ContractType::where('alias', $type)->value('id'))
+        if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
             return $this->sendError("Данний ключ типу договору відсутній");
 
         $cards = Card::select(
+                "cards.id",
                 "cards.notary_id",
                 "cards.room_id",
                 "cards.date_time",
@@ -102,7 +111,7 @@ class ManagerController extends BaseController
                 "cards.cancelled",
             )->where(function ($query) use ($cards_id) {
                 if (count($cards_id)) {
-                    $query = $query->whereIn('id', $cards_id);
+                    $query = $query->whereIn('cards.id', $cards_id);
                 }
                 return $query;
             })
@@ -110,6 +119,7 @@ class ManagerController extends BaseController
             ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
             ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
             ->where('contracts.type_id', $contract_type_id)
+            ->distinct('cards.id')
             ->get();
 
         if ($page == 'calendar') {
@@ -125,9 +135,10 @@ class ManagerController extends BaseController
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
     }
 
-    public function cancelled_cards($page)
+    public function cancelled_cards($page, $user_id, $type)
     {
-        $cards_id = $this->get_cards_id_by_user_role();
+        if ($page != 'calendar' && !$cards_id = $this->get_cards_id_by_user_role($user_id, $type))
+            return $this->sendResponse('', 'Картки для данного юзера відсутні');
 
         $cards = Card::where(function ($query) use ($cards_id) {
             if (count($cards_id)) {
@@ -136,8 +147,8 @@ class ManagerController extends BaseController
             return $query;
         })->whereIn('room_id', $this->rooms)->where('date_time', '>=', $this->date)->where('cancelled', true)->get();
 
-        if ($page == 'generator')
-            $result = $this->card->get_cards_in_calendar_format($cards, $this->rooms, $this->times, $this->date);
+        if ($page != 'calendar')
+            $result = $this->card->get_cards_in_generator_format($cards, $this->rooms, $this->times, $this->date);
         else {
             return $this->sendError("Тип сторінки $page не підримується");
         }

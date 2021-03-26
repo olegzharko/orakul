@@ -31,6 +31,16 @@ class Card extends Resource
         'id',
     ];
 
+    public static function label()
+    {
+        return "Картки";
+    }
+
+    public static function uriKey()
+    {
+        return 'calendar_cards';
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

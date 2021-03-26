@@ -213,6 +213,7 @@ class ManagerController extends BaseController
 
         $result['reader_id'] = $contract->reader_id;
         $result['accompanying_id'] = $contract->accompanying_id;
+        dd('23122331', $card);
         $result['printer_id'] = $contract->printer_id;
 
         return $this->sendResponse($result, 'Дані по нерухомості ID:' . $immovable_id);

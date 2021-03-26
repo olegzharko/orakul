@@ -51,8 +51,9 @@ class PassportAuthController extends BaseController
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'token' => $token,
+                    'id' => auth()->user()->id,
                     'type' => auth()->user()->type,
+                    'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
             ], 200);

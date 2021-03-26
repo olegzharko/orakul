@@ -62,13 +62,14 @@ class Staff extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Користувач', 'user', 'App\Nova\User'),
             Text::make('Прізвище', 'surname')->rules('required'),
             Text::make('Ім\'я', 'name')->rules('required'),
             Text::make('По батькові', 'patronymic')->rules('required'),
             Toggle::make('Менеджер', 'manager'),
             Toggle::make('Читач', 'reader'),
             Toggle::make('Видавач', 'accompanying'),
-            Toggle::make('Набирач', 'printer'),
+            Toggle::make('Набирач', 'generator'),
             Toggle::make('Реєстратор', 'registrar'),
             Toggle::make('Писар', 'clerk'),
         ];

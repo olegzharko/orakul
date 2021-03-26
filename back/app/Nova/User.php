@@ -22,7 +22,7 @@ class User extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'email';
 
     public static $group = "Nova";
 

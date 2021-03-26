@@ -43,7 +43,7 @@ Route::post('password/forgot', [PassportAuthController::class, 'password_forgot'
 Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 Route::post('password/update', [PassportAuthController::class, 'password_update'])->name('password.reset');
 
-Route::middleware('auth:api')->group(function () {
+//Route::middleware('auth:api')->group(function () {
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('logout', [PassportAuthController::class, 'logout']);
     Route::get('global_text', [TextController::class, 'global_text']);
@@ -55,10 +55,10 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
-        Route::get('total/{user_id}/{role}', [ManagerController::class, 'total_cards']);
-        Route::get('ready', [ManagerController::class, 'ready_cards']);
-        Route::get('contract_type/{type}/{page}', [ManagerController::class, 'cards_by_contract_type']);
-        Route::get('cancelled/{page}', [ManagerController::class, 'cancelled_cards']);
+        Route::get('total/{user_id}/{type}', [ManagerController::class, 'total_cards']);
+        Route::get('ready/{user_id}/{type}', [ManagerController::class, 'ready_cards']);
+        Route::get('contract_type/{contract_type}/{page}/{user_id}/{type}', [ManagerController::class, 'cards_by_contract_type']);
+        Route::get('cancelled/{page}/{user_id}/{type}', [ManagerController::class, 'cancelled_cards']);
         Route::post('search', [SearchController::class, 'search']);
         Route::post('sort/{page}', [SortController::class, 'sort']);
     });
@@ -158,4 +158,4 @@ Route::middleware('auth:api')->group(function () {
         Route::get('immovables', [\App\Http\Controllers\Registrator\RegistratorController::class, 'get_immovables']);
         Route::put('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'update_immovable']);
     });
-});
+//});
