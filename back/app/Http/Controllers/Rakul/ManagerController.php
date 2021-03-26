@@ -35,8 +35,10 @@ class ManagerController extends BaseController
     {
         $cards_id = null;
 
-        $staff = User::select('staff.*')->where('users.id', $user_id)->where('users.type', $type)
-            ->join('staff', 'staff.user_id', '=', 'users.id')
+        $staff = User::select('users.*', 'position_types.alias', 'position_types.title')->where('users.id', $user_id)
+            ->where('position_types.alias', $type)
+            ->join('user_position_type', 'user_position_type.user_id', '=', 'users.id')
+            ->join('position_types', 'position_types.id', '=', 'user_position_type.position_type_id')
             ->first();
 
         if ($staff) {

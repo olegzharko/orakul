@@ -44,12 +44,12 @@ class Contract extends Model implements Sortable
 
     public function reader()
     {
-        return $this->belongsTo(Staff::class, 'reader_id');
+        return $this->belongsTo(User::class, 'reader_id');
     }
 
     public function delivery()
     {
-        return $this->belongsTo(Staff::class, 'delivery_id');
+        return $this->belongsTo(User::class, 'delivery_id');
     }
 
     public function clients()
