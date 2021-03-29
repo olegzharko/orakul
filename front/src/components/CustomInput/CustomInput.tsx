@@ -6,8 +6,8 @@ import { TextField } from '@material-ui/core';
 
 type Props = {
   label: string;
-  onChange: (value: string) => void;
   value?: string | number | null;
+  onChange?: (value: string) => void;
   type?: string;
   disabled?: boolean;
 };
@@ -27,7 +27,7 @@ const CustomInput = ({
 
   const handleChange = (event: any) => {
     setText(event.target.value);
-    onChange(event.target.value);
+    onChange && onChange(event.target.value);
   };
 
   return (

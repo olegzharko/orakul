@@ -8,7 +8,6 @@ import { useForgotPassword } from './useForgotPassword';
 
 const ForgotPassword = () => {
   const meta = useForgotPassword();
-  const { modalProps } = useModal();
 
   return (
     <>
@@ -36,7 +35,6 @@ const ForgotPassword = () => {
           Повернутися до авторизації
         </Link>
       </form>
-      <Modal {...modalProps} />
     </>
   );
 };

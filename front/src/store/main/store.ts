@@ -5,6 +5,7 @@ import { ACTIONS } from './actions';
 export type User = {
   type: UserTypes | null;
   token: null | string;
+  id: number | null;
 };
 
 export type ModalInfo = {
@@ -22,6 +23,7 @@ const initialState: MainState = {
   user: {
     type: null,
     token: null,
+    id: null,
   },
   modalInfo: {
     open: false,

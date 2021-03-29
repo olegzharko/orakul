@@ -1,10 +1,9 @@
-/* eslint-disable prettier/prettier */
 import { useDispatch } from 'react-redux';
 import {
   ChangeEvent, useState, useEffect, useCallback
 } from 'react';
 import { setUser } from '../../store/main/actions';
-import { searchAppointments } from '../../store/scheduler/actions';
+import { searchAppointments } from '../../store/appointments/actions';
 import useDebounce from './utils/useDebounce';
 
 export const useHeader = () => {
@@ -20,7 +19,7 @@ export const useHeader = () => {
       return;
     }
 
-    dispatch(searchAppointments(debouncedValue, 'calendar'));
+    dispatch(searchAppointments(debouncedValue));
   }, [debouncedValue]);
 
   const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {

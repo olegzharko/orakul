@@ -5,6 +5,8 @@ import CustomCheckBox from '../../../../components/CustomCheckBox';
 import CustomInput from '../../../../components/CustomInput';
 import CustomPasswordInput from '../../../../components/CustomPasswordInput';
 import Loader from '../../../../components/Loader/Loader';
+import Modal from '../../../../components/Modal';
+import { useModal } from '../../../../components/Modal/useModal';
 import PrimaryButton from '../../../../components/PrimaryButton';
 import { useAuthorization } from './useAuthorization';
 
