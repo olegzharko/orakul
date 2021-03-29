@@ -46,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('logout', [PassportAuthController::class, 'logout']);
     Route::get('global_text', [TextController::class, 'global_text']);
     Route::get('reception', [ReceptionController::class, 'reception']);
+    Route::get('calendar', [ReceptionController::class, 'reception']);
     Route::put('cards/move/{id}', [CardController::class, 'move']);
     Route::resource('cards', CardController::class);
     Route::get('exchange', [MinfinController::class, 'get_rate_exchange']);
