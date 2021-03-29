@@ -20,7 +20,7 @@ export const useSchedulerTable = () => {
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchSchedulerSettings());
-      dispatch(fetchAppointments(UserTypes.RECEPTION));
+      dispatch(fetchAppointments());
     }
 
     return () => { dispatch(setAppointments([])); };

@@ -19,7 +19,7 @@ export const useHeader = () => {
       return;
     }
 
-    dispatch(searchAppointments(debouncedValue, 'calendar'));
+    dispatch(searchAppointments(debouncedValue));
   }, [debouncedValue]);
 
   const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {

@@ -34,7 +34,7 @@ const Contracts = () => (
     <span className="title">Договори</span>
     <div className="cards">
       {data.map((item: any) => (
-        <div className="item">
+        <div className="item" key={item.key}>
           <div className="item__left">
             <img src="/icons/contract.svg" alt="contract" />
             <span className="name">{item.title}</span>

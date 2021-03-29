@@ -1,0 +1,40 @@
+@import '../../constants.scss';
+
+.dashboard {
+  position: relative;
+  display: flex;
+
+  &__main {
+
+    &-section {
+
+      h2 {
+        @include primary_title;
+      }
+    
+      .cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 20px;
+        margin-top: 20px;
+    
+        &.table {
+          grid-template-columns: 1fr;
+    
+          .card__main {
+            flex-direction: row;
+    
+            .card__content-item {
+              margin-right: 15px;
+            }
+          }
+        }
+      }
+    
+      .card__content-item {
+        margin-bottom: 15px;
+        color: black;
+      }
+    }
+  }
+}

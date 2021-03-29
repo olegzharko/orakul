@@ -13,7 +13,7 @@ export const useFilterContainer = () => {
 
   const onFilterSubmit = useCallback(() => {
     if (filterData) {
-      dispatch(fetchAppointmentsByFilter('generator', filterData));
+      dispatch(fetchAppointmentsByFilter(filterData));
     }
   }, [filterData]);
 

@@ -32,7 +32,7 @@ export type NewCard = {
 
 // eslint-disable-next-line no-shadow
 export enum UserTypes {
-  PRINTER = 'printer',
+  GENERATOR = 'generator',
   RECEPTION = 'reception',
   MANAGER = 'manager',
   ASSISTANT = 'assistant',

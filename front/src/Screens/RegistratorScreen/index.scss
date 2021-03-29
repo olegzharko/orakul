@@ -1,0 +1,55 @@
+@import '../../constants.scss';
+
+.registrator {
+  display: flex;
+
+  &__navigation {
+    width: $control_panel;
+
+    &-item {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: transparent;
+      cursor: pointer;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &.selected {
+        background-color: $grey_light;
+      }
+
+      img {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  &__dashboard {
+    width: $content_panel;
+  }
+
+  &__immovable {
+
+    &-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 20px;
+    }
+  }
+
+  &__developer {
+
+    &-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 20px;
+    }
+  }
+}

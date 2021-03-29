@@ -81,12 +81,12 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
 
   useEffect(() => {
     const data: FilterData = {
-      notary_id: selectedNotary,
-      reader_id: selectedReader,
-      giver_id: selectedAccompanying,
-      contract_type_id: selectedContractType,
-      developer_id: selectedDeveloper,
-      dev_assistant_id: selectedRepresentative,
+      notary_id: selectedNotary || null,
+      reader_id: selectedReader || null,
+      giver_id: selectedAccompanying || null,
+      contract_type_id: selectedContractType || null,
+      developer_id: selectedDeveloper || null,
+      dev_assistant_id: selectedRepresentative || null,
     };
 
     if (!horizontal) {

@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux';
-import getToken from '../../services/getToken';
 import login from '../../services/login/Login';
 import forgotPasswordService from '../../services/login/forgotPassword';
 import resetPasswordService, {
@@ -34,11 +33,6 @@ export const setModalInfo = (payload: any) => ({
 });
 
 // Thunk actions
-export const fetchToken = () => async (dispatch: Dispatch<any>) => {
-  const token = await getToken();
-  dispatch(setToken(token));
-};
-
 export const sendLogin = (
   bodyData: {
     email: string;

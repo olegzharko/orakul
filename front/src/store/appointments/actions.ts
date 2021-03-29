@@ -4,7 +4,6 @@ import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
 import setSchedulerFilter from '../../services/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
-import getAppointmentsForDashboard from '../../services/getAppointmentsForDashboard';
 
 export const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
@@ -33,35 +32,32 @@ export const setEditAppointmens = (payload: any) => ({
   payload,
 });
 
-export const fetchAppointments = (userType: UserTypes) => async (
+export const fetchAppointments = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().main.user;
+  const { token, type, id } = getState().main.user;
 
-  if (token) {
+  if (token && type && id) {
     dispatch(setIsLoading(true));
-    let data;
+    const { data, success } = await getAppointments(token);
 
-    if (userType === 'reception') {
-      data = await getAppointments(token);
-    } else {
-      data = await getAppointmentsForDashboard(token);
+    if (data && success) {
+      dispatch(setAppointments(Object.values(data)));
     }
 
-    dispatch(setAppointments(Object.values(data)));
     dispatch(setIsLoading(false));
   }
 };
 
-export const fetchAppointmentsByFilter = (place: string, bodyData: FilterData) => async (
+export const fetchAppointmentsByFilter = (bodyData: FilterData) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
   const { token } = getState().main.user;
 
   if (token) {
-    const { data, success } = await setSchedulerFilter(place, token, bodyData);
+    const { data, success } = await setSchedulerFilter(token, bodyData);
 
     if (success) {
       dispatch(setAppointments(Object.values(data)));
@@ -69,20 +65,17 @@ export const fetchAppointmentsByFilter = (place: string, bodyData: FilterData) =
   }
 };
 
-export const searchAppointments = (text: string, page: string) => async (
+export const searchAppointments = (text: string) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
   const { token } = getState().main.user;
 
   if (token) {
-    const { success, data } = await searchAppointmentsServices(token, {
-      text,
-      page,
-    });
+    const { success, data } = await searchAppointmentsServices(token, { text });
 
-    if (success) {
-      dispatch(setAppointments(data));
+    if (data && success) {
+      dispatch(setAppointments(Object.values(data)));
     }
   }
 };
