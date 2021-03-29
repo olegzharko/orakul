@@ -42,13 +42,12 @@ class PassportAuthController extends BaseController
 
         if (auth()->attempt($data)) {
             Session::put('user', auth()->user()->id);
-            $type = UserPositionType::get_user_type((auth()->user()->id));
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
             return response()->json([
                 'success' => true,
                 'data' => [
                     'id' => auth()->user()->id,
-                    'type' => $type,
+                    'type' => auth()->user()->type,
                     'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
