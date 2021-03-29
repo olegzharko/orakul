@@ -47,7 +47,7 @@ class SearchController extends BaseController
         $validator = Validator::make([
             'text' => $r['text'],
         ], [
-            'text' => ['required', 'string'],
+            'text' => ['string', 'nullable'],
         ], [
             'text.required' => 'Необхідно передати дані в параметрі text',
             'text.string' => 'Тип данних для поля text - string',
@@ -108,7 +108,10 @@ class SearchController extends BaseController
             ->join('immovable_types', 'immovables.immovable_type_id', '=', 'immovable_types.id')
             ->join('developer_buildings', 'immovables.developer_building_id', '=', 'developer_buildings.id');
 
-        $cards = $this->search_text_in_query($query, $text);
+        if ($text)
+            $cards = $this->search_text_in_query($query, $text);
+        else
+            $cards = $query->get();
 
         if (auth()->user()->type == 'reception') {
             $result = $this->card->get_cards_in_reception_format($cards);
