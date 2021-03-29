@@ -13,7 +13,7 @@ use App\Models\WorkDay;
 use App\Models\ImmovableType;
 use Illuminate\Http\Request;
 
-class CalendarController extends BaseController
+class ReceptionController extends BaseController
 {
     public $convert;
 
@@ -21,7 +21,7 @@ class CalendarController extends BaseController
     {
         $this->convert = new ConvertController();
     }
-    public function calendar()
+    public function reception()
     {
         $rooms = Room::select('id', 'title', 'sort_order')->where('active', true)->get();
         $time = Time::select('time', 'sort_order')->where('active', true)->get();

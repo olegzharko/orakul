@@ -36,32 +36,27 @@ class SearchController extends BaseController
         }
 
         $text = $r->text;
-        $page = $r->page;
 
-        $result = $this->get_query_to_cards($text, $page);
+        $result = $this->get_query_to_cards($text);
 
-        return $this->sendResponse($result, 'Для сторінки ' . $page . ', за ключовими словами: ' . $text . ', було знайдено наступне');
+        return $this->sendResponse($result, 'За ключовими словами: ' . $text . ', було знайдено наступне');
     }
 
     public function validate_data($r)
     {
         $validator = Validator::make([
             'text' => $r['text'],
-            'page' => $r['page'],
         ], [
             'text' => ['required', 'string'],
-            'page' => ['required', 'string'],
         ], [
             'text.required' => 'Необхідно передати дані в параметрі text',
             'text.string' => 'Тип данних для поля text - string',
-            'page.required' => 'Необхідно передати дані в параметрі page',
-            'page.string' => 'Необхідно передати slug сторінки з якої робиться пошук',
         ]);
 
         return $validator;
     }
 
-    public function get_query_to_cards($text, $page)
+    public function get_query_to_cards($text)
     {
         $result = null;
         $date = new \DateTime();
@@ -72,7 +67,7 @@ class SearchController extends BaseController
         $query = Card::select(
             'contracts.id',
             'contracts.type_id',
-            'contracts.delivery_id',
+            'contracts.accompanying_id',
             'contracts.reader_id',
             'contracts.contract_template_id',
             'contracts.immovable_id',
@@ -115,10 +110,10 @@ class SearchController extends BaseController
 
         $cards = $this->search_text_in_query($query, $text);
 
-        if ($page == 'calendar') {
-            $result = $this->card->get_cards_in_calendar_format($cards, $rooms, $times, $date);
+        if (auth()->user()->type == 'reception') {
+            $result = $this->card->get_cards_in_reception_format($cards);
         }
-        elseif ($page == 'generator') {
+        elseif (auth()->user()->type == 'generator') {
             $result = $this->card->get_cards_in_generator_format($cards);
         }
 
@@ -158,7 +153,6 @@ class SearchController extends BaseController
         $building_id_by_number = DeveloperBuilding::whereIn('number', $text)->pluck('id')->toArray();
 
         $building_id = array_merge($building_id_by_title, $building_id_by_number);
-
 
         if (count($building_id)) {
             $query->whereIn('developer_buildings.id', $building_id);

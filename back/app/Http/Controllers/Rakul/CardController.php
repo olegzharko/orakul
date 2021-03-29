@@ -18,11 +18,15 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Time;
 use App\Models\Room;
+use App\Models\UserPositionType;
 use Validator;
 
 
 class CardController extends BaseController
 {
+    public $date;
+    public $rooms;
+    public $times;
     public $immovable;
     public $contract;
     public $client;
@@ -30,6 +34,9 @@ class CardController extends BaseController
 
     public function __construct()
     {
+        $this->date = new \DateTime();
+        $this->rooms = Room::where('active', true)->pluck('id')->toArray();
+        $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->immovable = new ImmovableController();
         $this->contract = new ContractController();
         $this->client = new ClientController();
@@ -43,7 +50,25 @@ class CardController extends BaseController
     {
         $result = null;
 
-        $result = $this->get_all_calendar_cards();
+        $type = UserPositionType::get_user_type((auth()->user()->id));
+
+        $cards_query = Card::whereIn('room_id', $this->rooms)
+                ->where('date_time', '>=', $this->date->format('Y.m.d'));
+
+        if ($type == 'calendar' || $type == 'reception') {
+            $cards = $cards_query->where('cancelled', false)->get();
+
+            $result = $this->get_cards_in_reception_format($cards);
+        }
+        elseif ($type == 'generator') {
+            $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
+                ->where('ready', true)->get();
+
+            $result = $this->get_cards_in_generator_format($cards);
+        }
+        else {
+            return $this->sendError("Тип сторінки $type не підримується");
+        }
 
         return $this->sendResponse($result, 'Картки з договорами');
     }
@@ -468,17 +493,17 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_cards_in_calendar_format($cards, $rooms, $times, $date)
+    public function get_cards_in_reception_format($cards)
     {
         $result = [];
-        $time_length = count($times);
+        $time_length = count($this->times);
 
         foreach ($cards as $key => $card) {
-            if (in_array($card->date_time->format('H:i'), $times)) {
-                $time_height = array_search($card->date_time->format('H:i'), $times);
-                $day_height = $this->count_days($card, $date);
+            if (in_array($card->date_time->format('H:i'), $this->times)) {
+                $time_height = array_search($card->date_time->format('H:i'), $this->times);
+                $day_height = $this->count_days($card, $this->date);
                 $result[$key]['i'] = strval($card->id);
-                $result[$key]['x'] = array_search($card->room->id, $rooms);
+                $result[$key]['x'] = array_search($card->room->id, $this->rooms);
                 if ($day_height)
                     $result[$key]['y'] = $time_height + $time_length * $day_height;
                 else
@@ -555,19 +580,5 @@ class CardController extends BaseController
     public function get_card_instructions($card)
     {
         return ['Паспорт', 'ІПН', 'Стать покупця'];
-    }
-
-    public function get_all_calendar_cards()
-    {
-        $date = new \DateTime();
-
-        $rooms = Room::where('active', true)->pluck('id')->toArray();
-        $times = Time::where('active', true)->pluck('time')->toArray();
-
-        $cards = Card::whereIn('room_id', $rooms)->where('date_time', '>=', $date->format('Y.m.d'))->where('cancelled', false)->get();
-
-        $result = $this->get_cards_in_calendar_format($cards, $rooms, $times, $date);
-
-        return $result;
     }
 }

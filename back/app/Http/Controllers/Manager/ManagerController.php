@@ -8,6 +8,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\CardContract;
+use App\Models\CheckList;
 use App\Models\Contact;
 use App\Models\Contract;
 use Illuminate\Http\Request;
@@ -165,6 +166,7 @@ class ManagerController extends BaseController
 
     public function get_immovable($immovable_id)
     {
+
         $result = [];
         $result['immovable_type'] = null;
         $result['building'] = null;
@@ -213,7 +215,7 @@ class ManagerController extends BaseController
 
         $result['reader_id'] = $contract->reader_id;
         $result['accompanying_id'] = $contract->accompanying_id;
-        dd('23122331', $card);
+
         $result['printer_id'] = $contract->printer_id;
 
         return $this->sendResponse($result, 'Дані по нерухомості ID:' . $immovable_id);
@@ -263,6 +265,7 @@ class ManagerController extends BaseController
         $spouse = null;
         $confidant = null;
         $married_types = null;
+        $check_list = null;
 
         $married_types = MarriageType::select('id', 'title')->get();
 
@@ -287,12 +290,32 @@ class ManagerController extends BaseController
                 $spouse = $this->tools->get_id_and_full_name($spouse);
             if ($confidant)
                 $confidant = $this->tools->get_id_and_full_name($confidant);
+
+            if ($client) {
+                $check_list = CheckList::select(
+                    "spouse_consent",
+                    "current_place_of_residence",
+                    "photo_in_the_passport",
+                    "immigrant_help",
+                    "passport",
+                    "tax_code",
+                    "evaluation_in_the_fund",
+                    "check_fop",
+                    "document_scans",
+                    "unified_register_of_court_decisions",
+                    "sanctions",
+                    "financial_monitoring",
+                    "unified_register_of_debtors",
+                )->where('client_id', $client_id)->first();
+            }
+
         }
 
         $result['married_types'] = $married_types;
         $result['client'] = $client;
         $result['spouse'] = $spouse;
         $result['confidant'] = $confidant;
+        $result['check_list'] = $check_list;
 
         return $this->sendResponse($result, 'Дані покупця під ID:' . $client_id);
     }

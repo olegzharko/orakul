@@ -82,7 +82,7 @@ class RegistratorController extends BaseController
         }
 
         $result['date_info'] = $this->date->format('d.m.Y');
-        $result['devolepr'] = $res_dev;
+        $result['developers'] = $res_dev;
 
         return $this->sendResponse($result, 'Забудовники на перевірку реєстратором');
     }

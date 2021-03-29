@@ -12,14 +12,20 @@ use DB;
 
 class SortController extends BaseController
 {
+    public $date;
+    public $rooms;
+    public $times;
     public $card;
 
     public function __construct()
     {
+        $this->date = new \DateTime();
+        $this->rooms = Room::where('active', true)->pluck('id')->toArray();
+        $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->card = new CardController();
     }
 
-    public function sort($page, Request $r)
+    public function sort(Request $r)
     {
         $result = null;
         $validator = $this->validate_data($r);
@@ -28,7 +34,7 @@ class SortController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $search_cards_id = Card::where(function ($query) use ($r) {
+        $cards = Card::where(function ($query) use ($r) {
                 if ($r['notary_id'])
                     $query = $query->where('cards.notary_id', $r['notary_id']);
                 if ($r['dev_company_id'])
@@ -41,13 +47,19 @@ class SortController extends BaseController
                     $query = $query->where('contracts.accompanying_id', $r['accompanying_id']);
 
             return $query;
-        })->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')->pluck('cards.id')->toArray();
+        })
+            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
+            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+            ->get();
 
-        $result = $this->card->get_all_calendar_cards();
-
-        foreach ($result as $key => $card) {
-            if (!in_array($card['i'], $search_cards_id))
-                $result[$key]['title'] = "";
+        if (auth()->user()->type == 'reception') {
+            $result = $this->card->get_cards_in_reception_format($cards, $this->rooms, $this->times, $this->date);
+        }
+        elseif (auth()->user()->type == 'generator') {
+            $result = $this->card->get_cards_in_generator_format($cards);
+        }
+        else {
+            return $this->sendError("Користувач не може завантажити даний розділ");
         }
 
         return  $this->sendResponse($result, 'Картки після сортування');
@@ -64,13 +76,6 @@ class SortController extends BaseController
             'contract_type_id' => $r['contract_type_id'],
             'sort_type_id' => $r['sort_type_id'],
         ], [
-//            'notary_id' => ['required', 'numeric', 'nullable'],
-//            'reader_id' => ['required', 'numeric', 'nullable'],
-//            'giver_id' => ['required', 'numeric', 'nullable'],
-//            'dev_company_id' => ['required', 'numeric', 'nullable'],
-//            'dev_representative_id' => ['required', 'numeric', 'nullable'],
-//            'sort_type_id' => ['required', 'numeric', 'nullable'],
-
             'notary_id' => ['numeric', 'nullable'],
             'reader_id' => ['numeric', 'nullable'],
             'accompanying_id' => ['numeric', 'nullable'],
@@ -79,12 +84,6 @@ class SortController extends BaseController
             'contract_type_id' => ['numeric', 'nullable'],
             'sort_type_id' => ['numeric', 'nullable'],
         ], [
-//            'notary_id.required' => 'Необхідно передати ID нотаріса або 0',
-//            'reader_id.required' => 'Необхідно передати ID читача або 0',
-//            'giver_id.required' => 'Необхідно передати ID видавача або 0',
-//            'dev_company_id.required' => 'Необхідно передати ID компанії забудовника або 0',
-//            'dev_representative_id.required' => 'Необхідно передати ID представника забудовника або 0',
-//            'sort_type_id.required' => 'Необхідно передати ID метода сортування або 0',
             'notary_id.numeric' => 'Необхідно передати ID нотаріса в числовому форматі',
             'reader_id.numeric' => 'Необхідно передати ID читача в числовому форматі',
             'accompanying_id.numeric' => 'Необхідно передати ID видавача в числовому форматі',

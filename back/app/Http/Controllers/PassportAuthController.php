@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\UserPositionType;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
@@ -9,9 +10,6 @@ use Session;
 
 class PassportAuthController extends BaseController
 {
-    /**
-     * Registration
-     */
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -35,9 +33,6 @@ class PassportAuthController extends BaseController
         ], 200);
     }
 
-    /**
-     * Login
-     */
     public function login(Request $request)
     {
         $data = [
@@ -47,12 +42,13 @@ class PassportAuthController extends BaseController
 
         if (auth()->attempt($data)) {
             Session::put('user', auth()->user()->id);
+            $type = UserPositionType::get_user_type((auth()->user()->id));
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
             return response()->json([
                 'success' => true,
                 'data' => [
                     'id' => auth()->user()->id,
-                    'type' => auth()->user()->type,
+                    'type' => $type,
                     'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
@@ -65,27 +61,6 @@ class PassportAuthController extends BaseController
             ], 401);
         }
     }
-
-//    public function check_user()
-//    {
-//        if (auth()->user()) {
-//            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
-//            return response()->json([
-//                'success' => true,
-//                'data' => [
-//                    'token' => $token,
-//                    'type' => auth()->user()->type,
-//                ],
-//                'message' => 'Авторизація прошла успішно'
-//            ], 200);
-//        } else {
-//            return response()->json([
-//                'success' => false,
-//                'data' => [],
-//                'message' => 'Користувач не авторизований'
-//            ], 401);
-//        }
-//    }
 
     public function password_forgot(Request $request)
     {
@@ -171,16 +146,6 @@ class PassportAuthController extends BaseController
             $user_id = $request->user()->id;
             $secret_password = \Str::random(15);
             User::where('id', $user_id)->update(['password' => \Hash::make($secret_password)]);
-            $request->user()->token()->revoke();
-            return $this->sendResponse([], 'Ви закінчили свою сесію.');
-        } else {
-            return $this->sendError("Користувач не був авторизований.");
-        }
-    }
-
-    public function logout(Request $request)
-    {
-        if (\Auth::check()) {
             $request->user()->token()->revoke();
             return $this->sendResponse([], 'Ви закінчили свою сесію.');
         } else {

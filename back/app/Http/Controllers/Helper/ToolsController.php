@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\Room;
+use App\Models\User;
 use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
-use App\Models\Staff;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use Illuminate\Http\Request;
@@ -75,21 +75,21 @@ class ToolsController extends Controller
 
     public function get_reader_staff()
     {
-        $reader = Staff::where('reader', true)->get();
+        $reader = User::where('reader', true)->get();
 
         return $this->convertor_full_name($reader, 'full_name');
     }
 
     public function get_accompanying_staff()
     {
-        $accompanying = Staff::where('accompanying', true)->get();
+        $accompanying = User::where('accompanying', true)->get();
 
         return $this->convertor_full_name($accompanying, 'full_name');
     }
 
-    public function get_printer_staff()
+    public function get_generator_staff()
     {
-        $accompanying = Staff::where('printer', true)->get();
+        $accompanying = User::where('generator', true)->get();
 
         return $this->convertor_full_name($accompanying, 'full_name');
     }
