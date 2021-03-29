@@ -9,7 +9,7 @@ const Dashboard = (props: Props) => {
   const { selectedType, setSelectedType } = useDashboard(props);
 
   return (
-    <>
+    <div className="dashboard">
       {props.isChangeTypeButton
         && <DashboardControl selected={selectedType} onClick={setSelectedType} />}
       {props.sections && (
@@ -24,7 +24,7 @@ const Dashboard = (props: Props) => {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

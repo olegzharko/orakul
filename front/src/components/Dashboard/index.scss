@@ -3,10 +3,12 @@
 .dashboard {
   position: relative;
   display: flex;
+  flex-direction: column;
 
   &__main {
 
     &-section {
+      margin-bottom: 20px;
 
       h2 {
         @include primary_title;
