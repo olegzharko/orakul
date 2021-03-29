@@ -48,7 +48,7 @@ const App: React.FC = () => {
     );
   }
 
-  return <h1>You haven not success</h1>;
+  return <h1>You have not access</h1>;
 };
 
 export default App;

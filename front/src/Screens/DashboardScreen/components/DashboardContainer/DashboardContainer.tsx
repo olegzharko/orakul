@@ -4,19 +4,22 @@ import { useModal } from '../../../../components/Modal/useModal';
 import Modal from '../../../../components/Modal';
 import Dashboard from '../../../../components/Dashboard';
 import { useDashboardContainer } from './useDashboardContainer';
+import ContentPanel from '../../../../components/ContentPanel';
 
 const DashboardContainer = () => {
   const modalProps = useModal();
   const { formatAppointments } = useDashboardContainer();
 
   return (
-    <div className="dashboard">
+    <div className="dashboard-screen">
       <Filter />
-      <Dashboard
-        link="contracts"
-        sections={formatAppointments}
-        isChangeTypeButton
-      />
+      <ContentPanel>
+        <Dashboard
+          link="contracts"
+          sections={formatAppointments}
+          isChangeTypeButton
+        />
+      </ContentPanel>
       <Modal {...modalProps} />
     </div>
   );
