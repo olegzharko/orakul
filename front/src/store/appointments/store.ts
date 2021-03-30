@@ -22,6 +22,13 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
         ...state,
         appointments: [...state.appointments, action.payload],
       };
+    case ACTIONS.DELETE_APPOINTMENT:
+      return {
+        ...state,
+        appointments: [
+          ...state.appointments.filter((item: any) => item.i !== action.payload)
+        ],
+      };
     case ACTIONS.EDIT_APPOINTMENTS:
       return {
         ...state,

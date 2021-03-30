@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux';
-import { UserTypes } from '../../types';
 import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
 import setSchedulerFilter from '../../services/setSchedulerFilter';
@@ -10,6 +9,7 @@ export const ACTIONS = {
   SET_APPOINTMENTS: 'SET_APPOINTMENTS',
   ADD_NEW_APPOINTMENT: 'ADD_NEW_APPOINTMENT',
   EDIT_APPOINTMENTS: 'EDIT_APPOINTMENTS',
+  DELETE_APPOINTMENT: 'DELETE_APPOINTMENT',
 };
 
 export const setIsLoading = (payload: boolean) => ({
@@ -27,9 +27,14 @@ export const addNewAppointment = (payload: any) => ({
   payload,
 });
 
-export const setEditAppointmens = (payload: any) => ({
+export const setEditAppointments = (payload: any) => ({
   type: ACTIONS.EDIT_APPOINTMENTS,
   payload,
+});
+
+export const deleteAppointment = (id: string) => ({
+  type: ACTIONS.DELETE_APPOINTMENT,
+  payload: id,
 });
 
 export const fetchAppointments = () => async (
