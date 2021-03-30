@@ -51,7 +51,7 @@ class RegistratorController extends BaseController
                 'dev_fences.date',
                 'dev_fences.number',
                 'dev_fences.pass',
-            )->where('contracts.ready', true)->whereDate('sign_date', '>=', $now->format('Y-m-d'))
+            )->where('contracts.ready', true)->whereDate('sign_date', '=', $now->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
