@@ -93,8 +93,8 @@ class CardController extends BaseController
         }
 
         if ($card->date_time) {
-            $card->date = $card->date_time->format('H:i');
-            $card->time = $card->date_time->format('d.m');
+            $card->date = $card->date_time->format('d.m');
+            $card->time = $card->date_time->format('H:i');
             unset($card->date_time);
         } else {
             $card->date = null;
