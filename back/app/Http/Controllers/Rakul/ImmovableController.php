@@ -82,7 +82,7 @@ class ImmovableController extends BaseController
             ]);
 
             $result['id'] = $value['immovable_id'];
-            $result['contract_type_id'] = $value['contract_type_id'];
+            $result['type_id'] = $value['contract_type_id'];
         }
 
         return $result;
