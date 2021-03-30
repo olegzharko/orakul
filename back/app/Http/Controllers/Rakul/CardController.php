@@ -120,7 +120,8 @@ class CardController extends BaseController
                         $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());
                     }
 
-                    $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->template->type->id;
+                    if ($contr->contract->template)
+                        $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->template->type->id;
                     if ($contr->contract->immovable) {
                         $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
                         $result_contract_immovable[$key]['immovable_id'] = $contr->contract->immovable->id;
