@@ -8,7 +8,6 @@ import { useUpdatePassword } from './useUpdatePassword';
 
 const UpdatePassword = () => {
   const meta = useUpdatePassword();
-  const { modalProps } = useModal();
 
   return (
     <>
@@ -44,7 +43,6 @@ const UpdatePassword = () => {
           Повернутися до авторизації
         </Link>
       </form>
-      <Modal {...modalProps} />
     </>
   );
 };

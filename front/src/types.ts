@@ -32,6 +32,30 @@ export type NewCard = {
 
 // eslint-disable-next-line no-shadow
 export enum UserTypes {
-  PRINTER = 'printer',
+  GENERATOR = 'generator',
   RECEPTION = 'reception',
+  MANAGER = 'manager',
+  ASSISTANT = 'assistant',
+  REGISTRATOR = 'registrator',
 }
+
+export type ManagerAppointmentCard = {
+  id: number;
+  color: string;
+  instructions: string[];
+  short_info: {
+    dev_representative_id: string;
+    notary: string;
+    notary_assistant_giver: string;
+    notary_assistant_reader: string;
+  };
+  title: string;
+};
+
+export type ManagerAppointment = {
+  day: string;
+  date: string;
+  cards: ManagerAppointmentCard[];
+};
+
+export type ManagerAppointments = ManagerAppointment[];

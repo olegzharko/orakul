@@ -8,7 +8,7 @@ export default async function getAppointments(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    return data.data;
+    return data;
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err);

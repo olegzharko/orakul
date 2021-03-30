@@ -9,7 +9,6 @@ import { useModal } from '../../../../../../components/Modal/useModal';
 
 const SchedulerForm = () => {
   const meta = useSchedulerForm();
-  const { modalProps } = useModal();
 
   return (
     <div className="schedulerForm scheduler__form">
@@ -45,8 +44,6 @@ const SchedulerForm = () => {
           edit
         />
       )}
-
-      <Modal {...modalProps} />
     </div>
   );
 };

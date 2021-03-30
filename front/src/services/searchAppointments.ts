@@ -5,7 +5,6 @@ export default async function searchAppointments(
   token: string,
   bodyData: {
     text: string;
-    page: string;
   }
 ) {
   try {

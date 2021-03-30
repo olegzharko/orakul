@@ -1,30 +1,29 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable import/prefer-default-export */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { UserTypes } from '../../../../../../types';
 import {
   setSelectedOldAppointment,
-  fetchAppointments,
   fetchCalendarCard,
   fetchSchedulerSettings,
   moveCalendarCard,
 } from '../../../../../../store/scheduler/actions';
+import { fetchAppointments, setAppointments } from '../../../../../../store/appointments/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
 
 export const useSchedulerTable = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
-  const { options, isLoading, appointments } = useSelector(
-    (state: State) => state.scheduler
-  );
+  const { options, isLoading } = useSelector((state: State) => state.scheduler);
+  const { appointments } = useSelector((state: State) => state.appointments);
 
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchSchedulerSettings());
       dispatch(fetchAppointments());
     }
+
+    return () => { dispatch(setAppointments([])); };
   }, [token]);
 
   const rooms = useMemo(() => options?.rooms, [options]);
