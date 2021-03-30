@@ -65,23 +65,22 @@ class RegistratorController extends BaseController
             $dev_companies = $dev_companies->toArray();
             $dev_companies = array_values(array_unique($dev_companies));
 
-            $dev_companies = DevCompany::whereIn('dev_companies.id', $dev_companies)
-                ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
-                ->distinct('dev_companies.id')
-                ->get();
+            $dev_companies = DevCompany::whereIn('id', $dev_companies)->get();
 
 
             $dev_length = count($dev_companies);
 
-            foreach ($dev_companies as $key => $owner) {
-                $res_dev[$key]['id'] = $owner->id;
-                $res_dev[$key]['title'] = $owner->title;
-                $res_dev[$key]['color'] = $owner->color;
+            foreach ($dev_companies as $key => $company) {
+
+                $owner = Client::where('type', 2)->where('dev_company_id', $company->id)->first();
+                $res_dev[$key]['id'] = $company->id;
+                $res_dev[$key]['title'] = $company->title;
+                $res_dev[$key]['color'] = $company->color;
                 $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
                 $res_dev[$key]['tax_code'] = $owner->tax_code;
-                $res_dev[$key]['date'] = $owner->date;
-                $res_dev[$key]['number'] = $owner->number;
-                $res_dev[$key]['pass'] = $owner->pass === null ? 2 : $owner->pass;
+                $res_dev[$key]['date'] = $company->date;
+                $res_dev[$key]['number'] = $company->number;
+                $res_dev[$key]['pass'] = $company->pass === null ? 2 : $company->pass;
                 $res_dev[$key]['prew'] = null;
                 $res_dev[$key]['next'] = null;
                 if ($key > 0) {
