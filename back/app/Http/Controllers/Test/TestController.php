@@ -444,7 +444,7 @@ class TestController extends Controller
             $dev_employer->gender = 'male';
             $dev_employer->citizenship_id = null;
             $dev_employer->spouse_id = null;
-            $dev_employer->dev_company_id = $this->get_rand_value($this->dev_companies);
+            $dev_employer->dev_company_id = $this->get_rand_value(DevCompany::where('active', true)->pluck('id')->toArray());
             $dev_employer->phone = "+38050" . rand(5555555, 9999999);
             $dev_employer->email = $this->random_string() . "@gmail.com";
             $dev_employer->tax_code = rand('2220000000', '3339999999');
