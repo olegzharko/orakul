@@ -65,7 +65,7 @@ class SearchController extends BaseController
         $times = Time::where('active', true)->pluck('time')->toArray();
 
         $query = Card::select(
-            'contracts.id',
+//            'contracts.id',
             'contract_templates.id as type_id',
             'contracts.accompanying_id',
             'contracts.reader_id',
