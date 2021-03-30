@@ -75,7 +75,7 @@ class ImmovableController extends BaseController
         ]);
 
         if ($imm) {
-            dd($value);
+
             Contract::where('immovable_id', $value['immovable_id'])->update([
                'type_id' => $value['contract_type_id'],
                'bank' => $value['bank'],
@@ -84,6 +84,7 @@ class ImmovableController extends BaseController
 
             $result['id'] = $value['immovable_id'];
             $result['type_id'] = $value['contract_type_id'];
+            dd($result);
         }
 
         return $result;
