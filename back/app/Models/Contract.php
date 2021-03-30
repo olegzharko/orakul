@@ -14,6 +14,7 @@ class Contract extends Model implements Sortable
     protected $fillable = [
         'reader_id',
         'accompanying_id',
+        'type_id',
         'printer_id',
     ];
 
