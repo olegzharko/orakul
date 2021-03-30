@@ -479,11 +479,11 @@ class CardController extends BaseController
 
         foreach ($contracts as $contr) {
             if  ($contr->contract->reader) {
-                $reader[] = $this->convert->get_short_name($contr->contract->reader);
+                $reader[$contr->contract->reader->id] = $this->convert->get_short_name($contr->contract->reader);
             }
 
             if  ($contr->contract->accompanying) {
-                $accompanying[] = $this->convert->get_short_name($contr->contract->accompanying);
+                $accompanying[$contr->contract->accompanying->id] = $this->convert->get_short_name($contr->contract->accompanying);
             }
         }
 
