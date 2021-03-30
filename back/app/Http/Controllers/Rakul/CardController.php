@@ -108,17 +108,28 @@ class CardController extends BaseController
         if (count($contracts)) {
             foreach ($contracts as $key => $contr) {
                 // в договорі може бути відсутній клієнт, так як на рецепції утворюється котороткий запис ПІБ та номер телефону
-                if ($contr->contract->clients) {
-                    $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());
-                }
+                $result_contract_immovable[$key]['contract_type_id'] = null;
+                $result_contract_immovable[$key]['building_id'] = null;
+                $result_contract_immovable[$key]['immovable_id'] = null;
+                $result_contract_immovable[$key]['imm_type_id'] = null;
+                $result_contract_immovable[$key]['imm_number'] = null;
+                $result_contract_immovable[$key]['bank'] = null;
+                $result_contract_immovable[$key]['proxy'] = null;
+                if ($contr->contract) {
+                    if ($contr->contract->clients) {
+                        $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());
+                    }
 
-                $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->template->type->id;
-                $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
-                $result_contract_immovable[$key]['immovable_id'] = $contr->contract->immovable->id;
-                $result_contract_immovable[$key]['imm_type_id'] = $contr->contract->immovable->immovable_type_id;
-                $result_contract_immovable[$key]['imm_number'] = $contr->contract->immovable->immovable_number;
-                $result_contract_immovable[$key]['bank'] = $contr->contract->bank;
-                $result_contract_immovable[$key]['proxy'] = $contr->contract->proxy;
+                    $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->template->type->id;
+                    if ($contr->contract->immovable) {
+                        $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
+                        $result_contract_immovable[$key]['immovable_id'] = $contr->contract->immovable->id;
+                        $result_contract_immovable[$key]['imm_type_id'] = $contr->contract->immovable->immovable_type_id;
+                        $result_contract_immovable[$key]['imm_number'] = $contr->contract->immovable->immovable_number;
+                    }
+                    $result_contract_immovable[$key]['bank'] = $contr->contract->bank;
+                    $result_contract_immovable[$key]['proxy'] = $contr->contract->proxy;
+                }
             }
         }
 
@@ -442,9 +453,12 @@ class CardController extends BaseController
         $current_date = $date->getTimestamp();
 
         $day_height = strtotime($card->date_time->format('d.m.Y')) - $current_date;
-        if ($day_height < 0)
+        if ($day_height < 0) {
             $day_height = 0;
-        $day_height = intval(round($day_height / (60 * 60 * 24)));
+
+        } else {
+            $day_height = intval(round($day_height / (60 * 60 * 24))) + 1;
+        }
 
         return $day_height;
     }
@@ -479,11 +493,11 @@ class CardController extends BaseController
         $accompanying = [];
 
         foreach ($contracts as $contr) {
-            if  ($contr->contract->reader) {
+            if  ($contr->contract && $contr->contract->reader) {
                 $reader[$contr->contract->reader->id] = $this->convert->get_short_name($contr->contract->reader);
             }
 
-            if  ($contr->contract->accompanying) {
+            if  ($contr->contract && $contr->contract->accompanying) {
                 $accompanying[$contr->contract->accompanying->id] = $this->convert->get_short_name($contr->contract->accompanying);
             }
         }
