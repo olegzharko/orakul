@@ -462,11 +462,15 @@ class CardController extends BaseController
         $giver_short = "**";
         $dev_representative_short = "**";
 
+        $this->developer_type = ClientType::where('key', 'developer')->value('id');
 
         if ($card->notary)
             $notary_short = $this->convert->get_short_name($card->notary);
         if ($card->dev_representative) {
             $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
+        } elseif ($card->dev_company) {
+            $owner = $card->dev_company->member->where('type', $this->developer_type)->first();
+            $dev_representative_short = $this->convert->get_short_name($owner);
         }
 
         $contracts = $card->has_contracts;
