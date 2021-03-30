@@ -470,8 +470,16 @@ class ConvertController extends GeneratorController
     {
         $str = null;
 
-        if ($person)
-            $str = mb_substr($person->name_n, 0, 1) . mb_substr($person->patronymic_n, 0, 1);
+        if ($person) {
+            if ($person->name_n || $person->patronymic_n) {
+                $name = $person->name_n;
+                $patronymic = $person->patronymic_n;
+            } elseif ($person->name || $person->patronymic) {
+                $name = $person->name;
+                $patronymic = $person->patronymic;
+            }
+            $str = mb_substr($name, 0, 1) . mb_substr($patronymic, 0, 1);
+        }
 
         return $str;
     }

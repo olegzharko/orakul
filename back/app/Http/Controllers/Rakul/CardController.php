@@ -462,24 +462,24 @@ class CardController extends BaseController
         $giver_short = "**";
         $dev_representative_short = "**";
 
-//        if ($card->notary)
-//            $notary_short = $this->convert->get_short_name($card->notary);
-//        if ($card->notary)
-//            $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
+
+        if ($card->notary)
+            $notary_short = $this->convert->get_short_name($card->notary);
+        if ($card->dev_representative) {
+            $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
+        }
 
         $contracts = $card->has_contracts;
         $reader = [];
-        $delivery = [];
+        $accompanying = [];
 
         foreach ($contracts as $contr) {
-            $staff_reader = $contr->contract->reader;
-            if ($staff_reader) {
-                $reader[] = $this->convert->get_short_name($staff_reader);
+            if  ($contr->contract->reader) {
+                $reader[] = $this->convert->get_short_name($contr->contract->reader);
             }
 
-            $staff_delivery = $contr->contract->delivery;
-            if ($staff_delivery) {
-                $delivery[] = $this->convert->get_short_name($staff_delivery);
+            if  ($contr->contract->accompanying) {
+                $accompanying[] = $this->convert->get_short_name($contr->contract->accompanying);
             }
         }
 
@@ -487,7 +487,7 @@ class CardController extends BaseController
             'notary' => $notary_short,
             'dev_representative_id' => $dev_representative_short,
             'notary_assistant_reader' => $reader ? implode("-", $reader) : $reader_short,
-            'notary_assistant_giver' => $delivery ? implode("-", $delivery) : $giver_short,
+            'notary_assistant_giver' => $accompanying ? implode("-", $accompanying) : $giver_short,
         ];
 
         return $result;

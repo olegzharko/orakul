@@ -47,9 +47,9 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(User::class, 'reader_id');
     }
 
-    public function delivery()
+    public function accompanying()
     {
-        return $this->belongsTo(User::class, 'delivery_id');
+        return $this->belongsTo(User::class, 'accompanying_id');
     }
 
     public function clients()
