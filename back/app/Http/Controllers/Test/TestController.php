@@ -328,6 +328,14 @@ class TestController extends Controller
             $contract->ready = rand(0, 1);
             $contract->save();
 
+            if ($contract->ready) {
+                $dev_fence = new DevFence();
+                $dev_fence->dev_company_id = $this->dev_company_id;
+                $dev_fence->card_id = $this->card_id;
+                $dev_fence->pass = rand(0, 2);
+                $dev_fence->save();
+            }
+
             $this->arr_contracts_id[] = $contract->id;
         }
     }
