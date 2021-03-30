@@ -82,9 +82,9 @@ class ImmovableController extends BaseController
                'proxy' => $value['proxy'],
             ]);
 
+            dd(1);
             $result['id'] = $value['immovable_id'];
             $result['type_id'] = $value['contract_type_id'];
-            dd($result);
         }
 
         return $result;
