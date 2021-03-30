@@ -219,6 +219,10 @@ class CardController extends BaseController
                 $this->client->update_card_client($card_id, $r['clients']);
             }
 
+            Card::where('canceled', true)->where('room_id', $r['room_id'])->where('date_time', $r['date_time'])->update([
+               'date_time' => new \DateTime(),
+            ]);
+
             Card::where('id', $card_id)->update([
                 'notary_id' => $r['notary_id'],
                 'room_id' => $r['room_id'],
