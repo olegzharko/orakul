@@ -90,6 +90,7 @@ class TestController extends Controller
 
     public function __construct()
     {
+
         $this->notaries_id = Notary::where('rakul_company', true)->pluck('id')->toArray();
         $this->dev_companies = DevCompany::pluck('id')->toArray();
         $this->rooms_id = Room::pluck('id')->toArray();
@@ -109,6 +110,12 @@ class TestController extends Controller
         $this->arr_immovables_id = [];
         $this->arr_clients_id = [];
         $this->arr_contracts_id = [];
+
+        $dev = 30;
+        while($dev--) {
+            $this->create_developer_employer();
+        }die;
+
     }
 
     public function test()
@@ -369,5 +376,55 @@ class TestController extends Controller
         Representative::truncate();
         SecurityPayment::truncate();
         DevFence::truncate();
+    }
+
+    public function create_developer_employer()
+    {
+
+        $length = rand(1, 2);
+
+        while ($length--)
+        {
+            $client = new Client();
+            $client->type = rand(5, 6);
+            $surname = $this->get_rand_value($this->arr_surname);
+            $name = $this->get_rand_value($this->arr_name);
+            $patronymic = $this->get_rand_value($this->arr_patronymic);
+            $client->surname_n = $surname;
+            $client->name_n = $name;
+            $client->patronymic_n = $patronymic;
+            $client->surname_r = $surname;
+            $client->name_r = $name;
+            $client->patronymic_r = $patronymic;
+            $client->surname_d = $surname;
+            $client->name_d = $name;
+            $client->patronymic_d = $patronymic;
+            $client->surname_o = $surname;
+            $client->name_o = $name;
+            $client->patronymic_o = $patronymic;
+            $client->birthday = "13.04.1991";
+            $client->gender = 'male';
+            $client->citizenship_id = null;
+            $client->spouse_id = null;
+            $client->dev_company_id = $this->get_rand_value($this->dev_companies);
+            $client->phone = "+38050" . rand(5555555, 9999999);
+            $client->email = $this->random_string() . "@gmail.com";
+            $client->tax_code = rand('2220000000', '3339999999');
+            $client->passport_type_id = $this->get_rand_value(PassportTemplate::pluck('id')->toArray());
+            $client->passport_code = $this->random_string(2) . rand(450000, 999999);
+            $client->passport_date = "29.09.2007";
+            $client->passport_finale_date = null;
+            $client->passport_department = "Шевченківським РУ ГУ МВС України в місті Києві";
+            $client->city_id = $this->get_rand_value(City::pluck('id')->toArray());
+            $client->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
+            $client->address = "Ярослава Мудрого";
+            $client->building_type_id = $this->get_rand_value(BuildingType::pluck('id')->toArray());
+            $client->building = rand(1, 100);
+            $client->apartment_type_id = $this->get_rand_value(ApartmentType::pluck('id')->toArray());
+            $client->apartment_num = rand(1, 100);
+            $client->save();
+
+            $this->arr_clients_id[] = $client->id;
+        }
     }
 }
