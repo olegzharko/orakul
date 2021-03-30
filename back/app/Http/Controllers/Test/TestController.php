@@ -104,6 +104,7 @@ class TestController extends Controller
         $this->arr_surname = ['Жарко', 'Конріенко', 'Вознюк', 'Слободянюк', 'Гусейнов', 'Ізман', 'Кісільов'];
         $this->arr_name = ['Олег', 'Володимир', 'Дмитро', 'Петро', 'Даянат', 'Ілья', 'Вадим'];
         $this->arr_patronymic = ['Володимирович', 'Александрович', 'Сергійович', 'Андрійович', 'Алладинович', 'Вікторович', 'Михайлович'];
+        $this->arr_street = ['Волокова', 'Амосова', 'Шевченко', 'Южна', 'Київська', 'Перемоги', 'Лесі Українки', 'Ломоносова', 'Берза', 'Зелена', 'Шмиго'];
 
         $this->immovable_types_id = ImmovableType::pluck('id')->toArray();
 
@@ -113,7 +114,7 @@ class TestController extends Controller
 
         $dev = 30;
         while($dev--) {
-            $this->create_developer_employer();
+            $this->create_building();
         }die;
 
     }
@@ -426,5 +427,16 @@ class TestController extends Controller
 
             $this->arr_clients_id[] = $client->id;
         }
+    }
+
+    public function create_building()
+    {
+        $building = new DeveloperBuilding();
+        $building->dev_company_id = $this->get_rand_value($this->dev_companies);
+        $building->city_id = 1;
+        $building->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
+        $building->title = $this->get_rand_value($this->arr_street);
+        $building->number = rand(1, 50);
+        $building->save();
     }
 }
