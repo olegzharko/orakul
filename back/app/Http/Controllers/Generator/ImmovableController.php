@@ -416,7 +416,7 @@ class ImmovableController extends BaseController
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
 
-        $result['contract_template_id'] = $contract->contract_template_id;
+        $result['template_id'] = $contract->contract_template_id;
         $result['bank_template_id'] = $bank->template_id ?? null;
         $result['taxes_template_id'] = $taxes->template_id ?? null;
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
@@ -440,7 +440,7 @@ class ImmovableController extends BaseController
         $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
 
         Contract::where('immovable_id', $immovable_id)->update([
-           'contract_template_id' => $r['contract_template_id'],
+           'template_id' => $r['contract_template_id'],
         ]);
 
         BankAccountPayment::updateOrCreate(

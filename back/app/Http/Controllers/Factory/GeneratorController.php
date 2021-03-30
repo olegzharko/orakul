@@ -65,7 +65,7 @@ class GeneratorController extends Controller
         $this->pack_contract = Contract::select(
                 'contracts.id',
                 'cards.date_time as event_datetime',
-                'contracts.contract_template_id',
+                'contracts.template_id',
                 'cards.city_id as event_city_id',
                 'contracts.immovable_id',
                 'cards.dev_company_id as dev_company_id',

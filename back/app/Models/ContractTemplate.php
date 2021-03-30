@@ -23,9 +23,9 @@ class ContractTemplate extends Model implements Sortable, HasMedia
         'sort_when_creating' => true,
     ];
 
-    public function template_type()
+    public function type()
     {
-        return $this->belongsTo(TemplateType::class);
+        return $this->belongsTo(ContractType::class, 'type_id');
     }
 
     public function developer()

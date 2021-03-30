@@ -27,14 +27,14 @@ class Contract extends Model implements Sortable
         'sign_date' => 'datetime',
     ];
 
-    public function contract_type()
-    {
-        return $this->belongsTo(ContractType::class, 'type_id');
-    }
+//    public function contract_type()
+//    {
+//        return $this->belongsTo(ContractType::class, 'type_id');
+//    }
 
-    public function contract_template()
+    public function template()
     {
-        return $this->belongsTo(ContractTemplate::class, 'contract_template_id');
+        return $this->belongsTo(ContractTemplate::class, 'template_id');
     }
 
     public function immovable()

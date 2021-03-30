@@ -69,7 +69,7 @@ class SearchController extends BaseController
             'contract_templates.id as type_id',
             'contracts.accompanying_id',
             'contracts.reader_id',
-            'contracts.contract_template_id',
+            'contracts.template_id',
             'contracts.immovable_id',
             'contracts.sign_date',
             'cards.id',
@@ -109,7 +109,7 @@ class SearchController extends BaseController
             ->join('regions', 'regions.id', '=',  'cities.region_id')
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
-            ->join('contract_templates', 'contract_templates.id', '=', 'contracts.contract_template_id')
+            ->join('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
             ->join('developer_buildings', 'immovables.developer_building_id', '=', 'developer_buildings.id')
         ;
 
