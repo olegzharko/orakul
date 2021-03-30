@@ -23,7 +23,7 @@ class Contact extends Model
     {
         return Contact::select(
             "id",
-            "type_id",
+            "contact_type_id",
             "full_name",
             "phone",
             "email",
