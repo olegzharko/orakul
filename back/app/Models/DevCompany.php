@@ -9,6 +9,14 @@ class DevCompany extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'dev_company_id',
+        'city_id',
+        'address_type_id',
+        'title',
+        'number',
+    ];
+
     public function member()
     {
         return $this->hasMany(Client::class, 'dev_company_id');
