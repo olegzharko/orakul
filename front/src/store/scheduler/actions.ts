@@ -9,7 +9,8 @@ import getDeveloperInfo from '../../services/getDeveloperInfo';
 import getCalendar from '../../services/getCalendar';
 import moveCalendarCardService from '../../services/moveCalendarCard';
 import { setModalInfo } from '../main/actions';
-import { addNewAppointment, setEditAppointmens } from '../appointments/actions';
+import { addNewAppointment, deleteAppointment, setEditAppointments } from '../appointments/actions';
+import deleteCalendarCard from '../../services/deleteCalendarCard';
 
 export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
@@ -79,7 +80,7 @@ export const editCalendarCard = (bodyData: NewCard, id: number) => async (
     );
 
     if (success) {
-      dispatch(setEditAppointmens(data));
+      dispatch(setEditAppointments(data));
     }
   }
 };
@@ -93,6 +94,31 @@ export const fetchCalendarCard = (id: string) => async (
   if (token) {
     const data = await getCalendarCard(token, id);
     dispatch(setEditAppointmentData(data));
+  }
+};
+
+export const removeCalendarCard = (id: string) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main.user;
+
+  if (token) {
+    const { data, success, message } = await deleteCalendarCard(token, id);
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success,
+        message,
+      })
+    );
+
+    if (success) {
+      dispatch(setSelectedOldAppointment(null));
+      dispatch(setEditAppointmentData(null));
+      dispatch(deleteAppointment(id));
+    }
   }
 };
 
@@ -142,7 +168,7 @@ export const moveCalendarCard = (
     );
 
     if (success) {
-      dispatch(setEditAppointmens(data));
+      dispatch(setEditAppointments(data));
     }
   }
 };
