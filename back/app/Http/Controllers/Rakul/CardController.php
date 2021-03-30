@@ -262,7 +262,7 @@ class CardController extends BaseController
                 return $this->sendError('Форма передає помилкові дані', $validator->errors());
             }
 
-            Card::where('canceled', true)->where('room_id', $r['room_id'])->where('date_time', $r['date_time'])->update([
+            Card::where('cancelled', true)->where('room_id', $r['room_id'])->where('date_time', $r['date_time'])->update([
                'date_time' => new \DateTime(),
             ]);
 
