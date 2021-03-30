@@ -334,6 +334,11 @@ class TestController extends Controller
                 $dev_fence->card_id = $this->card_id;
                 $dev_fence->pass = rand(0, 2);
                 $dev_fence->save();
+
+                $imm_fence = new ImmFence();
+                $imm_fence->immovable_id = $immovable_id;
+                $imm_fence->pass = rand(0, 2);
+                $imm_fence->save();
             }
 
             $this->arr_contracts_id[] = $contract->id;
