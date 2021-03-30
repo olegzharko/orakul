@@ -183,7 +183,7 @@ class TestController extends Controller
                 $card->generator_step = rand(0,1);
                 $card->staff_generator_id = $this->staff_generator_id;
                 $card->ready = $this->ready;
-                $card->cancelled = 0;
+                $card->cancelled = rand(0, 10) == 10 ? 0 : 1;;
                 $card->save();
                 $this->card_id = $card->id;
                 return true;
@@ -213,7 +213,7 @@ class TestController extends Controller
             $immovable->m2_grn = null;
             $immovable->m2_dollar = null;
             $immovable->roominess_id = null;
-            $immovable->total_space = rand(0, 10) == 10 ? 0 : 1;
+            $immovable->total_space = rand(45, 123);
             $immovable->living_space = null;
             $immovable->section = null;
             $immovable->floor = null;
