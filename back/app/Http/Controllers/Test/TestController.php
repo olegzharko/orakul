@@ -420,6 +420,45 @@ class TestController extends Controller
             $dev_company->color = $key;
             $dev_company->active = 1;
             $dev_company->save();
+
+            $dev_employer = new Client();
+            $dev_employer->type = 2;
+            $surname = $this->get_rand_value($this->arr_surname);
+            $name = $this->get_rand_value($this->arr_name);
+            $patronymic = $this->get_rand_value($this->arr_patronymic);
+            $dev_employer->surname_n = $surname;
+            $dev_employer->name_n = $name;
+            $dev_employer->patronymic_n = $patronymic;
+            $dev_employer->surname_r = $surname;
+            $dev_employer->name_r = $name;
+            $dev_employer->patronymic_r = $patronymic;
+            $dev_employer->surname_d = $surname;
+            $dev_employer->name_d = $name;
+            $dev_employer->patronymic_d = $patronymic;
+            $dev_employer->surname_o = $surname;
+            $dev_employer->name_o = $name;
+            $dev_employer->patronymic_o = $patronymic;
+            $dev_employer->birthday = "13.04.1991";
+            $dev_employer->gender = 'male';
+            $dev_employer->citizenship_id = null;
+            $dev_employer->spouse_id = null;
+            $dev_employer->dev_company_id = $dev_company->id;
+            $dev_employer->phone = "+38050" . rand(5555555, 9999999);
+            $dev_employer->email = $this->random_string() . "@gmail.com";
+            $dev_employer->tax_code = rand('2220000000', '3339999999');
+            $dev_employer->passport_type_id = $this->get_rand_value(PassportTemplate::pluck('id')->toArray());
+            $dev_employer->passport_code = $this->random_string(2) . rand(450000, 999999);
+            $dev_employer->passport_date = "29.09.2007";
+            $dev_employer->passport_finale_date = null;
+            $dev_employer->passport_department = "Шевченківським РУ ГУ МВС України в місті Києві";
+            $dev_employer->city_id = $this->get_rand_value(City::pluck('id')->toArray());
+            $dev_employer->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
+            $dev_employer->address = "Ярослава Мудрого";
+            $dev_employer->building_type_id = $this->get_rand_value(BuildingType::pluck('id')->toArray());
+            $dev_employer->building = rand(1, 100);
+            $dev_employer->apartment_type_id = $this->get_rand_value(ApartmentType::pluck('id')->toArray());
+            $dev_employer->apartment_num = rand(1, 100);
+            $dev_employer->save();
         }
     }
 
