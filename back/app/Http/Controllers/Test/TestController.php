@@ -183,7 +183,8 @@ class TestController extends Controller
                 $card->generator_step = rand(0,1);
                 $card->staff_generator_id = $this->staff_generator_id;
                 $card->ready = $this->ready;
-                $card->cancelled = 0;
+                $rand = rand(0, 5);
+                $card->cancelled = $rand == 5 ? 1 : 0;
                 $card->save();
                 $this->card_id = $card->id;
                 return true;
