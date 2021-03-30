@@ -62,7 +62,7 @@ class CardController extends BaseController
         }
         elseif ($type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
-                ->where('ready', true)->get();
+                ->where('generator_step', true)->get();
 
             $result = $this->get_cards_in_generator_format($cards);
         }

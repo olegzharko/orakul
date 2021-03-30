@@ -66,13 +66,13 @@ class SearchController extends BaseController
 
         $query = Card::select(
 //            'contracts.id',
+            'cards.id',
             'contract_templates.id as type_id',
             'contracts.accompanying_id',
             'contracts.reader_id',
             'contracts.template_id',
             'contracts.immovable_id',
             'contracts.sign_date',
-            'cards.id',
             'cards.notary_id',
             'cards.room_id',
             'cards.date_time',
@@ -96,11 +96,9 @@ class SearchController extends BaseController
             'developer_buildings.number as dev_building_number',
             'immovable_types.short',
             'immovable_types.title_n',
-            'clients.id',
         )
             ->whereIn('cards.room_id', $rooms)
             ->where('cards.date_time', '>=', $date)
-            ->distinct('cards.id')
             ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
             ->join('contracts','contracts.id', '=', 'card_contract.contract_id')
             ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
@@ -111,18 +109,24 @@ class SearchController extends BaseController
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
             ->join('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
             ->join('developer_buildings', 'immovables.developer_building_id', '=', 'developer_buildings.id')
+            ->distinct('cards.id')
         ;
 
-//        dd($query->count(), $query->pluck('cards.id'), $query->get());
         if ($text)
-            $cards = $this->search_text_in_query($query, $text);
-        else
-            $cards = $query->get();
+            $query = $this->search_text_in_query($query, $text);
+
+        $cards_id = array_values(array_unique($query->pluck('cards.id')->toArray()));
+
+        $cards_query = Card::whereIn('id', $cards_id)->whereIn('room_id', $rooms)
+                ->where('date_time', '>=', $date->format('Y.m.d'));
 
         if (auth()->user()->type == 'reception') {
+            $cards = $cards_query->where('cancelled', false)->get();
             $result = $this->card->get_cards_in_reception_format($cards);
         }
         elseif (auth()->user()->type == 'generator') {
+            $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
+                            ->where('generator_step', true)->get();
             $result = $this->card->get_cards_in_generator_format($cards);
         }
 
@@ -167,8 +171,6 @@ class SearchController extends BaseController
             $query->whereIn('developer_buildings.id', $building_id);
         }
 
-        $cards = $query->get();
-
-        return $cards;
+        return $query;
     }
 }
