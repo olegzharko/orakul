@@ -37,6 +37,7 @@ class RegistratorController extends BaseController
     public function get_developers()
     {
         $result = [];
+        $res_dev = [];
 
         $now = new \DateTime();
 
@@ -51,36 +52,42 @@ class RegistratorController extends BaseController
                 'dev_fences.date',
                 'dev_fences.number',
                 'dev_fences.pass',
-            )->where('contracts.ready', true)->whereDate('sign_date', '=', $now->format('Y-m-d'))
+            )->where('contracts.ready', true)->whereDate('sign_date', $now->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
             ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
             ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
-            ->distinct()
-            ->get()
-            ->unique('dev_companies.id');
+            ->pluck('dev_companies.id')
+//            ->unique('dev_companies.id')
+        ;
+        if ($dev_companies) {
+            $dev_companies = $dev_companies->toArray();
+            $dev_companies = array_values(array_unique($dev_companies));
 
-        $res_dev = [];
-        $dev_length = count($dev_companies);
+            $dev_companies = DevCompany::whereIn('id', $dev_companies)->get();
 
-        foreach ($dev_companies as $key => $owner) {
-            $res_dev[$key]['id'] = $owner->id;
-            $res_dev[$key]['title'] = $owner->title;
-            $res_dev[$key]['color'] = $owner->color;
-            $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
-            $res_dev[$key]['tax_code'] = $owner->tax_code;
-            $res_dev[$key]['date'] = $owner->date;
-            $res_dev[$key]['number'] = $owner->number;
-            $res_dev[$key]['pass'] = $owner->pass === null ? 2 : $owner->pass;
-            $res_dev[$key]['prew'] = null;
-            $res_dev[$key]['next'] = null;
-            if ($key > 0) {
-                $res_dev[$key]['prew'] = $dev_companies[$key - 1]->id;
-            }
 
-            if ($dev_length > $key + 1) {
-                $res_dev[$key]['next'] = $dev_companies[$key + 1]->id;
+            $dev_length = count($dev_companies);
+
+            foreach ($dev_companies as $key => $owner) {
+                $res_dev[$key]['id'] = $owner->id;
+                $res_dev[$key]['title'] = $owner->title;
+                $res_dev[$key]['color'] = $owner->color;
+                $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
+                $res_dev[$key]['tax_code'] = $owner->tax_code;
+                $res_dev[$key]['date'] = $owner->date;
+                $res_dev[$key]['number'] = $owner->number;
+                $res_dev[$key]['pass'] = $owner->pass === null ? 2 : $owner->pass;
+                $res_dev[$key]['prew'] = null;
+                $res_dev[$key]['next'] = null;
+                if ($key > 0) {
+                    $res_dev[$key]['prew'] = $dev_companies[$key - 1]->id;
+                }
+
+                if ($dev_length > $key + 1) {
+                    $res_dev[$key]['next'] = $dev_companies[$key + 1]->id;
+                }
             }
         }
 
