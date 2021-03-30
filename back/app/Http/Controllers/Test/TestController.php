@@ -132,7 +132,7 @@ class TestController extends Controller
         $staff_generator_id	 = null;
         $ready = null;
 
-        $cards = 100;
+        $cards = 50;
         while ($cards) {
             $this->arr_immovables_id = [];
             $this->arr_clients_id = [];
@@ -186,8 +186,8 @@ class TestController extends Controller
                 $card->save();
                 $this->card_id = $card->id;
                 return true;
-                $i++;
             }
+            $i++;
         }
         return false;
     }
