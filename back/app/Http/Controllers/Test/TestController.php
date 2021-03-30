@@ -132,7 +132,7 @@ class TestController extends Controller
         $staff_generator_id	 = null;
         $ready = null;
 
-        $cards = 10;
+        $cards = 100;
         while ($cards) {
             $this->arr_immovables_id = [];
             $this->arr_clients_id = [];
