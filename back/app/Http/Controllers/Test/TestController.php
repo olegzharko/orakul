@@ -168,26 +168,28 @@ class TestController extends Controller
 
     public function create_card()
     {
-        if (!$card = Card::where('room_id', $this->room_id)->where('date_time', $this->date_time)->first()) {
-            $card = new Card();
-            $card->notary_id = $this->notary_id;
-            $card->room_id = $this->room_id;
-            $card->date_time = $this->date_time;
-            $card->city_id = $this->city_id;
-            $card->dev_company_id = $this->dev_company_id;
-            $card->dev_representative_id = $this->dev_representative_id;
-            $card->dev_manager_id = $this->dev_manager_id;
-            $card->generator_step = rand(0,1);
-            $card->staff_generator_id = $this->staff_generator_id;
-            $card->ready = $this->ready;
-            $card->cancelled = $this->cancelled;
-            $card->save();
-            $this->card_id = $card->id;
-            return true;
-        } else {
-            return false;
+        $i = 1; // количество комнат
+        while($i <= 4) {
+            if (!$card = Card::where('room_id', $i)->where('date_time', $this->date_time)->first()) {
+                $card = new Card();
+                $card->notary_id = $this->notary_id;
+                $card->room_id = $this->room_id;
+                $card->date_time = $this->date_time;
+                $card->city_id = $this->city_id;
+                $card->dev_company_id = $this->dev_company_id;
+                $card->dev_representative_id = $this->dev_representative_id;
+                $card->dev_manager_id = $this->dev_manager_id;
+                $card->generator_step = rand(0,1);
+                $card->staff_generator_id = $this->staff_generator_id;
+                $card->ready = $this->ready;
+                $card->cancelled = $this->cancelled;
+                $card->save();
+                $this->card_id = $card->id;
+                return true;
+                $i++;
+            }
         }
-
+        return false;
     }
 
 
