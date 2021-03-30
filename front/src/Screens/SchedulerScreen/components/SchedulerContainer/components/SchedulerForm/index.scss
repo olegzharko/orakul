@@ -9,19 +9,29 @@
     display: flex;
     
     .item {
+      background-color: #C0C1C1;
       @include form_text;
       height: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: space-evenly;
       align-items: center;
       flex-grow: 1;
       min-width: 50%;
       cursor: pointer;
       transition: $transition_default;
+
+      img {
+        cursor: pointer;
+        transition: $transition_default;
+
+        &:hover {
+          opacity: .5;
+        }
+      }
     }
 
     .selected {
-      background-color: #C0C1C1;
+      background-color: white;
       cursor: default;
     }
   }

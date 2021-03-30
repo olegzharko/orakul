@@ -17,7 +17,8 @@ import {
   setSelectedOldAppointment,
   createNewCard,
   editCalendarCard,
-  fetchDeveloperInfo
+  fetchDeveloperInfo,
+  removeCalendarCard
 } from '../../../../../../../../store/scheduler/actions';
 
 import { clientItem, immovableItem } from './types';
@@ -98,6 +99,8 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const onDeveloperChange = useCallback(
     (value) => {
       setDevCompanyId(value);
+      setDevManagerId(null);
+      setDevRepresentativeId(null);
 
       if (!value) {
         dispatch(setDevelopersInfo({}));
@@ -164,6 +167,10 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     setClients((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
   }, [clients]);
 
+  const onDeleteCard = useCallback(() => {
+    dispatch(removeCalendarCard(selectedCard.i));
+  }, [selectedCard]);
+
   const activeAddButton = useMemo(() => {
     return Boolean(devCompanyId)
     && immovables.length
@@ -178,7 +185,6 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
       ...item,
       contract_type_id: item.contract_type_id || options.form_data.immovable_type[0].id,
       imm_type_id: item.imm_type_id || options.form_data.immovable_type[0].id,
-      imm_num: item.imm_number
     }));
 
     const data: NewCard = {
@@ -213,11 +219,6 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     selectedCard,
   ]);
 
-  const onCloseForm = useCallback(() => {
-    dispatch(setSelectedOldAppointment(null));
-    dispatch(setEditAppointmentData(null));
-  }, []);
-
   return {
     shouldLoad,
     notaries,
@@ -240,8 +241,8 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     onAddClients,
     onClearAll,
     onFormCreate,
-    onCloseForm,
     setEdit,
+    onDeleteCard,
     selectedNotaryId: notary,
     selectedDeveloperId: devCompanyId,
     selectedDevRepresentativeId: devRepresentativeId,

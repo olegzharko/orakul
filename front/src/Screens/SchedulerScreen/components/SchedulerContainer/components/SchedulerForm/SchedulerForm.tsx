@@ -1,11 +1,7 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 import './index.scss';
-import Modal from '../../../../../../components/Modal';
 import Form from './components/Form';
 import { useSchedulerForm } from './useSchedulerForm';
-import { useModal } from '../../../../../../components/Modal/useModal';
 
 const SchedulerForm = () => {
   const meta = useSchedulerForm();
@@ -29,6 +25,12 @@ const SchedulerForm = () => {
             onClick={() => meta.setSelectedTab(1)}
           >
             {`${meta.oldSelectedAppointment.day} ${meta.oldSelectedAppointment.time} ${meta.oldSelectedAppointment.date}`}
+            <img
+              src="/icons/x.svg"
+              alt="close"
+              className="clear-icon"
+              onClick={meta.onCloseTab}
+            />
           </div>
         )}
       </div>
@@ -37,7 +39,7 @@ const SchedulerForm = () => {
         <Form selectedCard={meta.newSelectedAppointment} />
       )}
 
-      {meta.selectedTab === 1 && meta.editAppointmentData && (
+      {meta.selectedTab === 1 && meta.editAppointmentData && meta.oldSelectedAppointment && (
         <Form
           selectedCard={meta.oldSelectedAppointment}
           initialValues={meta.editAppointmentData}

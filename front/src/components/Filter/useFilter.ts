@@ -83,10 +83,10 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     const data: FilterData = {
       notary_id: selectedNotary || null,
       reader_id: selectedReader || null,
-      giver_id: selectedAccompanying || null,
+      accompanying_id: selectedAccompanying || null,
       contract_type_id: selectedContractType || null,
       developer_id: selectedDeveloper || null,
-      dev_assistant_id: selectedRepresentative || null,
+      dev_representative_id: selectedRepresentative || null,
     };
 
     if (!horizontal) {

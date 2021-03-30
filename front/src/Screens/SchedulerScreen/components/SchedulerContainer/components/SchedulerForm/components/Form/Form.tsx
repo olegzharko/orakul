@@ -34,15 +34,15 @@ const SchedulerForm = (props: Props) => {
           </p>
           {meta.insideEdit ? (
             <img
-              src="/icons/x.svg"
-              alt="clear icon"
+              src="/icons/delete.svg"
+              alt="delete"
               className="clear-icon"
-              onClick={meta.onCloseForm}
+              onClick={meta.onDeleteCard}
             />
           ) : (
             <img
               src="/icons/clear.svg"
-              alt="clear icon"
+              alt="clear"
               className="clear-icon"
               onClick={meta.onClearAll}
             />
