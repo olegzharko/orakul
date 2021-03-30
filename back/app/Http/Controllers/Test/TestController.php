@@ -213,7 +213,7 @@ class TestController extends Controller
             $immovable->m2_grn = null;
             $immovable->m2_dollar = null;
             $immovable->roominess_id = null;
-            $immovable->total_space = rand(45, 123);
+            $immovable->total_space = rand(0, 10) == 10 ? 0 : 1;
             $immovable->living_space = null;
             $immovable->section = null;
             $immovable->floor = null;
