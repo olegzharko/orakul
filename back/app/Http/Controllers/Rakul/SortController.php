@@ -50,6 +50,7 @@ class SortController extends BaseController
         })
             ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
             ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+            ->where('cards.date_time', '>=', $this->date)
             ->get();
 
         if (auth()->user()->type == 'reception') {

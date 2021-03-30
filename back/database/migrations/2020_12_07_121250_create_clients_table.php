@@ -23,7 +23,7 @@ class CreateClientsTable extends Migration
             $table->string('patronymic_o')->nullable();
             $table->integer('male')->nullable();
             $table->integer('married')->nullable();
-            $table->string('maiden_name')->nullable();
+//            $table->string('maiden_name')->nullable();
             $table->string('phone')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();

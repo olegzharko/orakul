@@ -139,7 +139,8 @@ class FilterController extends BaseController
             ->whereIn('cards.room_id', $this->rooms)->where('cards.date_time', '>=', $this->date)
             ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
             ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
-            ->where('contracts.type_id', $contract_type_id)
+            ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.contract_template_id')
+            ->where('contract_types.id', $contract_type_id)
             ->distinct('cards.id')
             ->get();
 

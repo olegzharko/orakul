@@ -66,13 +66,13 @@ class SearchController extends BaseController
 
         $query = Card::select(
             'contracts.id',
-            'contracts.type_id',
+            'contract_templates.id as type_id',
             'contracts.accompanying_id',
             'contracts.reader_id',
             'contracts.contract_template_id',
             'contracts.immovable_id',
-            'contracts.client_id',
             'contracts.sign_date',
+            'cards.id',
             'cards.notary_id',
             'cards.room_id',
             'cards.date_time',
@@ -96,18 +96,24 @@ class SearchController extends BaseController
             'developer_buildings.number as dev_building_number',
             'immovable_types.short',
             'immovable_types.title_n',
+            'clients.id',
         )
-            ->whereIn('room_id', $rooms)
+            ->whereIn('cards.room_id', $rooms)
             ->where('cards.date_time', '>=', $date)
-            ->join('card_contract', 'cards.id', '=', 'card_contract.card_id')
-            ->join('contracts', 'card_contract.contract_id', '=', 'contracts.id')
-            ->join('clients', 'contracts.client_id', '=', 'clients.id')
-            ->join('cities', 'cards.city_id', '=', 'cities.id')
-            ->join('regions', 'cities.region_id', '=', 'regions.id')
-            ->join('immovables', 'contracts.immovable_id', '=', 'immovables.id')
-            ->join('immovable_types', 'immovables.immovable_type_id', '=', 'immovable_types.id')
-            ->join('developer_buildings', 'immovables.developer_building_id', '=', 'developer_buildings.id');
+            ->distinct('cards.id')
+            ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
+            ->join('contracts','contracts.id', '=', 'card_contract.contract_id')
+            ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
+            ->join('clients', 'clients.id', '=', 'client_contract.client_id')
+            ->join('cities', 'cities.id', '=', 'cards.city_id')
+            ->join('regions', 'regions.id', '=',  'cities.region_id')
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
+            ->join('contract_templates', 'contract_templates.id', '=', 'contracts.contract_template_id')
+            ->join('developer_buildings', 'immovables.developer_building_id', '=', 'developer_buildings.id')
+        ;
 
+//        dd($query->count(), $query->pluck('cards.id'), $query->get());
         if ($text)
             $cards = $this->search_text_in_query($query, $text);
         else

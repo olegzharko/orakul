@@ -157,3 +157,6 @@ Route::middleware('auth:api')->group(function () {
         Route::put('immovable/{immovable_id}', [\App\Http\Controllers\Registrator\RegistratorController::class, 'update_immovable']);
     });
 });
+
+Route::get('test', [\App\Http\Controllers\Test\TestController::class, 'test']);
+Route::get('clear_table', [\App\Http\Controllers\Test\TestController::class, 'clear_table']);
