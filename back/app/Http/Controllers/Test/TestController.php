@@ -173,7 +173,8 @@ class TestController extends Controller
             if (!$card = Card::where('room_id', $i)->where('date_time', $this->date_time)->first()) {
                 $card = new Card();
                 $card->notary_id = $this->notary_id;
-                $card->room_id = $this->room_id;
+//                $card->room_id = $this->room_id;
+                $card->room_id = $i;
                 $card->date_time = $this->date_time;
                 $card->city_id = $this->city_id;
                 $card->dev_company_id = $this->dev_company_id;
