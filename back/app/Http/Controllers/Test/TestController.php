@@ -91,7 +91,7 @@ class TestController extends Controller
 
     public function __construct()
     {
-
+        $this->currant_date = new \DateTime();
         $this->notaries_id = Notary::where('rakul_company', true)->pluck('id')->toArray();
         $this->dev_companies = DevCompany::pluck('id')->toArray();
         $this->rooms_id = Room::pluck('id')->toArray();
@@ -155,9 +155,9 @@ class TestController extends Controller
         $this->notary_id = $this->get_rand_value($this->notaries_id);
         $this->room_id = $this->get_rand_value($this->rooms_id);
         $this->time_id = $this->get_rand_value($this->times_id);
-        $date = date('Y-m-d', strtotime( '+'.mt_rand(0,30).' days'));
+        $this->date = date('Y-m-d', strtotime( '+'.mt_rand(0,30).' days'));
         $time = Time::where('id', $this->time_id)->where('active', true)->value('time');
-        $this->date_time = $date . ' ' .  $time;
+        $this->date_time = $this->date . ' ' .  $time;
         $this->dev_company_id = $this->get_rand_value($this->dev_companies);
         if ($this->dev_company_id) {
             $this->dev_representative_id = $this->get_rand_value(Client::where('dev_company_id', $this->dev_company_id)->where('type', 5)->pluck('id')->toArray());
@@ -329,16 +329,19 @@ class TestController extends Controller
             $contract->save();
 
             if ($contract->ready) {
-                $dev_fence = new DevFence();
-                $dev_fence->dev_company_id = $this->dev_company_id;
-                $dev_fence->card_id = $this->card_id;
-                $dev_fence->pass = rand(0, 2);
-                $dev_fence->save();
+                if ($this->date ==  $this->currant_date->format('Y-m-d')) {
 
-                $imm_fence = new ImmFence();
-                $imm_fence->immovable_id = $immovable_id;
-                $imm_fence->pass = rand(0, 2);
-                $imm_fence->save();
+                    $dev_fence = new DevFence();
+                    $dev_fence->dev_company_id = $this->dev_company_id;
+                    $dev_fence->card_id = $this->card_id;
+                    $dev_fence->pass = rand(0, 2);
+                    $dev_fence->save();
+
+                    $imm_fence = new ImmFence();
+                    $imm_fence->immovable_id = $immovable_id;
+                    $imm_fence->pass = rand(0, 2);
+                    $imm_fence->save();
+                }
             }
 
             $this->arr_contracts_id[] = $contract->id;
