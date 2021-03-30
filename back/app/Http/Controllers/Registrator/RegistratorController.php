@@ -67,6 +67,7 @@ class RegistratorController extends BaseController
 
             $dev_companies = DevCompany::whereIn('dev_companies.id', $dev_companies)
                 ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
+                ->distinct('dev_companies.id')
                 ->get();
 
 
