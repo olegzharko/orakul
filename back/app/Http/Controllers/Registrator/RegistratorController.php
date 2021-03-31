@@ -93,8 +93,8 @@ class RegistratorController extends BaseController
                 $res_dev[$key]['color'] = $color;
                 $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
                 $res_dev[$key]['tax_code'] = $owner->tax_code;
-                $res_dev[$key]['date'] = $company->date;
-                $res_dev[$key]['number'] = $company->number;
+                $res_dev[$key]['date'] = $company->date ?? '';
+                $res_dev[$key]['number'] = $company->number ?? '';
                 $res_dev[$key]['pass'] = $company->pass ? true : false;
                 $res_dev[$key]['prev'] = null;
                 $res_dev[$key]['next'] = null;
