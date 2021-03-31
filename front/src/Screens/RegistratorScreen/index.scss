@@ -30,22 +30,57 @@
       }
     }
   }
-
-  &__immovable {
-
-    &-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-gap: 20px;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
+    align-items: center;
   }
 
   &__developer {
 
-    &-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-gap: 20px;
+    .buttons-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .button-container {
+        width: 260px;
+      }
+
+      .custom-button {
+        @include form_text;
+        font-size: 14px;
+        line-height: 26px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        border: 1px solid #C0C1C1;
+        box-sizing: border-box;
+        border-radius: 3px;
+        text-decoration: none;
+        color: $primary;
+        text-transform: uppercase;
+        transition: $transition_default;
+        cursor: pointer;
+
+        &:disabled {
+          opacity: .5;
+          cursor: default;
+        }
+
+        &:hover {
+          opacity: .5;
+        }
+
+        img.left {
+          margin-right: 10px
+        }
+
+        img.right {
+          margin-left: 10px;
+        }
+      }
     }
   }
 }

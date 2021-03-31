@@ -8,11 +8,11 @@ const DashboardScreen = () => (
   <>
     <Header />
     <Switch>
-      <Route path="/" exact>
-        <DashboardContainer />
-      </Route>
       <Route path="/contracts/:id">
         <h1>Here</h1>
+      </Route>
+      <Route path="/">
+        <DashboardContainer />
       </Route>
     </Switch>
   </>
