@@ -120,7 +120,7 @@ class RegistratorController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $r['date'] = \DateTime::createFromFormat('Y.m.d. H:i', $r['date']);
+        $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
         DevFence::where('dev_company_id', $developer_id)->update([
             'date' => $r['date'],
             'number' => $r['number'],
@@ -199,7 +199,7 @@ class RegistratorController extends BaseController
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
-        $r['date'] = \DateTime::createFromFormat('Y.m.d. H:i', $r['date']);
+        $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
         ImmFence::where('immovable_id', $immovable_id)->update([
             'date' => $r['date'],
             'number' => $r['number'],
