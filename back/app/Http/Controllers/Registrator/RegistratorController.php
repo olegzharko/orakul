@@ -201,11 +201,11 @@ class RegistratorController extends BaseController
         ], [
             'date' => ['date_format:Y.m.d.', 'nullable'],
             'number' => ['numeric', 'nullable'],
-            'pass' => ['numeric', 'nullable'],
+            'pass' => ['boolean', 'nullable'],
         ], [
             'date.date_format' => 'Необхідно передати дату у форматі d.m.Y',
             'number.numeric' => 'Необхідно передати номер в числовому форматі',
-            'pass.numeric' => 'Необхідно передати валідацію в числовому форматі',
+            'pass.boolean' => 'Необхідно передати валідацію в числовому форматі',
         ]);
 
         return $validator;
