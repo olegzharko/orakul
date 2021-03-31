@@ -73,7 +73,7 @@ class RegistratorController extends BaseController
             foreach ($dev_companies as $key => $company) {
 
                 if ($company->pass === null)
-                    $color = "#00000";
+                    $color = "#000000";
                 elseif ($company->pass == false) {
                     $color = "#ff4d4d";
                 }
@@ -155,7 +155,7 @@ class RegistratorController extends BaseController
         foreach ($immovables as $key => $imm) {
 
             if ($imm->pass === null)
-                $color = "#00000";
+                $color = "#000000";
             elseif ($imm->pass == false) {
                 $color = "#ff4d4d";
             }
