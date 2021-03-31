@@ -120,6 +120,7 @@ class RegistratorController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+
         DevFence::where('dev_company_id', $developer_id)->update([
             'date' => $r['date'],
             'number' => $r['number'],
