@@ -1,14 +1,14 @@
 import { DEFAULT_URL } from '../Constants';
 import requestApi from '../utils/requestApi';
 
-export type EditDeveloperProps = {
-  date: Date,
+export type EditImmovableProps = {
+  date: string,
   number: string,
   pass: boolean,
 }
 
 export default async function putImmovable(
-  token: string, id: string, bodyData: EditDeveloperProps
+  token: string, id: string, bodyData: EditImmovableProps
 ) {
   try {
     const data = await requestApi({

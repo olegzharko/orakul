@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 import { editDeveloperStatus } from '../../../../store/registrator/actions';
+import { formatDate } from '../../utils';
 
 export type Props = {
   onPathChange: (id: string, type: RegistratorNavigationTypes) => void;
@@ -30,7 +31,7 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
   const disableSaveButton = useMemo(() => !data.date || !data.number, [data]);
 
   const onSave = useCallback(() => {
-    dispatch(editDeveloperStatus(id, data));
+    dispatch(editDeveloperStatus(id, { ...data, date: formatDate(data.date) }));
   }, [data, id]);
 
   const onPrevButtonClick = useCallback(() => {
