@@ -2,29 +2,34 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import InputWithCopy from '../../../../components/InputWithCopy';
 import SectionWithTitle from '../../../../components/SectionWithTitle';
-import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
+import Check from '../Check';
+import { Props, useImmovable } from './useImmovable';
 
-type Props = {
-  onImmovableChange: (id: string, type: RegistratorNavigationTypes) => void;
-  data: any;
-}
+const Immovable = (props: Props) => {
+  const meta = useImmovable(props);
 
-const Immovable = ({ onImmovableChange, data }: Props) => {
-  const { id } = useParams<{ id: string }>();
-
-  useEffect(() => onImmovableChange(id, RegistratorNavigationTypes.IMMOVABLE), [id]);
-
-  if (!data) {
+  if (!props.immovable) {
     return null;
   }
 
   return (
     <div className="registrator__immovable">
-      <SectionWithTitle title="Заборони по нерухомості">
-        <div className="registrator__immovable-content">
-          <InputWithCopy label="Реєстраційни номер" value={data.immovable_code} disabled />
+      <SectionWithTitle title={props.immovable.title}>
+        <div className="grid">
+          <InputWithCopy label="Реєстраційни номер" value={props.immovable.immovable_code} disabled />
         </div>
       </SectionWithTitle>
+
+      <Check
+        data={meta.data}
+        setData={meta.setData}
+        onPrevButtonClick={meta.onPrevButtonClick}
+        onSave={meta.onSave}
+        onNextButtonClick={meta.onNextButtonClick}
+        disableSaveButton={meta.disableSaveButton}
+        next={props.immovable.next}
+        prev={props.immovable.prev}
+      />
     </div>
   );
 };
