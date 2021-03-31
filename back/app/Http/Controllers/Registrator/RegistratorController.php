@@ -65,7 +65,9 @@ class RegistratorController extends BaseController
             $dev_companies = $dev_companies->toArray();
             $dev_companies = array_values(array_unique($dev_companies));
 
-            $dev_companies = DevCompany::whereIn('id', $dev_companies)->get();
+            $dev_companies = DevCompany::whereIn('id', $dev_companies)
+                ->join('dev_fences', 'dev_fences.id', '=', 'dev_companies.id')
+                ->get();
 
 
             $dev_length = count($dev_companies);
