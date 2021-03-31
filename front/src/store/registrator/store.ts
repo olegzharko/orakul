@@ -8,7 +8,7 @@ export type Developer = {
   tax_code: string;
   date: string;
   number: number;
-  pass: number;
+  pass: boolean;
   prev: number;
   next: number;
   color?: string;
@@ -20,7 +20,7 @@ export type Immovable = {
   immovable_code: string;
   date: string;
   number: number;
-  pass: number;
+  pass: boolean;
   prev: number;
   next: number;
 }
