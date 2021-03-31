@@ -148,10 +148,12 @@ class RegistratorController extends BaseController
 
             if ($imm->pass === null)
                 $color = "#00000";
-            elseif ($imm->pass === false)
+            elseif ($imm->pass == false) {
                 $color = "#ff4d4d";
-            else
+            }
+            elseif ($imm->pass == true) {
                 $color = "#009933";
+            }
 
             $imm_res[$key]['id'] = $imm->id;
             $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
