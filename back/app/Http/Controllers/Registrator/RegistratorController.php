@@ -72,10 +72,18 @@ class RegistratorController extends BaseController
 
             foreach ($dev_companies as $key => $company) {
 
+                if ($company->pass === null)
+                    $color = "#00000";
+                elseif ($company->pass == false) {
+                    $color = "#ff4d4d";
+                }
+                elseif ($company->pass == true) {
+                    $color = "#009933";
+                }
                 $owner = Client::where('type', 2)->where('dev_company_id', $company->id)->first();
                 $res_dev[$key]['id'] = $company->id;
                 $res_dev[$key]['title'] = $company->title;
-                $res_dev[$key]['color'] = $company->color;
+                $res_dev[$key]['color'] = $color;
                 $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
                 $res_dev[$key]['tax_code'] = $owner->tax_code;
                 $res_dev[$key]['date'] = $company->date ?? '';
