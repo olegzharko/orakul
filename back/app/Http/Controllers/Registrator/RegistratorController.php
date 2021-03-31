@@ -70,7 +70,7 @@ class RegistratorController extends BaseController
                 "dev_fences.date",
                 "dev_fences.number",
                 "dev_fences.pass",
-            )->whereIn('id', $dev_companies)
+            )->whereIn('dev_companies.id', $dev_companies)
                 ->join('dev_fences', 'dev_fences.id', '=', 'dev_companies.id')
                 ->get();
 
