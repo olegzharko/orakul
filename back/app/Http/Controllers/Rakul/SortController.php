@@ -52,13 +52,13 @@ class SortController extends BaseController
                 ######################### Старый вариант передачи данных с формы
                 if ($r['developer_id'])
                     $query = $query->where('cards.dev_company_id', $r['developer_id']);
-                if ($r['giver_id'])
-                    $query = $query->where('contracts.accompanying_id', $r['giver_id']);
-                if ($r['dev_assistant_id'])
-                    $query = $query->where('cards.dev_representative_id', $r['dev_assistant_id']);
+//                if ($r['giver_id'])
+//                    $query = $query->where('contracts.accompanying_id', $r['giver_id']);
+//                if ($r['dev_assistant_id'])
+//                    $query = $query->where('cards.dev_representative_id', $r['dev_assistant_id']);
                 if ($r['dev_company_id'])
                     $query = $query->where('cards.dev_company_id', $r['dev_company_id']);
-                ########################## Конец старого варианта 
+                ########################## Конец старого варианта
                 if ($r['dev_representative_id'])
                     $query = $query->where('cards.dev_representative_id', $r['dev_representative_id']);
                 if ($r['reader_id'])
@@ -78,7 +78,11 @@ class SortController extends BaseController
         if ($query_cards_id->pluck('cards.id'))
             $cards_id = array_values(array_unique($query_cards_id->pluck('cards.id')->toArray()));
 
-        $cards_query = Card::whereIn('id', $cards_id)->whereIn('room_id', $this->rooms)->where('date_time', '>=', $this->date->format('Y.m.d'));
+        $cards_query = Card::whereIn('id', $cards_id)
+                        ->whereIn('room_id', $this->rooms)
+                        ->where('date_time', '>=', $this->date->format('Y.m.d'))
+                        ->orderBy('cards.id')
+                        ;
 
 
         if (auth()->user()->type == 'reception') {
