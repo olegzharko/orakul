@@ -546,7 +546,7 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_cards_in_reception_format($cards)
+    public function get_cards_in_reception_format($cards, $sort_type = 'asc')
     {
         $result = [];
         $time_length = count($this->times);
@@ -598,7 +598,7 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_cards_in_generator_format($cards)
+    public function get_cards_in_generator_format($cards, $sort_type = 'asc')
     {
         $group = [];
         $result = [];
