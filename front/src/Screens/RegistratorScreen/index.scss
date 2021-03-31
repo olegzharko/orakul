@@ -37,49 +37,46 @@
     align-items: center;
   }
 
-  &__developer {
+  .buttons-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    .buttons-group {
+    .button-container {
+      width: 260px;
+    }
+
+    .custom-button {
+      @include form_text;
+      font-size: 14px;
+      line-height: 26px;
+      padding: 10px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      border: 1px solid #C0C1C1;
+      box-sizing: border-box;
+      border-radius: 3px;
+      text-decoration: none;
+      color: $primary;
+      text-transform: uppercase;
+      transition: $transition_default;
+      cursor: pointer;
 
-      .button-container {
-        width: 260px;
+      &:disabled {
+        opacity: .5;
+        cursor: default;
       }
 
-      .custom-button {
-        @include form_text;
-        font-size: 14px;
-        line-height: 26px;
-        padding: 10px 20px;
-        display: flex;
-        align-items: center;
-        border: 1px solid #C0C1C1;
-        box-sizing: border-box;
-        border-radius: 3px;
-        text-decoration: none;
-        color: $primary;
-        text-transform: uppercase;
-        transition: $transition_default;
-        cursor: pointer;
+      &:hover {
+        opacity: .5;
+      }
 
-        &:disabled {
-          opacity: .5;
-          cursor: default;
-        }
+      img.left {
+        margin-right: 10px
+      }
 
-        &:hover {
-          opacity: .5;
-        }
-
-        img.left {
-          margin-right: 10px
-        }
-
-        img.right {
-          margin-left: 10px;
-        }
+      img.right {
+        margin-left: 10px;
       }
     }
   }

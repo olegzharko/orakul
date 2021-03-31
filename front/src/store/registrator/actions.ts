@@ -1,6 +1,9 @@
 import { Dispatch } from 'redux';
 import getDevelopers from '../../services/registrator/getDevelopers';
 import getImmovables from '../../services/registrator/getImmovables';
+import putDeveloper, { EditDeveloperProps } from '../../services/registrator/putDeveloper';
+import putImmovable from '../../services/registrator/putImmovable';
+import { setModalInfo } from '../main/actions';
 import { State } from '../types';
 import { Developer, Immovable } from './store';
 
@@ -50,4 +53,42 @@ export const fetchImmovables = () => async (
     }
   }
   dispatch(setIsLoading(false));
+};
+
+export const editDeveloperStatus = (id: string, bodyData: EditDeveloperProps) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main.user;
+
+  if (token) {
+    const { success, message } = await putDeveloper(token, id, bodyData);
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success,
+        message,
+      })
+    );
+  }
+};
+
+export const editImmovableStatus = (id: string, bodyData: EditDeveloperProps) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main.user;
+
+  if (token) {
+    const { success, message } = await putImmovable(token, id, bodyData);
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success,
+        message,
+      })
+    );
+  }
 };
