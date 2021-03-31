@@ -134,7 +134,7 @@ class TestController extends Controller
         $staff_generator_id	 = null;
         $ready = null;
 
-        $cards = 150;
+        $cards = 50;
         while ($cards) {
             $this->arr_immovables_id = [];
             $this->arr_clients_id = [];
@@ -157,7 +157,7 @@ class TestController extends Controller
         $this->notary_id = $this->get_rand_value($this->notaries_id);
         $this->room_id = $this->get_rand_value($this->rooms_id);
         $this->time_id = $this->get_rand_value($this->times_id);
-        $this->date = date('Y-m-d', strtotime( '+'.mt_rand(0,3).' days'));
+        $this->date = date('Y-m-d', strtotime( '+'.mt_rand(0,30).' days'));
         $time = Time::where('id', $this->time_id)->where('active', true)->value('time');
         $this->date_time = $this->date . ' ' .  $time;
         $this->dev_company_id = $this->get_rand_value($this->dev_companies);
@@ -183,13 +183,10 @@ class TestController extends Controller
                 $card->dev_representative_id = $this->dev_representative_id;
                 $card->dev_manager_id = $this->dev_manager_id;
                 $card->generator_step = rand(0,1);
-                $card->generator_step = 0;
                 $card->staff_generator_id = $this->staff_generator_id;
                 $card->ready = $this->ready;
-                $card->ready = 0;
                 $rand = rand(0, 5);
                 $card->cancelled = $rand == 5 ? 1 : 0;
-                $card->cancelled = 0;
                 $card->save();
                 $this->card_id = $card->id;
                 return true;
