@@ -65,7 +65,12 @@ class RegistratorController extends BaseController
             $dev_companies = $dev_companies->toArray();
             $dev_companies = array_values(array_unique($dev_companies));
 
-            $dev_companies = DevCompany::whereIn('id', $dev_companies)
+            $dev_companies = DevCompany::select(
+                "dev_companies.*",
+                "dev_fences.date",
+                "dev_fences.number",
+                "dev_fences.pass",
+            )->whereIn('id', $dev_companies)
                 ->join('dev_fences', 'dev_fences.id', '=', 'dev_companies.id')
                 ->get();
 
