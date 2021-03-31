@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rakul;
 use App\Http\Controllers\BaseController;
 use App\Models\Card;
 use App\Models\Room;
+use App\Models\SortType;
 use App\Models\Time;
 use Illuminate\Http\Request;
 use Validator;
@@ -80,8 +81,15 @@ class SortController extends BaseController
 
         $cards_query = Card::whereIn('id', $cards_id)
                         ->whereIn('room_id', $this->rooms)
+                        ->where(function ($query) use ($r) {
+                            if ($r['sort_type']) {
+                                $sort_type = SortType::where('id', $r['sort_type'])->value('alias');
+                                $query = $query->orderBy('cards.id', $sort_type);
+                            } else {
+                                $query = $query->orderBy('cards.date_time');
+                            }
+                        })
                         ->where('date_time', '>=', $this->date->format('Y.m.d'))
-                        ->orderBy('cards.date_time')
                         ;
 
 
