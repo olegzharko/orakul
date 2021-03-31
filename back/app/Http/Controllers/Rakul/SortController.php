@@ -81,7 +81,7 @@ class SortController extends BaseController
         $cards_query = Card::whereIn('id', $cards_id)
                         ->whereIn('room_id', $this->rooms)
                         ->where('date_time', '>=', $this->date->format('Y.m.d'))
-                        ->orderBy('cards.id')
+                        ->orderBy('cards.date_time')
                         ;
 
 
