@@ -2,7 +2,7 @@ import { DEFAULT_URL } from '../Constants';
 import requestApi from '../utils/requestApi';
 
 export type EditDeveloperProps = {
-  date: Date,
+  date: string,
   number: string,
   pass: boolean,
 }
