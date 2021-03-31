@@ -78,8 +78,8 @@ class RegistratorController extends BaseController
                 $res_dev[$key]['color'] = $company->color;
                 $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
                 $res_dev[$key]['tax_code'] = $owner->tax_code;
-                $res_dev[$key]['date'] = $company->date;
-                $res_dev[$key]['number'] = $company->number;
+                $res_dev[$key]['date'] = $company->date ?? '-';
+                $res_dev[$key]['number'] = $company->number ?? '-';
                 $res_dev[$key]['pass'] = $company->pass === null ? 2 : $company->pass;
                 $res_dev[$key]['prew'] = null;
                 $res_dev[$key]['next'] = null;
@@ -148,8 +148,8 @@ class RegistratorController extends BaseController
             $imm_res[$key]['id'] = $imm->id;
             $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
             $imm_res[$key]['immovable_code'] = $imm->immovable_code;
-            $imm_res[$key]['date'] = $imm->date;
-            $imm_res[$key]['number'] = $imm->number;
+            $imm_res[$key]['date'] = $imm->date ?? '-';
+            $imm_res[$key]['number'] = $imm->number ?? '-';
             $imm_res[$key]['pass'] = $imm->pass === null ? 2 : $imm->pass;
             $res_dev[$key]['prew'] = null;
             $res_dev[$key]['next'] = null;

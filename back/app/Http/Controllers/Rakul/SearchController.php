@@ -86,7 +86,6 @@ class SearchController extends BaseController
 
         $cards_id = array_values(array_unique($query->pluck('cards.id')->toArray()));
 
-
         $cards_query = Card::whereIn('id', $cards_id)->whereIn('room_id', $rooms)
                 ->where('date_time', '>=', $date->format('Y.m.d'));
 

@@ -297,7 +297,7 @@ class CardController extends BaseController
             return $this->sendResponse('', 'Картка та належні дані по нерухомісті та договрам були успішно видалені');
         } else {
             if (Card::where('id', $id)->where('generator_step', true)->first()) {
-                return $this->sendError('Картка передана в обробку менеджеру');
+                return $this->sendError('Картка неможливо видалити, картка передана в обробку менеджеру');
             }
             if (!Card::find($id)) {
                 return $this->sendError('Не вдалось знайки картку');
