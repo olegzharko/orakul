@@ -35,4 +35,4 @@ Route::get('service/read', [DocumentController::class, 'make_document_service'])
 //Route::post('login', [PassportAuthController::class, 'login']);
 //Route::get('check/user/auth', [PassportAuthController::class, 'check_user']);
 
-Route::get('/{slug?}/{next?}/{step?}', [ViewController::class, 'index']);
+Route::get('/{slug?}/{next?}/{step?}', [ViewController::class, 'index'])->where('slug', '^(?!nova).*$');;
