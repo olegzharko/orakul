@@ -2,16 +2,17 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import InputWithCopy from '../../../../components/InputWithCopy';
 import SectionWithTitle from '../../../../components/SectionWithTitle';
+import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 
 type Props = {
-  onImmovableChange: (id: string) => void;
+  onImmovableChange: (id: string, type: RegistratorNavigationTypes) => void;
   data: any;
 }
 
 const Immovable = ({ onImmovableChange, data }: Props) => {
   const { id } = useParams<{ id: string }>();
 
-  useEffect(() => onImmovableChange(id), [id]);
+  useEffect(() => onImmovableChange(id, RegistratorNavigationTypes.IMMOVABLE), [id]);
 
   if (!data) {
     return null;
