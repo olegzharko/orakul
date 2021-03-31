@@ -137,7 +137,11 @@ class SearchController extends BaseController
     {
         $text = explode(" ", $text);
 
-        $client_id = Client::whereIn('surname_n', $text)->pluck('id');
+        $client_id = [];
+        $client_id[] = Client::whereIn('surname_n', $text)->pluck('id');
+        $client_id[] = Client::whereIn('name_n', $text)->pluck('id');
+        $client_id[] = Client::whereIn('patronymic_n', $text)->pluck('id');
+        $client_id = array_values(array_unique($client_id));
 
         if (count($client_id)) {
             $query->where('clients.id', $client_id);

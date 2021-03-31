@@ -532,7 +532,7 @@ class TestController extends Controller
     public function check_sql()
     {
         $cards = \DB::table('cards')->select(
-                    'cards.id = card_id',
+                    'cards.id',
                     'cards.notary_id',
                     'cards.room_id',
                     'cards.date_time',
@@ -549,10 +549,16 @@ class TestController extends Controller
                     'contracts.bank',
                     'contracts.proxy',
                     'contracts.sign_date',
+                    'contracts.type_id',
+                    'clients.surname_n',
+                    'clients.name_n',
+                    'clients.patronymic_n',
                 )
                 ->where('cards.id', 190)
                 ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
                 ->join('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+                ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
+                ->join('clients', 'clients.id', '=', 'client_contract.client_id')
                 ->toSql();
         dd($cards);
         \DB::enableQueryLog();
