@@ -9,9 +9,12 @@ import ContentPanel from '../../components/ContentPanel';
 import Dashboard from '../../components/Dashboard';
 import Immovable from './components/Immovable';
 import Developer from './components/Developer';
+import Modal from '../../components/Modal';
+import { useModal } from '../../components/Modal/useModal';
 
 const RegistratorScreen = () => {
   const meta = useRegistratorScreen();
+  const modalProps = useModal();
 
   return (
     <>
@@ -21,11 +24,11 @@ const RegistratorScreen = () => {
         <ContentPanel>
           <Switch>
             <Route path="/developer/:id" exact>
-              <Developer onImmovableChange={meta.onChangeNav} data={meta.selectedCardData} />
+              <Developer onPathChange={meta.onChangeNav} developer={meta.selectedCardData} />
             </Route>
 
             <Route path="/immovable/:id" exact>
-              <Immovable onImmovableChange={meta.onChangeNav} data={meta.selectedCardData} />
+              <Immovable onPathChange={meta.onChangeNav} immovable={meta.selectedCardData} />
             </Route>
 
             {meta.isLoading && <Loader />}
@@ -34,6 +37,7 @@ const RegistratorScreen = () => {
           </Switch>
         </ContentPanel>
       </main>
+      <Modal {...modalProps} />
     </>
   );
 };

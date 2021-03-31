@@ -22,6 +22,7 @@ const DashboardSection = ({ link, title, cards, style }: Props) => (
     <div className={`cards ${style === DashboardViewType.TABLE ? 'table' : ''}`}>
       {cards.map((card: SectionCard) => (
         <Card
+          haveStatus
           key={card.id}
           title={card.title}
           headerColor={card.color}
