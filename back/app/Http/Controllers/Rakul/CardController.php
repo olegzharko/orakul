@@ -497,7 +497,7 @@ class CardController extends BaseController
             $title[] = $imm->address_short . ' ' . $imm->title . ' ' . $imm->number . ' ' . $imm->imm_short . ' ' . $imm->immovable_number;
         }
 
-        $title = implode("<br>", $title);
+        $title = implode(" | ", $title);
 
         return $title;
     }
