@@ -12,12 +12,21 @@
   }
   
   &__header {
+    display: flex;
+    justify-content: space-between;
     padding: 10px 15px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     color: black;
     background-color: $grey_thin;
     box-shadow: inset 0px -1px 0px #EEEEEE;
+
+    .status {
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      border: 4px solid transparent;
+    }
   }
 
   &__main {
