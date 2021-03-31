@@ -458,11 +458,11 @@ class CardController extends BaseController
         $current_date = $date->getTimestamp();
 
         $day_height = strtotime($card->date_time->format('d.m.Y')) - $current_date;
-        if ($day_height < 0) {
-            $day_height = 0;
 
+        if ($card->date_time->format('d.m.Y') == $date->format('d.m.Y')) {
+            $day_height = 0;
         } else {
-            $day_height = intval(round($day_height / (60 * 60 * 24))) + 1;
+            $day_height = intval(round($day_height / (60 * 60 * 24)));
         }
 
         return $day_height;
@@ -545,19 +545,16 @@ class CardController extends BaseController
 
     public function get_single_card_in_calendar_format($card_id)
     {
-        $date = new \DateTime();
-        $rooms = Room::where('active', true)->pluck('id')->toArray();
-        $times = Time::where('active', true)->pluck('time')->toArray();
         $card = Card::where('id', $card_id)->first();
 
         $result = [];
-        $time_length = count($times);
+        $time_length = count($this->times);
 
-        if (in_array($card->date_time->format('H:i'), $times)) {
-            $time_height = array_search($card->date_time->format('H:i'), $times);
-            $day_height = $this->count_days($card, $date);
+        if (in_array($card->date_time->format('H:i'), $this->times)) {
+            $time_height = array_search($card->date_time->format('H:i'), $this->times);
+            $day_height = $this->count_days($card, $this->date);
             $result['i'] = strval($card->id);
-            $result['x'] = array_search($card->room->id, $rooms);
+            $result['x'] = array_search($card->room->id, $this->rooms);
             if ($day_height)
                 $result['y'] = $time_height + $time_length * $day_height;
             else
