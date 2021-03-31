@@ -630,7 +630,7 @@ class CardController extends BaseController
             $sort_type = SortType::where('id', $sort_type_id)->value('alias');
 
             if ($sort_type == 'desc')
-                $group = array_values(krsort($group));
+                $group = array_values(array_reverse($group));
         }
 
         return $group;
