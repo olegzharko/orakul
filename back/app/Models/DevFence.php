@@ -9,6 +9,12 @@ class DevFence extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+            'date',
+            'number',
+            'pass',
+    ];
+
     protected $casts = [
         'date' => 'datetime',
     ];

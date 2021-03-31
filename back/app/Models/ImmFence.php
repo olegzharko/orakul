@@ -9,6 +9,12 @@ class ImmFence extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+            'date',
+            'number',
+            'pass',
+    ];
+
     protected $casts = [
         'date' => 'datetime',
     ];
