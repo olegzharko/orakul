@@ -145,11 +145,20 @@ class RegistratorController extends BaseController
         $imm_res = [];
         $imm_length = count($immovables);
         foreach ($immovables as $key => $imm) {
+
+            if ($imm->pass === null)
+                $color = "#00000";
+            elseif ($imm->pass === false)
+                $color = "#ff4d4d";
+            else
+                $color = "#009933;
+
             $imm_res[$key]['id'] = $imm->id;
             $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
             $imm_res[$key]['immovable_code'] = $imm->immovable_code;
             $imm_res[$key]['date'] = $imm->date ?? '';
             $imm_res[$key]['number'] = $imm->number ?? '';
+            $imm_res[$key]['color'] = $color;
             $imm_res[$key]['pass'] = $imm->pass ? true : false;
             $res_dev[$key]['prev'] = null;
             $res_dev[$key]['next'] = null;
