@@ -455,14 +455,19 @@ class CardController extends BaseController
 
     public function count_days($card, $date)
     {
-        $current_date = $date->getTimestamp();
+        $startTimeStamp = strtotime($date->format('d.m.Y'));
+        $endTimeStamp = strtotime($card->date_time->format('d.m.Y'));
 
-        $day_height = strtotime($card->date_time->format('d.m.Y')) - $current_date;
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
 
-        if ($card->date_time->format('d.m.Y') == $date->format('d.m.Y')) {
-            $day_height = 0;
+        $numberDays = $timeDiff/86400;  // 86400 seconds in one day
+
+        $numberDays = intval($numberDays);
+
+        if ($numberDays) {
+            $day_height = $numberDays;
         } else {
-            $day_height = intval(round($day_height / (60 * 60 * 24)));
+            $day_height = 0;
         }
 
         return $day_height;
