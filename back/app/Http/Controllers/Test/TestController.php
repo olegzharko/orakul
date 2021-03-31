@@ -91,6 +91,7 @@ class TestController extends Controller
 
     public function __construct()
     {
+
         $this->currant_date = new \DateTime();
         $this->notaries_id = Notary::where('rakul_company', true)->pluck('id')->toArray();
         $this->dev_companies = DevCompany::pluck('id')->toArray();
@@ -112,7 +113,7 @@ class TestController extends Controller
             '#80FF00' => 'УкрБуд',
             '#FF00FF' => 'КАН',
             '#00FFFF' => 'КиївБуд',
-            '#8000FF' => 'Taryan Comapny',
+            '#FF0000' => 'Taryan Comapny',
         ];
 
         $this->immovable_types_id = ImmovableType::pluck('id')->toArray();
@@ -231,7 +232,7 @@ class TestController extends Controller
 
         while ($length--) {
             $contacts = new Contact();
-            $contacts->contact_type_id = $this->get_rand_value(ContactType::pluck('id')->toArray());
+            $contacts->type_id = $this->get_rand_value(ContactType::pluck('id')->toArray());
             $contacts->full_name = $this->get_rand_value($this->arr_surname) . " " . $this->get_rand_value($this->arr_name);
             $contacts->phone = "+38050" . rand(5555555, 9999999);
             $contacts->email = $this->random_string() . "@gmail.com";
@@ -415,50 +416,51 @@ class TestController extends Controller
     public function create_dev_company()
     {
         foreach ($this->arr_company as $key => $value) {
+
             $dev_company = new DevCompany();
             $dev_company->title = $value;
             $dev_company->color = $key;
             $dev_company->active = 1;
             $dev_company->save();
 
-            $dev_employer = new Client();
-            $dev_employer->type = 2;
+            $dev_owner = new Client();
+            $dev_owner->type = 2; // owner type
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);
-            $dev_employer->surname_n = $surname;
-            $dev_employer->name_n = $name;
-            $dev_employer->patronymic_n = $patronymic;
-            $dev_employer->surname_r = $surname;
-            $dev_employer->name_r = $name;
-            $dev_employer->patronymic_r = $patronymic;
-            $dev_employer->surname_d = $surname;
-            $dev_employer->name_d = $name;
-            $dev_employer->patronymic_d = $patronymic;
-            $dev_employer->surname_o = $surname;
-            $dev_employer->name_o = $name;
-            $dev_employer->patronymic_o = $patronymic;
-            $dev_employer->birthday = "13.04.1991";
-            $dev_employer->gender = 'male';
-            $dev_employer->citizenship_id = null;
-            $dev_employer->spouse_id = null;
-            $dev_employer->dev_company_id = $dev_company->id;
-            $dev_employer->phone = "+38050" . rand(5555555, 9999999);
-            $dev_employer->email = $this->random_string() . "@gmail.com";
-            $dev_employer->tax_code = rand('2220000000', '3339999999');
-            $dev_employer->passport_type_id = $this->get_rand_value(PassportTemplate::pluck('id')->toArray());
-            $dev_employer->passport_code = $this->random_string(2) . rand(450000, 999999);
-            $dev_employer->passport_date = "29.09.2007";
-            $dev_employer->passport_finale_date = null;
-            $dev_employer->passport_department = "Шевченківським РУ ГУ МВС України в місті Києві";
-            $dev_employer->city_id = $this->get_rand_value(City::pluck('id')->toArray());
-            $dev_employer->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
-            $dev_employer->address = "Ярослава Мудрого";
-            $dev_employer->building_type_id = $this->get_rand_value(BuildingType::pluck('id')->toArray());
-            $dev_employer->building = rand(1, 100);
-            $dev_employer->apartment_type_id = $this->get_rand_value(ApartmentType::pluck('id')->toArray());
-            $dev_employer->apartment_num = rand(1, 100);
-            $dev_employer->save();
+            $dev_owner->surname_n = $surname;
+            $dev_owner->name_n = $name;
+            $dev_owner->patronymic_n = $patronymic;
+            $dev_owner->surname_r = $surname;
+            $dev_owner->name_r = $name;
+            $dev_owner->patronymic_r = $patronymic;
+            $dev_owner->surname_d = $surname;
+            $dev_owner->name_d = $name;
+            $dev_owner->patronymic_d = $patronymic;
+            $dev_owner->surname_o = $surname;
+            $dev_owner->name_o = $name;
+            $dev_owner->patronymic_o = $patronymic;
+            $dev_owner->birthday = "13.04.1991";
+            $dev_owner->gender = 'male';
+            $dev_owner->citizenship_id = null;
+            $dev_owner->spouse_id = null;
+            $dev_owner->dev_company_id = $dev_company->id;
+            $dev_owner->phone = "+38050" . rand(5555555, 9999999);
+            $dev_owner->email = $this->random_string() . "@gmail.com";
+            $dev_owner->tax_code = rand('2220000000', '3339999999');
+            $dev_owner->passport_type_id = $this->get_rand_value(PassportTemplate::pluck('id')->toArray());
+            $dev_owner->passport_code = $this->random_string(2) . rand(450000, 999999);
+            $dev_owner->passport_date = "29.09.2007";
+            $dev_owner->passport_finale_date = null;
+            $dev_owner->passport_department = "Шевченківським РУ ГУ МВС України в місті Києві";
+            $dev_owner->city_id = $this->get_rand_value(City::pluck('id')->toArray());
+            $dev_owner->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
+            $dev_owner->address = "Ярослава Мудрого";
+            $dev_owner->building_type_id = $this->get_rand_value(BuildingType::pluck('id')->toArray());
+            $dev_owner->building = rand(1, 100);
+            $dev_owner->apartment_type_id = $this->get_rand_value(ApartmentType::pluck('id')->toArray());
+            $dev_owner->apartment_num = rand(1, 100);
+            $dev_owner->save();
         }
     }
 
@@ -523,5 +525,36 @@ class TestController extends Controller
 
             $i++;
         }
+    }
+
+    public function check_sql()
+    {
+        $cards = \DB::table('cards')->select(
+                    'cards.id = card_id',
+                    'cards.notary_id',
+                    'cards.room_id',
+                    'cards.date_time',
+                    'cards.dev_company_id',
+                    'cards.dev_representative_id',
+                    'cards.dev_manager_id',
+                    'cards.generator_step',
+                    'cards.staff_generator_id',
+                    'cards.ready',
+                    'cards.cancelled',
+                    'contracts.immovable_id',
+                    'contracts.accompanying_id',
+                    'contracts.reader_id',
+                    'contracts.bank',
+                    'contracts.proxy',
+                    'contracts.sign_date',
+                )
+                ->where('cards.id', 190)
+                ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
+                ->join('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+                ->toSql();
+        dd($cards);
+        \DB::enableQueryLog();
+        dd(\DB::getQueryLog());
+        dd($cards, \DB::getQueryLog());
     }
 }

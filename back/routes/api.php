@@ -161,3 +161,5 @@ Route::middleware('auth:api')->group(function () {
 Route::get('test', [\App\Http\Controllers\Test\TestController::class, 'test']);
 Route::get('dev_start_data', [\App\Http\Controllers\Test\TestController::class, 'dev_start_data']);
 Route::get('clear_table', [\App\Http\Controllers\Test\TestController::class, 'clear_table']);
+
+Route::get('check_sql', [\App\Http\Controllers\Test\TestController::class, 'check_sql']);
