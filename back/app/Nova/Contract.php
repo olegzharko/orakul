@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
+use Laravel\Nova\Fields\Heading;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
@@ -78,10 +79,10 @@ class Contract extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Тип договору', 'contract_type', 'App\Nova\ContractType')->onlyOnForms()->nullable(),
+            BelongsTo::make('Тип договору', 'type', 'App\Nova\ContractType')->onlyOnForms()->nullable(),
             BelongsTo::make('Видавач', 'reader', 'App\Nova\User')->onlyOnForms()->nullable(),
             BelongsTo::make('Читач', 'accompanying', 'App\Nova\User')->onlyOnForms()->nullable(),
-            BelongsTo::make('Шаблон договору', 'contract_template', 'App\Nova\ContractTemplate')->nullable(),
+            BelongsTo::make('Шаблон договору', 'template', 'App\Nova\ContractTemplate')->nullable(),
             BelongsTo::make('Об\'єкт нерухомості', 'immovable', 'App\Nova\Immovable')->nullable(),
             Toggle::make('Банк', 'bank'),
             Toggle::make('Довіреність', 'proxy'),

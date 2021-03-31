@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\Heading;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class Region extends Resource
@@ -58,6 +59,13 @@ class Region extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Назва області у називному відмінку', 'title_n')->creationRules('unique:regions,title_n')->updateRules('unique:regions,title_n,{{resourceId}}'),
             Text::make('Назва області у родовому відмінку', 'title_r')->creationRules('unique:regions,title_r')->updateRules('unique:regions,title_r,{{resourceId}}'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 

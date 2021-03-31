@@ -81,10 +81,10 @@ class RegistratorController extends BaseController
                 $res_dev[$key]['date'] = $company->date ?? '';
                 $res_dev[$key]['number'] = $company->number ?? '';
                 $res_dev[$key]['pass'] = $company->pass === null ? 2 : $company->pass;
-                $res_dev[$key]['prew'] = null;
+                $res_dev[$key]['prev'] = null;
                 $res_dev[$key]['next'] = null;
                 if ($key > 0) {
-                    $res_dev[$key]['prew'] = $dev_companies[$key - 1]->id;
+                    $res_dev[$key]['prev'] = $dev_companies[$key - 1]->id;
                 }
 
                 if ($dev_length > $key + 1) {
@@ -151,10 +151,10 @@ class RegistratorController extends BaseController
             $imm_res[$key]['date'] = $imm->date ?? '';
             $imm_res[$key]['number'] = $imm->number ?? '';
             $imm_res[$key]['pass'] = $imm->pass === null ? 2 : $imm->pass;
-            $res_dev[$key]['prew'] = null;
+            $res_dev[$key]['prev'] = null;
             $res_dev[$key]['next'] = null;
             if ($key > 0) {
-                $imm_res[$key]['prew'] = $immovables[$key - 1]->id;
+                $imm_res[$key]['prev'] = $immovables[$key - 1]->id;
             }
 
             if ($imm_length > $key + 1) {

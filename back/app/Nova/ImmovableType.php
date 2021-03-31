@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
+use Laravel\Nova\Fields\Heading;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class ImmovableType extends Resource
@@ -62,6 +63,13 @@ class ImmovableType extends Resource
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:immovable_types,title_r')->updateRules('unique:immovable_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:immovable_types,title_z')->updateRules('unique:immovable_types,title_z,{{resourceId}}'),
             Toggle::make('Додати на форму календаря', 'form'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 

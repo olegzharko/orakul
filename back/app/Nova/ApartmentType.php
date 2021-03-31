@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ApartmentType extends Resource
@@ -53,6 +54,12 @@ class ApartmentType extends Resource
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:apartment_types,title_r')->updateRules('unique:apartment_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:apartment_types,title_z')->updateRules('unique:apartment_types,title_z,{{resourceId}}'),
             Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:apartment_types,title_m')->updateRules('unique:apartment_types,title_m,{{resourceId}}'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
         ];
     }
 

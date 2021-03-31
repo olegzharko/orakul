@@ -107,6 +107,13 @@ class Client extends Resource
             Text::make('Прізвище', 'surname_o')->rules('required')->hideFromIndex(),
             Text::make('Ім\'я', 'name_o')->rules('required')->hideFromIndex(),
             Text::make('По батькові', 'patronymic_o')->hideFromIndex(),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 

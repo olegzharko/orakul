@@ -15,4 +15,9 @@ class TemplateType extends Model implements Sortable
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(TemplateType::class, 'type_id');
+    }
 }

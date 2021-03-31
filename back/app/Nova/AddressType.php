@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -58,11 +59,17 @@ class AddressType extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Тип вулиці скорочено', 'short')->creationRules('unique:address_types,short')->updateRules('unique:address_types,short,{{resourceId}}'),
-            Text::make('Назва у називному відмінку', 'title_n')->creationRules('unique:address_types,title_n')->updateRules('unique:address_types,title_n,{{resourceId}}'),
+            Text::make('Назва у називному відмінку ', 'title_n')->creationRules('unique:address_types,title_n')->updateRules('unique:address_types,title_n,{{resourceId}}'),
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:address_types,title_r')->updateRules('unique:address_types,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:address_types,title_z')->updateRules('unique:address_types,title_z,{{resourceId}}'),
             Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:address_types,title_m')->updateRules('unique:address_types,title_m,{{resourceId}}'),
             Toggle::make('Активувати', 'active'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
         ];
     }
 

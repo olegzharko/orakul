@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -31,7 +32,10 @@ class ContractTemplate extends Resource
 
     public function title()
     {
-        return $this->template_type->title;
+        if ($this->template_type)
+            return $this->template_type->title;
+        else
+            return '';
     }
 
     /**
@@ -67,11 +71,11 @@ class ContractTemplate extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
             Text::make('Заголовок', 'title'),
-            BelongsTo::make('Тип шаблону', 'template_type', 'App\Nova\TemplateType'),
-            Select::make('Тип договору', 'type')->options([
-                'main' => 'Основний договір',
-                'preliminary' => 'Попередній договір',
-            ])->displayUsingLabels(),
+            BelongsTo::make('Тип шаблону', 'type', 'App\Nova\TemplateType'),
+//            Select::make('Тип договору', 'type')->options([
+//                'main' => 'Основний договір',
+//                'preliminary' => 'Попередній договір',
+//            ])->displayUsingLabels(),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),

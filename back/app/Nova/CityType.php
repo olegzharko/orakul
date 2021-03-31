@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
+use Laravel\Nova\Fields\Heading;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class CityType extends Resource
@@ -64,6 +65,13 @@ class CityType extends Resource
             Text::make('Назва у місцевому відмінку', 'title_m')->creationRules('unique:city_types,title_m')->updateRules('unique:city_types,title_m,{{resourceId}}'),
             Text::make('Code-key', 'alias')->creationRules('unique:city_types,alias')->updateRules('unique:city_types,alias,{{resourceId}}'),
             Toggle::make('Активувати', 'active'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 

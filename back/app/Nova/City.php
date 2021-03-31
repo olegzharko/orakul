@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
@@ -28,7 +29,13 @@ class City extends Resource
 
     public function title()
     {
-        return $this->city_type->short . " " . $this->title;
+        $title = '';
+
+        if ($this->city_type)
+            $title .= $this->city_type->short;
+        $title .= $this->title;
+
+        return $title;
     }
 
     /**

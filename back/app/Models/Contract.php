@@ -123,6 +123,11 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    public function type()
+    {
+        return $this->belongsTo(ContractType::class, 'type_id');
+    }
+
     public static function get_contract_by_immovable($immovable_id)
     {
         return Contract::where('immovable_id', $immovable_id)->first();

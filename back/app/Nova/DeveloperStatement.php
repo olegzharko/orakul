@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
@@ -28,9 +29,16 @@ class DeveloperStatement extends Resource
 
     public function title()
     {
-        return  $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic
-            . ", " . $this->developer->surname_n . " " . $this->developer->name_n . " " . $this->developer->patronymic_n
-            . ", " . $this->client->surname_n . " " . $this->client->name_n . " " . $this->client->patronymic_n;
+        $title = '';
+
+        if ($this->notary)
+            $title .= $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic;
+        if ($this->developer)
+            $title .= $this->developer->surname_n . " " . $this->developer->name_n . " " . $this->developer->patronymic_n;
+        if ($this->client)
+            $title .= $this->client->surname_n . " " . $this->client->name_n . " " . $this->client->patronymic_n;
+
+        return  $title;
     }
     /**
      * The columns that should be searched.

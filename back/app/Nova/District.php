@@ -57,6 +57,13 @@ class District extends Resource
             BelongsTo::make('Область', 'region', 'App\Nova\Region'),
             Text::make('Назва району у називному відмінку', 'title_n')->creationRules('unique:districts,title_n')->updateRules('unique:districts,title_n,{{resourceId}}'),
             Text::make('Назва району у родовому відмінку', 'title_r')->creationRules('unique:districts,title_r')->updateRules('unique:districts,title_r,{{resourceId}}'),
+            Heading::make("Називний: хто? що? - ластівк-а"),
+            Heading::make("Родовий: кого?чого? - ластівк-и"),
+            Heading::make("Давальний: кому?чому? - ластівц-і"),
+            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 
