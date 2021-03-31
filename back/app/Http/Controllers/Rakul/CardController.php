@@ -12,6 +12,7 @@ use App\Models\ContractType;
 use App\Models\DevCompany;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
+use App\Models\SortType;
 use App\Models\WorkDay;
 use Illuminate\Http\Request;
 use App\Models\Client;
@@ -598,7 +599,7 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_cards_in_generator_format($cards, $sort_type = 'asc')
+    public function get_cards_in_generator_format($cards, $sort_type_id = null)
     {
         $group = [];
         $result = [];
@@ -624,8 +625,12 @@ class CardController extends BaseController
             }
         }
 
-        if ($sort_type == 'desc') {
-            $group = array_values(array_reverse($group));
+
+        if ($sort_type_id) {
+            $sort_type = SortType::where('id', $sort_type_id)->value('alias');
+
+            if ($sort_type == 'desc')
+                $group = array_values(krsort($group));
         }
 
         return $group;
