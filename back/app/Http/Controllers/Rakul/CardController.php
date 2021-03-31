@@ -475,7 +475,31 @@ class CardController extends BaseController
 
     public function get_card_title($card)
     {
-        return "Тестовий заголовок з адресою та іншими данними";
+        $immovables = Contract::select(
+            'immovables.immovable_type_id',
+            'immovables.immovable_number',
+            'developer_buildings.address_type_id',
+            'developer_buildings.title',
+            'developer_buildings.number',
+            'address_types.short as address_short',
+            'immovable_types.short as imm_short',
+        )
+            ->where('card_contract.card_id', $card->id)
+            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('address_types', 'address_types.id', '=', 'developer_buildings.address_type_id')
+            ->get();
+
+        $title = [];
+        foreach ($immovables as $imm) {
+            $title[] = $imm->address_short . ' ' . $imm->title . ' ' . $imm->number . ' ' . $imm->imm_short . ' ' . $imm->immovable_number;
+        }
+
+        $title = implode(" | ", $title);
+
+        return $title;
     }
 
     public function get_card_short_info($card)
