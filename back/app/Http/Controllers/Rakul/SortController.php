@@ -85,26 +85,13 @@ class SortController extends BaseController
                         ->orderBy('cards.date_time')
                         ;
 
-
-        // if ($r['sort_type'] == 'asc') {
-        //     // dd(1);
-        //     $cards_query = $cards_query->orderBy('cards.id', 'asc');
-        // } elseif ($r['sort_type'] == 'desc') {
-        //     // dd(2);
-        //     $cards_query = $cards_query->orderBy('cards.id', 'desc');
-        // } else {
-        //     // dd(3);
-        //   $cards_query = $cards_query->orderBy('cards.date_time');
-        // }
-
-
         if (auth()->user()->type == 'reception') {
             $cards = $cards_query->where('cancelled', false)->get();
             $result = $this->card->get_cards_in_reception_format($cards);
         }
         elseif (auth()->user()->type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)->where('generator_step', true)->get();
-            $result = $this->card->get_cards_in_generator_format($cards);
+            $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
         }
         else {
             return $this->sendError("Користувач не може завантажити даний розділ");

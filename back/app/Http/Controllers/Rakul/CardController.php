@@ -615,13 +615,17 @@ class CardController extends BaseController
             if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
                 $group[$i]['cards'][] = $result;
             } else {
-                $i++;
+                $i = $card->date_time->format('d.m.');
                 $group[$i] = [];
                 $group[$i]['day'] = $week[$card->date_time->format('w')];
                 $group[$i]['date'] = $card->date_time->format('d.m.');
                 $group[$i]['cards'] = [];
                 $group[$i]['cards'][] = $result;
             }
+        }
+
+        if ($sort_type == 'desc') {
+            $group = array_values(array_reverse($group));
         }
 
         return $group;
