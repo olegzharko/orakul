@@ -18,6 +18,7 @@ use App\Models\Contact;
 use App\Models\ContactType;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
+use App\Models\ContractType;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use App\Models\DevFence;
@@ -232,7 +233,7 @@ class TestController extends Controller
 
         while ($length--) {
             $contacts = new Contact();
-            $contacts->type_id = $this->get_rand_value(ContactType::pluck('id')->toArray());
+            $contacts->contact_type_id = $this->get_rand_value(ContactType::pluck('id')->toArray());
             $contacts->full_name = $this->get_rand_value($this->arr_surname) . " " . $this->get_rand_value($this->arr_name);
             $contacts->phone = "+38050" . rand(5555555, 9999999);
             $contacts->email = $this->random_string() . "@gmail.com";
@@ -320,6 +321,7 @@ class TestController extends Controller
         foreach ($this->arr_immovables_id as $immovable_id) {
             $contract = new Contract();
             $contract->immovable_id = $immovable_id;
+            $contract->type_id = $this->get_rand_value(ContractType::pluck('id')->toArray());
             $contract->template_id = $this->get_rand_value(ContractTemplate::where('developer_id', $this->dev_company_id)->pluck('id')->toArray());
             $contract->accompanying_id = $this->get_rand_value(User::where('accompanying', true)->pluck('id')->toArray());
             $contract->reader_id = $this->get_rand_value(User::where('accompanying', true)->pluck('id')->toArray());
