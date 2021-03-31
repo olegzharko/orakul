@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SectionCard } from '../../components/Dashboard/components/DashboardSection/DashboardSection';
 import { fetchImmovables, fetchDevelopers } from '../../store/registrator/actions';
@@ -13,8 +14,13 @@ export enum RegistratorNavigationTypes {
 export const useRegistratorScreen = () => {
   const dispatch = useDispatch();
   const { isLoading, developers, immovables } = useSelector((state: State) => state.registrator);
-  const [selectedNav, setSelectedNav] = useState(RegistratorNavigationTypes.IMMOVABLE);
-  const [selectedId, setSelectedId] = useState<string>();
+  const [selectedNav, setSelectedNav] = useState(RegistratorNavigationTypes.DEVELOPER);
+  const [selectedId, setSelectedId] = useState<any>();
+
+  const onChangeNav = useCallback((id, type) => {
+    setSelectedId(id);
+    setSelectedNav(type);
+  }, []);
 
   useEffect(() => {
     if (selectedNav === RegistratorNavigationTypes.DEVELOPER) {
@@ -62,5 +68,5 @@ export const useRegistratorScreen = () => {
     }];
   }, [selectedNav, immovables, developers]);
 
-  return { selectedNav, setSelectedNav, isLoading, sections, setSelectedId, selectedCardData };
+  return { selectedNav, setSelectedNav, isLoading, sections, onChangeNav, selectedCardData };
 };

@@ -20,12 +20,12 @@ const RegistratorScreen = () => {
         <Navigation onSelect={meta.setSelectedNav} selected={meta.selectedNav} />
         <ContentPanel>
           <Switch>
-            <Route path="/immovable/:id">
-              <Immovable onImmovableChange={meta.setSelectedId} data={meta.selectedCardData} />
+            <Route path="/developer/:id" exact>
+              <Developer onImmovableChange={meta.onChangeNav} data={meta.selectedCardData} />
             </Route>
 
-            <Route path="/developer/:id">
-              <Developer onImmovableChange={meta.setSelectedId} data={meta.selectedCardData} />
+            <Route path="/immovable/:id" exact>
+              <Immovable onImmovableChange={meta.onChangeNav} data={meta.selectedCardData} />
             </Route>
 
             {meta.isLoading && <Loader />}
