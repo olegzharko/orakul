@@ -81,16 +81,21 @@ class SortController extends BaseController
 
         $cards_query = Card::whereIn('id', $cards_id)
                         ->whereIn('room_id', $this->rooms)
-                        ->where(function ($query) use ($r) {
-                            if ($r['sort_type']) {
-                                $sort_type = SortType::where('id', $r['sort_type'])->value('alias');
-                                $query = $query->orderBy('cards.id', $sort_type);
-                            } else {
-                                $query = $query->orderBy('cards.date_time');
-                            }
-                        })
                         ->where('date_time', '>=', $this->date->format('Y.m.d'))
+                        ->orderBy('cards.date_time')
                         ;
+
+
+        // if ($r['sort_type'] == 'asc') {
+        //     // dd(1);
+        //     $cards_query = $cards_query->orderBy('cards.id', 'asc');
+        // } elseif ($r['sort_type'] == 'desc') {
+        //     // dd(2);
+        //     $cards_query = $cards_query->orderBy('cards.id', 'desc');
+        // } else {
+        //     // dd(3);
+        //   $cards_query = $cards_query->orderBy('cards.date_time');
+        // }
 
 
         if (auth()->user()->type == 'reception') {
