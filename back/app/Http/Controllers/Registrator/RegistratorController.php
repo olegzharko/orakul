@@ -211,7 +211,7 @@ class RegistratorController extends BaseController
     private function validate_data($r)
     {
         if (isset($r['date']) && !empty($r['date']))
-            $r['date'] = \DateTime::createFromFormat('d.m.Y', $r['date']);
+            $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
 
         $validator = Validator::make([
             'date' => $r['date'] ? $r['date']->format('Y.m.d.') : null,
