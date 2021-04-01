@@ -86,7 +86,7 @@ class Client extends Model implements Sortable
     {
         return Client::where([
                 'dev_company_id' => $dev_company_id,
-                'type' => $employer_type,
+                'type_id' => $employer_type,
             ])->get();
     }
 
