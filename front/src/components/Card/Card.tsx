@@ -25,12 +25,14 @@ const Card = ({ title, headerColor, children, link, haveStatus }: Props) => {
     return '';
   };
 
+  console.log(haveStatus);
+
   return (
     <Link to={link} className="card">
       <div className="card__header" style={{ backgroundColor: getTitleBackgroundColor() }}>
         <span style={{ color: getTextColor() }}>{title}</span>
         {haveStatus && (
-          <div className="status" style={{ borderColor: headerColor || '' }} />
+          <div className="status" style={{ backgroundColor: headerColor || '' }} />
         )}
       </div>
       <div className="card__main">

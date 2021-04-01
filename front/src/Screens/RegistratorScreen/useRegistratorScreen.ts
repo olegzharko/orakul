@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SectionCard } from '../../components/Dashboard/components/DashboardSection/DashboardSection';
@@ -16,19 +15,17 @@ export const useRegistratorScreen = () => {
   const { isLoading, developers, immovables } = useSelector((state: State) => state.registrator);
   const [selectedNav, setSelectedNav] = useState(RegistratorNavigationTypes.DEVELOPER);
   const [selectedId, setSelectedId] = useState<any>();
+  const [trigger, setTrigger] = useState(true);
 
   const onChangeNav = useCallback((id, type) => {
     setSelectedId(id);
     setSelectedNav(type);
   }, []);
 
-  useEffect(() => {
-    if (selectedNav === RegistratorNavigationTypes.DEVELOPER) {
-      dispatch(fetchDevelopers());
-    } else {
-      dispatch(fetchImmovables());
-    }
-  }, [selectedNav]);
+  const triggerNav = useCallback((val) => {
+    setSelectedNav(val);
+    setTrigger((prev) => !prev);
+  }, []);
 
   const selectedCardData = useMemo(() => {
     if (selectedNav === RegistratorNavigationTypes.IMMOVABLE) {
@@ -68,5 +65,13 @@ export const useRegistratorScreen = () => {
     }];
   }, [selectedNav, immovables, developers]);
 
-  return { selectedNav, setSelectedNav, isLoading, sections, onChangeNav, selectedCardData };
+  useEffect(() => {
+    if (selectedNav === RegistratorNavigationTypes.DEVELOPER) {
+      dispatch(fetchDevelopers());
+    } else {
+      dispatch(fetchImmovables());
+    }
+  }, [selectedNav, trigger]);
+
+  return { selectedNav, triggerNav, isLoading, sections, onChangeNav, selectedCardData };
 };

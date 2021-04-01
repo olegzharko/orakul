@@ -25,6 +25,7 @@ export default function GridLayout({
   const onDrag = (all, current) => {
     const currentApp = all.find((item) => item.i === current.i);
     handleDrag(currentApp);
+    handleClick(currentApp);
   };
 
   if (!appointments) {
@@ -50,7 +51,7 @@ export default function GridLayout({
           key={appointment.i}
           className="appointment"
           style={{ borderLeft: `4px solid ${appointment.color}` }}
-          onClick={() => handleClick(appointment)}
+          onClickCapture={() => handleClick(appointment)}
         >
           <div className="appointment__title">{appointment.title}</div>
           <table className="appointment__table">

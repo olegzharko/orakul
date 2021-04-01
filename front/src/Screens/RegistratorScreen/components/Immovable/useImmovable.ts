@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
-import { editDeveloperStatus, editImmovableStatus } from '../../../../store/registrator/actions';
+import { editImmovableStatus } from '../../../../store/registrator/actions';
 import { formatDate } from '../../utils';
 
 export type Props = {
@@ -48,11 +48,11 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
 
   useEffect(() => {
     setData({
-      date: new Date(),
-      number: '',
-      pass: false,
+      date: immovable?.date ? new Date(immovable?.date) : new Date(),
+      number: immovable?.number || '',
+      pass: immovable?.pass || false,
     });
-  }, [id]);
+  }, [immovable]);
 
   useEffect(() => onPathChange(id, RegistratorNavigationTypes.IMMOVABLE), [id]);
 

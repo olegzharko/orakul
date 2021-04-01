@@ -20,7 +20,7 @@ const RegistratorScreen = () => {
     <>
       <Header />
       <main className="registrator">
-        <Navigation onSelect={meta.setSelectedNav} selected={meta.selectedNav} />
+        <Navigation onSelect={meta.triggerNav} selected={meta.selectedNav} />
         <ContentPanel>
           <Switch>
             <Route path="/developer/:id" exact>
@@ -33,7 +33,7 @@ const RegistratorScreen = () => {
 
             {meta.isLoading && <Loader />}
             {!meta.isLoading
-              && <Dashboard link={meta.selectedNav} sections={meta.sections} />}
+              && <Dashboard link={meta.selectedNav} sections={meta.sections} haveStatus />}
           </Switch>
         </ContentPanel>
       </main>
