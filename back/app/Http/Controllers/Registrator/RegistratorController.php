@@ -41,31 +41,39 @@ class RegistratorController extends BaseController
 
         $now = new \DateTime();
 
-        $dev_companies = Contract::select(
-                'dev_companies.id',
-                'dev_companies.title',
-                'dev_companies.color',
-                'clients.surname_n',
-                'clients.name_n',
-                'clients.patronymic_n',
-                'clients.tax_code',
-                'dev_fences.date',
-                'dev_fences.number',
-                'dev_fences.pass',
+//        $dev_companies = Contract::select(
+        $check_card = Contract::select(
+//                'dev_companies.id',
+//                'dev_companies.title',
+//                'dev_companies.color',
+//                'clients.surname_n',
+//                'clients.name_n',
+//                'clients.patronymic_n',
+//                'clients.tax_code',
+//                'dev_fences.date',
+//                'dev_fences.number',
+//                'dev_fences.pass',
+                'card_contract.card_id',
             )->where('contracts.ready', true)->whereDate('sign_date', $now->format('Y-m-d'))
-            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
-            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
-            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
-            ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
-            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
-            ->pluck('dev_companies.id')
+//            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+//            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+//            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+//            ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
+//            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
+            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
+            ->pluck('card_contract.card_id')
 //            ->unique('dev_companies.id')
         ;
-        if ($dev_companies) {
-            $dev_companies = $dev_companies->toArray();
-            $dev_companies = array_values(array_unique($dev_companies));
 
-            $dev_companies = DevCompany::whereIn('id', $dev_companies)->get();
+        if ($check_card) {
+            $check_card = $check_card->toArray();
+            $check_card = array_values(array_unique($check_card));
+
+            $dev_companies = DevCompany::whereIn('dev_fences.card_id', $check_card)
+                            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
+                            ->get();
+
+            dd($dev_companies);
 
 
             $dev_length = count($dev_companies);
