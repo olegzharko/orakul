@@ -14,7 +14,7 @@ class Client extends Model implements Sortable
     use HasFactory, SortableTrait;
 
     protected $casts = [
-        'birthday' => 'datetime',
+        'birth_date' => 'datetime',
         'passport_date' => 'datetime',
     ];
 
@@ -49,7 +49,7 @@ class Client extends Model implements Sortable
     }
     public function client_type()
     {
-        return $this->belongsTo(ClientType::class, 'type');
+        return $this->belongsTo(ClientType::class, 'type_id');
     }
 
     public function citizenship()

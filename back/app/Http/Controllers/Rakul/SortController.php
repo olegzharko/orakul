@@ -53,13 +53,9 @@ class SortController extends BaseController
                 ######################### Старый вариант передачи данных с формы
                 if ($r['developer_id'])
                     $query = $query->where('cards.dev_company_id', $r['developer_id']);
-//                if ($r['giver_id'])
-//                    $query = $query->where('contracts.accompanying_id', $r['giver_id']);
-//                if ($r['dev_assistant_id'])
-//                    $query = $query->where('cards.dev_representative_id', $r['dev_assistant_id']);
+                ########################## Конец старого варианта
                 if ($r['dev_company_id'])
                     $query = $query->where('cards.dev_company_id', $r['dev_company_id']);
-                ########################## Конец старого варианта
                 if ($r['dev_representative_id'])
                     $query = $query->where('cards.dev_representative_id', $r['dev_representative_id']);
                 if ($r['reader_id'])
@@ -74,10 +70,10 @@ class SortController extends BaseController
             ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
             ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
             ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
-            ->distinct('cards.id');
+            ->distinct('cards.id')->pluck('cards.id');
 
-        if ($query_cards_id->pluck('cards.id'))
-            $cards_id = array_values(array_unique($query_cards_id->pluck('cards.id')->toArray()));
+        if ($query_cards_id)
+            $cards_id = array_values(array_unique($query_cards_id->toArray()));
 
         $cards_query = Card::whereIn('id', $cards_id)
                         ->whereIn('room_id', $this->rooms)

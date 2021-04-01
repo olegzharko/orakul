@@ -25,7 +25,7 @@ class CreateClientSpousesTable extends Migration
             $table->string('surname_o')->nullable();
             $table->string('name_o')->nullable();
             $table->string('patronymic_o')->nullable();
-            $table->dateTime('birthday')->nullable();
+            $table->dateTime('birth_date')->nullable();
             $table->string('phone')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();

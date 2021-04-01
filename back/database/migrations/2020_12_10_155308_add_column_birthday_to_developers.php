@@ -14,7 +14,7 @@ class AddColumnBirthdayToDevelopers extends Migration
     public function up()
     {
         Schema::table('developers', function (Blueprint $table) {
-            $table->dateTime('birthday')->nullable();
+            $table->dateTime('birth_date')->nullable();
         });
     }
 

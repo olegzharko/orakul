@@ -141,7 +141,7 @@ class Client extends Resource
     {
         return [
             Heading::make('<p class="text-success">Дата народження та стать</p>')->asHtml(),
-            DateTime::make('Дата народження', 'birthday'),
+            DateTime::make('Дата народження', 'birth_date'),
             Select::make('Стать', 'gender')->options([
                 'male' => 'Чоловіча',
                 'female' => 'Жіноча',

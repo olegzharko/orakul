@@ -656,7 +656,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-name-d', $this->contract->dev_company->owner->name_d);
             $word->setValue('dev-patr-d', $this->contract->dev_company->owner->patronymic_d);
 
-            $word->setValue('dev-birthday', $this->display_date($this->contract->dev_company->owner->birthday));
+            $word->setValue('dev-birth_date', $this->display_date($this->contract->dev_company->owner->birth_date));
 
             /*
              * Забудовник - паспорт та код
@@ -667,7 +667,7 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - місце проживання
              * */
-            $word->setValue('dev-f-addr', $this->full_address($this->contract->dev_company->owner));
+            $word->setValue('dev-f-addr', $this->convert->get_client_full_address($this->contract->dev_company->owner));
         } else {
             $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
@@ -713,7 +713,7 @@ class DocumentController extends GeneratorController
                 $citizen_o = KeyWord::where('key', "citizen_female")->value('title_o');
             }
             $word->setValue('inv-citizen-o', $citizen_o);
-            $word->setValue('inv-full-addr', $this->full_address($this->contract->immovable->developer_building->investment_agreement->investor));
+            $word->setValue('inv-full-addr', $this->convert->get_client_full_address($this->contract->immovable->developer_building->investment_agreement->investor));
         } else {
             $this->notification("Warning", "Інвестеційний договір: відсутній");
         }
@@ -746,7 +746,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-rep-name-o', $this->contract->dev_representative->name_o);
             $word->setValue('dev-rep-patr-o', $this->contract->dev_representative->patronymic_o);
 
-            $word->setValue('dev-rep-birthday', $this->display_date($this->contract->dev_representative->birthday));
+            $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
         } else {
             $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
         }
@@ -794,7 +794,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-name-o-up-s', mb_strtoupper($this->client->name_o));
             $word->setValue('cl-patr-o-up-s', mb_strtoupper($this->client->patronymic_o));
 
-            $word->setValue('cl-birthday', $this->display_date($this->client->birthday));
+            $word->setValue('cl-birth_date', $this->display_date($this->client->birth_date));
 
             $word->setValue('cl-gender-sp-role-r', KeyWord::where('key', $this->client->gender)->value('title_r'));
             $word->setValue('cl-gender-sp-role-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
@@ -832,7 +832,7 @@ class DocumentController extends GeneratorController
             /*
              * Клієнт - місце проживання
              * */
-            $word->setValue('cl-f-addr', $this->set_style_color($this->full_address($this->client)));
+            $word->setValue('cl-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client)));
 
             /*
              * Контактні данні
@@ -883,7 +883,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-name-o-up-s', mb_strtoupper($this->client->representative->confidant->name_o));
             $word->setValue('cr-patr-o-up-s', mb_strtoupper($this->client->representative->confidant->patronymic_o));
 
-            $word->setValue('cr-birthday', $this->display_date($this->client->representative->confidant->birthday));
+            $word->setValue('cr-birth_date', $this->display_date($this->client->representative->confidant->birth_date));
 
             $word->setValue('cr-gender-r', KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_r'));
             $word->setValue('cr-gender-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_r')));
@@ -899,7 +899,7 @@ class DocumentController extends GeneratorController
             /*
              * Представник - місце проживання
              * */
-            $word->setValue('cr-f-addr', $this->set_style_color($this->full_address($this->client->representative->confidant)));
+            $word->setValue('cr-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client->representative->confidant)));
 
             $cr_gender_registration = GenderWord::where('alias', "registration")->value($this->client->representative->confidant->gender);
             $word->setValue('cr-gender-reg', $cr_gender_registration);
@@ -948,7 +948,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-surname-o', $this->client->spouse->surname_o);
             $word->setValue('cs-name-o', $this->client->spouse->name_o);
             $word->setValue('cs-patr-o', $this->client->spouse->patronymic_o);
-            $word->setValue('cs-birthday', $this->display_date($this->client->spouse->birthday));
+            $word->setValue('cs-birth_date', $this->display_date($this->client->spouse->birth_date));
 
             /*
              * Подружжя клієнта - паспорт та код
@@ -961,7 +961,7 @@ class DocumentController extends GeneratorController
             /*
              * Подружжя клієнта - адреса проживання
              * */
-            $word->setValue('cs-f-addr', $this->full_address($this->client->spouse));
+            $word->setValue('cs-f-addr', $this->convert->get_client_full_address($this->client->spouse));
             $word->setValue('cs-region', $this->client->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->spouse->city->title);

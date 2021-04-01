@@ -171,7 +171,7 @@ class ClientController extends BaseController
 
         $result['passport_types'] = $passport_type;
         $result['gender'] = $client->gender;
-        $result['date_of_birth'] = $client->birthday ?  $client->birthday->format('d.m.Y') : null;
+        $result['date_of_birth'] = $client->birth_date ?  $client->birth_date->format('d.m.Y') : null;
         $result['tax_code'] = $client->tax_code;
         $result['passport_type_id'] = $client->passport_type_id;
         $result['passport_code'] = $client->passport_code        ;
@@ -197,7 +197,7 @@ class ClientController extends BaseController
 
         Client::where('id', $client_id)->update([
             'gender' => $r['gender'],
-            'birthday' => $r['date_of_birth'],
+            'birth_date' => $r['date_of_birth'],
             'tax_code' => $r['tax_code'],
             'passport_type_id' => $r['passport_type_id'],
             'passport_code' => $r['passport_code'],

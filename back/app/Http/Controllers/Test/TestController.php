@@ -276,7 +276,7 @@ class TestController extends Controller
             $client->surname_o = $surname;
             $client->name_o = $name;
             $client->patronymic_o = $patronymic;
-            $client->birthday = "13.04.1991";
+            $client->birth_date = "13.04.1991";
             $client->gender = 'male';
             $client->citizenship_id = null;
             $client->spouse_id = null;
@@ -442,7 +442,7 @@ class TestController extends Controller
             $dev_owner->surname_o = $surname;
             $dev_owner->name_o = $name;
             $dev_owner->patronymic_o = $patronymic;
-            $dev_owner->birthday = "13.04.1991";
+            $dev_owner->birth_date = "13.04.1991";
             $dev_owner->gender = 'male';
             $dev_owner->citizenship_id = null;
             $dev_owner->spouse_id = null;
@@ -503,7 +503,7 @@ class TestController extends Controller
             $dev_employer->surname_o = $surname;
             $dev_employer->name_o = $name;
             $dev_employer->patronymic_o = $patronymic;
-            $dev_employer->birthday = "13.04.1991";
+            $dev_employer->birth_date = "13.04.1991";
             $dev_employer->gender = 'male';
             $dev_employer->citizenship_id = null;
             $dev_employer->spouse_id = null;

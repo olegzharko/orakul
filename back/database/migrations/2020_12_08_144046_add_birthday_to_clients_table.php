@@ -14,7 +14,7 @@ class AddBirthdayToClientsTable extends Migration
     public function up()
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->dateTime('birthday')->nullable();
+            $table->dateTime('birth_date')->nullable();
             $table->unsignedInteger('building_type');
         });
     }
