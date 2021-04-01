@@ -190,7 +190,7 @@ class CardController extends BaseController
         $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
         $this->client->add_card_clients($card_id, $r['clients']);
 
-        $result = $this->get_single_card_in_calendar_format($card_id);
+        $result = $this->get_single_card_in_reception_format($card_id);
 
         return $this->sendResponse($result, 'Запис створено успішно');
     }
@@ -229,7 +229,7 @@ class CardController extends BaseController
                 'dev_manager_id' => $r['dev_manager_id'],
             ]);
 
-            $result = $this->get_single_card_in_calendar_format($card_id);
+            $result = $this->get_single_card_in_reception_format($card_id);
             return $this->sendResponse($result, 'Запис оновлено успішно');
         } elseif (Card::where('id', $card_id)->where('generator_step', true)->first()) {
             return $this->sendError('Картка готова до видачі. Зміни з боку рецепції неможливі');
@@ -272,7 +272,7 @@ class CardController extends BaseController
                 'date_time' => $r['date_time'],
             ]);
 
-            $result = $this->get_single_card_in_calendar_format($card_id);
+            $result = $this->get_single_card_in_reception_format($card_id);
 
             return $this->sendResponse($result, 'Запис ID: ' . $card_id . ' перемістився успішно');
         } else {
@@ -547,7 +547,7 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_cards_in_reception_format($cards, $sort_type = 'asc')
+    public function get_cards_in_reception_format($cards)
     {
         $result = [];
         $time_length = count($this->times);
@@ -573,7 +573,7 @@ class CardController extends BaseController
         return $result;
     }
 
-    public function get_single_card_in_calendar_format($card_id)
+    public function get_single_card_in_reception_format($card_id)
     {
         $card = Card::where('id', $card_id)->first();
 

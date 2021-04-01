@@ -144,15 +144,7 @@ class FilterController extends BaseController
             ->distinct('cards.id')
             ->get();
 
-        if (auth()->user()->type == 'reception') {
-            $result = $this->card->get_cards_in_reception_format($cards, $this->rooms, $this->times, $this->date);
-        }
-        elseif (auth()->user()->type == 'generator') {
-            $result = $this->card->get_cards_in_generator_format($cards);
-        }
-        else {
-            return $this->sendError("Тип сторінки $page не підримується");
-        }
+        $result = $this->card->get_cards_in_generator_format($cards);
 
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
     }

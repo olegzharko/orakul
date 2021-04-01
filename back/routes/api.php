@@ -54,9 +54,11 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
+        #######################
         Route::get('ready', [FilterController::class, 'ready_cards']);
         Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']);
         Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
+        #######################
         Route::post('sort', [SortController::class, 'sort']);
         Route::post('search', [SearchController::class, 'search']);
     });
