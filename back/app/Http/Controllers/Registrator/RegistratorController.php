@@ -73,9 +73,6 @@ class RegistratorController extends BaseController
                             ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
                             ->get();
 
-            dd($dev_companies);
-
-
             $dev_length = count($dev_companies);
 
             foreach ($dev_companies as $key => $company) {
