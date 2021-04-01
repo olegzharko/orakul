@@ -21,11 +21,6 @@ class ContractController extends Controller
                 $contract->type_id = $imm['contract_type_id'];
                 $contract->card_id = $card_id;
                 $contract->save();
-
-//                $card_contract = new CardContract();
-//                $card_contract->card_id = $card_id;
-//                $card_contract->contract_id = $contract->id;
-//                $card_contract->save();
             }
         }
     }

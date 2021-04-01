@@ -67,8 +67,7 @@ class SortController extends BaseController
 
             return $query;
         })
-            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
-            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
             ->distinct('cards.id')->pluck('cards.id');
 

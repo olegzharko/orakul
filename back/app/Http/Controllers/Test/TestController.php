@@ -144,7 +144,6 @@ class TestController extends Controller
                 $this->create_contacts();
                 $this->create_immovable();
                 $this->create_contract();
-//                $this->create_card_contract();
                 $this->create_clients();
                 $this->create_client_contract();
                 $cards--;
@@ -241,16 +240,6 @@ class TestController extends Controller
             $contacts->save();
         }
     }
-
-//    public function create_card_contract()
-//    {
-//        foreach ($this->arr_contracts_id as $contract_id) {
-//            $card_contract = new CardContract();
-//            $card_contract->card_id = $this->card_id;
-//            $card_contract->contract_id = $contract_id;
-//            $card_contract->save();
-//        }
-//    }
 
     public function create_clients()
     {
@@ -556,8 +545,7 @@ class TestController extends Controller
                     'clients.patronymic_n',
                 )
                 ->where('cards.id', 190)
-                ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
-                ->join('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+                ->join('contracts', 'contracts.card_id', '=', 'cards.id')
                 ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
                 ->join('clients', 'clients.id', '=', 'client_contract.client_id')
                 ->toSql();

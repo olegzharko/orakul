@@ -67,8 +67,7 @@ class SearchController extends BaseController
         $query = Card::
             whereIn('cards.room_id', $rooms)
             ->whereDate('cards.date_time', '>=', $date->format('Y-m-d'))
-            ->join('card_contract', 'card_contract.card_id', '=', 'cards.id')
-            ->join('contracts','contracts.id', '=', 'card_contract.contract_id')
+            ->join('contracts','contracts.card_id', '=', 'cards.id')
             ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
             ->join('clients', 'clients.id', '=', 'client_contract.client_id')
             ->join('cities', 'cities.id', '=', 'cards.city_id')

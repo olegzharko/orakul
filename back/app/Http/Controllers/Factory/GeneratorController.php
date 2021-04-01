@@ -73,8 +73,7 @@ class GeneratorController extends Controller
                 'cards.notary_id as notary_id',
                 'contracts.sign_date',
             )->whereIn('contracts.id', $contracts_id)
-            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
-            ->join('cards', 'cards.id', '=', 'card_contract.card_id')
+            ->join('cards', 'cards.id', '=', 'contracts.card_id')
             ->get();
 
         $this->start_generate_contract();
