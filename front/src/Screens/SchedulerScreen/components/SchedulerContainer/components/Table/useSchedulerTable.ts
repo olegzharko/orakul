@@ -48,7 +48,7 @@ export const useSchedulerTable = () => {
 
   const handleAppointmentDrag = useCallback(
     (appointment) => {
-      const { year, date, time, room } = formatAppointmentDate(
+      const payload = formatAppointmentDate(
         hours,
         rooms,
         days,
@@ -56,11 +56,11 @@ export const useSchedulerTable = () => {
         appointment.x
       );
 
-      const date_time = `${year}.${date}. ${time}`;
+      const date_time = `${payload.year}.${payload.date}. ${payload.time}`;
 
       const data = {
         date_time,
-        room_id: room,
+        room_id: payload.room,
       };
 
       dispatch(moveCalendarCard(data, appointment.i));

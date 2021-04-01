@@ -15,8 +15,9 @@ export type Section = {
 export type Props = {
   link: string,
   sections: Section[],
-  isChangeTypeButton?: boolean;
+  isChangeTypeButton?: boolean,
   style?: DashboardViewType,
+  haveStatus?: boolean;
 }
 
 export const useDashboard = ({ style }: Props) => {

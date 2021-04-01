@@ -3,7 +3,6 @@ import './index.scss';
 import DashboardSection from './components/DashboardSection';
 import DashboardControl from './components/DashbordControl';
 import { Section, Props, useDashboard } from './useDashboard';
-import ContentPanel from '../ContentPanel';
 
 const Dashboard = (props: Props) => {
   const { selectedType, setSelectedType } = useDashboard(props);
@@ -20,6 +19,7 @@ const Dashboard = (props: Props) => {
               title={section.title}
               style={selectedType}
               cards={section.cards}
+              haveStatus={props.haveStatus}
             />
           ))}
         </div>

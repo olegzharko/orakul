@@ -12,9 +12,7 @@ import { State } from '../../../../../../../../store/types';
 
 import {
   setDevelopersInfo,
-  setEditAppointmentData,
   setSelectedNewAppointment,
-  setSelectedOldAppointment,
   createNewCard,
   editCalendarCard,
   fetchDeveloperInfo,

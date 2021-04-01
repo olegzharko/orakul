@@ -48,11 +48,11 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
 
   useEffect(() => {
     setData({
-      date: new Date(),
-      number: '',
-      pass: false,
+      date: developer?.date ? new Date(developer?.date) : new Date(),
+      number: developer?.number || '',
+      pass: developer?.pass || false,
     });
-  }, [id]);
+  }, [developer]);
 
   useEffect(() => onPathChange(id, RegistratorNavigationTypes.DEVELOPER), [id]);
 

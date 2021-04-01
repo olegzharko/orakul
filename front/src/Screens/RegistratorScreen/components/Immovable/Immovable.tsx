@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, memo } from 'react';
 import InputWithCopy from '../../../../components/InputWithCopy';
 import SectionWithTitle from '../../../../components/SectionWithTitle';
 import Check from '../Check';
@@ -34,4 +33,4 @@ const Immovable = (props: Props) => {
   );
 };
 
-export default Immovable;
+export default memo(Immovable);
