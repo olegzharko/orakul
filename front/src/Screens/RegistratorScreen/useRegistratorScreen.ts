@@ -71,7 +71,7 @@ export const useRegistratorScreen = () => {
     } else {
       dispatch(fetchImmovables());
     }
-  }, [selectedNav, trigger]);
+  }, [trigger, selectedId]);
 
   return { selectedNav, triggerNav, isLoading, sections, onChangeNav, selectedCardData };
 };

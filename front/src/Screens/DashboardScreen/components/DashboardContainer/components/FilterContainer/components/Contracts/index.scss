@@ -5,6 +5,7 @@
   &__filter {
 
     &-contracts {
+      margin-bottom: 15px;
 
       .title {
         @include filter_title;
