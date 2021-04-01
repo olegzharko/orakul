@@ -26,6 +26,7 @@ class Contract extends Model implements Sortable
     protected $casts = [
         'event_datetime' => 'datetime',
         'sign_date' => 'datetime',
+        'date' => 'datetime',
     ];
 
 //    public function contract_type()

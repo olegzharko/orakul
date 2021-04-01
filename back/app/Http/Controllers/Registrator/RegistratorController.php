@@ -39,63 +39,40 @@ class RegistratorController extends BaseController
         $result = [];
         $res_dev = [];
 
-        $now = new \DateTime();
-
-//        $dev_companies = Contract::select(
-        $check_card = Contract::select(
-//                'dev_companies.id',
-//                'dev_companies.title',
-//                'dev_companies.color',
-//                'clients.surname_n',
-//                'clients.name_n',
-//                'clients.patronymic_n',
-//                'clients.tax_code',
-//                'dev_fences.date',
-//                'dev_fences.number',
-//                'dev_fences.pass',
-                'card_contract.card_id',
-            )->where('contracts.ready', true)->whereDate('sign_date', $now->format('Y-m-d'))
-//            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
-//            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
-//            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
-//            ->join('clients', 'clients.dev_company_id', '=', 'dev_companies.id')
-//            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
-            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
-            ->pluck('card_contract.card_id')
-//            ->unique('dev_companies.id')
+        $check_dev_company = Contract::select(
+               'dev_companies.id',
+            )->where('contracts.ready', true)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+            ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
-        if ($check_card) {
-            $check_card = $check_card->toArray();
-            $check_card = array_values(array_unique($check_card));
+        if ($check_dev_company) {
 
-            $dev_companies = DevCompany::whereIn('dev_fences.card_id', $check_card)
-                            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
-                            ->get();
+            $dev_companies = DevCompany::whereIn('dev_companies.id', $check_dev_company)->get();
 
             $dev_length = count($dev_companies);
 
             foreach ($dev_companies as $key => $company) {
 
-                if ($company->pass === null)
-                    $color = "#000000";
-                elseif ($company->pass == false) {
-                    $color = "#ff4d4d";
-                }
-                elseif ($company->pass == true) {
-                    $color = "#009933";
-                }
                 $owner = Client::where('type', 2)->where('dev_company_id', $company->id)->first();
+
+                $dev_fence = DevFence::where('dev_company_id', $company->id)->first();
+
+                $color = $this->get_status_color($dev_fence->pass);
+
                 $res_dev[$key]['id'] = $company->id;
                 $res_dev[$key]['title'] = $company->title;
                 $res_dev[$key]['color'] = $color;
                 $res_dev[$key]['full_name'] = $this->convert->get_full_name($owner);
                 $res_dev[$key]['tax_code'] = $owner->tax_code;
-                $res_dev[$key]['date'] = $company->date ?? '';
-                $res_dev[$key]['number'] = $company->number ?? '';
-                $res_dev[$key]['pass'] = $company->pass ? true : false;
+                $res_dev[$key]['date'] = $dev_fence->date ? $dev_fence->date->format('d.m.Y H:i') : '';
+                $res_dev[$key]['number'] = $dev_fence->number ?? '';
+                $res_dev[$key]['pass'] = $dev_fence->pass ? true : false;
                 $res_dev[$key]['prev'] = null;
                 $res_dev[$key]['next'] = null;
+                
                 if ($key > 0) {
                     $res_dev[$key]['prev'] = $dev_companies[$key - 1]->id;
                 }
@@ -137,8 +114,7 @@ class RegistratorController extends BaseController
     public function get_immovables()
     {
         $result = [];
-
-        $now = new \DateTime();
+        $imm_res = [];
 
         $immovables = Contract::select(
                 'developer_buildings.id as building_id',
@@ -149,34 +125,30 @@ class RegistratorController extends BaseController
                 'imm_fences.date',
                 'imm_fences.number',
                 'imm_fences.pass',
-            )->where('ready', true)->whereDate('sign_date', '>=', $now->format('Y-m-d'))
+            )->where('ready', true)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
-            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id')->get();
+            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id')
+            ->get()
+            ;
 
-        $imm_res = [];
         $imm_length = count($immovables);
         foreach ($immovables as $key => $imm) {
 
-            if ($imm->pass === null)
-                $color = "#000000";
-            elseif ($imm->pass == false) {
-                $color = "#ff4d4d";
-            }
-            elseif ($imm->pass == true) {
-                $color = "#009933";
-            }
+
+            $color = $this->get_status_color($imm->pass);
 
             $imm_res[$key]['id'] = $imm->id;
             $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
             $imm_res[$key]['immovable_code'] = $imm->immovable_code;
-            $imm_res[$key]['date'] = $imm->date ?? '';
+            $imm_res[$key]['date'] = $imm->date ? $imm->date->format('d.m.Y H:i') : '';
             $imm_res[$key]['number'] = $imm->number ?? '';
             $imm_res[$key]['color'] = $color;
             $imm_res[$key]['pass'] = $imm->pass ? true : false;
             $res_dev[$key]['prev'] = null;
             $res_dev[$key]['next'] = null;
+
             if ($key > 0) {
                 $imm_res[$key]['prev'] = $immovables[$key - 1]->id;
             }
@@ -233,5 +205,18 @@ class RegistratorController extends BaseController
         ]);
 
         return $validator;
+    }
+
+    private function get_status_color($pass)
+    {
+        if ($pass === null) {
+            $color = "#000000";
+        } elseif ($pass == false) {
+            $color = "#ff4d4d";
+        } elseif ($pass == true) {
+            $color = "#009933";
+        }
+
+        return $color;
     }
 }
