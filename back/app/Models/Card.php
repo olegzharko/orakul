@@ -98,8 +98,7 @@ class Card extends Model
     public static function get_card_immovable_id($card_id)
     {
         $immovables_id = Card::where('cards.id', $card_id)
-            ->leftJoin('card_contract', 'cards.id', '=', 'card_contract.card_id')
-            ->leftJoin('contracts', 'contracts.id', '=', 'card_contract.contract_id')
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->leftJoin('immovables', 'contracts.immovable_id', '=', 'immovables.id')
             ->pluck('immovables.id');
 
