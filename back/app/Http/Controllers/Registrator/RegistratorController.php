@@ -65,14 +65,7 @@ class RegistratorController extends BaseController
             $dev_companies = $dev_companies->toArray();
             $dev_companies = array_values(array_unique($dev_companies));
 
-            $dev_companies = DevCompany::select(
-                "dev_companies.*",
-                "dev_fences.date",
-                "dev_fences.number",
-                "dev_fences.pass",
-            )->whereIn('dev_companies.id', $dev_companies)
-                ->join('dev_fences', 'dev_fences.id', '=', 'dev_companies.id')
-                ->get();
+            $dev_companies = DevCompany::whereIn('id', $dev_companies)->get();
 
 
             $dev_length = count($dev_companies);
@@ -126,7 +119,6 @@ class RegistratorController extends BaseController
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
-
 
         DevFence::where('dev_company_id', $developer_id)->update([
             'date' => $r['date'],
