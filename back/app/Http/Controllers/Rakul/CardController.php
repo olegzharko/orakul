@@ -117,6 +117,7 @@ class CardController extends BaseController
                 $result_contract_immovable[$key]['bank'] = null;
                 $result_contract_immovable[$key]['proxy'] = null;
                 if ($contr) {
+
                     if ($contr->clients) {
                         $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->clients->pluck('id')->toArray());
                     }
@@ -485,8 +486,7 @@ class CardController extends BaseController
             'address_types.short as address_short',
             'immovable_types.short as imm_short',
         )
-            ->where('card_contract.card_id', $card->id)
-            ->join('card_contract', 'card_contract.contract_id', '=', 'contracts.id')
+            ->where('card_id', $card->id)
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
