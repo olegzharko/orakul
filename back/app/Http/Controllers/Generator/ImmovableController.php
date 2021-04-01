@@ -416,7 +416,7 @@ class ImmovableController extends BaseController
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
 
-        $result['template_id'] = $contract->contract_template_id;
+        $result['template_id'] = $contract->template_id;
         $result['bank_template_id'] = $bank->template_id ?? null;
         $result['taxes_template_id'] = $taxes->template_id ?? null;
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
