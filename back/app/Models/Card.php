@@ -19,6 +19,13 @@ class Card extends Model
         'date_time' => 'datetime',
     ];
 
+    public static function get_card_by_contract($contract_id)
+    {
+        return Contract::select(
+            'cards.*',
+        )->where('contract.id', $contract_id)->join('cards', 'cards.id', '=', 'contract.card_id')->first();
+    }
+
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id');
@@ -51,7 +58,7 @@ class Card extends Model
 
     public function has_contracts()
     {
-        return $this->hasMany(CardContract::class, 'card_id');
+        return $this->hasMany(Contract::class, 'card_id');
     }
 
     public function city()

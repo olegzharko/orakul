@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\Card;
 use App\Models\CardClient;
-use App\Models\CardContract;
+//use App\Models\CardContract;
 use App\Models\ClientType;
 use App\Models\ContractType;
 use App\Models\DevCompany;
@@ -19,7 +19,7 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Time;
 use App\Models\Room;
-use App\Models\UserPositionType;
+//use App\Models\UserPositionType;
 use Validator;
 
 
@@ -51,24 +51,24 @@ class CardController extends BaseController
     {
         $result = null;
 
-        $type = UserPositionType::get_user_type((auth()->user()->id));
+//        auth()->user()->type = UserPositionType::get_user_type((auth()->user()->id));
 
         $cards_query = Card::whereIn('room_id', $this->rooms)
                 ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
-        if ($type == 'calendar' || $type == 'reception') {
+        if (auth()->user()->type == 'calendar' || auth()->user()->type == 'reception') {
             $cards = $cards_query->where('cancelled', false)->get();
 
             $result = $this->get_cards_in_reception_format($cards);
         }
-        elseif ($type == 'generator') {
+        elseif (auth()->user()->type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
 
             $result = $this->get_cards_in_generator_format($cards);
         }
         else {
-            return $this->sendError("Тип сторінки $type не підримується");
+            return $this->sendError("Тип сторінки " . auth()->user()->type . " не підримується");
         }
 
         return $this->sendResponse($result, 'Картки з договорами');
@@ -116,21 +116,20 @@ class CardController extends BaseController
                 $result_contract_immovable[$key]['imm_number'] = null;
                 $result_contract_immovable[$key]['bank'] = null;
                 $result_contract_immovable[$key]['proxy'] = null;
-                if ($contr->contract) {
-                    if ($contr->contract->clients) {
-                        $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->contract->clients->pluck('id')->toArray());
+                if ($contr) {
+                    if ($contr->clients) {
+                        $clients_id_by_contract = array_merge($clients_id_by_contract, $contr->clients->pluck('id')->toArray());
                     }
 
-                    if ($contr->contract->template)
-                        $result_contract_immovable[$key]['contract_type_id'] = $contr->contract->template->type->id;
-                    if ($contr->contract->immovable) {
-                        $result_contract_immovable[$key]['building_id'] = $contr->contract->immovable->developer_building_id;
-                        $result_contract_immovable[$key]['immovable_id'] = $contr->contract->immovable->id;
-                        $result_contract_immovable[$key]['imm_type_id'] = $contr->contract->immovable->immovable_type_id;
-                        $result_contract_immovable[$key]['imm_number'] = $contr->contract->immovable->immovable_number;
+                    $result_contract_immovable[$key]['contract_type_id'] = $contr->type_id;
+                    if ($contr->immovable) {
+                        $result_contract_immovable[$key]['building_id'] = $contr->immovable->developer_building_id;
+                        $result_contract_immovable[$key]['immovable_id'] = $contr->immovable->id;
+                        $result_contract_immovable[$key]['imm_type_id'] = $contr->immovable->immovable_type_id;
+                        $result_contract_immovable[$key]['imm_number'] = $contr->immovable->immovable_number;
                     }
-                    $result_contract_immovable[$key]['bank'] = $contr->contract->bank;
-                    $result_contract_immovable[$key]['proxy'] = $contr->contract->proxy;
+                    $result_contract_immovable[$key]['bank'] = $contr->bank;
+                    $result_contract_immovable[$key]['proxy'] = $contr->proxy;
                 }
             }
         }
@@ -208,9 +207,10 @@ class CardController extends BaseController
                 return $this->sendError('Форма передає помилкові дані', $validator->errors());
             }
 
-            $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
-            if (count($contracts_id)) {
-                $old_immovables_id = Contract::whereIn('id', $contracts_id)->pluck('immovable_id')->toArray();
+//            $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
+//            if (count($contracts_id)) {
+            if ($old_immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id')) {
+                $old_immovables_id = $old_immovables_id->toArray();
                 $updated_immovables_id = $this->immovable->create_or_update_immovables_with_id($r);
 
                 // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
@@ -285,16 +285,16 @@ class CardController extends BaseController
      * */
     public function destroy($id)
     {
-        if (Card::where('id', $id)->where('generator_step', false)->first()) {
-            $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
-            if (count($contracts_id)) {
-                $immovables_id_for_delete = Contract::whereIn('id', $contracts_id)->pluck('immovable_id');
+        if ($card = Card::where('id', $id)->where('generator_step', false)->first()) {
+//            $contracts_id = CardContract::where('card_id', $id)->pluck('contract_id');
+//            if (count($contracts_id)) {
+            if ($immovables_id_for_delete = Contract::where('card_id', $card->id)->pluck('immovable_id')) {
 
                 // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
                 $this->immovable->delete_immovables_by_id($immovables_id_for_delete);
                 $this->contract->delete_contracts_by_immovables_id($immovables_id_for_delete);
             }
-            Card::where('id', $id)->delete();
+            Card::where('id', $card->id)->delete();
             return $this->sendResponse('', 'Картка та належні дані по нерухомісті та договрам були успішно видалені');
         } else {
             if (Card::where('id', $id)->where('generator_step', true)->first()) {

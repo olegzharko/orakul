@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
-use App\Models\CardContract;
 use App\Models\CheckList;
 use App\Models\Contact;
 use App\Models\Contract;
@@ -200,7 +199,7 @@ class ManagerController extends BaseController
         $printer = $this->tools->get_company_notary();
 
         $contract = Contract::get_contract_by_immovable($immovable_id);
-        $card = CardContract::get_card_by_contract($contract->id);
+        $card = Card::get_card_by_contract($contract->id);
 
         $result['immovable_type'] = $immovable_type;
         $result['building'] = $building;
@@ -237,7 +236,7 @@ class ManagerController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         $contract = Contract::get_contract_by_immovable($immovable_id);
-        $card = CardContract::get_card_by_contract($contract->id);
+        $card = Card::get_card_by_contract($contract->id);
 
         Contract::where('id', $contract->id)->update([
             'reader_id' => $r['reader_id'],

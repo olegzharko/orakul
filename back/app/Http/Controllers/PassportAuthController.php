@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\UserPositionType;
+//use App\Models\UserPositionType;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;

@@ -45,17 +45,4 @@ class ContractTemplate extends Model implements Sortable, HasMedia
         $this->addMediaConversion('tablet')
             ->width(768);
     }
-
-//    public static function get_template($template_id)
-//    {
-//        $template = Template::where('id', $template_id)->first();
-//        $template->type = TemplateType::where('id', $template->template_type_id)->first();
-//        if ($file = $template->getMedia('path')->first()) {
-////            $template->document = str_replace(URL::to('/'), '', $file->getUrl());
-//            $template->document = $file->getUrl();
-//        } else {
-//            $template->document = null;
-//        }
-//        return $template;
-//    }
 }

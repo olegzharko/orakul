@@ -71,7 +71,7 @@ class ContractTemplate extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
             Text::make('Заголовок', 'title'),
-            BelongsTo::make('Тип шаблону', 'type', 'App\Nova\TemplateType'),
+            BelongsTo::make('Тип шаблону', 'type', 'App\Nova\ContractType'),
 //            Select::make('Тип договору', 'type')->options([
 //                'main' => 'Основний договір',
 //                'preliminary' => 'Попередній договір',

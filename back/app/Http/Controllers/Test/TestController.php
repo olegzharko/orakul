@@ -9,7 +9,7 @@ use App\Models\BankAccountPayment;
 use App\Models\BankTaxesPayment;
 use App\Models\BuildingType;
 use App\Models\CardClient;
-use App\Models\CardContract;
+//use App\Models\CardContract;
 use App\Models\CheckList;
 use App\Models\Client;
 use App\Models\ClientContract;
@@ -144,7 +144,7 @@ class TestController extends Controller
                 $this->create_contacts();
                 $this->create_immovable();
                 $this->create_contract();
-                $this->create_card_contract();
+//                $this->create_card_contract();
                 $this->create_clients();
                 $this->create_client_contract();
                 $cards--;
@@ -162,8 +162,8 @@ class TestController extends Controller
         $this->date_time = $this->date . ' ' .  $time;
         $this->dev_company_id = $this->get_rand_value($this->dev_companies);
         if ($this->dev_company_id) {
-            $this->dev_representative_id = $this->get_rand_value(Client::where('dev_company_id', $this->dev_company_id)->where('type', 5)->pluck('id')->toArray());
-            $this->dev_manager_id = $this->get_rand_value(Client::where('dev_company_id', $this->dev_company_id)->where('type', 6)->pluck('id')->toArray());
+            $this->dev_representative_id = $this->get_rand_value(Client::where('dev_company_id', $this->dev_company_id)->where('type_id', 5)->pluck('id')->toArray());
+            $this->dev_manager_id = $this->get_rand_value(Client::where('dev_company_id', $this->dev_company_id)->where('type_id', 6)->pluck('id')->toArray());
         }
         $this->staff_generator_id = $this->get_rand_value($this->staff_generators_id);
     }
@@ -242,15 +242,15 @@ class TestController extends Controller
         }
     }
 
-    public function create_card_contract()
-    {
-        foreach ($this->arr_contracts_id as $contract_id) {
-            $card_contract = new CardContract();
-            $card_contract->card_id = $this->card_id;
-            $card_contract->contract_id = $contract_id;
-            $card_contract->save();
-        }
-    }
+//    public function create_card_contract()
+//    {
+//        foreach ($this->arr_contracts_id as $contract_id) {
+//            $card_contract = new CardContract();
+//            $card_contract->card_id = $this->card_id;
+//            $card_contract->contract_id = $contract_id;
+//            $card_contract->save();
+//        }
+//    }
 
     public function create_clients()
     {
@@ -260,7 +260,7 @@ class TestController extends Controller
         while ($length--)
         {
             $client = new Client();
-            $client->type = 1;
+            $client->type_id = 1;
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);
@@ -327,6 +327,7 @@ class TestController extends Controller
             $contract->reader_id = $this->get_rand_value(User::where('accompanying', true)->pluck('id')->toArray());
             $contract->bank = rand(0, 1);
             $contract->proxy = rand(0, 1);
+            $contract->card_id = $this->card_id;
             $contract->sign_date = $this->date_time;
             $contract->ready = rand(0, 1);
             $contract->save();
@@ -383,7 +384,7 @@ class TestController extends Controller
         Card::truncate();
         BankAccountPayment::truncate();
         CardClient::truncate();
-        CardContract::truncate();
+//        CardContract::truncate();
         CheckList::truncate();
         Client::truncate();
         // client_investment_agreement
@@ -426,7 +427,7 @@ class TestController extends Controller
             $dev_company->save();
 
             $dev_owner = new Client();
-            $dev_owner->type = 2; // owner type
+            $dev_owner->type_id = 2; // owner type
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);
@@ -487,7 +488,7 @@ class TestController extends Controller
         while ($i < 50)
         {
             $dev_employer = new Client();
-            $dev_employer->type = rand(5, 6);
+            $dev_employer->type_id = rand(5, 6);
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\Controller;
-use App\Models\CardContract;
 use Illuminate\Http\Request;
 
 use App\Models\ApartmentType;
@@ -54,7 +53,7 @@ class GeneratorController extends Controller
             return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
         }
 
-        $contracts_id = CardContract::where('card_id', $card_id)->pluck('contract_id');
+        $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
 
         $this->pack_contract = $this->get_contract_by_contract_id($contracts_id);
 

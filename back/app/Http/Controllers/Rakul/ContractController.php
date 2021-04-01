@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\Controller;
-use App\Models\CardContract;
 use App\Models\Contract;
 use App\Models\Immovable;
 use Illuminate\Http\Request;
@@ -20,12 +19,13 @@ class ContractController extends Controller
                 $contract->bank = $imm['bank'];
                 $contract->proxy = $imm['proxy'];
                 $contract->type_id = $imm['contract_type_id'];
+                $contract->card_id = $card_id;
                 $contract->save();
 
-                $card_contract = new CardContract();
-                $card_contract->card_id = $card_id;
-                $card_contract->contract_id = $contract->id;
-                $card_contract->save();
+//                $card_contract = new CardContract();
+//                $card_contract->card_id = $card_id;
+//                $card_contract->contract_id = $contract->id;
+//                $card_contract->save();
             }
         }
     }

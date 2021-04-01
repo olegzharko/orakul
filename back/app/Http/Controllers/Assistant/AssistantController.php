@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
-use App\Models\CardContract;
 use App\Models\Card;
+use App\Models\Contract;
 use App\Models\ClientType;
 use App\Models\Immovable;
 use App\Models\Staff;
@@ -56,9 +56,7 @@ class AssistantController extends BaseController
         $representative = $this->tools->developer_employer_by_type($card->dev_company_id, $representative_type_id);
         $manager = $this->tools->developer_employer_by_type($card->dev_company_id, $manager_type_id);
 
-        $immovables_id = CardContract::where('card_contract.card_id', $card_id)
-            ->join('contracts', 'contracts.id', '=', 'card_contract.contract_id')
-            ->pluck('contracts.immovable_id');
+        $immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id');
 
         $immovables = Immovable::whereIn('immovables.id', $immovables_id)->select(
             'immovables.*',

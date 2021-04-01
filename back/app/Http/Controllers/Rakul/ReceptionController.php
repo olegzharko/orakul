@@ -67,27 +67,11 @@ class ReceptionController extends BaseController
         $convert_notary = [];
 
         $convert_contract_type = ContractType::select('id', 'title')->where('active', true)->get()->toArray();
-//        $contract_type = ContractType::select('id', 'title')->where('active', true)->get();
-//        foreach ($contract_type as $key => $value) {
-//            $convert_contract_type[$key]['id'] = $value->id;
-//            $convert_contract_type[$key]['title'] = $value->title;
-//        }
 
         $convert_developer = DevCompany::select('id', 'title')->where('active', true)->get()->toArray();
-//        $developer = DevCompany::where('active', true)->get();
-//        foreach ($developer as $key => $value) {
-//            $convert_developer[$key]['id'] = $value->id;
-//            $convert_developer[$key]['title'] = $value->title;
-//        }
 
         $convert_immovable_type = ImmovableType::select('id', 'short as title')->where('form', true)->get()->toArray();
-//        $immovable_type = ImmovableType::select('id', 'short')->where('form', true)->get();
-//        foreach ($immovable_type as $key => $value) {
-//            $convert_immovable_type[$key]['id'] = $value->id;
-//            $convert_immovable_type[$key]['title'] = $value->short;
-//        }
 
-//        $convert_notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get()->toArray();
         $notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
         foreach ($notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
