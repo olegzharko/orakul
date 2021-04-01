@@ -17,7 +17,6 @@ const InputWithCopy = ({ label, value, disabled, onChange }: Props) => {
     if (!value) return;
 
     navigator.clipboard.writeText(value);
-    console.log(value);
 
     setDone(true);
     setTimeout(() => setDone(false), 3000);
