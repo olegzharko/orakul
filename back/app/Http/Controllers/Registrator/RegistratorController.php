@@ -57,7 +57,7 @@ class RegistratorController extends BaseController
 
             foreach ($dev_companies as $key => $company) {
 
-                $owner = Client::where('type', 2)->where('dev_company_id', $company->id)->first();
+                $owner = Client::where('type_id', 2)->where('dev_company_id', $company->id)->first();
 
                 $dev_fence = DevFence::where('dev_company_id', $company->id)->first();
 
@@ -73,7 +73,7 @@ class RegistratorController extends BaseController
                 $res_dev[$key]['pass'] = $dev_fence->pass ? true : false;
                 $res_dev[$key]['prev'] = null;
                 $res_dev[$key]['next'] = null;
-                
+
                 if ($key > 0) {
                     $res_dev[$key]['prev'] = $dev_companies[$key - 1]->id;
                 }

@@ -243,7 +243,6 @@ class TestController extends Controller
 
     public function create_clients()
     {
-
         $length = rand(1, 2);
 
         while ($length--)
