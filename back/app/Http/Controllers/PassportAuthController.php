@@ -75,7 +75,7 @@ class PassportAuthController extends BaseController
             ['email' => $request->email, 'token' => $token, 'created_at' => $datetime]
         );
 
-         \Mail::send('auth.password.verify',['user_email' => $this->email, 'token' => $token], function($message) use ($request) {
+         \Mail::send('auth.password.verify',['user_email' => $request->email, 'token' => $token], function($message) use ($request) {
             $message->from($request->email);
             $message->to('olegzharko@gmail.com');
             $message->subject('Запит на відновлення пароля');
