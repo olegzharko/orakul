@@ -48,7 +48,7 @@ class Contact extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Картка клієнта', 'card', 'App\Nova\Card'),
+            BelongsTo::make('Картка клієнта', 'card', 'App\Nova\CalendarCards'),
             BelongsTo::make('Тип контактної особи', 'contact_type', 'App\Nova\ContactType'),
             Text::make('ПІБ', 'full_name'),
             Text::make('Телефон', 'phone'),

@@ -33,6 +33,8 @@ class Room extends Resource
         'id',
     ];
 
+    public static $group = "Календар";
+
     public static function label()
     {
         return "Переговорні кімната";

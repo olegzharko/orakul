@@ -24,6 +24,13 @@ class ContractType extends Resource
      */
     public static $title = 'title';
 
+    public static $group = "Типи";
+
+    public static function label()
+    {
+        return "Договір";
+    }
+
     /**
      * The columns that should be searched.
      *

@@ -519,7 +519,7 @@ class CardController extends BaseController
         if ($card->dev_representative) {
             $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
         } elseif ($card->dev_company) {
-            $owner = $card->dev_company->member->where('type', $this->developer_type)->first();
+            $owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
             $dev_representative_short = $this->convert->get_short_name($owner);
         }
 

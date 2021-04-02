@@ -24,6 +24,8 @@ class WorkDay extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Календар";
+
     public static function label()
     {
         return "Дні неделі";

@@ -34,9 +34,11 @@ class CalendarCards extends Resource
         'id',
     ];
 
+    public static $group = "Календар";
+
     public static function label()
     {
-        return "Календарні картки";
+        return "Картки";
     }
 
     /**

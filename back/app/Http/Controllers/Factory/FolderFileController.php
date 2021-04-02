@@ -139,8 +139,9 @@ class FolderFileController extends Controller
 
     public function root_title()
     {
+
         $title = ""
-            . "{$this->date_month} {$this->contract->contract_template->template_type->short_title} {$this->developer_company} ({$this->subscriber}) - "
+            . "{$this->date_month} {$this->contract->template->type->title} {$this->developer_company} ({$this->subscriber}) - "
             . "{$this->client_surname} {$this->address_type} {$this->address_title} "
             . "{$this->address_num} {$this->immovable_type} {$this->immovable_num} {$this->married} ";
 
@@ -173,7 +174,7 @@ class FolderFileController extends Controller
 
         $title = trim($title);
 
-        $template = $this->file_path($this->contract->contract_template);
+        $template = $this->file_path($this->contract->template);
         $this->create_file_for_contract($template, $title);
 
         return $title;

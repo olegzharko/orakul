@@ -22,6 +22,8 @@ class Text extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Конвертація";
+
     public static function label()
     {
         return "Текст";

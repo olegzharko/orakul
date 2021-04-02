@@ -185,7 +185,7 @@ class AssistantController extends BaseController
             if (!Client::where([
                         'id' => $r['representative_id'],
                         'dev_company_id' => $r['developer_id'],
-                        'type' => $representative_type_id,
+                        'type_id' => $representative_type_id,
                     ])->first()) {
                 $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
             }
@@ -197,7 +197,7 @@ class AssistantController extends BaseController
             if (!Client::where([
                         'id' => $r['manager_id'],
                         'dev_company_id' => $r['developer_id'],
-                        'type' => $manager_type_id,
+                        'type_id' => $manager_type_id,
                     ])->first()) {
                 $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
             }

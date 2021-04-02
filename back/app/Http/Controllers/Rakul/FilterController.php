@@ -10,6 +10,7 @@ use App\Models\ClientType;
 use App\Models\ContractType;
 use App\Models\DeveloperBuilding;
 use App\Models\DevCompany;
+use App\Models\FilterType;
 use App\Models\Notary;
 use App\Models\SortType;
 use App\Models\Staff;
@@ -51,6 +52,7 @@ class FilterController extends BaseController
         $contract_type = ContractType::get_active_contract_type();
         $developer = $this->tools->get_developer();
         $sort_type = SortType::get_all_sort_type();
+        $filter_type = $this->get_filter_type();
 
         $result = [
             'notary' => $notary,
@@ -60,6 +62,7 @@ class FilterController extends BaseController
             'contract_type' => $contract_type,
             'developer' => $developer,
             'sort_type' => $sort_type,
+            'filter_type' => $filter_type,
         ];
 
         return $this->sendResponse($result, 'Фільтер dropdown data');
@@ -135,13 +138,14 @@ class FilterController extends BaseController
                 "cards.ready",
                 "cards.cancelled",
             )
-            ->where('staff_generator_id', auth()->user()->id)
-            ->whereIn('cards.room_id', $this->rooms)->where('cards.date_time', '>=', $this->date)
-            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
-            ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
-            ->where('contract_types.id', $contract_type_id)
-            ->distinct('cards.id')
-            ->get();
+        ->where('staff_generator_id', auth()->user()->id)
+        ->whereIn('cards.room_id', $this->rooms)
+        ->where('cards.date_time', '>=', $this->date)
+        ->where('contract_types.id', $contract_type_id)
+        ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+        ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
+        ->distinct('cards.id')
+        ->get();
 
         $result = $this->card->get_cards_in_generator_format($cards);
 
@@ -164,5 +168,81 @@ class FilterController extends BaseController
         }
 
         return $this->sendResponse($result, 'Усі картки з договорами');
+    }
+
+    private function get_filter_type()
+    {
+        $result = [];
+
+        $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->get();
+
+        foreach ($filter_tyep as $key => $type) {
+            if ($type->alias == 'ready') {
+                $result[$key]['type'] = $type->alias;
+                $result[$key]['count'] = $this->count_ready_cards();
+            } elseif ($type->alias == 'main') {
+                $result[$key]['type'] = $type->alias;
+                $result[$key]['count'] = $this->count_by_type($type->alias);
+            } elseif ($type->alias == 'preliminary') {
+                $result[$key]['type'] = $type->alias;
+                $result[$key]['count'] = $this->count_by_type($type->alias);
+            } elseif ($type->alias == 'cancelled') {
+                $result[$key]['type'] = $type->alias;
+                $result[$key]['count'] = $this->count_cancelled_cards();
+            }
+        }
+
+        return $result;
+    }
+
+    private function count_by_type($contract_type)
+    {
+        if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
+            return null;
+
+        $count_cards = Card::select(
+                "cards.id",
+                "cards.notary_id",
+                "cards.room_id",
+                "cards.date_time",
+                "cards.city_id",
+                "cards.dev_company_id",
+                "cards.dev_representative_id",
+                "cards.dev_manager_id",
+                "cards.generator_step",
+                "cards.ready",
+                "cards.cancelled",
+            )
+        ->where('staff_generator_id', auth()->user()->id)
+        ->whereIn('cards.room_id', $this->rooms)
+        ->where('cards.date_time', '>=', $this->date)
+        ->where('contracts.type_id', $contract_type_id)
+        ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+        ->distinct('cards.id')
+        ->count();
+
+        return $count_cards;
+    }
+
+    private function count_ready_cards()
+    {
+        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
+            ->whereIn('room_id', $this->rooms)
+            ->where('ready', true)
+            ->where('date_time', '>=', $this->date)
+            ->count();
+
+        return $count_cards;
+    }
+
+    private function count_cancelled_cards()
+    {
+        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
+            ->whereIn('room_id', $this->rooms)
+            ->where('date_time', '>=', $this->date)
+            ->where('cancelled', true)
+            ->count();
+
+        return $count_cards;
     }
 }

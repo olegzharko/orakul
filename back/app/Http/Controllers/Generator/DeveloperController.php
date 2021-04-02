@@ -53,7 +53,7 @@ class DeveloperController extends BaseController
         $result['number'] = null;
         $result['pass'] = null;
 
-        $card->dev_company->owner = $card->dev_company->member->where('type', $this->developer_type)->first();
+        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
         if ($fence = DevFence::where('dev_company_id', $card->dev_company->owner->id)->orderBy('date', 'desc')->first() ) {
             $result['date'] = $fence->date->format('d.m.Y. H:i');
             $result['number'] = $fence->number;
@@ -98,7 +98,7 @@ class DeveloperController extends BaseController
     {
         $card = Card::find($card_id);
 
-        $card->dev_company->owner = $card->dev_company->member->where('type', $this->developer_type)->first();
+        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
 
         if ($card->dev_company->owner->spouse) {
             return $this->sendResponse('', 'Дані про подружжя не підготовлені. Розділ знаходиться на уточненні');
@@ -140,7 +140,7 @@ class DeveloperController extends BaseController
 
         $dev_company_id = Card::where('id', $card_id)->value('dev_company_id');
         $developer_representative = Client::where('id', $r['dev_representative_id'])
-            ->where('type', $this->representative_type)
+            ->where('type_id', $this->representative_type)
             ->where('dev_company_id', $dev_company_id)
             ->first();
 
@@ -162,7 +162,7 @@ class DeveloperController extends BaseController
     private function ceo_info($dev_company_id)
     {
 
-        $ceo = Client::where('type', $this->developer_type)->where('dev_company_id', $dev_company_id)->first();
+        $ceo = Client::where('type_id', $this->developer_type)->where('dev_company_id', $dev_company_id)->first();
 
         $ceo->name = $this->convert->get_full_name($ceo);
         $ceo->address = $this->convert->get_client_full_address($ceo);
@@ -189,7 +189,7 @@ class DeveloperController extends BaseController
         $result = [];
 
         $dev_representative = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')
-            ->where('type', $this->representative_type)
+            ->where('type_id', $this->representative_type)
             ->where('dev_company_id', $card->dev_company_id)
             ->get();
 

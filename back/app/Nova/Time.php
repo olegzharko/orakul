@@ -24,6 +24,13 @@ class Time extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Календар";
+
+    public static function label()
+    {
+        return "Час запису";
+    }
+
     /**
      * The columns that should be searched.
      *

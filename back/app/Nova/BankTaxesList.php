@@ -56,10 +56,10 @@ class BankTaxesList extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Код-ключ', 'alias'),
             Text::make('Заголовок', 'title'),
-            Select::make('Податок сплачує', 'type')->options([
-                'developer' => 'Забудовник',
-                'client' => 'Покупець',
-            ])->displayUsingLabels(),
+//            Select::make('Податок сплачує', 'type')->options([
+//                'developer' => 'Забудовник',
+//                'client' => 'Покупець',
+//            ])->displayUsingLabels(),
             Text::make('Назначение платежа', 'appointment_payment'),
             Text::make('Код та ЄДРПОУ', 'code_and_edrpoy'),
             Text::make('МФО банка получателя', 'mfo'),

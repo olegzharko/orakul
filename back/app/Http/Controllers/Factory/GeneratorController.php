@@ -114,7 +114,7 @@ class GeneratorController extends Controller
         $client_type_dev_owner = ClientType::where('key', 'developer')->value('id');
 
         $this->contract->immovable = $this->get_immovable($this->contract->immovable);
-        $this->contract->dev_company->owner = $this->contract->dev_company->member->where('type', $client_type_dev_owner)->first();
+        $this->contract->dev_company->owner = $this->contract->dev_company->member->where('type_id', $client_type_dev_owner)->first();
 
         // для перевірки заборони на продавця використовується орієнтир через нерухомість, а не на пряму через власника
         $this->contract->dev_company->owner->fence = DevFence::where('dev_company_id', $this->contract->dev_company->owner->id)->orderBy('date', 'desc')->first();

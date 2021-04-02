@@ -22,6 +22,11 @@ class CardClients extends Resource
      */
     public static $title = 'id';
 
+    public static function label()
+    {
+        return "Картки-контакти";
+    }
+
     /**
      * The columns that should be searched.
      *
