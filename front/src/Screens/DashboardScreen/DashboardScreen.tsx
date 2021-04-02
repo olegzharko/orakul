@@ -3,17 +3,16 @@ import './index.scss';
 import { Switch, Route } from 'react-router-dom';
 import Header from '../../components/Header';
 import DashboardContainer from './components/DashboardContainer';
+import ManageContainer from './components/ManageContainer';
 
 const DashboardScreen = () => (
   <>
     <Header />
     <Switch>
-      <Route path="/contracts/:id">
-        <h1>Here</h1>
+      <Route path="/:type/:id">
+        <ManageContainer />
       </Route>
-      <Route path="/">
-        <DashboardContainer />
-      </Route>
+      <DashboardContainer />
     </Switch>
   </>
 );

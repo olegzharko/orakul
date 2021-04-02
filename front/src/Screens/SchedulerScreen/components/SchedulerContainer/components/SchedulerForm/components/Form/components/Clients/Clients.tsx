@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { memo } from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 import AddFormButton from '../../../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../../../components/CustomInput/CustomInput';
 import RemoveFormButton from '../../../../../../../../../../components/RemoveFormButton';
@@ -12,7 +13,7 @@ const Clients = (props: Props) => {
   return (
     <div className="mv12">
       {props.clients.map((item, index) => (
-        <div className="clients__item mv12">
+        <div className="clients__item mv12" key={uuidv4()}>
           <CustomInput
             label="ПІБ"
             value={item.full_name}

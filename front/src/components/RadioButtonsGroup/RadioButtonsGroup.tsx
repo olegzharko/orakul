@@ -3,6 +3,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useState, memo, useEffect } from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 type Button = {
   id: number;
@@ -36,6 +37,7 @@ export const RadioButtonsGroup = ({
     <div className="radio-buttons-group">
       {buttons.map(({ id, title }: Button) => (
         <div
+          key={uuidv4()}
           className={`radio-buttons-group__element ${
             buttons.length === 1 ? 'edit' : ''
           }`}

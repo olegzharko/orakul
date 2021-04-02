@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { memo } from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 import AddFormButton from '../../../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../components/CustomSelect';
@@ -17,7 +18,7 @@ const ImmovableContainer = (props: Props) => {
   return (
     <div className="mv12 immovables__group">
       {props.immovables.map((item: ImmovableItem, index: number) => (
-        <div className="immovables__item mv12">
+        <div className="immovables__item mv12" key={uuidv4()}>
           <RadioButtonsGroup
             buttons={
               props.disabled

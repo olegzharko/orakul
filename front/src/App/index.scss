@@ -1,3 +1,5 @@
+@import '../constants.scss';
+
 button {
   border: none;
   outline: none;
@@ -32,4 +34,29 @@ body, p {
 .df-jc-sb {
   display: flex;
   justify-content: space-between;
+}
+
+.navigation-button {
+
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: $transition_default;
+
+  &:hover {
+    opacity: .5;
+  }
+
+  &.selected {
+    background-color: $grey_light;
+  }
+
+  img {
+    margin-right: 15px;
+  }
 }
