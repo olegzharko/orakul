@@ -35,7 +35,7 @@
     .label {
       @include form_text;
       border: $border_primary;
-      border-radius: 4px;
+      border-radius: $border_radius;
       color: $primary;
       height: 42px;
       display: flex;

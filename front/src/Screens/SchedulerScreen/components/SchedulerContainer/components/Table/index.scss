@@ -3,7 +3,7 @@
 .scheduler {
   min-height: 100vh;
   background-color: #FAFAFA;
-  border-radius: 10px;
+  border-radius: $border_radius;
   box-shadow: inset 0px -1px 0px #EEEEEE;
   
   &__header {

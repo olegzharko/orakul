@@ -24,7 +24,7 @@
     align-items: center;
     height: 100%;
     width: 450px;
-    border-radius: 10px;
+    border-radius: $border_radius;
     background-color: $grey;
     margin-left: 24px;
     padding: 65px 40px;
@@ -45,7 +45,7 @@
     min-height: 300px;
     width: 400px;
     background-color: $grey;
-    border-radius: 10px;
+    border-radius: $border_radius;
     padding: 65px 40px;
 
     &-title {

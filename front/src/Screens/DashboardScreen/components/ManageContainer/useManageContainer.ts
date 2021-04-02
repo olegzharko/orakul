@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { DashboardContractNavigation } from '../../useDashboardScreen';
 
 export const useManageContainer = () => {
-  const { type } = useParams<{ type: string }>();
+  const { type, id } = useParams<{ type: string, id: string }>();
   const [selectedNav, setSelectedNav] = useState<DashboardContractNavigation>();
   const [contractData, setContractData] = useState();
 
@@ -29,5 +29,10 @@ export const useManageContainer = () => {
     }
   }, [type]);
 
-  return { contractData, selectedNav, setSelectedNav };
+  return {
+    id,
+    contractData,
+    selectedNav,
+    setSelectedNav
+  };
 };

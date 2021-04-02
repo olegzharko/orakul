@@ -19,6 +19,7 @@ type Props = {
   selectedValue?: string | null | number;
   disabled?: boolean;
   size?: 'medium' | 'small';
+  className?: string;
 };
 
 const CustomSelect = ({
@@ -28,6 +29,7 @@ const CustomSelect = ({
   selectedValue,
   disabled,
   size = 'medium',
+  className,
 }: Props) => {
   const [selected, setSelected] = useState(selectedValue || '');
 
@@ -42,7 +44,7 @@ const CustomSelect = ({
   };
 
   return (
-    <FormControl variant="outlined" className="customSelect" size={size}>
+    <FormControl variant="outlined" className={`customSelect ${className || ''}`} size={size}>
       <InputLabel>{label}</InputLabel>
       <Select
         value={selected}

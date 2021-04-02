@@ -1,14 +1,14 @@
 import React from 'react';
+import CheckBanFields, { CheckBanFieldsData } from '../../../../components/CheckBanFields/CheckBanFields';
 import CustomDatePicker from '../../../../components/CustomDatePicker';
 import CustomInput from '../../../../components/CustomInput';
 import CustomSwitch from '../../../../components/CustomSwitch';
 import PrimaryButton from '../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../components/SectionWithTitle';
-import { DeveloperCardState } from '../Developer/useDeveloper';
 
 type Props = {
-  data: DeveloperCardState,
-  setData: (data: DeveloperCardState) => void,
+  data: CheckBanFieldsData,
+  setData: (data: CheckBanFieldsData) => void,
   onPrevButtonClick: () => void,
   onSave: () => void,
   onNextButtonClick: () => void,
@@ -28,25 +28,7 @@ const Check = ({
   prev,
 }: Props) => (
   <>
-    <SectionWithTitle title="Перевірка">
-      <div className="grid">
-        <CustomDatePicker
-          label="Дата перевірки"
-          onSelect={(val) => setData({ ...data, date: val })}
-          selectedDate={data.date}
-        />
-        <CustomInput
-          label="Номер перевірки"
-          onChange={(val) => setData({ ...data, number: val })}
-          value={data.number}
-        />
-        <CustomSwitch
-          label="Пройшов перевірку"
-          onChange={(val) => setData({ ...data, pass: val })}
-          selected={data.pass}
-        />
-      </div>
-    </SectionWithTitle>
+    <CheckBanFields data={data} setData={setData} title="Перевірка" />
 
     <div className="buttons-group">
       <button

@@ -1,7 +1,7 @@
 @import '../../constants.scss';
 
 .card {
-  border-radius: 10px;
+  border-radius: $border_radius;
   cursor: pointer;
   transition: $transition_default;
   text-decoration: none;
