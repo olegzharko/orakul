@@ -13,7 +13,7 @@ const Clients = (props: Props) => {
   return (
     <div className="mv12">
       {props.clients.map((item, index) => (
-        <div className="clients__item mv12" key={uuidv4()}>
+        <div className="clients__item mv12">
           <CustomInput
             label="ПІБ"
             value={item.full_name}

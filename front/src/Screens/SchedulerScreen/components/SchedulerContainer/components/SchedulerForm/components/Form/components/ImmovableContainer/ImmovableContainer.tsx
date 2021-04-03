@@ -18,7 +18,7 @@ const ImmovableContainer = (props: Props) => {
   return (
     <div className="mv12 immovables__group">
       {props.immovables.map((item: ImmovableItem, index: number) => (
-        <div className="immovables__item mv12" key={uuidv4()}>
+        <div className="immovables__item mv12">
           <RadioButtonsGroup
             buttons={
               props.disabled
