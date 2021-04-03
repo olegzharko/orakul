@@ -11,7 +11,7 @@ const Seller = () => {
   const meta = useSeller();
 
   return (
-    <div className="manage__seller">
+    <div className="manage__seller seller">
       <SectionWithTitle title="Продавець">
         <div className="seller__info">
           <div className="seller__info-title">

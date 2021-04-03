@@ -5,6 +5,4 @@ export type Props = {
   id: string;
 }
 
-export const useWorkSpace = ({ selectedNav, id }: Props) => {
-  console.log(selectedNav, id);
-};
+export const useWorkSpace = ({ selectedNav, id }: Props) => null;
