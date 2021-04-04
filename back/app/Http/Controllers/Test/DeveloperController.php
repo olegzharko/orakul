@@ -28,6 +28,7 @@ use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
 use App\Models\ImmovableType;
+use App\Models\InvestmentAgreement;
 use App\Models\Notary;
 use App\Models\Card;
 use App\Models\PassportTemplate;
@@ -83,7 +84,7 @@ class DeveloperController extends TestController
             $dev_owner->surname_o = $surname;
             $dev_owner->name_o = $name;
             $dev_owner->patronymic_o = $patronymic;
-            $dev_owner->birth_date = "13.04.1991";
+            $dev_owner->birth_date = rand(10, 30) . ".0" . rand(1, 9) . "19" . rand(70, 99);
             $dev_owner->gender = 'male';
             $dev_owner->citizenship_id = null;
             $dev_owner->spouse_id = null;
@@ -118,6 +119,15 @@ class DeveloperController extends TestController
             $building->title = $this->get_rand_value($this->arr_street);
             $building->number = rand(1, 50);
             $building->save();
+
+//            $investment_agrement = new InvestmentAgreement();
+//            $investment_agrement->dev_company_id = $building->dev_company_id;
+//            $investment_agrement->investor_id = $building->investor_id;
+//
+//            $client_investment_agrement = new ClientInvestmentAgreement();
+//            $client_investment_agrement->client_id = ;
+//            $client_investment_agrement->investment_agreement_id = ;
+
             $i++;
         }
     }
@@ -127,11 +137,12 @@ class DeveloperController extends TestController
         $i = 0;
         while ($i < 50)
         {
-            $dev_employer = new Client();
-            $dev_employer->type_id = rand(5, 6);
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);
+
+            $dev_employer = new Client();
+            $dev_employer->type_id = rand(5, 6);
             $dev_employer->surname_n = $surname;
             $dev_employer->name_n = $name;
             $dev_employer->patronymic_n = $patronymic;
@@ -144,7 +155,7 @@ class DeveloperController extends TestController
             $dev_employer->surname_o = $surname;
             $dev_employer->name_o = $name;
             $dev_employer->patronymic_o = $patronymic;
-            $dev_employer->birth_date = "13.04.1991";
+            $dev_employer->birth_date = rand(10, 30) . ".0" . rand(1, 9) . "19" . rand(70, 99);
             $dev_employer->gender = 'male';
             $dev_employer->citizenship_id = null;
             $dev_employer->spouse_id = null;
@@ -154,7 +165,7 @@ class DeveloperController extends TestController
             $dev_employer->tax_code = rand('2220000000', '3339999999');
             $dev_employer->passport_type_id = $this->get_rand_value(PassportTemplate::pluck('id')->toArray());
             $dev_employer->passport_code = $this->random_string(2) . rand(450000, 999999);
-            $dev_employer->passport_date = "29.09.2007";
+            $dev_employer->passport_date = rand(10, 30) . ".0" . rand(1, 9) . "200" . rand(1, 9);
             $dev_employer->passport_finale_date = null;
             $dev_employer->passport_department = "Шевченківським РУ ГУ МВС України в місті Києві";
             $dev_employer->city_id = $this->get_rand_value(City::pluck('id')->toArray());

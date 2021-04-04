@@ -48,6 +48,7 @@ class RegistratorController extends BaseController
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
+
         if ($check_dev_company) {
 
             $dev_companies = DevCompany::whereIn('dev_companies.id', $check_dev_company)->get();

@@ -29,6 +29,7 @@ Route::get('clear', function () {
     Artisan::call('cache:clear');
 });
 
+Route::get('creat/contracts', [GeneratorController::class, 'creat_contracts']);
 Route::get('creat/contract/{card_id}', [GeneratorController::class, 'creat_contract_by_card_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
 

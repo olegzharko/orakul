@@ -16,6 +16,7 @@ class Client extends Model implements Sortable
     protected $casts = [
         'birth_date' => 'datetime',
         'passport_date' => 'datetime',
+        'passport_finale_date' => 'datetime',
     ];
 
     public $sortable = [

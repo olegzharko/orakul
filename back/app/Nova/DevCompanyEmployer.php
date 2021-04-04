@@ -3,44 +3,29 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class InvestmentAgreement extends Resource
+class DevCompanyEmployer extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\InvestmentAgreement::class;
+    public static $model = \App\Models\DevCompanyEmployer::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-//    public static $title = 'id';
-
-    public function title()
-    {
-        $title = $this->dev_company->title
-            . " №" . $this->number
-            . " від " . $this->date->format('d.m.Y')
-            . " ";
-
-        return $title;
-    }
-
-    public static $group = "Сторонні угоди";
+    public static $title = 'id';
 
     public static function label()
     {
-        return "Інвестиційний договір ";
+        return "Забудовник-Персонал";
     }
 
     /**
@@ -63,9 +48,7 @@ class InvestmentAgreement extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
-            Text::make('Номер договору', 'number'),
-            DateTime::make('Дата підписання договору', 'date'),
-            BelongsTo::make('Інвестори', 'investor', 'App\Nova\Client')->nullable(),
+            BelongsTo::make('Працівник', 'employer', 'App\Nova\Client'),
         ];
     }
 

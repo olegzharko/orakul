@@ -35,6 +35,13 @@ class GeneratorController extends Controller
         $this->convert = new ConvertController();
     }
 
+    public function creat_contracts()
+    {
+        $contracts_id = Contract::where('ready', true)->pluck('id');
+
+        $this->get_contract_by_contract_id($contracts_id);
+    }
+
     public function creat_contract_by_card_id($card_id)
     {
         $contracts_id = null;
@@ -52,6 +59,17 @@ class GeneratorController extends Controller
         if (count($validator->errors()->getMessages())) {
             return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
         }
+
+        $contracts_fale = Contract::where('card_id', $card_id)->where('ready', false)->pluck('id');
+        if (count($contracts_fale)) {
+            $title = "Картка $card_id <br>";
+            foreach ($contracts_fale as $item) {
+                $title .= "Контракт під ID:" . $item . " не готові до обробки<br>";
+            }
+
+            return $title;
+         }
+
 
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
 

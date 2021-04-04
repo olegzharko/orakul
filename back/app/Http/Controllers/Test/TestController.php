@@ -92,7 +92,6 @@ class TestController extends Controller
 
     public function __construct()
     {
-
         $this->currant_date = new \DateTime();
         $this->notaries_id = Notary::where('rakul_company', true)->pluck('id')->toArray();
         $this->dev_companies = DevCompany::pluck('id')->toArray();
@@ -106,7 +105,9 @@ class TestController extends Controller
 
         $this->arr_surname = ['Жарко', 'Конріенко', 'Вознюк', 'Слободянюк', 'Гусейнов', 'Ізман', 'Кісільов'];
         $this->arr_name = ['Олег', 'Володимир', 'Дмитро', 'Петро', 'Даянат', 'Ілья', 'Вадим'];
+        $this->arr_female_name = ['Ольга', 'Катерина', 'Марина', 'Оксана', 'Анастасія', 'Вікторія', 'Яна'];
         $this->arr_patronymic = ['Володимирович', 'Александрович', 'Сергійович', 'Андрійович', 'Алладинович', 'Вікторович', 'Михайлович'];
+        $this->arr_female_patronymic = ['Володимирівна', 'Александрівна', 'Сергіївна', 'Андріївна', 'Алладіновна', 'Вікторівна', 'Михайлівна'];
         $this->arr_street = ['Волокова', 'Амосова', 'Шевченко', 'Южна', 'Київська', 'Перемоги', 'Лесі Українки', 'Ломоносова', 'Берза', 'Зелена', 'Шмиго'];
         $this->arr_company = [
             '#BF4040' => 'ЖК Львів',

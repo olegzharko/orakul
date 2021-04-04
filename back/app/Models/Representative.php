@@ -12,6 +12,7 @@ class Representative extends Model
     protected $fillable = [
         'client_id',
         'confidant_id',
+        'notary_id',
         'reg_num',
         'reg_date',
     ];

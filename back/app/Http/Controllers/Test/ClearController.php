@@ -36,6 +36,7 @@ use App\Models\Questionnaire;
 use App\Models\Representative;
 use App\Models\Room;
 use App\Models\SecurityPayment;
+use App\Models\Spouse;
 use App\Models\Time;
 use App\Models\City;
 use App\Models\User;
@@ -51,6 +52,7 @@ class ClearController  extends TestController
 
      public function clear_table()
     {
+        /*
         Card::truncate();
         BankAccountPayment::truncate();
         CardClient::truncate();
@@ -77,5 +79,8 @@ class ClearController  extends TestController
         Representative::truncate();
         SecurityPayment::truncate();
         DevFence::truncate();
+        Spouse::truncate();
+        Representative::truncate();
+        */
     }
 }

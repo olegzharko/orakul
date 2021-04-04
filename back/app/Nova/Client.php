@@ -88,12 +88,12 @@ class Client extends Resource
     public function fullNameType()
     {
         return [
-            Heading::make('<p class="text-success">Називний відмінок</p>')->asHtml(),
+            Heading::make('<p class="text-success">Називний відмінок: хто? що? - ластівк-а</p>')->asHtml(),
             Text::make('Прізвище', 'surname_n')->rules('required'),
             Text::make('Ім\'я', 'name_n')->rules('required'),
             Text::make('По батькові', 'patronymic_n'),
 
-            Heading::make('<p class="text-success">Родовий відмінок</p>')->asHtml(),
+            Heading::make('<p class="text-success">Родовий відмінок: кого?чого? - ластівк-и</p>')->asHtml(),
             Text::make('Прізвище', 'surname_r')->rules('required')->hideFromIndex(),
             Text::make('Ім\'я', 'name_r')->rules('required')->hideFromIndex(),
             Text::make('По батькові', 'patronymic_r')->hideFromIndex(),
@@ -103,17 +103,17 @@ class Client extends Resource
 //            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
 //            Text::make('По батькові', 'patronymic_d')->hideFromIndex(),
 
-            Heading::make('<p class="text-success">Орудний відмінок</p>')->asHtml(),
+            Heading::make('<p class="text-success">Орудний відмінок: ким?чим? - ластівк-ою</p>')->asHtml(),
             Text::make('Прізвище', 'surname_o')->rules('required')->hideFromIndex(),
             Text::make('Ім\'я', 'name_o')->rules('required')->hideFromIndex(),
             Text::make('По батькові', 'patronymic_o')->hideFromIndex(),
-            Heading::make("Називний: хто? що? - ластівк-а"),
-            Heading::make("Родовий: кого?чого? - ластівк-и"),
-            Heading::make("Давальний: кому?чому? - ластівц-і"),
-            Heading::make("Знахідний: кого?що? -	ластівк-у"),
-            Heading::make("Орудний: ким?чим? - ластівк-ою"),
-            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
-            Heading::make("Кличний: * * - ластівк-о"),
+//            Heading::make("Називний: хто? що? - ластівк-а"),
+//            Heading::make("Родовий: кого?чого? - ластівк-и"),
+//            Heading::make("Давальний: кому?чому? - ластівц-і"),
+//            Heading::make("Знахідний: кого?що? -	ластівк-у"),
+//            Heading::make("Орудний: ким?чим? - ластівк-ою"),
+//            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
+//            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 
@@ -152,6 +152,7 @@ class Client extends Resource
             BelongsTo::make('Тип паспорту', 'passport_type', 'App\Nova\PassportTemplate')->nullable(),
             Text::make('Серія/Номер паспорта', 'passport_code'),
             DateTime::make('Дата видачі', 'passport_date'),
+            DateTime::make('Діє до', 'passport_finale_date'),
             Text::make('Орган що видав паспорт', 'passport_department'),
             Text::make('Запису в ЄДДР (для ID карток)', 'passport_demographic_code'),
         ];
