@@ -5,7 +5,7 @@ import ClientsFields from './components/ClientsFields';
 
 const GeneratorContainer = () => (
   <Switch>
-    <Route path="/clients/:clientId/person/:personId">
+    <Route path="/:clientId/clients/:immovableId">
       <ClientsFields />
     </Route>
     <ClientsDashboard />

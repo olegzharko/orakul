@@ -17,7 +17,7 @@ const ClientsDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/clients/${id}/person/1`}
+          link={`/${id}/clients/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>
@@ -27,7 +27,7 @@ const ClientsDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/clients/${id}/person/1`}
+          link={`/${id}/clients/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>
@@ -37,7 +37,7 @@ const ClientsDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/clients/${id}/person/1`}
+          link={`/${id}/clients/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>
@@ -47,7 +47,7 @@ const ClientsDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/clients/${id}/person/1`}
+          link={`/${id}/clients/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>

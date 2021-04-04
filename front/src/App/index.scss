@@ -40,10 +40,24 @@ body, p {
   justify-content: space-between;
 }
 
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 20px;
+  align-items: flex-end;
+}
+
+.grid-center-duet {
+  padding: 0 15%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 25px;
   align-items: flex-end;
 }
 

@@ -1,3 +1,98 @@
+@import '../../../../../../../../constants.scss';
+
 .immovable {
   
+  &__dashboard {
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: white;
+      box-shadow: inset 0px -1px 0px #EEEEEE;
+      border-radius: 4px;
+      margin-bottom: 25px;
+    }
+  }
+
+  &__fields {
+
+    & > div {
+      margin-bottom: 25px;
+    }
+
+    .general {
+
+      &__type {
+
+        &-title {
+          margin-bottom: 10px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 12px;
+          line-height: 12px;
+          letter-spacing: 0.4px;
+          color: #263238;
+        }
+      }
+
+      .duet {
+        display: flex;
+
+        & > div:first-child {
+          margin-right: 20px;
+        }
+      }
+
+      .trio {
+        display: flex;
+
+        & > div:first-child, & > div:nth-child(2) {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    .exchange {
+      justify-content: center;
+      align-items: center;
+
+      & > span {
+        @include form_text;
+        line-height: 1;
+        color: $dark;
+      }
+
+      & > div {
+        width: 150px;
+        margin: 0 20px;
+      }
+
+      & > button {
+        width: 220px;
+      }
+    }
+
+    .security-payment {
+
+      &__currency {
+
+        &-title {
+          margin-bottom: 10px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 12px;
+          line-height: 12px;
+          letter-spacing: 0.4px;
+          color: #263238;
+        }
+      }
+    }
+
+    .templates {
+      
+      .single {
+        width: 330px;
+      }
+    }
+  }
 }

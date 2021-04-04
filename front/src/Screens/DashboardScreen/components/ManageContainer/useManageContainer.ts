@@ -1,14 +1,16 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { DashboardContractNavigation } from '../../useDashboardScreen';
 
 export const useManageContainer = () => {
-  const { type } = useParams<{ type: string }>();
+  const history = useHistory();
+
+  const { section, id } = useParams<{ section: string, id: string }>();
   const [selectedNav, setSelectedNav] = useState<DashboardContractNavigation>();
-  const [contractData, setContractData] = useState();
+  const [contractData] = useState();
 
   useEffect(() => {
-    switch (type) {
+    switch (section) {
       case DashboardContractNavigation.MAIN:
         setSelectedNav(DashboardContractNavigation.MAIN);
         return;
@@ -27,7 +29,13 @@ export const useManageContainer = () => {
       default:
         setSelectedNav(DashboardContractNavigation.MAIN);
     }
-  }, [type]);
+  }, [section]);
+
+  useEffect(() => {
+    if (Number.isNaN(parseFloat(id))) {
+      history.push('/');
+    }
+  }, [id]);
 
   return {
     contractData,
