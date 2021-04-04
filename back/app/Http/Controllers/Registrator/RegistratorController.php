@@ -45,6 +45,7 @@ class RegistratorController extends BaseController
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
@@ -52,7 +53,6 @@ class RegistratorController extends BaseController
         if ($check_dev_company) {
 
             $dev_companies = DevCompany::whereIn('dev_companies.id', $check_dev_company)->get();
-
 
             $dev_length = count($dev_companies);
 
