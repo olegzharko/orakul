@@ -1,0 +1,27 @@
+@import '../../constants.scss';
+
+.secondary-button {
+  @include form_text;
+  border: $border_primary;
+  border-radius: $border_radius;
+  width: 100%;
+  color: $primary;
+  font-weight: bold;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  text-transform: uppercase;
+  transition: $transition_default;
+  cursor: pointer;
+
+  &.disabled {
+    opacity: .7;
+    cursor: default;
+  }
+
+  &:hover {
+    opacity: .7;
+  }
+}

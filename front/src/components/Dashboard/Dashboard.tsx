@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 import DashboardSection from './components/DashboardSection';
 import DashboardControl from './components/DashbordControl';
 import { Section, Props, useDashboard } from './useDashboard';
@@ -15,6 +16,7 @@ const Dashboard = (props: Props) => {
         <div className="dashboard__main">
           {props.sections.map((section: Section) => (
             <DashboardSection
+              key={uuidv4()}
               link={props.link}
               title={section.title}
               style={selectedType}

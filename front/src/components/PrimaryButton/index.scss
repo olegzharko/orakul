@@ -2,7 +2,7 @@
 
 .primary-button {
   @include form_text;
-  border-radius: 5px;
+  border-radius: $border_radius;
   width: 100%;
   color: white;
   font-weight: bold;

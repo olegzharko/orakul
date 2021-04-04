@@ -1,0 +1,66 @@
+@import '../../../../../../../../../../../../constants.scss';
+
+.clients {
+
+  & > div {
+    margin-bottom: 25px;
+  }
+
+  &__fio {
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: white;
+      box-shadow: inset 0px -1px 0px #EEEEEE;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .input-container {
+    width: 360px;
+    margin-bottom: 25px;
+  }
+
+  .sex {
+
+    &__title {
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      line-height: 12px;
+      letter-spacing: 0.4px;
+      color: #263238;
+    }
+  }
+
+  &__address {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-container {
+      width: 550px;
+      margin: 0 auto 25px;
+
+      .add-button {
+        margin-left: 10px;
+      }
+
+      &.duet > div:first-child {
+        margin-right: 10px;
+      }
+
+      .short-width {
+        width: 35%;
+      }
+
+      .long-width {
+        width: 65%;
+      }
+    }
+  }
+}

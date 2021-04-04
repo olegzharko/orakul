@@ -19,23 +19,23 @@ const Navigation = ({ onSelect, selected }: Props) => {
   return (
     <ControlPanel>
       <button
-        className={`registrator__navigation-item ${
+        className={`navigation-button ${
           selected === RegistratorNavigationTypes.DEVELOPER ? 'selected' : ''
         }`}
         type="button"
         onClick={() => handleClick(RegistratorNavigationTypes.DEVELOPER)}
       >
-        <img src="/icons/registrator/developer.svg" alt="developer" />
+        <img src="/icons/navigation/developer.svg" alt="developer" />
         Заборони на продавця
       </button>
       <button
-        className={`registrator__navigation-item ${
+        className={`navigation-button ${
           selected === RegistratorNavigationTypes.IMMOVABLE ? 'selected' : ''
         }`}
         type="button"
         onClick={() => handleClick(RegistratorNavigationTypes.IMMOVABLE)}
       >
-        <img src="/icons/registrator/immovable.svg" alt="immovable" />
+        <img src="/icons/navigation/immovable.svg" alt="immovable" />
         Заборони по нерухомості
       </button>
     </ControlPanel>
