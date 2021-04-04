@@ -1,6 +1,7 @@
 @import '../../constants.scss';
 
 .section-with-title {
+  width: 100%;
   margin-bottom: 25px;
   background: #FFFFFF;
   border-radius: $border_radius;
@@ -9,13 +10,9 @@
   &__header {
     padding: 15px;
     box-shadow: inset 0px -1px 0px #EEEEEE;
-
-    h2 {
-      @include form_text;
-      font-weight: bold;
-      color: $dark;
-      margin: 0;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &__body {

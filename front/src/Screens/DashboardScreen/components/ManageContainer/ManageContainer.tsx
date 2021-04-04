@@ -11,7 +11,7 @@ const ManageContainer = () => {
     <main className="manage df">
       <Navigation selected={meta.selectedNav} />
       <ContentPanel>
-        <WorkSpace selectedNav={meta.selectedNav} id={meta.id} />
+        <WorkSpace selectedNav={meta.selectedNav} />
       </ContentPanel>
     </main>
   );

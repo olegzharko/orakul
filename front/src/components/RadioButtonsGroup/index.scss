@@ -29,6 +29,11 @@
       &:checked + .label {
         background-color: $primary;
         color: white;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+        }
       }
     }
 
@@ -43,6 +48,10 @@
       align-items: center;
       cursor: pointer;
       transition: $transition_default;
-}
+
+      &:hover {
+        opacity: .5;
+      }
+    }
   }
 }

@@ -30,6 +30,7 @@ export const RadioButtonsGroup = ({
   }, [selected]);
 
   const handleChange = (id: number) => {
+    setSelectedValue(id);
     onChange(id);
   };
 

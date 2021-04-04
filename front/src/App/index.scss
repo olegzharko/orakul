@@ -44,7 +44,14 @@ body, p {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 20px;
-  align-items: center;
+  align-items: flex-end;
+}
+
+.section-title {
+  @include form_text;
+  font-weight: bold;
+  color: $dark;
+  margin: 0;
 }
 
 .navigation-button {
@@ -70,4 +77,35 @@ body, p {
   img {
     margin-right: 15px;
   }
+}
+
+.middle-button {
+  margin: 0 auto;
+  width: 260px;
+}
+
+.clear-button {
+  padding: 5px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: $transition_default;
+
+  &:hover {
+    opacity: .5;
+  }
+}
+
+.middle-column-fields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.MuiFormControl-marginNormal {
+  margin: 0!important;
 }
