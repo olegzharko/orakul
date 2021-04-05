@@ -128,11 +128,12 @@ class ClientController extends BaseController
     {
         $result = [];
 
+
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $citizenships = Citizenship::select('id', 'title_n')->get();
+        $citizenships = Citizenship::select('id', 'title_n as title')->get();
 
         $citizenship_id = $client->citizenship_id;
 
