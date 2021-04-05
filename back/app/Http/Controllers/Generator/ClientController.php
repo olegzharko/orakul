@@ -66,7 +66,7 @@ class ClientController extends BaseController
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        return $this->sendError($client, 'Дані по клієнту з ID: ' . $client_id);
+        return $this->sendResponse($client, 'Дані по клієнту з ID: ' . $client_id);
     }
 
     public function update_name($client_id, Request $r)
