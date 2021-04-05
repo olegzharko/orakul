@@ -551,8 +551,8 @@ class ClientController extends BaseController
         $result = [];
 
         $clients_id = Card::where('cards.id', $card_id)
-            ->join('contract',  'contract.card_id', '=', 'cards.id')
-            ->join('client_contract','client_contract.contract_id', '=', 'contract.id' )
+            ->join('contracts',  'contracts.card_id', '=', 'cards.id')
+            ->join('client_contract','client_contract.contract_id', '=', 'contracts.id' )
             ->pluck('client_contract.client_id')->toArray();
 
         $clients = Client::whereIn('id', $clients_id)->get();
