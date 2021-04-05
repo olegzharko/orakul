@@ -22,7 +22,7 @@
     transition: $transition_default;
     border: $border;
     height: 40px;
-    border-radius: 5px;
+    border-radius: $border_radius;
     box-sizing: border-box;
     padding: 5px;
 

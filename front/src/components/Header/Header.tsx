@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './index.scss';
+import { Link } from 'react-router-dom';
 import { useHeader } from './useHeader';
 
 const Header = () => {
@@ -7,9 +8,9 @@ const Header = () => {
 
   return (
     <div className="header container">
-      <div className="header__logo">
+      <Link to="/" className="header__logo">
         <img src="/icons/logo.svg" alt="logo" />
-      </div>
+      </Link>
       <div className="header__search">
         <input
           type="text"

@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { memo } from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 import AddFormButton from '../../../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../../../components/CustomInput/CustomInput';
 import RemoveFormButton from '../../../../../../../../../../components/RemoveFormButton';

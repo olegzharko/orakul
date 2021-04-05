@@ -4,16 +4,11 @@ import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 import { editImmovableStatus } from '../../../../store/registrator/actions';
 import { formatDate } from '../../utils';
+import { CheckBanFieldsData } from '../../../../components/CheckBanFields/CheckBanFields';
 
 export type Props = {
   onPathChange: (id: string, type: RegistratorNavigationTypes) => void;
   immovable: any;
-}
-
-export type DeveloperCardState = {
-  date: Date,
-  number: string,
-  pass: boolean,
 }
 
 export const useImmovable = ({ onPathChange, immovable }: Props) => {
@@ -22,7 +17,7 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
 
   const dispatch = useDispatch();
 
-  const [data, setData] = useState<DeveloperCardState>({
+  const [data, setData] = useState<CheckBanFieldsData>({
     date: new Date(),
     number: '',
     pass: false,

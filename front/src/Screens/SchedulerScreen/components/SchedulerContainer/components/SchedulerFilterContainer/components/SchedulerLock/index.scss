@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     border: $border;
-    border-radius: 5px;
+    border-radius: $border_radius;
     transition: $transition_default;
     cursor: pointer;
 

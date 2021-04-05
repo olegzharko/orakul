@@ -15,7 +15,7 @@ const DashboardContainer = () => {
       <Filter />
       <ContentPanel>
         <Dashboard
-          link="contracts"
+          link="main"
           sections={formatAppointments}
           isChangeTypeButton
         />

@@ -4,16 +4,11 @@ import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 import { editDeveloperStatus } from '../../../../store/registrator/actions';
 import { formatDate } from '../../utils';
+import { CheckBanFieldsData } from '../../../../components/CheckBanFields/CheckBanFields';
 
 export type Props = {
   onPathChange: (id: string, type: RegistratorNavigationTypes) => void;
   developer: any;
-}
-
-export type DeveloperCardState = {
-  date: Date,
-  number: string,
-  pass: boolean,
 }
 
 export const useDeveloper = ({ onPathChange, developer }: Props) => {
@@ -22,7 +17,7 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
 
   const dispatch = useDispatch();
 
-  const [data, setData] = useState<DeveloperCardState>({
+  const [data, setData] = useState<CheckBanFieldsData>({
     date: new Date(),
     number: '',
     pass: false,

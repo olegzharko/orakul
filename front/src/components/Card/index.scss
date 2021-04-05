@@ -1,7 +1,9 @@
 @import '../../constants.scss';
 
 .card {
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: $border_radius;
   cursor: pointer;
   transition: $transition_default;
   text-decoration: none;
@@ -11,6 +13,7 @@
   }
   
   &__header {
+    flex-grow: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;

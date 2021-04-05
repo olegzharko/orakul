@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import InputWithCopy from '../../../../components/InputWithCopy';
 import SectionWithTitle from '../../../../components/SectionWithTitle';
 import Check from '../Check';
@@ -20,7 +20,7 @@ const Immovable = (props: Props) => {
       </SectionWithTitle>
 
       <Check
-        data={meta.data}
+        data={props.immovable}
         setData={meta.setData}
         onPrevButtonClick={meta.onPrevButtonClick}
         onSave={meta.onSave}
