@@ -79,7 +79,7 @@ class ClientController extends BaseController
         }
 
         $client->delete();
-        return $this->sendResponse($clients, 'Клієнта по ID: ' . $client_id. ' видалено');
+        return $this->sendResponse('', 'Клієнта по ID: ' . $client_id. ' видалено');
     }
 
     public function get_name($client_id)
