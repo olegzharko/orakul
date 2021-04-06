@@ -399,7 +399,7 @@ class ClientController extends BaseController
 
 //        $result['rakul_notary'] = $convert_notary;
 //        $result['other_notary'] = $other_notary;
-        $result['rakul_notary'] = array_merge($convert_notary, $other_notary);
+        $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['consent_spouse_words'] = $consent_spouse_words;
         $result['married_types'] = $married_types;
@@ -488,7 +488,7 @@ class ClientController extends BaseController
 
 //        $result['rakul_notary'] = $convert_notary;
 //        $result['other_notary'] = $other_notary;
-        $result['rakul_notary'] = array_merge($convert_notary, $other_notary);
+        $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['notary_id'] = null;
         $result['reg_num'] = null;
         $result['reg_date'] = null;
