@@ -260,12 +260,15 @@ class ClientController extends BaseController
         $apartment_type = ApartmentType::select('id', 'title_n as title')->orderBy('title')->get();
 
         $result['regions'] = $regions;
+
         $result['address_type'] = $address_type;
         $result['building_type'] = $building_type;
         $result['apartment_type'] = $apartment_type;
+        $result['region_id'] = $client->city->region_id;
         $result['city_id'] = $client->city_id;
         $result['address_type_id'] = $client->address_type_id;
         $result['address'] = $client->address;
+        $result['building_type_id'] = $client->building_type_id;
         $result['building_num'] = $client->building;
         $result['apartment_type_id'] = $client->apartment_type_id;
         $result['apartment_num'] = $client->apartment_num;
