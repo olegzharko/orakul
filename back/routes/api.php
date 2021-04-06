@@ -103,6 +103,7 @@ Route::middleware('auth:api')->group(function () {
 
        Route::group(['prefix' => 'client'], function() {
             Route::get('main/{card_id}', [ClientController::class, 'main']);
+
             Route::get('name/{client_id}', [ClientController::class, 'get_name']);
             Route::put('name/{client_id}', [ClientController::class, 'update_name']);
 
@@ -132,6 +133,8 @@ Route::middleware('auth:api')->group(function () {
             Route::get('notaries/{card_id}', [ClientController::class, 'get_notaries']);
             Route::get('notary/{notary_id}', [ClientController::class, 'get_notary']);
             Route::put('notary/{notary_id}', [ClientController::class, 'update_notary']);
+
+            Route::get('delete/{client_id}', [ClientController::class, 'delete']);
        });
     });
 
