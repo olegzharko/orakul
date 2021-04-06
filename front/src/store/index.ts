@@ -6,6 +6,7 @@ import scheduler from './scheduler/store';
 import appointments from './appointments/store';
 import filter from './filter/store';
 import registrator from './registrator/store';
+import clients from './clients/store';
 
 const reducer = combineReducers({
   main,
@@ -13,6 +14,7 @@ const reducer = combineReducers({
   appointments,
   filter,
   registrator,
+  clients,
 });
 
 export default createStore(reducer, applyMiddleware(thunk));

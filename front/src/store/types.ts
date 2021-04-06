@@ -1,3 +1,4 @@
+import { ClientsState } from './clients/store';
 import { RegistratorState } from './registrator/store';
 import { FilterState } from './filter/store';
 import { SchedulerState } from './scheduler/store';
@@ -15,6 +16,7 @@ export type State = {
   appointments: AppointmentsState;
   filter: FilterState;
   registrator: RegistratorState;
+  clients: ClientsState;
 };
 
 export type FilterData = {

@@ -2,33 +2,38 @@ import * as React from 'react';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
+import { useContracts, Props } from './useContracts';
 
-const Contacts = () => (
-  <div className="clients__contacts">
-    <SectionWithTitle title="Контактна інформація" onClear={() => console.log('clear')}>
-      <div className="middle-column-fields">
-        <div className="input-container">
-          <CustomInput
-            label="Номер телефону"
-            onChange={(e) => console.log(e)}
-            value="+38050 000 00 00"
-          />
-        </div>
+const Contacts = (props: Props) => {
+  const { data, setData, onClear, onSave } = useContracts(props);
 
-        <div className="input-container">
-          <CustomInput
-            label="Номер телефону"
-            onChange={(e) => console.log(e)}
-            value="+38050 000 00 00"
-          />
+  return (
+    <div className="clients__contacts">
+      <SectionWithTitle title="Контактна інформація" onClear={onClear}>
+        <div className="middle-column-fields">
+          <div className="input-container">
+            <CustomInput
+              label="Номер телефону"
+              onChange={(e) => setData({ ...data, phone: e })}
+              value={data.phone}
+            />
+          </div>
+
+          <div className="input-container">
+            <CustomInput
+              label="Email"
+              onChange={(e) => setData({ ...data, email: e })}
+              value={data.email}
+            />
+          </div>
         </div>
+      </SectionWithTitle>
+
+      <div className="middle-button">
+        <PrimaryButton label="Зберегти" onClick={onSave} disabled={false} />
       </div>
-    </SectionWithTitle>
-
-    <div className="middle-button">
-      <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
     </div>
-  </div>
-);
+  );
+};
 
 export default Contacts;
