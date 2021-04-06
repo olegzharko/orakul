@@ -67,11 +67,11 @@ class ClientController extends BaseController
                 Client::find($client->representative->confidant_id)->delete();
                 $client->representative->delete();
             }
-            if ($client->contracts) {
-                foreach ($client->contracts as $contract) {
-                    $contract->delete();
-                }
-            }
+//            if ($client->contracts) {
+//                foreach ($client->contracts as $contract) {
+//                    $contract->delete();
+//                }
+//            }
         } elseif ($spouse = Spouse::where('spouse_id', $client->id)->first()) {
             $client->married->delete();
         } elseif ($confidant = Representative::where('confidant_id', $client->id)->first()) {
