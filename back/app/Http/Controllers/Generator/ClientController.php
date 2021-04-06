@@ -67,6 +67,7 @@ class ClientController extends BaseController
                 Client::find($client->representative->confidant_id)->delete();
                 $client->representative->delete();
             }
+            ClientContract::where('client_id', $client->id)->delete();
 //            if ($client->contracts) {
 //                foreach ($client->contracts as $contract) {
 //                    $contract->delete();
