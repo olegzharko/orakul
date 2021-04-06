@@ -27,7 +27,7 @@ const ImmovableContainer = (props: Props) => {
                 )
                 : meta.contracts
             }
-            onChange={(val) => meta.onContractChange(index, val)}
+            onChange={(val) => meta.onContractChange(index, +val)}
             selected={item.contract_type_id}
             unicId={`contract-${index}`}
           />
@@ -50,7 +50,7 @@ const ImmovableContainer = (props: Props) => {
                 )
                 : meta.immovableTypes
             }
-            onChange={(val) => meta.onImmovableTypeChange(index, val)}
+            onChange={(val) => meta.onImmovableTypeChange(index, +val)}
             selected={item.imm_type_id}
             unicId={`types-${index}`}
           />

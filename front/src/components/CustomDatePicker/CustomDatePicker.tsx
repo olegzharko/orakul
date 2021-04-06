@@ -11,7 +11,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 type Props = {
   label: string;
   onSelect: (value: any) => void;
-  selectedDate?: Date;
+  selectedDate?: Date | null;
 }
 
 const CustomDatePicker = ({ selectedDate, onSelect, label }: Props) => {
