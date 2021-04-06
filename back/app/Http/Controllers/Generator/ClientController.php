@@ -284,7 +284,7 @@ class ClientController extends BaseController
 
         $cities = City::select('id', 'title')->where('region_id', $region_id)->orderBy('title')->get();
 
-        $result['cities'] = $cities;
+        $result = $cities;
 
         return $this->sendResponse($result, 'Міста по області ID: ' . $region_id);
     }
