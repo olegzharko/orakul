@@ -12,6 +12,7 @@ use App\Models\Citizenship;
 use App\Models\CityType;
 use App\Models\Client;
 use App\Models\City;
+use App\Models\ClientContract;
 use App\Models\ClientSpouseConsent;
 use App\Models\ConsentTemplate;
 use App\Models\District;
@@ -19,6 +20,7 @@ use App\Models\MarriageType;
 use App\Models\Notary;
 use App\Models\Region;
 use App\Models\Representative;
+use App\Nova\Spouse;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -44,6 +46,39 @@ class ClientController extends BaseController
         $clients = $this->get_client_by_card_id($card_id);
 
         return $this->sendResponse($clients, 'Клієнти по карточці ID: ' . $card_id);
+    }
+
+    public function delete($client_id)
+    {
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнти з ID: ' . $client . ' відсутній');
+        }
+
+        if ($buyer = ClientContract::where('client_id', $client->id)->first()) {
+            if ($client->married) {
+                Client::find($client->married->spouse_id)->delete();
+                $client->married->delete();
+            }
+            if ($client->client_spouse_consent) {
+                $client->client_spouse_consent->delete();
+            }
+            if ($client->representative) {
+                Client::find($client->representative->confidant_id)->delete();
+                $client->representative->delete();
+            }
+            if ($client->contracts) {
+                foreach ($client->contracts as $contract) {
+                    $contract->delete();
+                }
+            }
+        } elseif ($spouse = Spouse::where('spouse_id', $client->id)->first()) {
+            $client->married->delete();
+        } elseif ($confidant = Representative::where('confidant_id', $client->id)->first()) {
+            $client->representative->delete();
+        }
+
+        $client->delete();
+        return $this->sendResponse($clients, 'Клієнта по ID: ' . $client_id. ' видалено');
     }
 
     public function get_name($client_id)
