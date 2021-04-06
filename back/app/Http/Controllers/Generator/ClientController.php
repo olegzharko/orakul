@@ -395,7 +395,7 @@ class ClientController extends BaseController
         $result['consent_templates'] = $consent_templates;
         $result['married_types'] = $married_types;
         $result['consent_template_id'] = null;
-        $result['marriage_type_id'] = null;
+        $result['married_type_id'] = null;
         $result['mar_series'] = null;
         $result['mar_series_num'] = null;
         $result['mar_date'] = null;
@@ -407,7 +407,7 @@ class ClientController extends BaseController
         if ($client->client_spouse_consent) {
             $result['notary_id'] = $client->client_spouse_consent->notary_id;
             $result['consent_template_id'] = $client->client_spouse_consent->template_id;
-            $result['marriage_type_id'] = $client->client_spouse_consent->marriage_type_id;
+            $result['married_type_id'] = $client->client_spouse_consent->marriage_type_id;
             $result['mar_series'] = $client->client_spouse_consent->mar_series;
             $result['mar_series_num'] = $client->client_spouse_consent->mar_series_num;
             $result['mar_date'] = $client->client_spouse_consent->mar_date ? $client->client_spouse_consent->mar_date->format('d.m.Y') : null;
