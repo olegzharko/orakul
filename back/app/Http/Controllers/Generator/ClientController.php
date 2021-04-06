@@ -381,14 +381,14 @@ class ClientController extends BaseController
         $rakul_notary = Notary::where('rakul_company', true)->get();
 
         $convert_notary = [];
-        $rakul_notary = Notary::select('id', 'name_n', 'patronymic_n')->where('rakul_company', true)->get();
+        $rakul_notary = Notary::where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
             $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
         }
 
         $other_notary = [];
-        $separate_by_card = Notary::select('id', 'name_n', 'patronymic_n')->where('separate_by_card', $card_id)->get();
+        $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
         foreach ($separate_by_card as $key => $value) {
             $other_notary[$key]['id'] = $value->id;
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
@@ -399,7 +399,7 @@ class ClientController extends BaseController
 
 //        $result['rakul_notary'] = $convert_notary;
 //        $result['other_notary'] = $other_notary;
-        $result['rakul_notary'] = $convert_notary;
+        $result['rakul_notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['consent_spouse_words'] = $consent_spouse_words;
         $result['married_types'] = $married_types;
