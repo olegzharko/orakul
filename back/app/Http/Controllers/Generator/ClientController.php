@@ -20,6 +20,7 @@ use App\Models\MarriageType;
 use App\Models\Notary;
 use App\Models\Region;
 use App\Models\Representative;
+use App\Models\SpouseWord;
 use App\Nova\Spouse;
 use Illuminate\Http\Request;
 use App\Models\Card;
@@ -393,11 +394,15 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
         }
 
+        $consent_spouse_words = SpouseWord::select('id', 'title')->get();
+
         $result['rakul_notary'] = $convert_notary;
         $result['other_notary'] = $other_notary;
         $result['consent_templates'] = $consent_templates;
+        $result['consent_spouse_words'] = $consent_spouse_words;
         $result['married_types'] = $married_types;
         $result['consent_template_id'] = null;
+        $result['consent_spouse_word_id'] = null;
         $result['married_type_id'] = null;
         $result['mar_series'] = null;
         $result['mar_series_num'] = null;
@@ -410,6 +415,7 @@ class ClientController extends BaseController
         if ($client->client_spouse_consent) {
             $result['notary_id'] = $client->client_spouse_consent->notary_id;
             $result['consent_template_id'] = $client->client_spouse_consent->template_id;
+            $result['consent_spouse_word_id'] = $client->client_spouse_consent->contract_spouse_word_id;
             $result['married_type_id'] = $client->client_spouse_consent->marriage_type_id;
             $result['mar_series'] = $client->client_spouse_consent->mar_series;
             $result['mar_series_num'] = $client->client_spouse_consent->mar_series_num;
