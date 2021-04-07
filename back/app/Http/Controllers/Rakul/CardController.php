@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
+use App\Http\Controllers\Helper\ToolsController;
 use App\Models\Card;
 use App\Models\CardClient;
 //use App\Models\CardContract;
@@ -20,6 +21,7 @@ use App\Models\Contact;
 use App\Models\Contract;
 use App\Models\Time;
 use App\Models\Room;
+use App\Models\DevEmployerType;
 //use App\Models\UserPositionType;
 use Validator;
 
@@ -33,6 +35,7 @@ class CardController extends BaseController
     public $contract;
     public $client;
     public $convert;
+    public $tools;
 
     public function __construct()
     {
@@ -43,6 +46,7 @@ class CardController extends BaseController
         $this->contract = new ContractController();
         $this->client = new ClientController();
         $this->convert = new ConvertController();
+        $this->tools = new ToolsController();
     }
 
     /*
@@ -515,16 +519,18 @@ class CardController extends BaseController
         $giver_short = "**";
         $dev_representative_short = "**";
 
-        $this->developer_type = ClientType::where('key', 'developer')->value('id');
 
         if ($card->notary)
             $notary_short = $this->convert->get_short_name($card->notary);
+
         if ($card->dev_representative) {
             $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
-        } elseif ($card->dev_company) {
-            $owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
-            $dev_representative_short = $this->convert->get_short_name($owner);
         }
+
+//        elseif ($card->dev_company) {
+//            $owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
+//            $dev_representative_short = $this->convert->get_short_name($owner);
+//        }
 
         $contracts = $card->has_contracts;
         $reader = [];
@@ -607,8 +613,9 @@ class CardController extends BaseController
     {
         $group = [];
         $result = [];
-        $week = WorkDay::pluck('title', 'num');
+        $week = WorkDay::pluck('title');
         $i = 0;
+
 
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
@@ -616,7 +623,6 @@ class CardController extends BaseController
             $result['title'] = $this->get_card_title($card);
             $result['short_info'] = $this->get_card_short_info($card);
             $result['instructions'] = $this->get_card_instructions($card);
-
             if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
                 $group[$i]['cards'][] = $result;
             } else {
@@ -628,7 +634,6 @@ class CardController extends BaseController
                 $group[$i]['cards'][] = $result;
             }
         }
-
 
         if ($sort_type_id) {
             $sort_type = SortType::where('id', $sort_type_id)->value('alias');

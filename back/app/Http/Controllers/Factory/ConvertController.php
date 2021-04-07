@@ -482,6 +482,7 @@ class ConvertController extends GeneratorController
             $str = mb_substr($name, 0, 1) . mb_substr($patronymic, 0, 1);
         }
 
+
         return $str;
     }
 
