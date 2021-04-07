@@ -49,7 +49,7 @@ class ClientController extends BaseController
         return $this->sendResponse($clients, 'Клієнти по карточці ID: ' . $card_id);
     }
 
-    public function delete($client_id)
+    public function destroy($client_id)
     {
         dd($client_id);
         if (!$client = Client::find($client_id)) {
