@@ -6,7 +6,7 @@ import ImmovableFields from './components/ImmovableFields';
 const GeneratorContainer = () => (
   <main className="immovable">
     <Switch>
-      <Route path="/:clientId/immovables/:immovableId">
+      <Route path="/immovables/:clientId/:immovableId">
         <ImmovableFields />
       </Route>
       <ImmovableDashboard />

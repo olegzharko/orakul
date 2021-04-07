@@ -8,9 +8,10 @@ export default async function reqClientConsents(
   method: 'GET' | 'PUT' | undefined = 'GET',
   bodyData?: any
 ) {
+  const url = method === 'GET' ? `/api/generator/client/consents/${clientId}/${personId}` : `/api/generator/client/consents/${personId}`;
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/generator/client/consents/${clientId}${method === 'GET' ? `/${personId}` : ''}`,
+      url: `${DEFAULT_URL}${url}`,
       headers: { Authorization: `Bearer ${token}` },
       method,
       bodyData,

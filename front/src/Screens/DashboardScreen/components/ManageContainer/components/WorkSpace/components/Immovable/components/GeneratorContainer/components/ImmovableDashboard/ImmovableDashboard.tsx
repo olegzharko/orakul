@@ -12,7 +12,7 @@ const ImmovableDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/${id}/immovables/1`}
+          link={`/immovables/${id}/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>
@@ -22,7 +22,7 @@ const ImmovableDashboard = () => {
         <CardWithClose
           title="Жарко Олег Володимирович"
           onClick={() => console.log('click')}
-          link={`/${id}/immovables/1`}
+          link={`/immovables/${id}/1`}
         >
           <span>1. Паспорт</span>
           <span>1. Паспорт</span>

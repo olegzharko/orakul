@@ -11,7 +11,7 @@ export default async function reqClientRepresentative(
   try {
     const url = method === 'GET'
       ? `/api/generator/client/representative/${clientId}/${personId}`
-      : `/api/generator/client/representative/${clientId}`;
+      : `/api/generator/client/representative/${personId}`;
 
     const data = await requestApi({
       url: `${DEFAULT_URL}${url}`,

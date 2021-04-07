@@ -4,6 +4,7 @@ import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../../../store/types';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import reqClientConsents from '../../../../../../../../../../../../../../services/generator/Client/reqClientConsents';
+import { formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 
 type InitialData = {
   notary_id: string,
@@ -89,7 +90,13 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
 
   const onSave = useCallback(async () => {
     if (token) {
-      const { success, message } = await reqClientConsents(token, clientId, personId, 'PUT', data);
+      const reqData = {
+        ...data,
+        mar_date: data.mar_date ? formatDate(data.mar_date) : null,
+        sign_date: data.sign_date ? formatDate(data.sign_date) : null,
+      };
+
+      const { success, message } = await reqClientConsents(token, clientId, personId, 'PUT', reqData);
       dispatch(
         setModalInfo({
           open: true,
