@@ -11,10 +11,15 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use URL;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ContractTemplate extends Model implements Sortable, HasMedia
 {
-    use HasFactory, SortableTrait, InteractsWithMedia;
+    use HasFactory, SortableTrait, InteractsWithMedia, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public $table = "contract_templates";
 

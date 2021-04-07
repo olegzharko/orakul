@@ -33,6 +33,8 @@ class CheckList extends Resource
         'id',
     ];
 
+    public static $group = "Угода";
+
     public static function label()
     {
         return "Перевірки клієнтів";

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SecurityPayment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'immovable_id',
@@ -15,8 +16,9 @@ class SecurityPayment extends Model
     ];
 
     protected $casts = [
-      'sign_date' => 'datetime',
-      'final_date' => 'datetime',
+        'sign_date' => 'datetime',
+        'final_date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function immovable()

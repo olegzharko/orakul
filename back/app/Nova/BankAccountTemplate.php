@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
@@ -52,6 +53,7 @@ class BankAccountTemplate extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Заголовок', 'title'),
+            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),

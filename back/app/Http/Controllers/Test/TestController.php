@@ -89,6 +89,7 @@ class TestController extends Controller
     public $arr_immovables_id;
     public $arr_clients_id;
     public $arr_contracts_id;
+    public $exchange_rate;
 
     public function __construct()
     {
@@ -100,8 +101,9 @@ class TestController extends Controller
         $this->city_id = 1;
         $this->generator_step = rand(0, 1);
         $this->staff_generators_id = User::where('generator', true)->pluck('id')->toArray();
-        $this->ready = rand(0, 1);
+//        $this->ready = rand(0, 1);
         $this->cancelled = rand(0, 1);
+        $this->exchange_rate = "2787";
 
         $this->arr_surname = ['Жарко', 'Конріенко', 'Вознюк', 'Слободянюк', 'Гусейнов', 'Ізман', 'Кісільов'];
         $this->arr_name = ['Олег', 'Володимир', 'Дмитро', 'Петро', 'Даянат', 'Ілья', 'Вадим'];

@@ -57,11 +57,9 @@ class RegistratorController extends BaseController
             $dev_length = count($dev_companies);
 
             foreach ($dev_companies as $key => $company) {
-
                 $owner = Client::where('type_id', 2)->where('dev_company_id', $company->id)->first();
 
                 $dev_fence = DevFence::where('dev_company_id', $company->id)->first();
-
                 $color = $this->get_status_color($dev_fence->pass);
 
                 $res_dev[$key]['id'] = $company->id;

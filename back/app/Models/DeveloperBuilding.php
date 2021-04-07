@@ -6,17 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DeveloperBuilding extends Model implements Sortable
 {
-    use HasFactory, SortableTrait;
+    use HasFactory, SortableTrait, SoftDeletes;
 
     protected $table = "developer_buildings";
 
     public $casts = [
-      'exploitation_date' => 'datetime',
-      'communal_date' => 'datetime',
+        'exploitation_date' => 'datetime',
+        'communal_date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
     public $sortable = [
         'order_column_name' => 'sort_order',
@@ -51,6 +52,11 @@ class DeveloperBuilding extends Model implements Sortable
     public static function get_developer_company_building($dev_company)
     {
         return DeveloperBuilding::where('dev_company_id', $dev_company)->get();;
+    }
+
+    public static function get_dev_group_buildings($buildings_id)
+    {
+        return DeveloperBuilding::whereIn('id', $buildings_id)->get();
     }
 
     public static function get_developer_building($dev_company_id)

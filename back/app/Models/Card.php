@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Card extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'cards';
 
@@ -17,6 +18,7 @@ class Card extends Model
 
     protected $casts = [
         'date_time' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public static function get_card_by_contract($contract_id)
@@ -43,7 +45,12 @@ class Card extends Model
 
     public function manager()
     {
-        return $this->belongsTo(Client::class, 'manager_id');
+        return $this->belongsTo(Client::class, 'dev_manager_id');
+    }
+
+    public function staff_generator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'staff_generator_id');
     }
 
     public function dev_company()
@@ -75,7 +82,7 @@ class Card extends Model
         $card->room_id = $r['room_id'];
         $card->city_id = $work_city ? $work_city->id : null;
         $card->date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
-        $card->dev_company_id = $r['dev_company_id'];
+        $card->dev_company_id = $r['dev_company_id']; // DEV_GROUPE
         $card->dev_representative_id = $r['dev_representative_id'];
         $card->dev_manager_id = $r['dev_manager_id'];
         $card->save();

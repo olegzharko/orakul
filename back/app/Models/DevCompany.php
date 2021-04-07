@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DevCompany extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'dev_company_id',
@@ -17,10 +22,10 @@ class DevCompany extends Model
         'number',
     ];
 
-    public function member()
-    {
-        return $this->hasMany(Client::class, 'dev_company_id');
-    }
+//    public function member()
+//    {
+//        return $this->hasMany(Client::class, 'dev_company_id');
+//    }
 
     public function proxy()
     {
@@ -35,6 +40,16 @@ class DevCompany extends Model
     public function investment_agreement()
     {
         return $this->hasMany(InvestmentAgreement::class, 'dev_company_id');
+    }
+
+    public function employer()
+    {
+        return $this->hasMany(DevCompanyEmployer::class, 'dev_company_id');
+    }
+
+    public function dev_group()
+    {
+        return $this->belongsTo(DevGroup::class, 'dev_group_id');
     }
 
 //    public static function get_active_developer()

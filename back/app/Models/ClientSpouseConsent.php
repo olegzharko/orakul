@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientSpouseConsent extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'sign_date' => 'datetime',
         'mar_date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function client()

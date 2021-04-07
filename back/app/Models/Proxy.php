@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Proxy extends Model
 {
-    use HasFactory;
-
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'date' => 'datetime',
         'reg_date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function dev_company()
@@ -25,10 +26,10 @@ class Proxy extends Model
         return $this->belongsTo(Notary::class);
     }
 
-    public function member()
-    {
-        return $this->hasMany(Client::class, 'dev_company_id');
-    }
+//    public function member()
+//    {
+//        return $this->hasMany(Client::class, 'dev_company_id');
+//    }
 
     public function building()
     {

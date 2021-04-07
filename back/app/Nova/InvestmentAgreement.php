@@ -40,7 +40,7 @@ class InvestmentAgreement extends Resource
 
     public static function label()
     {
-        return "Інвестиційний договір ";
+        return "Інвестиційний договір продавця";
     }
 
     /**

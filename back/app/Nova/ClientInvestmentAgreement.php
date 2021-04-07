@@ -4,37 +4,28 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class Proxy extends Resource
+class ClientInvestmentAgreement extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Proxy::class;
+    public static $model = \App\Models\ClientInvestmentAgreement::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-
-    public static $group = "Сторонні угоди";
-
-    public function title()
-    {
-        return $this->dev_company->title . " " . $this->title . " " . $this->number;
-    }
+    public static $title = 'id';
 
     public static function label()
     {
-        return "Довіренності забудовників для представників";
+        return "Забудовник та інвестиційний договір";
     }
 
     /**
@@ -56,15 +47,8 @@ class Proxy extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
-            Text::make('Заголовок', 'title'),
-            Text::make('Номер', 'number'),
-            DateTime::make('Доручення від', 'date'),
-            BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary'),
-            DateTime::make('Дата реєстрації у нотаріуса', 'reg_date'),
-            Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
-            HasMany::make('Люди', 'member', 'App\Nova\Client'),
-            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
+            BelongsTo::make('Інвестеційний договір', 'investment_agreement', 'App\Nova\InvestmentAgreement'),
         ];
     }
 

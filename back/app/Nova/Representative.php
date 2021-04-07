@@ -38,7 +38,7 @@ class Representative extends Resource
 
     public static function label()
     {
-        return "Довіренності";
+        return "Довіренності клієнтів для представників";
     }
 
     /**

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\Controller;
+use App\Models\DevCompanyEmployer;
+use App\Models\DevEmployerType;
 use Illuminate\Http\Request;
 
 use App\Models\ApartmentType;
 use App\Models\Card;
+use App\Models\Client;
 use App\Models\ClientContract;
 use App\Models\ClientType;
 use App\Models\Contract;
@@ -35,14 +38,16 @@ class GeneratorController extends Controller
         $this->convert = new ConvertController();
     }
 
-    public function creat_contracts()
+    public function create_contracts_by_cards()
     {
-        $contracts_id = Contract::where('ready', true)->pluck('id');
-
-        $this->get_contract_by_contract_id($contracts_id);
+        $cards_id = Card::where('ready', true)->pluck('id');
+        foreach ($cards_id as $card_id) {
+            $this->get_contracts_id_by_card_id($card_id);
+            $this->start_generate_contract();
+        }
     }
 
-    public function creat_contract_by_card_id($card_id)
+    public function get_contracts_id_by_card_id($card_id)
     {
         $contracts_id = null;
         $contracts = null;
@@ -70,45 +75,41 @@ class GeneratorController extends Controller
             return $title;
          }
 
+        $contracts_id = Contract::where('card_id', $card_id)->pluck('id')->toArray();
 
-        $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
-
-        $this->pack_contract = $this->get_contract_by_contract_id($contracts_id);
-
+        $this->get_contract_by_id($contracts_id);
     }
 
-    public function get_contract_by_contract_id($contracts_id)
+    public function get_contract_by_id($contracts_id)
     {
         $this->pack_contract = Contract::select(
                 'contracts.id',
-                'cards.date_time as event_datetime',
                 'contracts.template_id',
-                'cards.city_id as event_city_id',
                 'contracts.immovable_id',
-                'cards.dev_company_id as dev_company_id',
-                'cards.dev_representative_id as dev_representative_id',
-    //            'contracts.client_id',
-                'cards.notary_id as notary_id',
                 'contracts.sign_date',
+                'cards.date_time as event_datetime',
+                'cards.city_id as event_city_id',
+                'cards.id as card_id',
+                'cards.dev_group_id as dev_group_id',
+                'cards.dev_representative_id as dev_representative_id',
+                'cards.notary_id as notary_id',
             )->whereIn('contracts.id', $contracts_id)
             ->join('cards', 'cards.id', '=', 'contracts.card_id')
             ->get();
-
-        $this->start_generate_contract();
     }
 
     public function start_generate_contract()
     {
         if ($this->pack_contract) {
-
             // Підготувати данні до обробки
             foreach ($this->pack_contract as $key => $this->contract) {
                 if (count($this->contract->client_spouse_consent)) {
                     $this->consents_id = array_unique(array_merge($this->consents_id, $this->contract->client_spouse_consent->pluck('id')->toArray()));
                 }
-                $this->pack_contract[$key]->contract = $this->set_data_contract();
+//                $this->pack_contract[$key]->contract = $this->set_data_contract();
+                $this->set_data_contract();
             }
-
+            $this->client = $this->contract->client_contract;
             $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id);
             $this->word->creat_files();
         } else {
@@ -128,15 +129,25 @@ class GeneratorController extends Controller
 
     public function set_data_contract()
     {
-        // Отримати тип клієнта - забудовник
-        $client_type_dev_owner = ClientType::where('key', 'developer')->value('id');
-
         $this->contract->immovable = $this->get_immovable($this->contract->immovable);
-        $this->contract->dev_company->owner = $this->contract->dev_company->member->where('type_id', $client_type_dev_owner)->first();
+
+        $this->contract->dev_company = $this->contract->immovable->developer_building->dev_company;
+
+        $owner = Client::select('clients.*')
+            ->where('dev_company_employers.dev_company_id', $this->contract->dev_company->id)
+            ->where('dev_employer_types.alias', 'developer')
+            ->join('dev_company_employers', 'dev_company_employers.employer_id', '=', 'clients.id')
+            ->join('dev_employer_types', 'dev_employer_types.id', '=', 'dev_company_employers.type_id')
+            ->first();
+
+        $this->contract->dev_company->owner = $owner;
 
         // для перевірки заборони на продавця використовується орієнтир через нерухомість, а не на пряму через власника
-        $this->contract->dev_company->owner->fence = DevFence::where('dev_company_id', $this->contract->dev_company->owner->id)->orderBy('date', 'desc')->first();
+        $this->contract->dev_company->owner->fence = DevFence::where('card_id', $this->contract->card_id)->orderBy('date', 'desc')->first();
         $this->contract->immovable_ownership = ImmovableOwnership::get_immovable_ownership($this->contract->immovable->id);
+
+        // повернути дані до массиву
+//        return $this->contract;
     }
 
     public function get_immovable($immovable)
@@ -151,10 +162,13 @@ class GeneratorController extends Controller
     {
         $address = null;
 
+        $building_num_str = $this->building_num_str($immovable->developer_building->number);
+
         $imm_num = $immovable->immovable_number;
         $imm_num_str = $this->convert->number_to_string($immovable->immovable_number);
         $imm_build_num = $immovable->developer_building->number;
-        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
+//        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
+        $imm_build_num_str = $building_num_str;
         $imm_addr_type_r = $immovable->developer_building->address_type->title_n;
         $imm_addr_title = $immovable->developer_building->title;
         $imm_city_type_m = $immovable->developer_building->city->city_type->title_n;
@@ -170,6 +184,22 @@ class GeneratorController extends Controller
             . "";
 
         return $address;
+    }
+
+    public function building_num_str($num_str)
+    {
+        $resutl = [];
+
+        $num_arr = explode('/', $num_str);
+        if (count($num_arr) == 2) {
+            $resutl[] = $this->convert->number_to_string($num_arr[0]);
+            $resutl[] = 'дріб';
+            $resutl[] = $this->convert->number_to_string($num_arr[1]);
+
+            return implode(' ', $resutl);
+        } else {
+            return $this->convert->number_to_string($num_str);
+        }
     }
 }
 

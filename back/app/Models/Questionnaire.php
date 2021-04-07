@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Questionnaire extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     public $fillable = [
         'contract_id',
@@ -19,6 +20,7 @@ class Questionnaire extends Model implements HasMedia
 
     protected $casts = [
         'sign_date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function template()

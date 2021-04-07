@@ -7,6 +7,7 @@ use App\Models\AddressType;
 use App\Models\ApartmentType;
 use App\Models\BankAccountPayment;
 use App\Models\BankTaxesPayment;
+use App\Models\BuildingPermit;
 use App\Models\BuildingType;
 use App\Models\CardClient;
 //use App\Models\CardContract;
@@ -20,7 +21,9 @@ use App\Models\Contract;
 use App\Models\ContractTemplate;
 use App\Models\ContractType;
 use App\Models\DevCompany;
+use App\Models\DevCompanyEmployer;
 use App\Models\DeveloperBuilding;
+use App\Models\DevEmployerType;
 use App\Models\DevFence;
 use App\Models\Exchange;
 use App\Models\FinalSignDate;
@@ -68,7 +71,6 @@ class DeveloperController extends TestController
             $dev_company->save();
 
             $dev_owner = new Client();
-            $dev_owner->type_id = 2; // owner type
             $surname = $this->get_rand_value($this->arr_surname);
             $name = $this->get_rand_value($this->arr_name);
             $patronymic = $this->get_rand_value($this->arr_patronymic);
@@ -87,8 +89,6 @@ class DeveloperController extends TestController
             $dev_owner->birth_date = rand(10, 30) . ".0" . rand(1, 9) . "19" . rand(70, 99);
             $dev_owner->gender = 'male';
             $dev_owner->citizenship_id = null;
-            $dev_owner->spouse_id = null;
-            $dev_owner->dev_company_id = $dev_company->id;
             $dev_owner->phone = "+38050" . rand(5555555, 9999999);
             $dev_owner->email = $this->random_string() . "@gmail.com";
             $dev_owner->tax_code = rand('2220000000', '3339999999');
@@ -105,6 +105,12 @@ class DeveloperController extends TestController
             $dev_owner->apartment_type_id = $this->get_rand_value(ApartmentType::pluck('id')->toArray());
             $dev_owner->apartment_num = rand(1, 100);
             $dev_owner->save();
+
+            $dev_company_employer = new DevCompanyEmployer();
+            $dev_company_employer->dev_company_id = $dev_company->id;
+            $dev_company_employer->employer_id = $dev_owner->id;
+            $dev_company_employer->type_id = DevEmployerType::where('type', 'developer')->value('id');
+            $dev_company_employer->save();
         }
     }
 
@@ -112,21 +118,40 @@ class DeveloperController extends TestController
     {
         $i = 0;
         while($i < 50) {
+
+            $dev_company_id = $this->get_rand_value(DevCompany::where('active', true)->pluck('id')->toArray());
+            $employer_type_dev = DevEmployerType::where('alias', 'developer')->value('id');
+            $dev_company_owner_id = DevCompanyEmployer::where('dev_company_id', $dev_company_id)->where('type_id', $employer_type_dev)->value('employer_id');
+
+            $investment_agrement = new InvestmentAgreement();
+            $investment_agrement->dev_company_id = $dev_company_id;
+            $investment_agrement->investor_id = $dev_company_owner_id;
+            $investment_agrement->number = rand(2223344, 4445566);
+            $investment_agrement->date = rand(10, 30) . ".0" . rand(1, 9) . "2020";;
+            $investment_agrement->save();
+
+            $client_investment_agrement = new ClientInvestmentAgreement();
+            $client_investment_agrement->client_id = null;
+            $client_investment_agrement->investment_agreement_id = $investment_agrement->id;
+            $client_investment_agrement->save();
+
             $building = new DeveloperBuilding();
-            $building->dev_company_id = $this->get_rand_value(DevCompany::where('active', true)->pluck('id')->toArray());
+            $building->dev_company_id = $dev_company_id;
+            $building->investment_agreement_id = $investment_agrement->id;
             $building->city_id = 1;
             $building->address_type_id = $this->get_rand_value(AddressType::pluck('id')->toArray());
             $building->title = $this->get_rand_value($this->arr_street);
             $building->number = rand(1, 50);
+            $building->exploitation_date = "07.12.2021";
+            $building->communal_date = "30.12.2021";
             $building->save();
 
-//            $investment_agrement = new InvestmentAgreement();
-//            $investment_agrement->dev_company_id = $building->dev_company_id;
-//            $investment_agrement->investor_id = $building->investor_id;
-//
-//            $client_investment_agrement = new ClientInvestmentAgreement();
-//            $client_investment_agrement->client_id = ;
-//            $client_investment_agrement->investment_agreement_id = ;
+            $building_permit = new BuildingPermit();
+            $building_permit->developer_building_id = $building->id;
+            $building_permit->resolution = "КЛ423344223";
+            $building_permit->sign_date = "02.02.2020";
+            $building_permit->organization = "Державною архітектурно-будівельною інспекцією України";
+            $building_permit->save();
 
             $i++;
         }

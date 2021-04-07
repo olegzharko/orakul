@@ -33,6 +33,8 @@ class Contact extends Resource
         'id',
     ];
 
+    public static $group = "Угода";
+
     public static function label()
     {
         return "Контакти";

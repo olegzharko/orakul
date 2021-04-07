@@ -8,14 +8,16 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Tests\Fixtures\Address;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model implements Sortable
 {
-    use HasFactory, SortableTrait;
+    use HasFactory, SortableTrait, SoftDeletes;
 
     protected $casts = [
         'birth_date' => 'datetime',
         'passport_date' => 'datetime',
+        'deleted_at' => 'datetime',
         'passport_finale_date' => 'datetime',
     ];
 
@@ -58,9 +60,9 @@ class Client extends Model implements Sortable
         return $this->belongsTo(Citizenship::class, 'citizenship_id');
     }
 
-    public function spouse()
+    public function married()
     {
-        return $this->belongsTo(Client::class, 'spouse_id');
+        return $this->hasOne(Spouse::class);
     }
 
     public function member()

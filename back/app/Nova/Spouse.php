@@ -23,6 +23,13 @@ class Spouse extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Угода";
+
+    public static function label()
+    {
+        return "Покупець-подружжя";
+    }
+
     /**
      * The columns that should be searched.
      *

@@ -10,6 +10,7 @@ use App\Models\ClientType;
 use App\Models\ContractType;
 use App\Models\DeveloperBuilding;
 use App\Models\DevCompany;
+use App\Models\DevGroup;
 use App\Models\FilterType;
 use App\Models\Notary;
 use App\Models\SortType;
@@ -19,6 +20,7 @@ use App\Models\Room;
 use App\Models\Time;
 use App\Models\Card;
 use App\Models\User;
+use App\Models\DevEmployerType;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -81,16 +83,27 @@ class FilterController extends BaseController
         $manager = null;
         $building = null;
 
-        if (!$developer = DevCompany::find($id))
+//        if (!$developer = DevCompany::find($id))
+//            return $this->sendError("Забудовника з ID: $id не було знайдено!");
+//        if ($developer) {
+//            $representative_type_id = ClientType::get_representative_type_id();
+//            $manager_type_id = ClientType::get_manager_type_id();
+//
+//            $representative = $this->tools->developer_employer_by_type($developer->id, $representative_type_id);
+//            $manager = $this->tools->developer_employer_by_type($developer->id, $manager_type_id);
+//            $building = $this->tools->developer_building($developer->id);
+//        }
+
+        if (!$dev_groupe = DevGroup::find($id))
             return $this->sendError("Забудовника з ID: $id не було знайдено!");
 
-        if ($developer) {
-            $representative_type_id = ClientType::get_representative_type_id();
-            $manager_type_id = ClientType::get_manager_type_id();
+        if ($dev_groupe) {
+            $representative_type_id = DevEmployerType::get_representative_type_id();
+            $manager_type_id = DevEmployerType::get_manager_type_id();
 
-            $representative = $this->tools->developer_employer_by_type($developer->id, $representative_type_id);
-            $manager = $this->tools->developer_employer_by_type($developer->id, $manager_type_id);
-            $building = $this->tools->developer_building($developer->id);
+            $representative = $this->tools->dev_group_employer_by_type($dev_groupe->id, $representative_type_id);
+            $manager = $this->tools->dev_group_employer_by_type($dev_groupe->id, $manager_type_id);
+            $building = $this->tools->dev_group_buildings($dev_groupe->id);
         }
 
         $result = [

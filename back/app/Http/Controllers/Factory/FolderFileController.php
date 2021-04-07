@@ -115,8 +115,8 @@ class FolderFileController extends Controller
             }
         }
 
-        if ($this->contract->client &&  $this->contract->client->spouse) {
-            $this->spouses_male = KeyWord::where('key', $this->contract->client->spouse->gender)->value('title_r');
+        if ($this->contract->client &&  $this->contract->client->married->spouse) {
+            $this->spouses_male = KeyWord::where('key', $this->contract->client->married->spouse->gender)->value('title_r');
         }
 
         if ($this->contract->developer_statement && $this->contract->developer_statement->template) {
@@ -145,6 +145,8 @@ class FolderFileController extends Controller
             . "{$this->address_num} {$this->immovable_type} {$this->immovable_num} {$this->married} ";
 
         $title = trim($title);
+        $title = str_replace("/", "-", $title);
+
         return $title;
     }
 
@@ -152,16 +154,16 @@ class FolderFileController extends Controller
     {
         // Однакова назва для папки та договору
         $folder = $this->root_title();
+
         echo "{$folder}<br><br>";
         $dev_company = $this->contract->dev_company->title;
 
         // Створення папки забудовника
         if (!file_exists("{$dev_company}"))
-            mkdir($dev_company);
-
+            mkdir($dev_company, 0777, true);
         // Створення папки договору для конкретної угоди
         if (!file_exists("{$dev_company}/{$folder}"))
-            mkdir("{$dev_company}/{$folder}");
+            mkdir("{$dev_company}/{$folder}", 0777, true);
 
         $this->generate_path = "{$dev_company}/{$folder}";
     }
@@ -175,7 +177,6 @@ class FolderFileController extends Controller
 
         $template = $this->file_path($this->contract->template);
         $this->create_file_for_contract($template, $title);
-
         return $title;
     }
 

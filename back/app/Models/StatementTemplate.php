@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StatementTemplate extends Model implements HasMedia
 {
-    use HasFactory;
-    use InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public function develoepr()
     {

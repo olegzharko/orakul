@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\ContractType;
 use App\Models\DevCompany;
+use App\Models\DevGroup;
 use App\Models\Room;
 use App\Models\Time;
 use App\Models\Notary;
@@ -68,7 +69,8 @@ class ReceptionController extends BaseController
 
         $convert_contract_type = ContractType::select('id', 'title')->where('active', true)->get()->toArray();
 
-        $convert_developer = DevCompany::select('id', 'title')->where('active', true)->get()->toArray();
+//        $convert_developer = DevCompany::select('id', 'title')->where('active', true)->get()->toArray();
+        $convert_developer = DevGroup::select('id', 'title')->where('active', true)->get()->toArray();
 
         $convert_immovable_type = ImmovableType::select('id', 'short as title')->where('form', true)->get()->toArray();
 

@@ -10,10 +10,15 @@ use Spatie\Translatable\HasTranslations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model implements Sortable, HasMedia
 {
-    use HasFactory, SortableTrait, HasTranslations, InteractsWithMedia;
+    use HasFactory, SortableTrait, HasTranslations, InteractsWithMedia, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public $table = 'service';
 

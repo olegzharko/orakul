@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserPositionType extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     public $table = "user_position_type";
 

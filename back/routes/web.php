@@ -29,8 +29,8 @@ Route::get('clear', function () {
     Artisan::call('cache:clear');
 });
 
-Route::get('creat/contracts', [GeneratorController::class, 'creat_contracts']);
-Route::get('creat/contract/{card_id}', [GeneratorController::class, 'creat_contract_by_card_id']);
+Route::get('creat/contracts', [GeneratorController::class, 'create_contracts_by_cards']);
+Route::get('creat/contract/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
 
 //Route::post('login', [PassportAuthController::class, 'login']);

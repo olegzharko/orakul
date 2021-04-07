@@ -23,9 +23,11 @@ class DevCompanyEmployer extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Забудовник";
+
     public static function label()
     {
-        return "Забудовник-Персонал";
+        return "Персонал";
     }
 
     /**
@@ -49,6 +51,7 @@ class DevCompanyEmployer extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             BelongsTo::make('Працівник', 'employer', 'App\Nova\Client'),
+            BelongsTo::make('Тип працівника', 'type', 'App\Nova\DevEmployerType')
         ];
     }
 

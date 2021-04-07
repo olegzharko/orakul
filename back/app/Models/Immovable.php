@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Immovable extends Model implements Sortable
 {
-    use HasFactory, SortableTrait;
+    use HasFactory, SortableTrait, SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'immovable_type_id',

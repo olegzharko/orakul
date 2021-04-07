@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contract extends Model implements Sortable
 {
-    use HasFactory, SortableTrait;
+    use HasFactory, SortableTrait, SoftDeletes;
 
     protected $fillable = [
         'reader_id',
@@ -27,6 +28,7 @@ class Contract extends Model implements Sortable
         'event_datetime' => 'datetime',
         'sign_date' => 'datetime',
         'date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
 //    public function contract_type()
@@ -52,6 +54,11 @@ class Contract extends Model implements Sortable
     public function accompanying()
     {
         return $this->belongsTo(User::class, 'accompanying_id');
+    }
+
+    public function client_contract()
+    {
+        return $this->belongsToMany(Client::class);
     }
 
     public function clients()
@@ -104,10 +111,10 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(Client::class, 'manager_id');
     }
 
-    public function dev_company()
-    {
-        return $this->belongsTo(DevCompany::class, 'dev_company_id');
-    }
+//    public function dev_company()
+//    {
+//        return $this->belongsTo(DevCompany::class, 'dev_company_id');
+//    }
 
     public function dev_representative()
     {

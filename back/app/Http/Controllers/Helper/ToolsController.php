@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
+use App\Models\DevGroup;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\WorkDay;
@@ -53,11 +54,55 @@ class ToolsController extends Controller
         return $result;
     }
 
+    public function dev_group_employer_by_type($dev_group_id, $employer_type)
+    {
+        $result = [];
+
+        $dev_employers = DevGroup::select(
+            'clients.*'
+        )
+            ->where('dev_groups.id', $dev_group_id)
+            ->where('dev_company_employers.type_id', $employer_type)
+            ->join('dev_companies', 'dev_companies.dev_group_id', '=', 'dev_groups.id')
+            ->join('dev_company_employers', 'dev_company_employers.dev_company_id', '=', 'dev_companies.id')
+            ->join('clients', 'clients.id', '=', 'dev_company_employers.employer_id')
+            ->distinct('dev_company_employers.employer_id')
+            ->get();
+
+        foreach ($dev_employers as $key => $employer) {
+            $result[$key]['id'] = $employer->id;
+            $result[$key]['title'] = $this->convert->get_full_name($employer);
+        }
+
+        return $result;
+    }
+
+
     public function developer_building($dev_company)
     {
         $result_building = [];
 
         $dev_building = DeveloperBuilding::get_developer_company_building($dev_company);
+        foreach ($dev_building as $key => $building) {
+            $result_building[$key]['id'] = $building->id;
+            $result_building[$key]['title'] = $this->convert->get_full_address($building);
+        }
+
+        return $result_building;
+    }
+
+    public function dev_group_buildings($dev_group_id)
+    {
+        $result_building = [];
+
+        $buildings_id = DevGroup::where('dev_groups.id', $dev_group_id)
+            ->join('dev_companies', 'dev_companies.dev_group_id', '=', 'dev_groups.id')
+            ->join('developer_buildings', 'developer_buildings.dev_company_id', '=', 'dev_companies.id')
+            ->distinct('developer_buildings.id')
+            ->pluck('developer_buildings.id');
+
+        $dev_building = DeveloperBuilding::get_dev_group_buildings($buildings_id);
+
         foreach ($dev_building as $key => $building) {
             $result_building[$key]['id'] = $building->id;
             $result_building[$key]['title'] = $this->convert->get_full_address($building);

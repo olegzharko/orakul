@@ -44,8 +44,9 @@ class ContractTemplate extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'developer_id'
     ];
+
 
     public static $group = "Шаблон документу";
 

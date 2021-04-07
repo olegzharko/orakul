@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -53,6 +54,7 @@ class DevCompany extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Компанія забудовника', 'title'),
+            BelongsTo::make('Група', 'dev_group', 'App\Nova\DevGroup'),
             Color::make("Колір", "color"),
             Toggle::make('Активний', 'active'),
             HasMany::make('Люди', 'member', 'App\Nova\Client'),

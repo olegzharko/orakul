@@ -13,7 +13,9 @@ use App\Models\CardClient;
 use App\Models\CheckList;
 use App\Models\Client;
 use App\Models\ClientContract;
+use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
+use App\Models\ClientSpouseConsentContract;
 use App\Models\Contact;
 use App\Models\ContactType;
 use App\Models\Contract;
@@ -21,6 +23,7 @@ use App\Models\ContractTemplate;
 use App\Models\ContractType;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
+use App\Models\DeveloperStatement;
 use App\Models\DevFence;
 use App\Models\Exchange;
 use App\Models\FinalSignDate;
@@ -28,8 +31,10 @@ use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
 use App\Models\ImmovableType;
+use App\Models\InvestmentAgreement;
 use App\Models\Notary;
 use App\Models\Card;
+use App\Models\ExchangeRate;
 use App\Models\PassportTemplate;
 use App\Models\PropertyValuationPrice;
 use App\Models\Questionnaire;
@@ -40,7 +45,6 @@ use App\Models\Spouse;
 use App\Models\Time;
 use App\Models\City;
 use App\Models\User;
-use App\Nova\ExchangeRate;
 use Illuminate\Http\Request;
 
 class ClearController  extends TestController
@@ -52,24 +56,23 @@ class ClearController  extends TestController
 
      public function clear_table()
     {
-        /*
+
         Card::truncate();
         BankAccountPayment::truncate();
-        CardClient::truncate();
-//        CardContract::truncate();
         CheckList::truncate();
-        Client::truncate();
-        // client_investment_agreement
+        InvestmentAgreement::truncate();
+        ClientInvestmentAgreement::truncate();
         ClientContract::truncate();
+        Spouse::truncate();
+        Client::where('id' , '>', 30)->delete();
         ClientSpouseConsent::truncate();
-        // client_spouse_consent_contract
+        ClientSpouseConsentContract::truncate();
+        ClientContract::truncate();
         Contact::truncate();
         Contract::truncate();
-        DevCompany::truncate();
         DevFence::truncate();
-        DeveloperBuilding::truncate();
         Exchange::truncate();
-        \App\Models\ExchangeRate::truncate();
+        ExchangeRate::truncate();
         FinalSignDate::truncate();
         Immovable::truncate();
         ImmovableOwnership::truncate();
@@ -78,9 +81,10 @@ class ClearController  extends TestController
         Questionnaire::truncate();
         Representative::truncate();
         SecurityPayment::truncate();
-        DevFence::truncate();
         Spouse::truncate();
         Representative::truncate();
-        */
+        DeveloperStatement::truncate();
+        BankAccountPayment::truncate();
+        BankTaxesPayment::truncate();
     }
 }

@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InvestmentAgreement extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $casts = [
-      'date' => 'datetime',
+        'date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function dev_company()

@@ -66,7 +66,7 @@ class Client extends Resource
     {
         return [
 
-            new Panel("Тип клієнта", $this->userType()),
+//            new Panel("Тип клієнта", $this->userType()),
             new Panel("ПІБ", $this->fullNameType()),
             new Panel("Контактна інформація", $this->userMainInfo()),
             new Panel("Відноситься до:", $this->relationships()),
@@ -132,8 +132,8 @@ class Client extends Resource
     {
         return [
             BelongsTo::make('Громадянсво', 'citizenship', 'App\Nova\Citizenship')->nullable(),
-            BelongsTo::make('Одружений(а) з', 'spouse', 'App\Nova\Client')->creationRules('unique:clients,spouse_id')->updateRules('unique:clients,spouse_id,{{resourceId}}')->nullable(),
-            BelongsTo::make('Відноситься до компанії забудовника', 'member', 'App\Nova\DevCompany')->nullable(),
+//            BelongsTo::make('Одружений(а) з', 'spouse', 'App\Nova\Client')->creationRules('unique:clients,spouse_id')->updateRules('unique:clients,spouse_id,{{resourceId}}')->nullable(),
+//            BelongsTo::make('Відноситься до компанії забудовника', 'member', 'App\Nova\DevCompany')->nullable(),
         ];
     }
 
