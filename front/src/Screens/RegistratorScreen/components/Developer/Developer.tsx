@@ -21,7 +21,7 @@ const Developer = (props: Props) => {
       </SectionWithTitle>
 
       <Check
-        data={props.developer}
+        data={meta.data}
         setData={meta.setData}
         onPrevButtonClick={meta.onPrevButtonClick}
         onSave={meta.onSave}

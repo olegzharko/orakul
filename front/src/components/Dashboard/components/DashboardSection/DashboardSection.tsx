@@ -27,7 +27,7 @@ const DashboardSection = ({ link, title, cards, style, haveStatus }: Props) => (
           key={card.id}
           title={card.title}
           headerColor={card.color}
-          link={`/${card.id}/${link}`}
+          link={`/${link}/${card.id}`}
         >
           {card.content.map((item: string) => (
             <span key={item} className="card__content-item">{item}</span>

@@ -32,7 +32,7 @@ const ClientsDashboard = () => {
                 key={person.id}
                 title={person.full_name}
                 onClick={() => meta.onModalShow(person.id.toString())}
-                link={`/${meta.id}/clients/${person.id}`}
+                link={`/clients/${meta.id}/${person.id}`}
               >
                 {person.list.map((item) => (
                   <span>{item}</span>

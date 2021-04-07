@@ -9,7 +9,7 @@ const DashboardScreen = () => (
   <>
     <Header />
     <Switch>
-      <Route path="/:id/:section">
+      <Route path="/:section/:id">
         <ManageContainer />
       </Route>
       <DashboardContainer />

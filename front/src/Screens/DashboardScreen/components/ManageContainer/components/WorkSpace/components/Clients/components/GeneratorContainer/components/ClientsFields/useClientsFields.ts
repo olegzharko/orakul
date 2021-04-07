@@ -29,7 +29,7 @@ export const useClientsFields = () => {
     if (token && isCorrectId) {
       // get FIO
       (async () => {
-        const { success, data } = await reqClientName(token, personId);
+        const { success, data } = await reqClientName(token, '', personId);
 
         if (success) {
           setFioData(data);

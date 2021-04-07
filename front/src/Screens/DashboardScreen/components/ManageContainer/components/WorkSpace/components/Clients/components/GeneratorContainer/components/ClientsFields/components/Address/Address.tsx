@@ -8,7 +8,6 @@ import AddCityModal from './AddCityModal';
 import { useAddress, Props } from './useAddress';
 
 const Address = (props: Props) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
   const meta = useAddress(props);
 
   return (
@@ -31,7 +30,7 @@ const Address = (props: Props) => {
             selectedValue={meta.data.city_id}
           />
           <div className="add-button">
-            <AddFormButton onClick={() => setShowModal(true)} />
+            <AddFormButton onClick={() => meta.setShowModal(true)} />
           </div>
         </div>
 
@@ -94,7 +93,7 @@ const Address = (props: Props) => {
         <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
       </div>
 
-      <AddCityModal open={showModal} onClose={setShowModal} />
+      <AddCityModal open={meta.showModal} onClose={meta.setShowModal} />
     </div>
   );
 };

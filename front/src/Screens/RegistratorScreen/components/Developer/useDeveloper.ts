@@ -3,8 +3,8 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 import { editDeveloperStatus } from '../../../../store/registrator/actions';
-import { formatDate } from '../../utils';
 import { CheckBanFieldsData } from '../../../../components/CheckBanFields/CheckBanFields';
+import { changeMonthWitDate, formatDate } from '../../../../utils/formatDates';
 
 export type Props = {
   onPathChange: (id: string, type: RegistratorNavigationTypes) => void;
@@ -43,7 +43,7 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
 
   useEffect(() => {
     setData({
-      date: developer?.date ? new Date(developer?.date) : new Date(),
+      date: developer?.date ? new Date(changeMonthWitDate(developer?.date)) : new Date(),
       number: developer?.number || '',
       pass: developer?.pass || false,
     });

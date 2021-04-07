@@ -67,7 +67,7 @@ export const useFio = ({ initialData, id }: Props) => {
 
   const onSave = useCallback(async () => {
     if (token) {
-      const { success, message } = await reqClientName(token, id, 'PUT', data);
+      const { success, message } = await reqClientName(token, '', id, 'PUT', data);
       dispatch(
         setModalInfo({
           open: true,
