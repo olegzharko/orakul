@@ -51,7 +51,6 @@ class ClientController extends BaseController
 
     public function destroy($client_id)
     {
-        dd($client_id);
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнти з ID: ' . $client . ' відсутній');
         }
