@@ -141,7 +141,7 @@ class ToolsController extends Controller
 
     public function get_developer()
     {
-        $developer = DevCompany::where('active', true)->get();
+        $developer = DevGroup::where('active', true)->get();
 
         return $this->convertor_full_name($developer, 'title');
     }
