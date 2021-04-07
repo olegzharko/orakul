@@ -75,7 +75,7 @@ class ContractController extends TestController
         $staff_generator_id	 = null;
         $ready = null;
 
-        $cards = 10;
+        $cards = 50;
         while ($cards) {
             $this->arr_immovables_id = [];
             $this->arr_clients_id = [];
