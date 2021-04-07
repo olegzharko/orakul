@@ -22,6 +22,7 @@ use App\Models\ContractType;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use App\Models\DevFence;
+use App\Models\DevGroup;
 use App\Models\Exchange;
 use App\Models\FinalSignDate;
 use App\Models\ImmFence;
@@ -95,7 +96,7 @@ class TestController extends Controller
     {
         $this->currant_date = new \DateTime();
         $this->notaries_id = Notary::where('rakul_company', true)->pluck('id')->toArray();
-        $this->dev_companies = DevCompany::pluck('id')->toArray();
+        $this->dev_groups = DevGroup::pluck('id')->toArray();
         $this->rooms_id = Room::pluck('id')->toArray();
         $this->times_id = Time::where('active', true)->pluck('id')->toArray();
         $this->city_id = 1;

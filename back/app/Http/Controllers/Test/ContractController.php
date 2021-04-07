@@ -100,14 +100,18 @@ class ContractController extends TestController
         $this->date = date('Y-m-d', strtotime( '+'.mt_rand(0,30).' days'));
         $time = Time::where('id', $this->time_id)->where('active', true)->value('time');
         $this->date_time = $this->date . ' ' .  $time;
-        $this->dev_company_id = $this->get_rand_value($this->dev_companies);
 
+        $this->dev_group_id = $this->get_rand_value($this->dev_groups);
+
+        $dev_companies = DevCompany::where('dev_group_id', $this->dev_group_id)->pluck('id')->toArray();
         $dev_representative_type = DevEmployerType::where('alias', 'representative')->value('id');
         $dev_manager_type = DevEmployerType::where('alias', 'manager')->value('id');
+
+        $this->dev_company_id = $this->get_rand_value(DevCompany::whereIn('id', $dev_companies)->pluck('id')->toArray());
+
         $this->dev_representative_id = $this->get_rand_value(DevCompanyEmployer::where('dev_company_id', $this->dev_company_id)->where('type_id', $dev_representative_type)->pluck('employer_id')->toArray());
         $this->dev_manager_id = $this->get_rand_value(DevCompanyEmployer::where('dev_company_id', $this->dev_company_id)->where('type_id', $dev_manager_type)->pluck('employer_id')->toArray());
         $this->staff_generator_id = $this->get_rand_value($this->staff_generators_id);
-
     }
 
     public function create_card()

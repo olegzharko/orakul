@@ -57,6 +57,7 @@ class CardController extends BaseController
                 ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
         if (auth()->user()->type == 'calendar' || auth()->user()->type == 'reception') {
+
             $cards = $cards_query->where('cancelled', false)->get();
 
             $result = $this->get_cards_in_reception_format($cards);
@@ -564,9 +565,10 @@ class CardController extends BaseController
                     $result[$key]['y'] = $time_height;
                 $result[$key]['w'] = 1;
                 $result[$key]['h'] = 1;
-                $result[$key]['color'] = $card->dev_company->color;
+                $result[$key]['color'] = $card->dev_group->color;
                 $result[$key]['title'] = $this->get_card_title($card);
                 $result[$key]['short_info'] = $this->get_card_short_info($card);
+
             }
         }
 

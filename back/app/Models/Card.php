@@ -58,6 +58,11 @@ class Card extends Model
         return $this->belongsTo(DevCompany::class, 'dev_company_id');
     }
 
+    public function dev_group()
+    {
+        return $this->belongsTo(DevGroup::class, 'dev_group_id');
+    }
+
     public function dev_representative()
     {
         return $this->belongsTo(Client::class, 'dev_representative_id');
