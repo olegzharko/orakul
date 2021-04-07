@@ -9,6 +9,7 @@ use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\ClientType;
 use App\Models\DeveloperBuilding;
+use App\Models\DevEmployerType;
 use App\Models\DevFence;
 use App\Models\ImmFence;
 use Illuminate\Http\Request;
@@ -49,7 +50,6 @@ class RegistratorController extends BaseController
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
-
         if ($check_dev_company) {
 
             $dev_companies = DevCompany::whereIn('dev_companies.id', $check_dev_company)->get();
@@ -57,7 +57,15 @@ class RegistratorController extends BaseController
             $dev_length = count($dev_companies);
 
             foreach ($dev_companies as $key => $company) {
-                $owner = Client::where('type_id', 2)->where('dev_company_id', $company->id)->first();
+
+                $owner = Client::select(
+                        'clients.*'
+                    )
+                    ->where('dev_employer_types.alias', 'developer')
+                    ->where('dev_company_employers.dev_company_id', $company->id)
+                    ->join('dev_company_employers', 'dev_company_employers.employer_id', '=', 'clients.id')
+                    ->join('dev_employer_types', 'dev_employer_types.id', '=', 'dev_company_employers.type_id')
+                    ->first();
 
                 $dev_fence = DevFence::where('dev_company_id', $company->id)->first();
                 $color = $this->get_status_color($dev_fence->pass);
