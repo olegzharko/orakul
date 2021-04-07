@@ -126,7 +126,7 @@ class ContractController extends TestController
             $card->room_id = array_shift($free_rooms);
             $card->date_time = $this->date_time;
             $card->city_id = $this->city_id;
-            $card->dev_company_id = $this->dev_company_id;
+            $card->dev_group_id = $this->dev_company_id;
             $card->dev_representative_id = $this->dev_representative_id;
             $card->dev_manager_id = $this->dev_manager_id;
             $card->generator_step = rand(0,1);
