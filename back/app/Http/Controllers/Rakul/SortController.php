@@ -42,7 +42,7 @@ class SortController extends BaseController
             'cards.room_id',
             'cards.date_time',
             'cards.city_id',
-            'cards.dev_company_id',
+            'cards.dev_group_id as dev_company_id',
             'cards.dev_representative_id',
             'cards.dev_manager_id',
             'cards.generator_step',
