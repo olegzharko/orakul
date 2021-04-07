@@ -280,7 +280,7 @@ class CardController extends BaseController
 
             return $this->sendResponse($result, 'Запис ID: ' . $card_id . ' перемістився успішно');
         } else {
-            return $this->sendError('Не вдалось знайки картку');
+            return $this->sendError('Не вдалось знайти картку з ID' . $card_id);
         }
     }
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\CheckList;
 use App\Models\Contact;
 use App\Models\Contract;
+use App\Models\DevEmployerType;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Notary;
@@ -55,16 +56,21 @@ class ManagerController extends BaseController
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
 
+        if (!$card->generator_step) {
+            Card::where('id', $card_id)->update(['generator_step' => true]);
+        }
+
         $date_info = $this->tools->header_info($card);
 
         $notary = $this->tools->get_company_notary();
         $developer = $this->tools->get_developer();
+        $representative_type_id = DevEmployerType::get_representative_type_id();
+        $manager_type_id = DevEmployerType::get_manager_type_id();
 
-        $representative_type_id = ClientType::get_representative_type_id();
-        $manager_type_id = ClientType::get_manager_type_id();
+        $representative = $this->tools->developer_employer_by_type($card->dev_group_id, $representative_type_id);
+        $manager = $this->tools->developer_employer_by_type($card->dev_group_id, $manager_type_id);
 
-        $representative = $this->tools->developer_employer_by_type($card->dev_company_id, $representative_type_id);
-        $manager = $this->tools->developer_employer_by_type($card->dev_company_id, $manager_type_id);
+
         $contact_person_type = ContactType::get_contact_type();
         $contact_person_info = Contact::contact_by_card($card_id);
 

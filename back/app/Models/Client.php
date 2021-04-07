@@ -85,13 +85,13 @@ class Client extends Model implements Sortable
         return $this->hasOne(Representative::class, 'client_id');
     }
 
-    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
-    {
-        return Client::where([
-                'dev_company_id' => $dev_company_id,
-                'type_id' => $employer_type,
-            ])->get();
-    }
+//    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
+//    {
+//        return Client::where([
+//                'dev_company_id' => $dev_company_id,
+//                'type_id' => $employer_type,
+//            ])->get();
+//    }
 
     public static function update_by_manager($client)
     {

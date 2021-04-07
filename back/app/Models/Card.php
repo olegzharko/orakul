@@ -14,6 +14,10 @@ class Card extends Model
 
     protected $fillable = [
         'notary_id',
+        'generator_step',
+        'dev_group_id',
+        'dev_representative_id',
+        'dev_manager_id',
     ];
 
     protected $casts = [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
+use App\Models\DevCompanyEmployer;
 use App\Models\DevGroup;
 use App\Models\Room;
 use App\Models\User;
@@ -32,7 +33,7 @@ class ToolsController extends Controller
         $week = WorkDay::where('active', true)->orderBy('num')->pluck('title', 'num')->toArray();
         $room = Room::where('id', $card->room_id)->value('title');
 
-        $result['day'] = $week[$card->date_time->format('w')];
+        $result['day'] = $week[$card->date_time->format('w') + 1];
         $result['date'] = $card->date_time->format('d.m');
         $result['time'] = $card->date_time->format('H:i');
         $result['room'] = $room;
@@ -40,12 +41,11 @@ class ToolsController extends Controller
         return $result;
     }
 
-    public function developer_employer_by_type($dev_company_id, $employer_type)
+    public function developer_employer_by_type($dev_company_id, $employer_type_id)
     {
         $result = [];
 
-        $dev_employers = Client::get_dev_employers_by_type($dev_company_id, $employer_type);
-
+        $dev_employers = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $employer_type_id);
         foreach ($dev_employers as $key => $employer) {
             $result[$key]['id'] = $employer->id;
             $result[$key]['title'] = $this->convert->get_full_name($employer);

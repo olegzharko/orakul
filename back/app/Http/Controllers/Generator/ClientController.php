@@ -49,7 +49,7 @@ class ClientController extends BaseController
         return $this->sendResponse($clients, 'Клієнти по карточці ID: ' . $card_id);
     }
 
-    public function destroy($client_id)
+    public function destroy($client_id, $card_id)
     {
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнти з ID: ' . $client . ' відсутній');
@@ -65,7 +65,8 @@ class ClientController extends BaseController
             }
             if ($client->representative) {
                 Client::find($client->representative->confidant_id)->delete();
-                $client->representative->delete();
+                if ($client->representative)
+                    $client->representative->delete();
             }
             ClientContract::where('client_id', $client->id)->delete();
 //            if ($client->contracts) {
@@ -73,14 +74,17 @@ class ClientController extends BaseController
 //                    $contract->delete();
 //                }
 //            }
-        } elseif ($spouse = Spouse::where('spouse_id', $client->id)->first()) {
-            $client->married->delete();
+        } elseif ($spouse = Spouse::where('spouse_id', $client->id)->first() && $client->married) {
+                $client->married->delete();
         } elseif ($confidant = Representative::where('confidant_id', $client->id)->first()) {
             $client->representative->delete();
         }
 
-        $client->delete();
-        return $this->sendResponse('', 'Клієнта по ID: ' . $client_id. ' видалено');
+        if ($client)
+            $client->delete();
+
+        $result = $this->get_client_by_card_id($card_id);
+        return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
     }
 
     public function get_name($client_id)
