@@ -4,6 +4,7 @@ import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../../../store/types';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import reqClientRepresentative from '../../../../../../../../../../../../../../services/generator/Client/reqClientRepresentative';
+import { formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 
 type InitialData = {
   notary_id: string,
@@ -51,7 +52,12 @@ export const usePowerOfAttorney = ({ initialData, clientId, personId }: Props) =
 
   const onSave = useCallback(async () => {
     if (token) {
-      const { success, message } = await reqClientRepresentative(token, clientId, personId, 'PUT', data);
+      const reqData = {
+        ...data,
+        reg_date: data.reg_date ? formatDate(data.reg_date) : null,
+      };
+
+      const { success, message } = await reqClientRepresentative(token, clientId, personId, 'PUT', reqData);
       dispatch(
         setModalInfo({
           open: true,

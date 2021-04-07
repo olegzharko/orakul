@@ -19,7 +19,7 @@ export const useClientsDashboard = () => {
   const clientRemove = useCallback((personId: string) => {
     (async () => {
       if (token) {
-        const { success, message, data } = await reqClientName(token, personId, 'DELETE');
+        const { success, message, data } = await reqClientName(token, id, personId, 'DELETE');
 
         if (success) {
           dispatch(setClients(data));

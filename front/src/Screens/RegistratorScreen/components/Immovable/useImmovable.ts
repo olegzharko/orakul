@@ -3,8 +3,8 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { RegistratorNavigationTypes } from '../../useRegistratorScreen';
 import { editImmovableStatus } from '../../../../store/registrator/actions';
-import { formatDate } from '../../utils';
 import { CheckBanFieldsData } from '../../../../components/CheckBanFields/CheckBanFields';
+import { changeMonthWitDate, formatDate } from '../../../../utils/formatDates';
 
 export type Props = {
   onPathChange: (id: string, type: RegistratorNavigationTypes) => void;
@@ -43,7 +43,7 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
 
   useEffect(() => {
     setData({
-      date: immovable?.date ? new Date(immovable?.date) : new Date(),
+      date: immovable?.date ? new Date(changeMonthWitDate(immovable?.date)) : new Date(),
       number: immovable?.number || '',
       pass: immovable?.pass || false,
     });

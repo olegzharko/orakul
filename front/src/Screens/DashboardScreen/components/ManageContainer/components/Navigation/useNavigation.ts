@@ -11,7 +11,7 @@ export const useNavigation = () => {
   const { user } = useSelector((state: State) => state.main);
 
   const handleClick = (type: DashboardContractNavigation) => {
-    history.push(`/${id}/${type}`);
+    history.push(`/${type}/${id}`);
   };
 
   const shouldShowSeller = useMemo(() => user.type === UserTypes.GENERATOR, [user.type]);

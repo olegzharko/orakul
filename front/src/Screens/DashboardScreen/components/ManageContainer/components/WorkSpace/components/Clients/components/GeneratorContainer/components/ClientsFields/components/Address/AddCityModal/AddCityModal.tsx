@@ -7,42 +7,55 @@ import SectionWithTitle from '../../../../../../../../../../../../../../../compo
 import CustomSelect from '../../../../../../../../../../../../../../../components/CustomSelect';
 import CustomInput from '../../../../../../../../../../../../../../../components/CustomInput';
 import PrimaryButton from '../../../../../../../../../../../../../../../components/PrimaryButton';
-
-type Props = {
-  open: boolean;
-  onClose: (value: boolean) => void;
-};
+import { useAddCityModal, Props } from './useAddCityModal';
 
 // eslint-disable-next-line prettier/prettier
-const AddCityModal = ({ open, onClose }: Props) => {
-  const handleClose = () => {
-    onClose(false);
-  };
+const AddCityModal = (props: Props) => {
+  const meta = useAddCityModal(props);
 
   return (
     <Modal
       className="modal-container"
-      open={open}
-      onClose={handleClose}
+      open={props.open}
+      onClose={meta.handleClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={open}>
+      <Fade in={props.open}>
         <div className="add-city-modal">
-          <SectionWithTitle title="Додати населений пункт" onClear={() => console.log('clear')}>
+          <SectionWithTitle title="Додати населений пункт" onClear={meta.onClear}>
             <div className="add-city-modal__grid">
-              <CustomSelect label="Область" data={[]} onChange={(e) => console.log(e)} />
-              <CustomSelect label="Район" data={[]} onChange={(e) => console.log(e)} />
-              <CustomSelect label="Тип населеного пункту" data={[]} onChange={(e) => console.log(e)} />
-              <CustomInput label="Назва у НВ" onChange={(e) => console.log(e)} />
+              <CustomSelect
+                label="Область"
+                data={meta.region}
+                onChange={(e) => meta.setAllData({ ...meta.allData, region_id: e })}
+                selectedValue={meta.allData.region_id}
+              />
+              <CustomSelect
+                label="Район"
+                data={meta.districts}
+                onChange={(e) => meta.setAllData({ ...meta.allData, district_id: e })}
+                selectedValue={meta.allData.district_id}
+              />
+              <CustomSelect
+                label="Тип населеного пункту"
+                data={meta.cityTypes}
+                onChange={(e) => meta.setAllData({ ...meta.allData, city_type_id: e })}
+                selectedValue={meta.allData.city_type_id}
+              />
+              <CustomInput
+                label="Назва у НВ"
+                onChange={(e) => meta.setAllData({ ...meta.allData, title: e })}
+                value={meta.allData.title}
+              />
             </div>
           </SectionWithTitle>
 
           <div className="middle-button">
-            <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
+            <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
           </div>
         </div>
       </Fade>

@@ -30,6 +30,8 @@ export const useAddress = ({ initialData, id }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   const [regions, setRegions] = useState<SelectItem[]>([]);
   const [cities, setCities] = useState<SelectItem[]>([]);
   const [addressType, setAddressType] = useState<SelectItem[]>([]);
@@ -64,6 +66,8 @@ export const useAddress = ({ initialData, id }: Props) => {
   }, [initialData]);
 
   useEffect(() => {
+    if (showModal) return;
+
     // get CITIES
     (async () => {
       if (token && data.region_id) {
@@ -74,7 +78,7 @@ export const useAddress = ({ initialData, id }: Props) => {
         }
       }
     })();
-  }, [token, data.region_id]);
+  }, [token, data.region_id, showModal]);
 
   const onClear = useCallback(() => {
     setData({
@@ -109,6 +113,8 @@ export const useAddress = ({ initialData, id }: Props) => {
     buildingType,
     apartmentType,
     data,
+    showModal,
+    setShowModal,
     setData,
     onClear,
     onSave,

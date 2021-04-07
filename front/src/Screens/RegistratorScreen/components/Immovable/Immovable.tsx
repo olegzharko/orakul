@@ -20,7 +20,7 @@ const Immovable = (props: Props) => {
       </SectionWithTitle>
 
       <Check
-        data={props.immovable}
+        data={meta.data}
         setData={meta.setData}
         onPrevButtonClick={meta.onPrevButtonClick}
         onSave={meta.onSave}
