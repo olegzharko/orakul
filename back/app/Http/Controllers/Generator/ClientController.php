@@ -21,7 +21,7 @@ use App\Models\Notary;
 use App\Models\Region;
 use App\Models\Representative;
 use App\Models\SpouseWord;
-use App\Nova\Spouse;
+use App\Models\Spouse;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
