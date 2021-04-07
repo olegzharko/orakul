@@ -16,6 +16,7 @@ use App\Models\SortType;
 use App\Models\WorkDay;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\Contract;
 use App\Models\Time;
 use App\Models\Room;
@@ -85,7 +86,7 @@ class CardController extends BaseController
             'room_id',
             'date_time',
             'notary_id',
-            'dev_company_id',
+            'dev_group_id',
             'dev_representative_id',
             'dev_manager_id',
         )->find($id);
@@ -147,7 +148,7 @@ class CardController extends BaseController
                 }
             }
         } else {
-            $clients = CardClient::where('card_id', $card->id)->get();
+            $clients = Contact::where('card_id', $card->id)->get();
 
             if ($clients) {
                 foreach ($clients as $key => $cl) {
