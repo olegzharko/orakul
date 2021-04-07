@@ -367,16 +367,16 @@ class CardController extends BaseController
 
         // Занйти представника забудовника по id
         if (!isset($errors['dev_representative_id']) && $r['dev_representative_id']) {
-            $representative_type_id = ClientType::where('key', 'representative')->value('id');
-            if (!Client::where('id', $r['dev_representative_id'])->where('type_id', $representative_type_id)->first()) {
+//            $representative_type_id = ClientType::where('key', 'representative')->value('id');
+            if (!Client::where('id', $r['dev_representative_id'])->first()) {
                 $validator->getMessageBag()->add('dev_representative_id', 'Представника забудовника з ID:' . $r['dev_representative_id'] . " не знайдено");
             }
         }
 
         // Занйти менеджера забудовника по id
         if (!isset($errors['dev_manager_id']) && $r['dev_manager_id']) {
-            $manager_type_id = ClientType::where('key', 'manager')->value('id');
-            if (!Client::where('id', $r['dev_manager_id'])->where('type_id', $manager_type_id)->first()) {
+//            $manager_type_id = ClientType::where('key', 'manager')->value('id');
+            if (!Client::where('id', $r['dev_manager_id'])->first()) {
                 $validator->getMessageBag()->add('dev_manager_id', 'Менеджер забудовника з ID:' . $r['dev_manager_id'] . " не знайдено");
             }
         }
