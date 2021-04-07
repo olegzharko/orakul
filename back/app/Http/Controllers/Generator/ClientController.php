@@ -369,7 +369,7 @@ class ClientController extends BaseController
         return $this->sendResponse('', 'Населений пункт ' . $r->title . ' створено');
     }
 
-    public function get_consents($client_id, $card_id)
+    public function get_consents($card_id, $client_id)
     {
         $result = [];
 
@@ -463,7 +463,7 @@ class ClientController extends BaseController
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
     }
 
-    public function get_representative($client_id, $card_id)
+    public function get_representative($card_id, $client_id)
     {
         $result = [];
 

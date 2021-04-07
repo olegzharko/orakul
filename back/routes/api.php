@@ -124,10 +124,10 @@ Route::middleware('auth:api')->group(function () {
             Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']);
             Route::post('city/create', [ClientController::class, 'create_city']);
 
-            Route::get('consents/{client_id}/{card_id}', [ClientController::class, 'get_consents']);
+            Route::get('consents/{card_id}/{client_id}', [ClientController::class, 'get_consents']);
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
 
-            Route::get('representative/{client_id}/{card_id}', [ClientController::class, 'get_representative']);
+            Route::get('representative/{card_id}/{client_id}', [ClientController::class, 'get_representative']);
             Route::put('representative/{client_id}', [ClientController::class, 'update_representative']);
 
             Route::get('notaries/{card_id}', [ClientController::class, 'get_notaries']);
