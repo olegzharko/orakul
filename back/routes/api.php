@@ -66,6 +66,11 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'generator'], function() {
        Route::get('main/{card_id}', [\App\Http\Controllers\Generator\MainController::class, 'main']);
        Route::get('create/{card_id}', [GeneratorController::class, 'creat_contract_by_card_id']);
+
+       Route::get('city/create', [ClientController::class, 'start_data_create_city']);
+       Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']);
+       Route::post('city/create', [ClientController::class, 'create_city']);
+
        Route::group(['prefix' => 'developer'], function() {
            Route::get('main/{card_id}', [DeveloperController::class, 'main']);
            Route::get('fence/{card_id}', [DeveloperController::class, 'get_fence']);
@@ -119,10 +124,6 @@ Route::middleware('auth:api')->group(function () {
             Route::get('cities/{region_id}', [ClientController::class, 'get_cities']);
             Route::get('address/{client_id}', [ClientController::class, 'get_address']);
             Route::put('address/{client_id}', [ClientController::class, 'update_address']);
-
-            Route::get('city/create', [ClientController::class, 'start_data_create_city']);
-            Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']);
-            Route::post('city/create', [ClientController::class, 'create_city']);
 
             Route::get('consents/{card_id}/{client_id}', [ClientController::class, 'get_consents']);
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
