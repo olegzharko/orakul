@@ -612,7 +612,7 @@ class CardController extends BaseController
 
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
-            $result['color'] = $card->dev_company->color;
+            $result['color'] = $card->dev_group->color;
             $result['title'] = $this->get_card_title($card);
             $result['short_info'] = $this->get_card_short_info($card);
             $result['instructions'] = $this->get_card_instructions($card);
