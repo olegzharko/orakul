@@ -36,6 +36,7 @@ class SortController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        dd($r);
         $query_cards_id = Card::select(
             'cards.id',
             'cards.notary_id',
