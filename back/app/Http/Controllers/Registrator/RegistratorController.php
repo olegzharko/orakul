@@ -49,7 +49,6 @@ class RegistratorController extends BaseController
             ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
-        dd($check_dev_company);
 
         if ($check_dev_company) {
 
