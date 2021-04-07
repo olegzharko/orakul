@@ -87,7 +87,7 @@ class Card extends Model
         $card->room_id = $r['room_id'];
         $card->city_id = $work_city ? $work_city->id : null;
         $card->date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
-        $card->dev_company_id = $r['dev_company_id']; // DEV_GROUPE
+        $card->dev_group_id = $r['dev_company_id']; // DEV_GROUPE
         $card->dev_representative_id = $r['dev_representative_id'];
         $card->dev_manager_id = $r['dev_manager_id'];
         $card->save();
