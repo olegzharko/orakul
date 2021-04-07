@@ -42,7 +42,7 @@ class SortController extends BaseController
             'cards.room_id',
             'cards.date_time',
             'cards.city_id',
-            'cards.dev_group_id as dev_company_id',
+            'cards.dev_group_id',
             'cards.dev_representative_id',
             'cards.dev_manager_id',
             'cards.generator_step',
@@ -52,10 +52,10 @@ class SortController extends BaseController
                     $query = $query->where('cards.notary_id', $r['notary_id']);
                 ######################### Старый вариант передачи данных с формы
                 if ($r['developer_id'])
-                    $query = $query->where('cards.dev_company_id', $r['developer_id']);
+                    $query = $query->where('cards.dev_group_id', $r['developer_id']);
                 ########################## Конец старого варианта
                 if ($r['dev_company_id'])
-                    $query = $query->where('cards.dev_company_id', $r['dev_company_id']);
+                    $query = $query->where('cards.dev_group_id', $r['dev_company_id']);
                 if ($r['dev_representative_id'])
                     $query = $query->where('cards.dev_representative_id', $r['dev_representative_id']);
                 if ($r['reader_id'])
