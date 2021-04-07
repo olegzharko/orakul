@@ -6,15 +6,15 @@ import './index.scss';
 import { v4 as uuidv4 } from 'uuid';
 
 type Button = {
-  id: number;
+  id: number | string;
   title: string;
 };
 
 type Props = {
   buttons: Button[];
   unicId: string;
-  onChange: (id: number) => void;
-  selected?: number | null;
+  onChange: (id: number | string) => void;
+  selected?: number | string | null;
 };
 
 export const RadioButtonsGroup = ({
@@ -29,7 +29,7 @@ export const RadioButtonsGroup = ({
     setSelectedValue(selected || buttons[0].id);
   }, [selected]);
 
-  const handleChange = (id: number) => {
+  const handleChange = (id: number | string) => {
     setSelectedValue(id);
     onChange(id);
   };
