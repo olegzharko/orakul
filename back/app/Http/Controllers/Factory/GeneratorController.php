@@ -38,6 +38,12 @@ class GeneratorController extends Controller
         $this->convert = new ConvertController();
     }
 
+    public function creat_contract_by_card_id($card_id)
+    {
+        $this->get_contracts_id_by_card_id($card_id);
+        $this->start_generate_contract();
+    }
+
     public function create_contracts_by_cards()
     {
         $cards_id = Card::where('ready', true)->pluck('id');
