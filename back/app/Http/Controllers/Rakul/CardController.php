@@ -595,7 +595,7 @@ class CardController extends BaseController
                 $result['y'] = $time_height;
             $result['w'] = 1;
             $result['h'] = 1;
-            $result['color'] = $card->dev_company->color;
+            $result['color'] = $card->dev_group->color;
             $result['title'] = $this->get_card_title($card);
             $result['short_info'] = $this->get_card_short_info($card);
         }
