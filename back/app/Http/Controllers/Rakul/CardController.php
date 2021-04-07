@@ -86,7 +86,7 @@ class CardController extends BaseController
             'room_id',
             'date_time',
             'notary_id',
-            'dev_group_id',
+            'dev_group_id as dev_company_id',
             'dev_representative_id',
             'dev_manager_id',
         )->find($id);
