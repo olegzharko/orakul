@@ -78,7 +78,7 @@ class ImmovableController extends BaseController
         $building = [];
         foreach ($developer_building as $key => $dev_building) {
             $building[$key]['id'] = $dev_building->id;
-            $building[$key]['address'] = $this->convert->get_full_address($dev_building);
+            $building[$key]['title'] = $this->convert->get_full_address($dev_building);
         }
 
         $roominess = RoominessType::select('id', 'title')->where('active', true)->orderBy('sort_order')->get();
@@ -148,14 +148,23 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        $minfin = Exchange::orderBy('created_at', 'desc')->first();
+        if ($exchange = ExchangeRate::where(['immovable_id' => $immovable_id])->first()) {
+            $exchange_rate = $exchange->rate;
+        } else {
+            if ($minfin = Exchange::orderBy('created_at', 'desc')->first()) {
 
-        $exchange = ExchangeRate::firstOrCreate(
-            ['immovable_id' => $immovable_id],
-            ['rate' => $minfin->rate],
-        );
+                $exchange_rate = $minfin->rate;
 
-        $result['exchange_rate'] = round($minfin->rate / 100, 2);
+                $new_exchange_rate = new ExchangeRate();
+                $new_exchange_rate->immovable_id = $immovable_id;
+                $new_exchange_rate->rate = $minfin->rate;
+                $new_exchange_rate->save();
+            }
+            else
+                $exchange_rate = null;
+        }
+
+        $result['exchange_rate'] = round($exchange_rate / 100, 2);
 
         return $this->sendResponse($result, 'Курс для нерухомості ID:' . $immovable_id);
     }
@@ -173,11 +182,13 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        $currency_exchage = round($r->exchange_rate, 2);
+
         ExchangeRate::where('immovable_id', $immovable_id)->update([
-            'rate' => $r->exchange_rate * 100,
+            'rate' => $currency_exchage * 100,
         ]);
 
-        $result['exchange_rate'] = $r->exchange_rate;
+        $result['exchange_rate'] = $currency_exchage;
 
         return $this->sendResponse($result, 'Курс долара оновлено вручну.');
     }
@@ -462,6 +473,22 @@ class ImmovableController extends BaseController
             ['template_id' => $r['statement_template_id']]);
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');
+    }
+
+    public function destroy($immovable_id)
+    {
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        Contract::where('immovable_id', $immovable_id)->delete();
+        ExchangeRate::where('immovable_id', $immovable_id)->delete();
+        ImmovableOwnership::where('immovable_id', $immovable_id)->delete();
+        ImmFence::where('immovable_id', $immovable_id)->delete();
+        PropertyValuationPrice::where('immovable_id', $immovable_id)->delete();
+        SecurityPayment::where('immovable_id', $immovable_id)->delete();
+        Immovable::find($immovable_id)->delete();
+
+        return $this->sendResponse('', 'Нерухомысть по ID:' . $immovable_id . ' було успішно видалено.');
     }
 
     private function validate_imm_data($r)
