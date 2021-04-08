@@ -6,7 +6,7 @@ import { State } from '../../../../../../../../../../../../../../store/types';
 import { SelectItem } from '../../../../../../../../../../../../../../types';
 
 type InitialData = {
-  imm_type_id: string;
+  imm_type_id: number | null;
   building_id: string;
   roominess_id: string;
   imm_number: string;
@@ -40,7 +40,7 @@ export const useGeneral = ({ initialData, id }: Props) => {
   const [building, setBuilding] = useState<SelectItem[]>([]);
   const [immType, setImmType] = useState<SelectItem[]>([]);
   const [data, setData] = useState<InitialData>({
-    imm_type_id: '',
+    imm_type_id: null,
     building_id: '',
     roominess_id: '',
     imm_number: '',
@@ -59,7 +59,7 @@ export const useGeneral = ({ initialData, id }: Props) => {
 
   const onClear = useCallback(() => {
     setData({
-      imm_type_id: '',
+      imm_type_id: null,
       building_id: '',
       roominess_id: '',
       imm_number: '',
@@ -102,7 +102,7 @@ export const useGeneral = ({ initialData, id }: Props) => {
     setBuilding(initialData?.building || []);
     setImmType(initialData?.imm_type || []);
     setData({
-      imm_type_id: '',
+      imm_type_id: initialData?.imm_type_id || null,
       building_id: initialData?.building_id || '',
       roominess_id: initialData?.roominess_id || '',
       imm_number: initialData?.imm_number || '',

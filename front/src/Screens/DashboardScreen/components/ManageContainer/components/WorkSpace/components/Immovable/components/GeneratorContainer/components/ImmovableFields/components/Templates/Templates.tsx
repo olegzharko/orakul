@@ -14,18 +14,32 @@ const Templates = (props: Props) => {
         <div className="grid">
           <CustomSelect
             label="Тип договору"
+            data={meta.contractType}
+            onChange={(e) => meta.setData({ ...meta.data, type_id: +e })}
+            selectedValue={meta.data.type_id}
+          />
+          <CustomSelect
+            label="Шаблон договору"
             data={meta.contractTemplates}
             onChange={(e) => meta.setData({ ...meta.data, contract_template_id: +e })}
             selectedValue={meta.data.contract_template_id}
           />
-          <CustomSelect
-            label="Шаблон договору"
-            data={[]}
-            onChange={(e) => console.log(e)}
+          <CustomDatePicker
+            label="Дата підписання договору"
+            onSelect={(e) => meta.setData({ ...meta.data, sign_date: +e })}
+            selectedDate={meta.data.sign_date}
           />
-          <CustomDatePicker label="Дата підписання договору" onSelect={(e) => console.log(e)} />
-          <CustomSwitch label="Оброблений" onChange={(e) => console.log(e)} selected={false} />
-          <CustomDatePicker label="ПД - дата підписання ОД" onSelect={(e) => console.log(e)} />
+
+          <CustomSwitch
+            label="Оброблений"
+            onChange={(e) => meta.setData({ ...meta.data, ready: e })}
+            selected={meta.data.ready}
+          />
+          <CustomDatePicker
+            label="ПД - дата підписання ОД"
+            onSelect={(e) => meta.setData({ ...meta.data, final_sign_date: +e })}
+            selectedDate={meta.data.final_sign_date}
+          />
         </div>
       </SectionWithTitle>
 
@@ -54,26 +68,26 @@ const Templates = (props: Props) => {
       </SectionWithTitle>
 
       <SectionWithTitle title="Запит">
-        <div className="grid-center-duet">
+        <div className="flex-center">
           <CustomSelect
             label="Шаблон запиту"
             data={meta.statementTemplates}
             onChange={(e) => meta.setData({ ...meta.data, statement_template_id: +e })}
             selectedValue={meta.data.statement_template_id}
+            className="single"
           />
-          <CustomDatePicker label="Дата підписання запиту" onSelect={(e) => console.log(e)} />
         </div>
       </SectionWithTitle>
 
       <SectionWithTitle title="Анкета">
-        <div className="grid-center-duet">
+        <div className="flex-center">
           <CustomSelect
             label="Шаблон анкети"
             data={meta.questionnaireTemplates}
             onChange={(e) => meta.setData({ ...meta.data, questionnaire_template_id: +e })}
             selectedValue={meta.data.questionnaire_template_id}
+            className="single"
           />
-          <CustomDatePicker label="Дата підписання анкети" onSelect={(e) => console.log(e)} />
         </div>
       </SectionWithTitle>
 
