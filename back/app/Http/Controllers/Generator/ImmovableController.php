@@ -499,9 +499,9 @@ class ImmovableController extends BaseController
         if (isset($r['date']) && !empty($r['date']))
             $r['date'] = \DateTime::createFromFormat('d.m.Y', $r['date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))
-            $r['reg_date'] = \DateTime::createFromFormat('d.m.Y', $r['reg_date']);
+            $r['reg_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['reg_date']);
         if (isset($r['discharge_date']) && !empty($r['discharge_date']))
-            $r['discharge_date'] = \DateTime::createFromFormat('d.m.Y', $r['discharge_date']);
+            $r['discharge_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['discharge_date']);
         if (isset($r['sign_date']) && !empty($r['sign_date']))
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
         if (isset($r['final_date']) && !empty($r['final_date']))
