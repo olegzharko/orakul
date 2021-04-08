@@ -85,9 +85,9 @@ class ImmovableController extends BaseController
         $result['building'] = $building;
         $result['roominess'] = $roominess;
 
-        $result['imm_type_id'] = $immovable->immovable_type->id;
-        $result['building_id'] = $immovable->developer_building->id;
-        $result['roominess_id'] = $immovable->roominess->id;
+        $result['imm_type_id'] = $immovable->immovable_type ? $immovable->immovable_type->id : null;
+        $result['building_id'] = $immovable->developer_building ? $immovable->developer_building->id : null;
+        $result['roominess_id'] = $immovable->roominess ? $immovable->roominess->id : null;
 
         $result['imm_number'] = $immovable->immovable_number;
         $result['registration_number'] = $immovable->registration_number;
@@ -100,7 +100,7 @@ class ImmovableController extends BaseController
         $result['total_space'] = $immovable->total_space;
         $result['living_space'] = $immovable->living_space;
         $result['floor'] = $immovable->floor;
-        $result['complex'] = $immovable->developer_building->complex;
+        $result['complex'] = $immovable->developer_building ? $immovable->developer_building->complex : null;
 
         return $this->sendResponse($result, 'Загальні данні по нерухомості ID' . $immovable_id);
     }
