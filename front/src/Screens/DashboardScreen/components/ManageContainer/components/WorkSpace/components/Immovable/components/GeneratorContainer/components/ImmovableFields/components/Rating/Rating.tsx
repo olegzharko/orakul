@@ -4,21 +4,39 @@ import CustomInput from '../../../../../../../../../../../../../../components/Cu
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
+import { useRating, Props } from './useRating';
 
-const Rating = () => (
-  <div className="rating">
-    <SectionWithTitle title="Оцінка" onClear={() => console.log('clear')}>
-      <div className="grid">
-        <CustomSelect label="Оцінка від компанії" data={[]} onChange={(e) => console.log(e)} />
-        <CustomDatePicker label="Дата оцінки" onSelect={(e) => console.log(e)} />
-        <CustomInput label="Ціна в грн" onChange={(e) => console.log(e)} />
+const Rating = (props: Props) => {
+  const { data, valuation, setData, onClear, onSave } = useRating(props);
+
+  return (
+    <div className="rating">
+      <SectionWithTitle title="Оцінка" onClear={onClear}>
+        <div className="grid">
+          <CustomSelect
+            label="Оцінка від компанії"
+            data={valuation}
+            onChange={(e) => setData({ ...data, property_valuation_id: +e })}
+            selectedValue={data.property_valuation_id}
+          />
+          <CustomDatePicker
+            label="Дата оцінки"
+            onSelect={(e) => setData({ ...data, date: e })}
+            selectedDate={data.date}
+          />
+          <CustomInput
+            label="Ціна в грн"
+            onChange={(e) => setData({ ...data, price: +e })}
+            value={data.price}
+          />
+        </div>
+      </SectionWithTitle>
+
+      <div className="middle-button">
+        <PrimaryButton label="Зберегти" onClick={onSave} disabled={false} />
       </div>
-    </SectionWithTitle>
-
-    <div className="middle-button">
-      <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
     </div>
-  </div>
-);
+  );
+};
 
 export default Rating;

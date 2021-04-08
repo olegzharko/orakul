@@ -7,6 +7,7 @@ import appointments from './appointments/store';
 import filter from './filter/store';
 import registrator from './registrator/store';
 import clients from './clients/store';
+import immovables from './immovables/store';
 
 const reducer = combineReducers({
   main,
@@ -15,6 +16,7 @@ const reducer = combineReducers({
   filter,
   registrator,
   clients,
+  immovables,
 });
 
 export default createStore(reducer, applyMiddleware(thunk));

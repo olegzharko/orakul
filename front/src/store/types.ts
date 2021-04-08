@@ -4,6 +4,7 @@ import { FilterState } from './filter/store';
 import { SchedulerState } from './scheduler/store';
 import { MainState } from './main/store';
 import { AppointmentsState } from './appointments/store';
+import { ImmovablesState } from './immovables/store';
 
 export type REDUX_ACTION = {
   type: string;
@@ -17,6 +18,7 @@ export type State = {
   filter: FilterState;
   registrator: RegistratorState;
   clients: ClientsState;
+  immovables: ImmovablesState;
 };
 
 export type FilterData = {
