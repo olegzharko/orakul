@@ -118,6 +118,7 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        dd($r);
 
         if ($imm = Immovable::find($immovable_id)) {
             Immovable::where('id', $immovable_id)->update([
