@@ -292,10 +292,12 @@ class ImmovableController extends BaseController
 
         $result['date'] = null;
         $result['number'] = null;
+        $result['pass'] = null;
 
         if ($imm_fence) {
             $result['date'] = $imm_fence->date ? $imm_fence->date->format('d.m.Y') : null;
             $result['number'] = $imm_fence->number;
+            $result['pass'] = $imm_fence->pass;
         }
 
         return $this->sendResponse($result, 'Дані по забороні на нерухомість ID:' . $immovable_id . ' отримано.');
