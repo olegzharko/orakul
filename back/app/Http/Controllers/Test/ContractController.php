@@ -80,8 +80,8 @@ class ContractController extends TestController
             $this->arr_immovables_id = [];
             $this->arr_clients_id = [];
             $this->arr_contracts_id = [];
-            $this->start_card();
-            if ($this->create_card()) { // Card
+
+            if ($this->start_card() && $this->create_card()) { // Card
                 $this->create_contacts(); // Contact
                 $this->create_immovable(); // Immovable
                 $this->create_contract(); // DevFence // ImmFence // ImmovableOwnership // PropertyValuationPrice // FinalSignDate
@@ -103,15 +103,25 @@ class ContractController extends TestController
 
         $this->dev_group_id = $this->get_rand_value($this->dev_groups);
 
-        $dev_companies = DevCompany::where('dev_group_id', $this->dev_group_id)->pluck('id')->toArray();
+        $dev_companies = DevCompany::where('dev_companies.dev_group_id', $this->dev_group_id)
+        ->join('developer_buildings', 'developer_buildings.dev_company_id', '=', 'dev_companies.id')
+        ->distinct('dev_companies.id')
+        ->pluck('dev_companies.id')
+        ->toArray();
+
+        if (!count($dev_companies))
+            return false;
+
+        $this->dev_company_id = $this->get_rand_value($dev_companies);
+
         $dev_representative_type = DevEmployerType::where('alias', 'representative')->value('id');
         $dev_manager_type = DevEmployerType::where('alias', 'manager')->value('id');
-
-        $this->dev_company_id = $this->get_rand_value(DevCompany::whereIn('id', $dev_companies)->pluck('id')->toArray());
 
         $this->dev_representative_id = $this->get_rand_value(DevCompanyEmployer::where('dev_company_id', $this->dev_company_id)->where('type_id', $dev_representative_type)->pluck('employer_id')->toArray());
         $this->dev_manager_id = $this->get_rand_value(DevCompanyEmployer::where('dev_company_id', $this->dev_company_id)->where('type_id', $dev_manager_type)->pluck('employer_id')->toArray());
         $this->staff_generator_id = $this->get_rand_value($this->staff_generators_id);
+
+        return true;
     }
 
     public function create_card()
@@ -419,12 +429,16 @@ class ContractController extends TestController
                     $dev_fence = new DevFence();
                     $dev_fence->dev_company_id = $this->dev_company_id;
                     $dev_fence->card_id = $this->card_id;
+                    $dev_fence->number = rand(500000000, 800000000);
+                    $dev_fence->date = $this->date_time;
                     $dev_fence->pass = rand(0, 1);
                     $dev_fence->save();
 
                     $imm_fence = new ImmFence();
                     $imm_fence->immovable_id = $immovable_id;
                     $imm_fence->pass = rand(0, 1);
+                    $imm_fence->number = rand(500000000, 800000000);
+                    $imm_fence->date = $this->date_time;
                     $imm_fence->save();
 //                }
             }
