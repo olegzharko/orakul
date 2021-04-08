@@ -144,7 +144,7 @@ class FilterController extends BaseController
                 "cards.room_id",
                 "cards.date_time",
                 "cards.city_id",
-                "cards.dev_company_id",
+                "cards.dev_group_id",
                 "cards.dev_representative_id",
                 "cards.dev_manager_id",
                 "cards.generator_step",
@@ -156,6 +156,7 @@ class FilterController extends BaseController
         ->where('cards.date_time', '>=', $this->date)
         ->where('contract_types.id', $contract_type_id)
         ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+        ->leftJoin('contract_types', 'contract_types.id', '=', 'contracts.type_id')
         ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
         ->distinct('cards.id')
         ->get();

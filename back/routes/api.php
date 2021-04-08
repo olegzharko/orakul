@@ -52,10 +52,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('exchange', [MinfinController::class, 'get_rate_exchange']); // postman
 
     Route::group(['prefix' => 'filter'], function () {
-        Route::get('dropdown', [FilterController::class, 'dropdown']);
-        Route::get('developer/info/{id}', [FilterController::class, 'developer_info']);
+        Route::get('dropdown', [FilterController::class, 'dropdown']); // postman
+        Route::get('developer/info/{id}', [FilterController::class, 'developer_info']); // postman
         #######################
-        Route::get('ready', [FilterController::class, 'ready_cards']);
+        Route::get('ready', [FilterController::class, 'ready_cards']); // postman
         Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']);
         Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
         #######################
