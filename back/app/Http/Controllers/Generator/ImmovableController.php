@@ -103,7 +103,7 @@ class ImmovableController extends BaseController
         $result['living_space'] = $immovable->living_space;
         $result['floor'] = $immovable->floor;
         $result['complex'] = $immovable->developer_building ? $immovable->developer_building->complex : null;
-        $result['section'] = $immovable0->section;
+        $result['section'] = $immovable->section;
 
         return $this->sendResponse($result, 'Загальні данні по нерухомості ID' . $immovable_id);
     }
