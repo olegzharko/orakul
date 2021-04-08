@@ -15,10 +15,12 @@ use App\Models\BankTaxesTemplate;
 use App\Models\ConsentTemplate;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
+use App\Models\ContractType;
 use App\Models\DeveloperBuilding;
 use App\Models\DeveloperStatement;
 use App\Models\Exchange;
 use App\Models\ExchangeRate;
+use App\Models\FinalSignDate;
 use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
@@ -414,24 +416,33 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        $contract_templates = ContractTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+        $contract_type = ContractType::select('id', 'title')->get();
+        $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
         $bank_templates = BankAccountTemplate::select('id', 'title')->get();
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
         $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
+
         $bank = BankAccountPayment::where('contract_id', $contract->id)->first();
         $taxes = BankTaxesPayment::where('contract_id', $contract->id)->first();
         $questionnaire = Questionnaire::where('contract_id', $contract->id)->first();
         $statement = DeveloperStatement::where('contract_id', $contract->id)->first();
+        $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
 
+
+        $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
         $result['bank_templates'] = $bank_templates;
         $result['taxes_templates'] = $taxes_templates;
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
 
+
+        $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
+        $result['final_sign_date'] = $final_sing_date ? $contract->sign_date->format('d.m.Y') : null;
+        $result['ready'] = $contract->ready;
         $result['template_id'] = $contract->template_id;
         $result['bank_template_id'] = $bank->template_id ?? null;
         $result['taxes_template_id'] = $taxes->template_id ?? null;
