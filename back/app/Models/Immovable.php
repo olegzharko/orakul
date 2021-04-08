@@ -20,9 +20,20 @@ class Immovable extends Model implements Sortable
 
     protected $fillable = [
         'immovable_type_id',
-        'building_id',
+        'developer_building_id',
         'immovable_number',
-        'immovable_reg_num',
+        'registration_number',
+        'grn',
+        'dollar',
+        'reserve_grn',
+        'reserve_dollar',
+        'm2_grn',
+        'm2_dollar',
+        'roominess_id',
+        'total_space',
+        'living_space',
+        'section',
+        'floor',
     ];
 
     public $sortable = [
