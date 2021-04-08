@@ -31,7 +31,7 @@ class MinfinController extends BaseController
         $exchange->rate = $currency_exchage * 100;
         $exchange->save();
 
-        $result['exchange_rate'] = $ask;
+        $result['exchange_rate'] = $currency_exchage;
 
         return $this->sendResponse($result, 'Новий курс додано до базы даних');
     }
