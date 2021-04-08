@@ -37,7 +37,7 @@ const Templates = (props: Props) => {
           />
           <CustomDatePicker
             label="ПД - дата підписання ОД"
-            onSelect={(e) => meta.setData({ ...meta.data, final_sign_date: +e })}
+            onSelect={(e) => meta.setData({ ...meta.data, final_sign_date: e })}
             selectedDate={meta.data.final_sign_date}
           />
         </div>
