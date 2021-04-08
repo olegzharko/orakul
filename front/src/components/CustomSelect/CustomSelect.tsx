@@ -50,6 +50,7 @@ const CustomSelect = ({
         value={selected}
         onChange={handleChange}
         disabled={disabled || data.length === 0}
+        defaultValue=""
       >
         <MenuItem value="">
           <em>Выбрать</em>

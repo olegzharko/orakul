@@ -1,34 +1,37 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
 import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
+import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
+import { useImmovableDashboard } from './useImmovableDashboard';
 
 const ImmovableDashboard = () => {
-  const { id } = useParams<{ id: string }>();
+  const meta = useImmovableDashboard();
 
   return (
     <div className="immovable__dashboard">
       <div className="immovable__dashboard-header section-title">Нерухомість</div>
-      <div className="grid">
-        <CardWithClose
-          title="Жарко Олег Володимирович"
-          onClick={() => console.log('click')}
-          link={`/immovables/${id}/1`}
-        >
-          <span>1. Паспорт</span>
-          <span>1. Паспорт</span>
-          <span>1. Паспорт</span>
-        </CardWithClose>
 
-        <CardWithClose
-          title="Жарко Олег Володимирович"
-          onClick={() => console.log('click')}
-          link={`/immovables/${id}/1`}
-        >
-          <span>1. Паспорт</span>
-          <span>1. Паспорт</span>
-          <span>1. Паспорт</span>
-        </CardWithClose>
+      <div className="grid">
+        {meta.immovables.map((immovable) => (
+          <CardWithClose
+            key={immovable.id}
+            title={immovable.title}
+            onClick={() => meta.onModalShow(immovable.id.toString())}
+            link={`/immovables/${meta.id}/${immovable.id}`}
+          >
+            {immovable.list.map((item) => (
+              <span>{item}</span>
+            ))}
+          </CardWithClose>
+        ))}
       </div>
+
+      <ConfirmDialog
+        open={meta.showModal}
+        title="Видалення нерухомості"
+        message="Ви впевнені, що бажаєте видалити дану нерухомість"
+        handleClose={() => meta.onModalCancel()}
+        handleConfirm={() => meta.onModalConfirm()}
+      />
     </div>
   );
 };
