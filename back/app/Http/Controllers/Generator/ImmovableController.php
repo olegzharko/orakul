@@ -69,7 +69,9 @@ class ImmovableController extends BaseController
     {
         $result = [];
 
-        $immovable = Immovable::find($immovable_id);
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість з ID: ' . $immovable_id .  ' відсутня ');
+
         $immovable_type = ImmovableType::get_immovable_type();
         $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
