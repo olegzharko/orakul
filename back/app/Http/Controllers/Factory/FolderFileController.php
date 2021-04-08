@@ -220,6 +220,7 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($this->contract->questionnaire->template);
+
         $this->create_file_for_contract($template, $title);
         return $title;
     }

@@ -30,6 +30,7 @@ Route::get('clear', function () {
 });
 
 Route::get('creat/contracts', [GeneratorController::class, 'create_contracts_by_cards']);
+Route::get('creat/all/contracts', [GeneratorController::class, 'create_all_contracts']);
 Route::get('creat/contract/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']);
 Route::get('service/read', [DocumentController::class, 'make_document_service']);
 

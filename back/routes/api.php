@@ -104,6 +104,8 @@ Route::middleware('auth:api')->group(function () {
 
             Route::get('template/{immovable_id}', [ImmovableController::class, 'get_template']);
             Route::put('template/{immovable_id}', [ImmovableController::class, 'update_template']);
+
+            Route::delete('delete/{immovable_id}', [ImmovableController::class, 'destroy']); // DELETE REQUEST
        });
 
        Route::group(['prefix' => 'client'], function() {

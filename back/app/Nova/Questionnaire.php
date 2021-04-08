@@ -26,7 +26,11 @@ class Questionnaire extends Resource
 //    public static $title = 'id';
     public function title()
     {
-        return $this->template->title;
+        $title = '';
+        if ($this->template)
+            $title = $this->template->title;
+
+        return $title;
     }
 
     public static $group = "Угода";

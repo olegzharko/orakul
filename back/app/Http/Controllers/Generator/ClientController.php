@@ -8,11 +8,13 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Models\AddressType;
 use App\Models\ApartmentType;
 use App\Models\BuildingType;
+use App\Models\CheckList;
 use App\Models\Citizenship;
 use App\Models\CityType;
 use App\Models\Client;
 use App\Models\City;
 use App\Models\ClientContract;
+use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
 use App\Models\ConsentTemplate;
 use App\Models\District;
@@ -68,7 +70,6 @@ class ClientController extends BaseController
                 if ($client->representative)
                     $client->representative->delete();
             }
-            ClientContract::where('client_id', $client->id)->delete();
 //            if ($client->contracts) {
 //                foreach ($client->contracts as $contract) {
 //                    $contract->delete();
@@ -79,6 +80,11 @@ class ClientController extends BaseController
         } elseif ($confidant = Representative::where('confidant_id', $client->id)->first()) {
             $client->representative->delete();
         }
+
+        ClientContract::where('client_id', $client->id)->delete();
+        CheckList::where('client_id', $client->id)->delete();
+        ClientContract::where('client_id', $client->id)->delete();
+        Contract::where('client_id', $client->id)->delete();
 
         if ($client)
             $client->delete();

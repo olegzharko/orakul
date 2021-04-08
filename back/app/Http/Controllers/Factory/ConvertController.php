@@ -366,6 +366,7 @@ class ConvertController extends GeneratorController
 
     public function number_to_string($value)
     {
+
         $result  = null;
         $str = null;
 
@@ -446,6 +447,7 @@ class ConvertController extends GeneratorController
         /* кінець тисячі */
 
         $result = trim($result);
+
         return $result;
     }
 
@@ -546,14 +548,13 @@ class ConvertController extends GeneratorController
         $building_num = null;
         $building = null;
 
-
-        if ($c->city->region) {
+        if ($c->city && $c->city->region) {
             $region_type_short = trim(KeyWord::where('key', 'region')->value('title_n'));
             $region_title = trim($c->city->region->title_n);
             $region = "$region_title $region_type_short, ";
         }
 
-        if ($c->city->district) {
+        if ($c->city && $c->city->district) {
             $district_type_short = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
             $district = "$district_title $district_type_short, ";
@@ -567,7 +568,7 @@ class ConvertController extends GeneratorController
             $city = "$city_type_short $city_title, ";
         }
 
-        if ($c->address && $c->address_type->short && $c->building ) {
+        if ($c->address && $c->address_type && $c->address_type->short && $c->building ) {
             $address_title = trim($c->address);
             $address_type_short = trim($c->address_type->short);
             $address = "$address_type_short $address_title, ";
@@ -579,7 +580,6 @@ class ConvertController extends GeneratorController
 
             $building = "$building_type_short $building_num" . "$apartment_full";
         }
-
 
         $full_address = ""
             . "$region"

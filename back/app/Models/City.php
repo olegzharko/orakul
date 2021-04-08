@@ -35,7 +35,7 @@ class City extends Model implements Sortable
 
     public function city_type()
     {
-        return $this->belongsTo(CityType::class);
+        return $this->belongsTo(CityType::class, 'city_type_id');
     }
 
     public static function get_event_city($city_id)

@@ -85,6 +85,7 @@ class DocumentController extends GeneratorController
                 else
                     $this->consent = null;
 
+
                 if ($this->contract)
                     $this->contract_template_set_data();
                 else
@@ -995,6 +996,7 @@ class DocumentController extends GeneratorController
             /*
              * Подружжя клієнта - адреса проживання
              * */
+//            dd($this->client->married->spouse->city->city_type);
             $word->setValue('cs-f-addr', $this->convert->get_client_full_address($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
@@ -1193,7 +1195,7 @@ class DocumentController extends GeneratorController
         /*
          * Перевірка заборон на майно
          * */
-        if ($this->contract->immovable->fence && $this->contract->immovable->fence->number) {
+        if ($this->contract->immovable->fence && $this->contract->immovable->fence->number && $this->contract->immovable->fence->date) {
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
         } else {
@@ -1203,9 +1205,14 @@ class DocumentController extends GeneratorController
         /*
          * Перевірка заборон на власника
          * */
-        if ($this->contract->dev_company->owner->fence && $this->contract->dev_company->owner->fence->number) {
-            $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->owner->fence->date));
-            $word->setValue('dev-fence-num', $this->contract->dev_company->owner->fence->number);
+//        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->fence && $this->contract->dev_company->owner->fence->number && $this->contract->dev_company->owner->fence->date) {
+//            $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->owner->fence->date));
+//            $word->setValue('dev-fence-num', $this->contract->dev_company->owner->fence->number);
+//        }
+
+        if ($this->contract->dev_company && $this->contract->dev_company->fence && $this->contract->dev_company->fence->number && $this->contract->dev_company->fence->date) {
+            $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->fence->date));
+            $word->setValue('dev-fence-num', $this->contract->dev_company->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по заборонам на власника");
         }

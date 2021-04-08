@@ -55,7 +55,7 @@ class BankAccountTemplate extends Resource
             Text::make('Заголовок', 'title'),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
-                Markdown::make('Description'),
+//                Markdown::make('Description'),
             ]),
         ];
     }
