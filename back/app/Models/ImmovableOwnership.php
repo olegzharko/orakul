@@ -12,6 +12,13 @@ class ImmovableOwnership extends Model implements Sortable
 {
     use HasFactory, SortableTrait, SoftDeletes;
 
+    protected $fillable = [
+        'gov_reg_number',
+        'gov_reg_date',
+        'discharge_number',
+        'discharge_date',
+    ];
+
     public $sortable = [
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
