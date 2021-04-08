@@ -35,7 +35,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
-Route::get('slides', [SlidesController::class, 'slides']);
+Route::get('slides', [SlidesController::class, 'slides']); // postman
 Route::post('password/forgot', [PassportAuthController::class, 'password_forgot'])->middleware('guest');
 Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 Route::post('password/update', [PassportAuthController::class, 'password_update'])->name('password.reset');
@@ -45,11 +45,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('logout', [PassportAuthController::class, 'logout']);
     Route::get('global_text', [TextController::class, 'global_text']);
-    Route::get('reception', [ReceptionController::class, 'reception']);
-    Route::get('calendar', [ReceptionController::class, 'reception']); // убрать этот запрос. сменить на reception
+    Route::get('reception', [ReceptionController::class, 'reception']); // postman
+    Route::get('calendar', [ReceptionController::class, 'reception']); // postman // убрать этот запрос. сменить на reception /api/calendar
     Route::put('cards/move/{id}', [CardController::class, 'move']);
-    Route::resource('cards', CardController::class);
-    Route::get('exchange', [MinfinController::class, 'get_rate_exchange']);
+    Route::resource('cards', CardController::class); // postman get cards
+    Route::get('exchange', [MinfinController::class, 'get_rate_exchange']); // postman
 
     Route::group(['prefix' => 'filter'], function () {
         Route::get('dropdown', [FilterController::class, 'dropdown']);

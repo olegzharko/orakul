@@ -497,7 +497,7 @@ class ImmovableController extends BaseController
     private function validate_imm_data($r)
     {
         if (isset($r['date']) && !empty($r['date']))
-            $r['date'] = \DateTime::createFromFormat('d.m.Y', $r['date']);
+            $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))
             $r['reg_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['reg_date']);
         if (isset($r['discharge_date']) && !empty($r['discharge_date']))
@@ -506,8 +506,6 @@ class ImmovableController extends BaseController
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['sign_date']);
         if (isset($r['final_date']) && !empty($r['final_date']))
             $r['final_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_date']);
-
-
 
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],

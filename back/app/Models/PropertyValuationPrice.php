@@ -13,6 +13,13 @@ class PropertyValuationPrice extends Model implements Sortable
     use HasFactory, SortableTrait, SoftDeletes;
 
     protected $table = "property_valuation_prices";
+
+    protected $fillable = [
+        'property_valuation_id',
+        'date',
+        'grn',
+    ];
+
     public $sortable = [
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
