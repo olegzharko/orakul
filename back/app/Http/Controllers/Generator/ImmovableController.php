@@ -431,14 +431,12 @@ class ImmovableController extends BaseController
         $statement = DeveloperStatement::where('contract_id', $contract->id)->first();
         $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
 
-
         $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
         $result['bank_templates'] = $bank_templates;
         $result['taxes_templates'] = $taxes_templates;
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
-
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date ? $contract->sign_date->format('d.m.Y') : null;
@@ -636,25 +634,25 @@ class ImmovableController extends BaseController
 
         $errors = $validator->errors()->messages();
 
-        if (!isset($errors['imm_type_id']) && isset($r['imm_type_id'])) {
+        if (!isset($errors['imm_type_id']) && isset($r['imm_type_id']) && !empty($r['imm_type_id'])) {
             if (!ImmovableType::find($r['imm_type_id'])) {
                 $validator->getMessageBag()->add('imm_type_id', 'Тип нерухомості з ID:' . $r['imm_type_id'] . " не знайдено");
             }
         }
 
-        if (!isset($errors['building_id']) && isset($r['building_id'])) {
+        if (!isset($errors['building_id']) && isset($r['building_id']) && !empty($r['building_id'])) {
             if (!DeveloperBuilding::find($r['building_id'])) {
                 $validator->getMessageBag()->add('building_id', 'Будівлю з ID:' . $r['building_id'] . " не знайдено");
             }
         }
 
-        if (!isset($errors['roominess_id']) && isset($r['roominess_id'])) {
+        if (!isset($errors['roominess_id']) && isset($r['roominess_id']) && !empty($r['roominess_id'])) {
             if (!RoominessType::find($r['roominess_id'])) {
                 $validator->getMessageBag()->add('roominess_id', 'Кінатність з ID:' . $r['roominess_id'] . " не знайдено");
             }
         }
 
-        if (!isset($errors['property_valuation_id']) && isset($r['property_valuation_id'])) {
+        if (!isset($errors['property_valuation_id']) && isset($r['property_valuation_id']) && !empty($r['property_valuation_id'])) {
             if (!PropertyValuation::find($r['property_valuation_id'])) {
                 $validator->getMessageBag()->add('property_valuation_id', 'Оціночну компанію з ID:' . $r['property_valuation_id'] . " не знайдено");
             }
