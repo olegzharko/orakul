@@ -27,6 +27,7 @@ export const RadioButtonsGroup = ({
 
   useEffect(() => {
     setSelectedValue(selected || buttons[0].id);
+    onChange(selected || buttons[0].id);
   }, [selected]);
 
   const handleChange = (id: number | string) => {
@@ -47,7 +48,8 @@ export const RadioButtonsGroup = ({
             type="radio"
             id={unicId + title}
             value={id}
-            checked={selectedValue === id}
+            // eslint-disable-next-line eqeqeq
+            checked={selectedValue == id}
             onChange={() => handleChange(id)}
             className="input"
           />

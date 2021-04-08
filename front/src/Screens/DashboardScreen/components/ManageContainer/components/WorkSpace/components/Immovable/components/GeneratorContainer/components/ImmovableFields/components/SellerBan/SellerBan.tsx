@@ -1,16 +1,16 @@
 import * as React from 'react';
 import CheckBanFields from '../../../../../../../../../../../../../../components/CheckBanFields';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
-import { useSellerBan } from './useSellerBan';
+import { useSellerBan, Props } from './useSellerBan';
 
-const SellerBan = () => {
-  const meta = useSellerBan();
+const SellerBan = (props: Props) => {
+  const meta = useSellerBan(props);
 
   return (
     <>
-      <CheckBanFields data={meta.initialData} setData={meta.setData} title="Заборони на продавця" />
+      <CheckBanFields data={meta.data} setData={meta.setData} title="Заборони на продавця" />
       <div className="middle-button">
-        <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
+        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={meta.disableSaveButton} />
       </div>
     </>
   );

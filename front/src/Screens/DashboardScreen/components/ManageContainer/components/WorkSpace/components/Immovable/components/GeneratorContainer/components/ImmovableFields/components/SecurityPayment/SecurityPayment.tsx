@@ -2,42 +2,63 @@ import * as React from 'react';
 import CustomDatePicker from '../../../../../../../../../../../../../../components/CustomDatePicker';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
-import RadioButtonsGroup from '../../../../../../../../../../../../../../components/RadioButtonsGroup';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
+import { useSecurityPayment, Props } from './useSecurityPayment';
 
-const buttons = [
-  {
-    id: 1,
-    title: 'Гривня',
-  },
-  {
-    id: 2,
-    title: 'Долар'
-  }
-];
+const SecurityPayment = (props: Props) => {
+  const meta = useSecurityPayment(props);
 
-const SecurityPayment = () => (
-  <div className="security-payment">
-    <SectionWithTitle title="Забезпечувальний платіж" onClear={() => console.log('clear')}>
-      <div className="grid">
-        <CustomDatePicker label="Дата підписання" onSelect={(e) => console.log(e)} />
-        <CustomDatePicker label="Дата закінчення" onSelect={(e) => console.log(e)} />
-        <CustomInput label="Реєстраційний номер" onChange={(e) => console.log(e)} />
+  return (
+    <div className="security-payment">
+      <SectionWithTitle title="Забезпечувальний платіж" onClear={meta.onClear}>
+        <div className="grid">
+          <CustomDatePicker
+            label="Дата підписання"
+            onSelect={(e) => meta.setData({ ...meta.data, sign_date: e })}
+            selectedDate={meta.data.sign_date}
+          />
+          <CustomDatePicker
+            label="Дата закінчення"
+            onSelect={(e) => meta.setData({ ...meta.data, final_date: e })}
+            selectedDate={meta.data.final_date}
+          />
+          <CustomInput
+            label="Реєстраційний номер"
+            onChange={(e) => meta.setData({ ...meta.data, reg_num: +e })}
+            value={meta.data.reg_num}
+          />
 
-        <div className="security-payment__currency">
-          <p className="security-payment__currency-title">Валюта</p>
-          <RadioButtonsGroup buttons={buttons} onChange={(e) => console.log(e)} unicId="immovable__security-payment-currency" />
+          <CustomInput
+            label="I частина з. платежу у дол"
+            onChange={(e) => meta.setData({ ...meta.data, first_part_dollar: +e })}
+            value={meta.data.first_part_dollar}
+          />
+          <CustomInput
+            label="II частина з. платежу у дол"
+            onChange={(e) => meta.setData({ ...meta.data, last_part_dollar: +e })}
+            value={meta.data.last_part_dollar}
+          />
+
+          <div />
+
+          <CustomInput
+            label="I частина з. платежу у грн"
+            onChange={(e) => meta.setData({ ...meta.data, first_part_grn: +e })}
+            value={meta.data.first_part_grn}
+          />
+          <CustomInput
+            label="II частина з. платежу у грн"
+            onChange={(e) => meta.setData({ ...meta.data, last_part_grn: +e })}
+            value={meta.data.last_part_grn}
+          />
         </div>
+      </SectionWithTitle>
 
-        <CustomInput label="I частина з. платежу у грн (дол.)" onChange={(e) => console.log(e)} />
-        <CustomInput label="II частина з. платежу у грн (дол.)" onChange={(e) => console.log(e)} />
+      <div className="middle-button">
+        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
       </div>
-    </SectionWithTitle>
-
-    <div className="middle-button">
-      <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
     </div>
-  </div>
-);
+  );
+};
 
 export default SecurityPayment;

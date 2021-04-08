@@ -3,21 +3,33 @@ import CustomInput from '../../../../../../../../../../../../../../components/Cu
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../../../../../../../../../components/SecondaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
+import { useExchangeRate, Props } from './useExchangeRate';
 
-const ExchangeRate = () => (
-  <>
-    <SectionWithTitle title="Комерційний курс валют" onClear={() => console.log('clear')}>
-      <div className="exchange df">
-        <span>Курс української грн до 1$ CША</span>
-        <CustomInput label="Курс" onChange={(e) => console.log(e)} />
-        <SecondaryButton label="ОНОВИТИ КУРС" onClick={() => console.log('click')} disabled={false} />
+const ExchangeRate = (props: Props) => {
+  const {
+    exchangeRate,
+    setExchangeRate,
+    onClear,
+    onSave,
+    onRefreshRate,
+    isSaveButtonDisable
+  } = useExchangeRate(props);
+
+  return (
+    <>
+      <SectionWithTitle title="Комерційний курс валют" onClear={onClear}>
+        <div className="exchange df">
+          <span>Курс української грн до 1$ CША</span>
+          <CustomInput label="Курс" onChange={setExchangeRate} value={exchangeRate} />
+          <SecondaryButton label="ОНОВИТИ КУРС" onClick={onRefreshRate} disabled={false} />
+        </div>
+      </SectionWithTitle>
+
+      <div className="middle-button">
+        <PrimaryButton label="Зберегти" onClick={onSave} disabled={isSaveButtonDisable} />
       </div>
-    </SectionWithTitle>
-
-    <div className="middle-button">
-      <PrimaryButton label="Зберегти" onClick={() => console.log('click')} disabled={false} />
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 export default ExchangeRate;

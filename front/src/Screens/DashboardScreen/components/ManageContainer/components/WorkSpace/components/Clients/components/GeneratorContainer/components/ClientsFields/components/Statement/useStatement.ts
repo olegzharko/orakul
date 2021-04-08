@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useCallback, useState, useEffect } from 'react';
+import { changeMonthWitDate, formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../../../store/types';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import reqClientConsents from '../../../../../../../../../../../../../../services/generator/Client/reqClientConsents';
-import { formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 
 type InitialData = {
   notary_id: string,
@@ -12,10 +12,10 @@ type InitialData = {
   married_type_id: string,
   mar_series: string,
   mar_series_num: string,
-  mar_date: Date | null,
+  mar_date: any,
   mar_depart: string,
   mar_reg_num: string,
-  sign_date: Date | null,
+  sign_date: any,
   reg_num: string,
   consent_spouse_words_id: string,
   notary?: SelectItem[],
@@ -63,10 +63,11 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       married_type_id: initialData?.married_type_id || '',
       mar_series: initialData?.mar_series || '',
       mar_series_num: initialData?.mar_series_num || '',
-      mar_date: initialData?.mar_date ? new Date(initialData?.mar_date) : null,
+      mar_date: initialData?.mar_date ? new Date(changeMonthWitDate(initialData?.mar_date)) : null,
       mar_depart: initialData?.mar_depart || '',
       mar_reg_num: initialData?.mar_reg_num || '',
-      sign_date: initialData?.sign_date ? new Date(initialData?.sign_date) : null,
+      sign_date: initialData?.sign_date
+        ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
       reg_num: initialData?.reg_num || '',
       consent_spouse_words_id: initialData?.consent_spouse_words_id || '',
     });

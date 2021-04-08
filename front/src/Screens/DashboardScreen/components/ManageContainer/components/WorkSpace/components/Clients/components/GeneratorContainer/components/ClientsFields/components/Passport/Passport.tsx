@@ -18,7 +18,7 @@ const Passport = (props: Props) => {
             <RadioButtonsGroup
               buttons={sexButtons}
               onChange={(e) => setData({ ...data, gender: e.toString() })}
-              selected={data.gender}
+              selected={+data.gender}
               unicId="clients__passport-sex"
             />
           </div>
