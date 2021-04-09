@@ -311,6 +311,7 @@ class ImmovableController extends BaseController
 
     public function update_fence($immovable_id, Request $r)
     {
+        dd($r);
         $result = null;
 
         if (!$immovable = ImmFence::where('immovable_id', $immovable_id)->first())
