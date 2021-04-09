@@ -49,6 +49,7 @@ class DeveloperController extends BaseController
         $dev_company = $dev_company_query->get();
 
         foreach ($dev_company as $key => $company) {
+            $result['dev_companies'][$key]['id'] = $company->id;
             $result['dev_companies'][$key]['title'] = $company->title;
             $result['dev_companies'][$key]['color'] = $company->color;
         }
@@ -66,8 +67,8 @@ class DeveloperController extends BaseController
             ->get();
 
         foreach ($dev_representatives as $key => $representative) {
-            $result['dev_representatives'][$key]['id'] = $representative->id;
-            $result['dev_representatives'][$key]['title'] = $this->convert->get_full_name($representative);
+            $result['dev_representative'][$key]['id'] = $representative->id;
+            $result['dev_representative'][$key]['title'] = $this->convert->get_full_name($representative);
         }
 
         $representative = $card->dev_representative;
