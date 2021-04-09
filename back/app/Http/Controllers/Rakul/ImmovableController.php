@@ -107,7 +107,7 @@ class ImmovableController extends BaseController
         $dev_group = DevGroup::find($r['dev_company_id']);
         $developer_building = DeveloperBuilding::where('id', $value['building_id'])->first();
 
-        if (!$developer_building || $developer_building->dev_company->group_id != $developer->id) { // dev_company
+        if (!$developer_building || $developer_building->dev_company->group_id != $dev_group->id) { // dev_company
             echo "Будинок відсутній або належить іншому забудовнику<br>";
             return false;
         } else {
