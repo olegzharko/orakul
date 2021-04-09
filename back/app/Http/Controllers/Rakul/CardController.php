@@ -473,7 +473,6 @@ class CardController extends BaseController
         $numberDays = $timeDiff/86400;  // 86400 seconds in one day
 
         $numberDays = intval($numberDays);
-        dd($numberDays);
 
         if ($numberDays) {
             $day_height = $numberDays;
