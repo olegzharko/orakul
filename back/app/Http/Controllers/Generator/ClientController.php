@@ -504,6 +504,7 @@ class ClientController extends BaseController
 
         $representative = Representative::where('client_id', $client_id)->first();
 
+        dd($representative);
         if ($representative) {
             $result['notary_id'] = $representative->notary_id;
             $result['reg_num'] = $representative->reg_num;
