@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Contract;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
+use App\Models\DevGroup;
 use App\Models\Immovable;
 use App\Models\ImmovableType;
 
@@ -103,10 +104,10 @@ class ImmovableController extends BaseController
 
     public function developer_building_exist($value, $r)
     {
-        $developer = DevCompany::find($r['dev_company_id']);
+        $dev_group = DevGroup::find($r['dev_company_id']);
         $developer_building = DeveloperBuilding::where('id', $value['building_id'])->first();
 
-        if (!$developer_building || $developer_building->dev_company->id != $developer->id) { // dev_company
+        if (!$developer_building || $developer_building->dev_company->group_id != $developer->id) { // dev_company
             echo "Будинок відсутній або належить іншому забудовнику<br>";
             return false;
         } else {
