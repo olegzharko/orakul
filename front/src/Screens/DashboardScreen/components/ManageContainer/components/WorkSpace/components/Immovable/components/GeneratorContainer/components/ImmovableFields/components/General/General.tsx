@@ -13,19 +13,12 @@ const General = (props: Props) => {
     <>
       <SectionWithTitle title="Загальні дані" onClear={meta.onClear}>
         <div className="general grid-center-duet">
-          {!!meta.immType.length && (
-            <div className="general__type">
-              <p className="general__type-title">Тип нерухомості</p>
-
-              <RadioButtonsGroup
-                buttons={meta.immType}
-                onChange={(e) => meta.setData({ ...meta.data, imm_type_id: e.toString() })}
-                selected={meta.data.imm_type_id}
-                unicId="immovable__general-type"
-              />
-
-            </div>
-          )}
+          <CustomSelect
+            label="Тип нерухомості"
+            data={meta.immType}
+            onChange={(e) => meta.setData({ ...meta.data, imm_type_id: +e })}
+            selectedValue={meta.data.imm_type_id}
+          />
 
           <CustomSelect
             label="Адреса"
