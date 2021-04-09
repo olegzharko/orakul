@@ -242,7 +242,6 @@ class ClientController extends BaseController
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
-        dd($r['gender']);
         Client::where('id', $client_id)->update([
             'gender' => $r['gender'],
             'birth_date' => $r['date_of_birth'],
