@@ -438,7 +438,7 @@ class ImmovableController extends BaseController
         $result['statement_templates'] = $statement_templates;
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
-        $result['final_sign_date'] = $final_sing_date ? $contract->sign_date->format('d.m.Y') : null;
+        $result['final_sign_date'] = $final_sing_date ? $final_sing_date->sign_date->format('d.m.Y') : null;
         $result['ready'] = $contract->ready ? true : false;
         $result['type_id'] = $contract->type_id;
         $result['template_id'] = $contract->template_id;
@@ -466,7 +466,13 @@ class ImmovableController extends BaseController
 
         Contract::where('immovable_id', $immovable_id)->update([
            'template_id' => $r['contract_template_id'],
+           'ready' => $r['ready'],
+           'sign_date' => $r['sign_date'],
         ]);
+
+        FinalSignDate::updateOrCreate(
+            ['contract_id' => $contract_id],
+            ['sign_date' => $r['final_sign_date']]);
 
         BankAccountPayment::updateOrCreate(
             ['contract_id' => $contract_id],
@@ -515,6 +521,8 @@ class ImmovableController extends BaseController
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['sign_date']);
         if (isset($r['final_date']) && !empty($r['final_date']))
             $r['final_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_date']);
+        if (isset($r['final_sign_date']) && !empty($r['final_sign_date']))
+            $r['final_sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_sign_date']);
 
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],
@@ -550,13 +558,14 @@ class ImmovableController extends BaseController
 
             'exchange_rate' => $r['exchange_rate'],
 
-            'sign_date' => $r['sign_date'],
+            'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d') : null,
             'reg_num' => $r['reg_num'],
             'first_part_grn' => $r['first_part_grn'],
             'first_part_dollar' => $r['first_part_dollar'],
             'last_part_grn' => $r['last_part_grn'],
             'last_part_dollar' => $r['last_part_dollar'],
-            'final_date' => $r['final_date'],
+            'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d') : null,
+            'final_sign_date' => $r['final_sign_date'] ? $r['final_sign_date']->format('Y.m.d') : null,
         ], [
             'imm_type_id' => ['numeric', 'nullable'],
             'building_id' => ['numeric', 'nullable'],
@@ -591,13 +600,14 @@ class ImmovableController extends BaseController
 
             'exchange_rate' => ['numeric', 'nullable'],
 
-            'sign_date' => ['date_format:d.m.Y H:i', 'nullable'],
+            'sign_date' => ['date_format:Y.m.d', 'nullable'],
             'reg_num' => ['numeric', 'nullable'],
             'first_part_grn' => ['numeric', 'nullable'],
             'first_part_dollar' => ['numeric', 'nullable'],
             'last_part_grn' => ['numeric', 'nullable'],
             'last_part_dollar' => ['numeric', 'nullable'],
-            'final_date' => ['date_format:d.m.Y H:i', 'nullable'],
+            'final_date' => ['date_format:Y.m.d', 'nullable'],
+            'final_sign_date' => ['date_format:Y.m.d', 'nullable'],
         ], [
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',

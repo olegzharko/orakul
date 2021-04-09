@@ -10,6 +10,11 @@ class FinalSignDate extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'contract_id',
+        'sign_date',
+    ];
+
     protected $casts = [
         'sign_date' => 'datetime',
         'deleted_at' => 'datetime',
