@@ -19,7 +19,7 @@ class SlidesController extends BaseController
 
     public function slides()
     {
-        $slides = Slide::select('id', 'sort_order')->get();
+        $slides = Slide::select('id', 'sort_order')->where('active', true)->get();
 
         if ($slides) {
 
