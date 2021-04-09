@@ -236,8 +236,8 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
-        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
+//        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+//        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
 
         SecurityPayment::where('immovable_id', $immovable_id)->update([
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
