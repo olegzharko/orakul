@@ -65,6 +65,29 @@ class ContractController extends TestController
         parent::__construct();
     }
 
+    public function single_test()
+    {
+        $card = null;
+        $dev_company = null;
+        $dev_representative_id = null;
+        $dev_manager_id = null;
+        $generator_step = null;
+        $staff_generator_id	 = null;
+        $ready = null;
+
+        $this->arr_immovables_id = [];
+        $this->arr_clients_id = [];
+        $this->arr_contracts_id = [];
+
+        if ($this->start_card() && $this->create_card()) { // Card
+            $this->create_contacts(); // Contact
+            $this->create_immovable(); // Immovable
+            $this->create_contract(); // DevFence // ImmFence // ImmovableOwnership // PropertyValuationPrice // FinalSignDate
+            $this->create_clients(); // Client - client spouse representative
+            $this->create_client_contract(); // ClientContract
+        }
+    }
+
     public function test()
     {
         $card = null;
