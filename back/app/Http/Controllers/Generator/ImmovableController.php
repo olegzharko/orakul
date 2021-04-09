@@ -318,11 +318,13 @@ class ImmovableController extends BaseController
 
 
         $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
-        ImmFence::where('immovable_id', $immovable_id)->update([
-            'date' => $r['date'] ? $r['date']->format('d.m.Y') : null,
-            'number' => $r['number'],
-            'pass' => $r['pass'],
-        ]);
+        ImmFence::updateOrCreate(
+            ['immovable_id' => $immovable_id],
+            [
+                'date' => $r['date'] ? $r['date']->format('d.m.Y') : null,
+                'number' => $r['number'],
+                'pass' => $r['pass'],
+            ]);
 
         return $this->sendResponse('', 'Дані по забороні на нерухомість ID:' . $immovable_id . ' оноволено.');
     }
