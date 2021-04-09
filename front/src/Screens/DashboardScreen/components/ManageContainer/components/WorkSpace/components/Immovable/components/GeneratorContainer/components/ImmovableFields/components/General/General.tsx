@@ -2,7 +2,6 @@ import * as React from 'react';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
-import RadioButtonsGroup from '../../../../../../../../../../../../../../components/RadioButtonsGroup';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
 import { useGeneral, Props } from './useGeneral';
 
