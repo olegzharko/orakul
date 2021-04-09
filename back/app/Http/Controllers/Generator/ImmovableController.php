@@ -439,7 +439,8 @@ class ImmovableController extends BaseController
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date ? $contract->sign_date->format('d.m.Y') : null;
-        $result['ready'] = $contract->ready;
+        $result['ready'] = $contract->ready ? true : false;
+        $result['type_id'] = $contract->type_id;
         $result['template_id'] = $contract->template_id;
         $result['bank_template_id'] = $bank->template_id ?? null;
         $result['taxes_template_id'] = $taxes->template_id ?? null;
@@ -590,13 +591,13 @@ class ImmovableController extends BaseController
 
             'exchange_rate' => ['numeric', 'nullable'],
 
-            'sign_date' => ['date_format:Y.m.d.', 'nullable'],
+            'sign_date' => ['date_format:d.m.Y H:i', 'nullable'],
             'reg_num' => ['numeric', 'nullable'],
             'first_part_grn' => ['numeric', 'nullable'],
             'first_part_dollar' => ['numeric', 'nullable'],
             'last_part_grn' => ['numeric', 'nullable'],
             'last_part_dollar' => ['numeric', 'nullable'],
-            'final_date' => ['date_format:Y.m.d.', 'nullable'],
+            'final_date' => ['date_format:d.m.Y H:i', 'nullable'],
         ], [
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
