@@ -411,9 +411,9 @@ class ContractController extends TestController
             $immovable_ownership = new ImmovableOwnership();
             $immovable_ownership->immovable_id = $immovable_id;
             $immovable_ownership->gov_reg_number = rand(200000000, 500000000);
-            $immovable_ownership->gov_reg_date = rand(10, 30) . ".0" . rand(1, 9) . "2020";
+            $immovable_ownership->gov_reg_date = \DateTime::createFromFormat('d.m.Y', rand(10, 30) . ".0" . rand(1, 9) . ".2020");
             $immovable_ownership->discharge_number = rand(200000000, 500000000);
-            $immovable_ownership->discharge_date = rand(10, 30) . ".0" . rand(1, 9) . "2020";
+            $immovable_ownership->discharge_date = \DateTime::createFromFormat('d.m.Y', rand(10, 30) . ".0" . rand(1, 9) . ".2020");
             $immovable_ownership->save();
 
             $property_valuation_prices = new PropertyValuationPrice();
@@ -424,23 +424,24 @@ class ContractController extends TestController
             $property_valuation_prices->save();
 
             if ($this->ready) {
-//                if ($this->date ==  $this->currant_date->format('Y-m-d')) {
 
-                    $dev_fence = new DevFence();
-                    $dev_fence->dev_company_id = $this->dev_company_id;
-                    $dev_fence->card_id = $this->card_id;
-                    $dev_fence->number = rand(500000000, 800000000);
-                    $dev_fence->date = $this->date_time;
-                    $dev_fence->pass = rand(0, 1);
-                    $dev_fence->save();
+                    DevFence::updateOrCreate(
+                        ['dev_company_id' => $this->dev_company_id, 'card_id' => $this->card_id],
+                        [
+                            'number' => rand(500000000, 800000000),
+                            'date' => $this->date_time,
+                            'pass' => rand(0, 1),
+                        ]
+                    );
 
-                    $imm_fence = new ImmFence();
-                    $imm_fence->immovable_id = $immovable_id;
-                    $imm_fence->pass = rand(0, 1);
-                    $imm_fence->number = rand(500000000, 800000000);
-                    $imm_fence->date = $this->date_time;
-                    $imm_fence->save();
-//                }
+                    ImmFence::updateOrCreate(
+                        ['immovable_id' => $immovable_id],
+                        [
+                            'pass' => rand(0, 1),
+                            'number' => rand(500000000, 800000000),
+                            'date' => $this->date_time,
+                        ]
+                    );
             }
 
             if ($contract_type_id == ContractType::where('alias', 'preliminary')->value('id')) {

@@ -11,9 +11,11 @@ class DevFence extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-            'date',
-            'number',
-            'pass',
+        'dev_company_id',
+        'card_id',
+        'number',
+        'date',
+        'pass',
     ];
 
     protected $casts = [

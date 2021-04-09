@@ -14,6 +14,7 @@ class ImmFence extends Model
             'date',
             'number',
             'pass',
+            'immovable_id',
     ];
 
     protected $casts = [
