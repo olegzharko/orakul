@@ -518,6 +518,7 @@ class ClientController extends BaseController
 
         $validator = $this->validate_client_data($r);
 
+        dd($r['reg_date']);
         Representative::updateOrCreate(
             [
                 'client_id' => $client_id
