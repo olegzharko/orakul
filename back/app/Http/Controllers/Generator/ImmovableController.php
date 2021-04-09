@@ -313,7 +313,7 @@ class ImmovableController extends BaseController
     {
         $result = null;
 
-        if (!$immovable = Immovable::where('immovable_id', $immovable_id)->first())
+        if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         dd($r['date']);
