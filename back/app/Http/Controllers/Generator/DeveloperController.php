@@ -82,21 +82,30 @@ class DeveloperController extends BaseController
         return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
     }
 
-    public function main($card_id)
+    public function main($dev_company_id)
     {
         $result = [];
 
-        $dev_group = Card::find($card_id)->dev_group;
+        $dev_company = DevCompany::find($dev_company_id);
 
-        $result['dev_company']['title'] = $dev_group->title;
-        $result['dev_company']['color'] = $dev_group->color;
+        $result['dev_company']['title'] = $dev_company->title;
+        $result['dev_company']['color'] = $dev_company->color;
 
-        $ceo = $this->ceo_info($dev_group->id);
-        $result['ceo_info']['name'] = $ceo->name;
-        $result['ceo_info']['tax_code'] = $ceo->code;
-        $result['ceo_info']['married'] = $ceo->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
-        $result['ceo_info'] = array_merge($result['ceo_info'], $this->collect_passport_info($ceo));
-        $result['ceo_info']['address'] = $ceo->address;
+        $owner = DevCompanyEmployer::select('clients.*')
+            ->where('dev_company_id', $dev_company->id)
+            ->where('type_id', $this->developer_type)
+            ->join('clients', 'clients.id', '=', 'dev_company_employers.employer_id')
+            ->first();
+
+        $owner->name = $this->convert->get_full_name($owner);
+        $owner->address = $this->convert->get_client_full_address($owner);
+
+        $result['ceo_info']['name'] = $owner->name;
+        $result['ceo_info']['tax_code'] = $owner->code;
+        $result['ceo_info']['married'] = $owner->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
+        $owner->passport_date = \DateTime::createFromFormat('Y-m-d H:i:s', $owner->passport_date);
+        $result['ceo_info'] = array_merge($result['ceo_info'], $this->collect_passport_info($owner));
+        $result['ceo_info']['address'] = $owner->address;
 
         return $this->sendResponse($result, 'Загальні дані по забудовнику.');
     }
@@ -216,15 +225,15 @@ class DeveloperController extends BaseController
         return $this->sendResponse('', "Дані були успішно оновлені");
     }
 
-    private function ceo_info($dev_company_id)
-    {
-        $ceo = Client::where('type_id', $this->developer_type)->where('dev_company_id', $dev_company_id)->first();
-
-        $ceo->name = $this->convert->get_full_name($ceo);
-        $ceo->address = $this->convert->get_client_full_address($ceo);
-
-        return $ceo;
-    }
+//    private function ceo_info($dev_company_id)
+//    {
+//        $ceo = Client::where('type_id', $this->developer_type)->where('dev_company_id', $dev_company_id)->first();
+//
+//        $ceo->name = $this->convert->get_full_name($ceo);
+//        $ceo->address = $this->convert->get_client_full_address($ceo);
+//
+//        return $ceo;
+//    }
 
     private function collect_passport_info($client)
     {
@@ -232,7 +241,7 @@ class DeveloperController extends BaseController
 
         $result['passport_type'] = PassportTemplate::where('id', $client->passport_type_id)->value('title');
         $result['passport_code'] = $client->passport_code;
-        $result['passport_date'] = $client->passport_date ? $client->passport_date->format('d.m.Y.') : null;
+        $result['passport_date'] = $client->passport_date ? $client->passport_date->format('d.m.Y') : null;
         $result['passport_department'] = $client->passport_department;
         $result['passport_demographic_code'] = $client->passport_demographic_code;
         $result['address'] = $client->address;
