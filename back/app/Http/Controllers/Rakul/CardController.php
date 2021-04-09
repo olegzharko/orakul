@@ -465,6 +465,40 @@ class CardController extends BaseController
 
     public function count_days($card, $date)
     {
+        $start = new \DateTime($date->format('d.m.Y'));
+        $end = new \DateTime($card->date_time->format('d.m.Y'));
+        // otherwise the  end date is excluded (bug?)
+        $end->modify('+1 day');
+
+        $interval = $end->diff($start);
+
+        // total days
+        $days = $interval->days;
+
+        // create an iterateable period of date (P1D equates to 1 day)
+        $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+
+        // best stored as array, so you can add more than one
+        $holidays = array('2012-09-07');
+
+        foreach($period as $dt) {
+            $curr = $dt->format('D');
+
+            // substract if Saturday or Sunday
+            if ($curr == 'Sun') {
+                $days--;
+            }
+
+            // (optional) for the updated question
+            elseif (in_array($dt->format('Y-m-d'), $holidays)) {
+                $days--;
+            }
+        }
+
+
+        dd($days);
+
+
         $startTimeStamp = strtotime($date->format('d.m.Y'));
         $endTimeStamp = strtotime($card->date_time->format('d.m.Y'));
 
