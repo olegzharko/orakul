@@ -311,10 +311,9 @@ class ImmovableController extends BaseController
 
     public function update_fence($immovable_id, Request $r)
     {
-        dd($r);
         $result = null;
 
-        if (!$immovable = ImmFence::where('immovable_id', $immovable_id)->first())
+        if (!$immovable = Immovable::where('immovable_id', $immovable_id)->first())
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         dd($r['date']);
