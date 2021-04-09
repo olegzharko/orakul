@@ -181,7 +181,7 @@ class FilterController extends BaseController
             return $this->sendError("Тип сторінки $page не підримується");
         }
 
-        return $this->sendResponse($result, 'Усі картки з договорами');
+        return $this->sendResponse($result, 'Усі картки зі скасованими договорами');
     }
 
     private function get_filter_type()

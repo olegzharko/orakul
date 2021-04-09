@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Generator;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\ClientType;
+use App\Models\DevCompany;
+use App\Models\DevCompanyEmployer;
+use App\Models\DevEmployerType;
 use App\Models\DevFence;
 use App\Models\PassportTemplate;
 use Illuminate\Http\Request;
@@ -22,19 +25,72 @@ class DeveloperController extends BaseController
     public function __construct()
     {
         $this->convert = new ConvertController();
-        $this->developer_type = ClientType::where('key', 'developer')->value('id');
-        $this->representative_type = ClientType::where('key', 'representative')->value('id');
+        $this->developer_type = DevEmployerType::where('alias', 'developer')->value('id');
+        $this->representative_type = DevEmployerType::where('alias', 'representative')->value('id');
+    }
+
+    public function group($card_id)
+    {
+        $result = [];
+
+        $card = Card::find($card_id);
+
+        $dev_company_query = DevCompany::select(
+                'dev_companies.*'
+            )
+            ->where('contracts.card_id', $card_id)
+            ->join('developer_buildings', 'developer_buildings.dev_company_id', 'dev_companies.id')
+            ->join('immovables', 'immovables.developer_building_id', 'developer_buildings.id')
+            ->join('contracts', 'contracts.immovable_id', 'immovables.id')
+            ->distinct('dev_companies.id');
+
+
+        $dev_companies_id = $dev_company_query->pluck('dev_companies.id')->toArray();
+        $dev_company = $dev_company_query->get();
+
+        foreach ($dev_company as $key => $company) {
+            $result['dev_companies'][$key]['title'] = $company->title;
+            $result['dev_companies'][$key]['color'] = $company->color;
+        }
+
+        $dev_representatives = Client::select(
+                'clients.id',
+                'clients.surname_n',
+                'clients.name_n',
+                'clients.patronymic_n'
+            )
+            ->whereIn('dev_company_employers.dev_company_id', $dev_companies_id)
+            ->where('dev_company_employers.type_id', $this->representative_type)
+            ->join('dev_company_employers', 'dev_company_employers.employer_id', '=', 'clients.id')
+            ->join('dev_companies', 'dev_companies.id', '=', 'dev_company_employers.dev_company_id')
+            ->get();
+
+        foreach ($dev_representatives as $key => $representative) {
+            $result['dev_representatives'][$key]['id'] = $representative->id;
+            $result['dev_representatives'][$key]['title'] = $this->convert->get_full_name($representative);
+        }
+
+        $representative = $card->dev_representative;
+
+        $result['representative']['id'] = $representative->id;
+        $result['representative']['name'] =  $this->convert->get_full_name($representative);
+        $result['representative']['tax_code'] = $representative->code;
+        $result['representative']['address'] = $this->convert->get_client_full_address($representative);
+        $result['representative']['passpot_info'] = $this->collect_passport_info($representative);
+
+        return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
     }
 
     public function main($card_id)
     {
         $result = [];
-        $dev_company = Card::find($card_id)->dev_company;
 
-        $result['dev_company']['title'] = $dev_company->title;
-        $result['dev_company']['color'] = $dev_company->color;
+        $dev_group = Card::find($card_id)->dev_group;
 
-        $ceo = $this->ceo_info($dev_company->id);
+        $result['dev_company']['title'] = $dev_group->title;
+        $result['dev_company']['color'] = $dev_group->color;
+
+        $ceo = $this->ceo_info($dev_group->id);
         $result['ceo_info']['name'] = $ceo->name;
         $result['ceo_info']['tax_code'] = $ceo->code;
         $result['ceo_info']['married'] = $ceo->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
@@ -161,7 +217,6 @@ class DeveloperController extends BaseController
 
     private function ceo_info($dev_company_id)
     {
-
         $ceo = Client::where('type_id', $this->developer_type)->where('dev_company_id', $dev_company_id)->first();
 
         $ceo->name = $this->convert->get_full_name($ceo);
@@ -178,27 +233,27 @@ class DeveloperController extends BaseController
         $result['passport_code'] = $client->passport_code;
         $result['passport_date'] = $client->passport_date ? $client->passport_date->format('d.m.Y.') : null;
         $result['passport_department'] = $client->passport_department;
-        $result['passport_demographic_code	'] = $client->passport_demographic_code;
+        $result['passport_demographic_code'] = $client->passport_demographic_code;
         $result['address'] = $client->address;
 
         return $result;
     }
 
-    private function get_dev_company_representative($card)
-    {
-        $result = [];
-
-        $dev_representative = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')
-            ->where('type_id', $this->representative_type)
-            ->where('dev_company_id', $card->dev_company_id)
-            ->get();
-
-
-        foreach ($dev_representative as $key => $representative) {
-            $result[$key]['id'] = $representative->id;
-            $result[$key]['title'] = $this->convert->get_full_name($representative);
-        }
-
-        return $result;
-    }
+//    private function get_dev_company_representative($card)
+//    {
+//        $result = [];
+//
+//        $dev_representative = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')
+//            ->where('type_id', $this->representative_type)
+//            ->where('dev_company_id', $card->dev_company_id)
+//            ->get();
+//
+//
+//        foreach ($dev_representative as $key => $representative) {
+//            $result[$key]['id'] = $representative->id;
+//            $result[$key]['title'] = $this->convert->get_full_name($representative);
+//        }
+//
+//        return $result;
+//    }
 }

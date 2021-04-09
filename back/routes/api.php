@@ -44,7 +44,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('logout', [PassportAuthController::class, 'logout']);
-    Route::get('global_text', [TextController::class, 'global_text']);
+    Route::get('global_text', [TextController::class, 'global_text']); // postman
     Route::get('reception', [ReceptionController::class, 'reception']); // postman
     Route::get('calendar', [ReceptionController::class, 'reception']); // postman // убрать этот запрос. сменить на reception /api/calendar
     Route::put('cards/move/{id}', [CardController::class, 'move']);
@@ -56,27 +56,28 @@ Route::middleware('auth:api')->group(function () {
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']); // postman
         #######################
         Route::get('ready', [FilterController::class, 'ready_cards']); // postman
-        Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']);
-        Route::get('cancelled', [FilterController::class, 'cancelled_cards']);
+        Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']); // postman
+        Route::get('cancelled', [FilterController::class, 'cancelled_cards']); // postman
         #######################
         Route::post('sort', [SortController::class, 'sort']);
         Route::post('search', [SearchController::class, 'search']);
     });
 
     Route::group(['prefix' => 'generator'], function() {
-       Route::get('main/{card_id}', [\App\Http\Controllers\Generator\MainController::class, 'main']);
-       Route::get('create/{card_id}', [GeneratorController::class, 'creat_contract_by_card_id']);
+       Route::get('main/{card_id}', [\App\Http\Controllers\Generator\MainController::class, 'main']); // postman
+       Route::get('create/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']); // postman
 
-       Route::get('city/create', [ClientController::class, 'start_data_create_city']);
-       Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']);
+       Route::get('city/create', [ClientController::class, 'start_data_create_city']); // postman
+       Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']); // postman
        Route::post('city/create', [ClientController::class, 'create_city']);
 
        Route::group(['prefix' => 'developer'], function() {
+           Route::get('group/{card_id}', [DeveloperController::class, 'group']);
            Route::get('main/{card_id}', [DeveloperController::class, 'main']);
            Route::get('fence/{card_id}', [DeveloperController::class, 'get_fence']);
            Route::post('fence/{card_id}', [DeveloperController::class, 'update_fence']);
            Route::get('spouse/{card_id}', [DeveloperController::class, 'spouse']);
-           Route::get('representative/{card_id}', [DeveloperController::class, 'get_representative']);
+//           Route::get('representative/{card_id}', [DeveloperController::class, 'get_representative']);
            Route::post('representative/{card_id}', [DeveloperController::class, 'update_representative']);
        });
 
