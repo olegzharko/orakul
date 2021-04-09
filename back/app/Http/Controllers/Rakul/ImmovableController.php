@@ -128,7 +128,7 @@ class ImmovableController extends BaseController
         }
     }
 
-    public function create_or_update_immovables_with_id($r)
+    public function create_or_update_immovables_with_id($r, $card_id)
     {
         $updated_immovables_id = [];
 
@@ -136,7 +136,18 @@ class ImmovableController extends BaseController
 
         foreach ($immovables as $value) {
             if (!isset($value['immovable_id']) || isset($value['immovable_id']) && empty($value['immovable_id'])) {
-                $this->create($value, $r);
+                $result = $this->create($value, $r);
+
+                if ($result && count($result)) {
+                    $contract = new Contract();
+                    $contract->immovable_id = $result['immovable_id'];
+                    $contract->bank = $result['bank'];
+                    $contract->proxy = $result['proxy'];
+                    $contract->type_id = $result['contract_type_id'];
+                    $contract->card_id = $card_id;
+                    $contract->save();
+                }
+
             } else {
                 $updated_immovables_id[] = $value['immovable_id'];
                 $this->update($value, $r);

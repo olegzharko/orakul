@@ -207,7 +207,7 @@ class CardController extends BaseController
      * */
     public function update(Request $r, $card_id)
     {
-        if ($card = Card::where('id', $card_id)->where('generator_step', false)->first()) {
+        if ($card = Card::where('id', $card_id)->where('generator_step', false)->where('cancelled', false)->first()) {
 
             $validator = $this->validate_data($r);
 
@@ -219,7 +219,7 @@ class CardController extends BaseController
 //            if (count($contracts_id)) {
             if ($old_immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id')) {
                 $old_immovables_id = $old_immovables_id->toArray();
-                $updated_immovables_id = $this->immovable->create_or_update_immovables_with_id($r);
+                $updated_immovables_id = $this->immovable->create_or_update_immovables_with_id($r, $card_id);
 
                 // видалити нерухомість та контракти які були утворені попередньо, до початку обрабки менеджером
                 $immovables_id_for_delete = array_values(array_diff($old_immovables_id, $updated_immovables_id));
@@ -240,8 +240,10 @@ class CardController extends BaseController
 
             $result = $this->get_single_card_in_reception_format($card_id);
             return $this->sendResponse($result, 'Запис оновлено успішно');
-        } elseif (Card::where('id', $card_id)->where('generator_step', true)->first()) {
+        } elseif (Card::where('id', $card_id)->where('generator_step', true)->where('cancelled', false)->first()) {
             return $this->sendError('Картка готова до видачі. Зміни з боку рецепції неможливі');
+        }  elseif (Card::where('id', $card_id)->where('cancelled', true)->first()) {
+            return $this->sendError('Картка скасована. Зміни з боку рецепції неможливі');
         }else {
             return $this->sendError('Не вдалось знайки картку');
         }
