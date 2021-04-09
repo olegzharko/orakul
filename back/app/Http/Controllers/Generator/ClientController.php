@@ -574,35 +574,46 @@ class ClientController extends BaseController
         return $this->sendResponse($result, 'Сторонні нотаріус з ID:' . $notary_id);
     }
 
-    public function update_notary($notary_id, Request $r)
+    public function update_notary($card_id, $notary_id, Request $r)
     {
-        $result = [];
-
-        if (!$client = Notary::find($notary_id)) {
-            return $this->sendError('', 'Нотаріус з ID: ' . $client_id . ' відсутній');
-        }
-
         $validator = $this->validate_client_data($r);
 
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        Notary::updateOrCreate(
-            ['id' => $notary_id],[
-                'surname_n' => $r['surname_n'],
-                'name_n' => $r['name_n'],
-                'short_name' => $r['short_name'],
-                'patronymic_n' => $r['patronymic_n'],
-                'short_patronymic' => $r['short_patronymic'],
-                'surname_o' => $r['surname_o'],
-                'name_o' => $r['name_o'],
-                'patronymic_o' => $r['patronymic_o'],
-                'activity_n' => $r['activity_n'],
-                'activity_n' => $r['activity_n'],
-            ]);
+        if ($notary_id) {
+            Notary::where('id', $notary_id)->update(
+                ['id' => $notary_id],
+                [
+                    'surname_n' => $r['surname_n'],
+                    'name_n' => $r['name_n'],
+                    'short_name' => $r['short_name'],
+                    'patronymic_n' => $r['patronymic_n'],
+                    'short_patronymic' => $r['short_patronymic'],
+                    'surname_o' => $r['surname_o'],
+                    'name_o' => $r['name_o'],
+                    'patronymic_o' => $r['patronymic_o'],
+                    'activity_n' => $r['activity_n'],
+                    'activity_n' => $r['activity_n'],
+                ]);
+            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
+        } else {
+            $notary = new Notary();
+            $notary->surname_n = $r['surname_n'];
+            $notary->name_n = $r['name_n'];
+            $notary->short_name = $r['short_name'];
+            $notary->patronymic_n = $r['patronymic_n'];
+            $notary->short_patronymic = $r['short_patronymic'];
+            $notary->surname_o = $r['surname_o'];
+            $notary->name_o = $r['name_o'];
+            $notary->patronymic_o = $r['patronymic_o'];
+            $notary->activity_n = $r['activity_n'];
+            $notary->activity_n = $r['activity_n'];
+            $notary->save();
 
-        return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
+            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary->id . ' створено');
+        }
     }
 
     private function get_client_by_card_id($card_id)

@@ -135,7 +135,7 @@ Route::middleware('auth:api')->group(function () {
 
             Route::get('notaries/{card_id}', [ClientController::class, 'get_notaries']);
             Route::get('notary/{notary_id}', [ClientController::class, 'get_notary']);
-            Route::put('notary/{notary_id}', [ClientController::class, 'update_notary']);
+            Route::put('notary/{card_id}/{notary_id?}', [ClientController::class, 'update_notary']);
 
             Route::delete('delete/{client_id}/{card_id}', [ClientController::class, 'destroy']); // DELETE REQUEST
        });
