@@ -597,7 +597,7 @@ class CardController extends BaseController
         $time_length = count($this->times);
 
         foreach ($cards as $key => $card) {
-            if (in_array($card->date_time->format('H:i'), $this->times)) {
+            if (in_array($card->date_time->format('H:i'), $this->times) && $card->date_time->format('D') != 'Sun') {
                 $time_height = array_search($card->date_time->format('H:i'), $this->times);
                 $day_height = $this->count_days($card, $this->date);
                 $result[$key]['i'] = strval($card->id);
