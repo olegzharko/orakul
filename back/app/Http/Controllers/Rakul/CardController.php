@@ -56,8 +56,6 @@ class CardController extends BaseController
     {
         $result = null;
 
-//        auth()->user()->type = UserPositionType::get_user_type((auth()->user()->id));
-
         $cards_query = Card::whereIn('room_id', $this->rooms)
                 ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
@@ -475,6 +473,7 @@ class CardController extends BaseController
         $numberDays = $timeDiff/86400;  // 86400 seconds in one day
 
         $numberDays = intval($numberDays);
+        dd($numberDays);
 
         if ($numberDays) {
             $day_height = $numberDays;
