@@ -184,7 +184,6 @@ class CardController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-//        $date_time = new \DateTime($r['date_time']);
         $date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
 
         if (Card::where('room_id', $r['room_id'])->where('date_time', $date_time)->first()) {
@@ -192,7 +191,9 @@ class CardController extends BaseController
         }
 
         $card_id = Card::new_card($r);
+
         $immovables_info = $this->immovable->add_immovables($r);
+
         $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
         $this->client->add_card_clients($card_id, $r['clients']);
 

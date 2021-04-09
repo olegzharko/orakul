@@ -29,15 +29,11 @@ class ImmovableController extends BaseController
 
         if ($this->developer_building_exist($value, $r) && $this->immovable_type_exist($value)) {
 
-//            $imm = $this->imm_exist($value);
-
-//            if (!$imm) {
-                $imm = new Immovable();
-                $imm->developer_building_id = $value['building_id'];
-                $imm->immovable_type_id = $value['imm_type_id'];
-                $imm->immovable_number = $value['imm_number'];
-                $imm->save();
-//            }
+            $imm = new Immovable();
+            $imm->developer_building_id = $value['building_id'];
+            $imm->immovable_type_id = $value['imm_type_id'];
+            $imm->immovable_number = $value['imm_number'];
+            $imm->save();
 
             if ($imm && $imm->id) {
                 $result['immovable_id'] = $imm->id;

@@ -186,9 +186,14 @@ class ImmovableController extends BaseController
 
         $currency_exchage = round($r->exchange_rate, 2);
 
-        ExchangeRate::where('immovable_id', $immovable_id)->update([
-            'rate' => $currency_exchage * 100,
-        ]);
+        // ExchangeRate::where('immovable_id', $immovable_id)->update([
+        //     'rate' => $currency_exchage * 100,
+        // ]);
+
+        ExchangeRate::updateOrCreate(
+            ['immovable_id' => $immovable_id],
+            ['rate' => $currency_exchage * 100]
+        );
 
         $result['exchange_rate'] = $currency_exchage;
 
