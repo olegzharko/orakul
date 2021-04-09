@@ -518,7 +518,6 @@ class ClientController extends BaseController
 
         $validator = $this->validate_client_data($r);
 
-        dd($r['reg_date']);
         Representative::updateOrCreate(
             [
                 'client_id' => $client_id
@@ -669,7 +668,7 @@ class ClientController extends BaseController
         if (isset($r['sign_date']) && !empty($r['sign_date']))
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['sign_date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))
-            $r['reg_date'] = \DateTime::createFromFormat('d.m.Y', $r['reg_date']);
+            $r['reg_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['reg_date']);
 
         $validator = Validator::make([
             'surname_n' => $r['surname_n'],
