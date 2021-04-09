@@ -482,7 +482,6 @@ class ClientController extends BaseController
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $representative = Representative::where('client_id', $client_id)->first();
 
         $convert_notary = [];
         $rakul_notary = Notary::where('rakul_company', true)->get();
@@ -498,12 +497,19 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
         }
 
-//        $result['rakul_notary'] = $convert_notary;
-//        $result['other_notary'] = $other_notary;
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['notary_id'] = null;
         $result['reg_num'] = null;
         $result['reg_date'] = null;
+
+        $representative = Representative::where('client_id', $client_id)->first();
+
+        if ($representative) {
+            $result['notary_id'] = $representative->notary_id;
+            $result['reg_num'] = $representative->reg_num;
+            $reg_date = \DateTime::createFromFormat('Y-m-d H:i:s', $representative->reg_date);
+            $result['reg_date'] = $reg_date ? $reg_date->format('d.m.Y') : $reg_date;
+        }
 
         return $this->sendResponse($result, 'Дані по довіреності клієнта з ID ' . $client_id);
     }
@@ -518,11 +524,8 @@ class ClientController extends BaseController
 
         $validator = $this->validate_client_data($r);
 
-        Representative::updateOrCreate(
-            [
-                'client_id' => $client_id
-            ],
-            [
+        Representative::where('client_id', $client_id)->update([
+                'notary_id' => $r['notary_id'],
                 'reg_num' => $r['reg_num'],
                 'reg_date' => $r['reg_date']
             ]);
