@@ -316,10 +316,10 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        dd($r['date']);
+
         $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
         ImmFence::where('immovable_id', $immovable_id)->update([
-            'date' => $r['date'],
+            'date' => $r['date'] ? $r['date']->format('d.m.Y') : null,
             'number' => $r['number'],
             'pass' => $r['pass'],
         ]);
