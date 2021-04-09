@@ -663,9 +663,9 @@ class ClientController extends BaseController
         if (isset($r['passport_finale_date']) && !empty($r['passport_finale_date']))
             $r['passport_finale_date'] = \DateTime::createFromFormat('d.m.Y', $r['passport_finale_date']);
         if (isset($r['mar_date']) && !empty($r['mar_date']))
-            $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
+            $r['mar_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['mar_date']);
         if (isset($r['sign_date']) && !empty($r['sign_date']))
-            $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
+            $r['sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['sign_date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))
             $r['reg_date'] = \DateTime::createFromFormat('d.m.Y', $r['reg_date']);
 
