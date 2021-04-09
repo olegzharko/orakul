@@ -468,7 +468,9 @@ class CardController extends BaseController
         $start = new \DateTime($date->format('d.m.Y'));
         $end = new \DateTime($card->date_time->format('d.m.Y'));
         // otherwise the  end date is excluded (bug?)
+        /*
         $end->modify('+1 day');
+        */
 
         $interval = $end->diff($start);
 
@@ -495,24 +497,24 @@ class CardController extends BaseController
             }
         }
 
+        $day_height = $days;
 
-        dd($days);
 
-
-        $startTimeStamp = strtotime($date->format('d.m.Y'));
-        $endTimeStamp = strtotime($card->date_time->format('d.m.Y'));
-
-        $timeDiff = abs($endTimeStamp - $startTimeStamp);
-
-        $numberDays = $timeDiff/86400;  // 86400 seconds in one day
-
-        $numberDays = intval($numberDays);
-
-        if ($numberDays) {
-            $day_height = $numberDays;
-        } else {
-            $day_height = 0;
-        }
+//        $startTimeStamp = strtotime($date->format('d.m.Y'));
+//        $endTimeStamp = strtotime($card->date_time->format('d.m.Y'));
+//
+//        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+//
+//        $numberDays = $timeDiff/86400;  // 86400 seconds in one day
+//
+//        $numberDays = intval($numberDays);
+//
+//        dd($numberDays);
+//        if ($numberDays) {
+//            $day_height = $numberDays;
+//        } else {
+//            $day_height = 0;
+//        }
 
         return $day_height;
     }
