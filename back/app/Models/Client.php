@@ -14,6 +14,18 @@ class Client extends Model implements Sortable
 {
     use HasFactory, SortableTrait, SoftDeletes;
 
+    protected $fillable = [
+        'gender',
+        'birth_date',
+        'tax_code',
+        'passport_type_id',
+        'passport_code',
+        'passport_date',
+        'passport_department',
+        'passport_demographic_code',
+        'passport_finale_date',
+    ];
+
     protected $casts = [
         'birth_date' => 'datetime',
         'passport_date' => 'datetime',
