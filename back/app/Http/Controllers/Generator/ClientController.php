@@ -460,7 +460,7 @@ class ClientController extends BaseController
         ClientSpouseConsent::where('client_id', $client_id)->update([
             'notary_id' => $r['notary_id'],
             'template_id' => $r['consent_template_id'],
-            'marriage_type_id' => $r['marriage_type_id'],
+            'marriage_type_id' => $r['married_type_id'],
             'mar_series' => $r['mar_series'],
             'mar_series_num' => $r['mar_series_num'],
             'mar_date' => $r['mar_date'] ? $r['mar_date']->format('Y.m.d.') : null,
