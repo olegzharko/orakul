@@ -191,6 +191,8 @@ class DeveloperController extends BaseController
             return $this->sendError($validator->errors(), "Карта $card_id має наступні помилки");
         }
 
+        dd($r['date']);
+
         DevFence::updateOrCreate(
             ['card_id' => $card_id],
             [
