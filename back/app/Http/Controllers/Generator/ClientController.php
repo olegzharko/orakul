@@ -615,7 +615,7 @@ class ClientController extends BaseController
             $notary->name_o = $r['name_o'];
             $notary->patronymic_o = $r['patronymic_o'];
             $notary->activity_n = $r['activity_n'];
-            $notary->activity_n = $r['activity_n'];
+            $notary->activity_o = $r['activity_o'];
             $notary->separate_by_card = $card_id;
             $notary->save();
 
