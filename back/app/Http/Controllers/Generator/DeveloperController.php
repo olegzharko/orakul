@@ -111,9 +111,9 @@ class DeveloperController extends BaseController
         $result['dev_company']['title'] = $dev_company->title;
         $result['dev_company']['color'] = $dev_company->color;
 
-        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
-        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
-        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
+        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
+        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
+        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
 
         $result['ceo_info'][] = ['title' => 'CEO 1', 'value' => 'DATA 1'];
         $result['ceo_info'][] = ['title' => 'CEO 2', 'value' => 'DATA 2'];
