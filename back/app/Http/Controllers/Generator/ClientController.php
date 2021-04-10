@@ -524,7 +524,9 @@ class ClientController extends BaseController
 
         $validator = $this->validate_client_data($r);
 
-        Representative::where('client_id', $client_id)->update([
+        Representative::updateOrCreate(
+            ['client_id' => $client_id],
+            [
                 'notary_id' => $r['notary_id'],
                 'reg_num' => $r['reg_num'],
                 'reg_date' => $r['reg_date']
