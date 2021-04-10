@@ -9,8 +9,8 @@ use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\Card;
 use App\Models\Contract;
-use App\Models\ClientType;
 use App\Models\Immovable;
+use App\Models\DevEmployerType;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 
@@ -19,12 +19,17 @@ class AssistantController extends BaseController
     public $tools;
     public $genrator;
     public $convert;
+    public $developer_type;
+    public $representative_type;
 
     public function __construct()
     {
         $this->tools = new ToolsController();
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
+        $this->developer_type = DevEmployerType::where('alias', 'developer')->value('id');
+        $this->representative_type = DevEmployerType::where('alias', 'representative')->value('id');
+        $this->manager_type = DevEmployerType::where('alias', 'manager')->value('id');
     }
 
     public function get_card_settings($card_id)
@@ -50,11 +55,8 @@ class AssistantController extends BaseController
         $notary = $this->tools->get_company_notary();
         $developer = $this->tools->get_developer();
 
-        $representative_type_id = ClientType::get_representative_type_id();
-        $manager_type_id = ClientType::get_manager_type_id();
-
-        $representative = $this->tools->developer_employer_by_type($card->dev_company_id, $representative_type_id);
-        $manager = $this->tools->developer_employer_by_type($card->dev_company_id, $manager_type_id);
+        $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
+        $manager = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->manager_type);
 
         $immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id');
 
@@ -62,8 +64,11 @@ class AssistantController extends BaseController
             'immovables.*',
             'contracts.reader_id',
             'contracts.accompanying_id',
-            'contracts.printer_id'
-        )->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->get();
+            'cards.staff_generator_id'
+        )
+        ->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')
+        ->join('cards', 'cards.id', '=', 'contracts.card_id')
+        ->get();
 
         $imm_res = [];
         foreach ($immovables as $key => $immovable) {
