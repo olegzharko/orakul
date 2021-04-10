@@ -167,7 +167,7 @@ class DeveloperController extends BaseController
 
         $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
 
-print_r($dateStarted);
+print_r($r['date']);
 print_r(\DateTime::getLastErrors());die;
         $validator = Validator::make([
             'date' => $r['date'],
