@@ -78,21 +78,26 @@ class DeveloperController extends BaseController
         }
 
         $representative = $card->dev_representative;
-        dd($card);
-        $result['representative_id'] = $representative->id;
-        $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
-        $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
-        $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
-        $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
-        $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
-        $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
 
-        $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
-        $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
-        $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
-        $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
-        $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
-        $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
+        $result['representative_id'] = $representative ? $representative->id : null;
+
+        $result['representative_info'] = [];
+        $result['representative_doc'] = [];
+        if ($representative) {
+            $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
+            $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
+            $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
+            $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
+            $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
+            $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
+
+            $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
+            $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
+            $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
+            $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
+            $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
+            $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
+        }
 
         return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
     }
