@@ -166,7 +166,6 @@ class DeveloperController extends BaseController
         $result = [];
 
         $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
-        dd($r['date']);
 
         $validator = Validator::make([
             'date' => $r['date'],
@@ -193,7 +192,7 @@ class DeveloperController extends BaseController
         }
 
         DevFence::updateOrCreate(
-            ['card_id' => $card_id],
+            ['dev_company_id' => $dev_company_id, 'card_id' => $card_id],
             [
                 'date' => $r['date'] ? $r['date']->format('Y.m.d') : null,
                 'number' => $r['number'],
