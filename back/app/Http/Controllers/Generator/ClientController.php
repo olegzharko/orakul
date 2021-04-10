@@ -578,7 +578,7 @@ class ClientController extends BaseController
         return $this->sendResponse($result, 'Сторонні нотаріус з ID:' . $notary_id);
     }
 
-    public function update_notary($card_id, $notary_id, Request $r)
+    public function update_notary($card_id, $notary_id = null, Request $r)
     {
         $validator = $this->validate_client_data($r);
 
