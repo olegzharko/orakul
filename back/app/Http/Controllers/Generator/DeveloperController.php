@@ -134,7 +134,7 @@ class DeveloperController extends BaseController
         $result['dev_fence']['pass'] = null;
 
         if ($fence = DevFence::where('dev_company_id', $dev_company_id)->where('card_id', $card_id)->orderBy('date', 'desc')->first() ) {
-            $result['dev_fence']['date'] = $fence->date->format('d.m.Y. H:i');
+            $result['dev_fence']['date'] = $fence->date ? $fence->date->format('d.m.Y. H:i') : null;
             $result['dev_fence']['number'] = $fence->number;
             $result['dev_fence']['pass'] = $fence->pass;
         }
