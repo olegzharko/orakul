@@ -168,6 +168,7 @@ class DeveloperController extends BaseController
         $result = [];
 
         $r['date'] = \DateTime::createFromFormat('Y.m.d. H:i', $r['date']);
+
         $validator = Validator::make([
             'date' => $r['date'],
             'number' => $r['number'],
@@ -180,8 +181,16 @@ class DeveloperController extends BaseController
             'number.numeric' => 'Необхідно передати номер перевірки у числовому форматі',
         ]);
 
+        if (!$card = Card::find($card_id)){
+            return $this->sendError( '', "Карта $card_id відсутня");
+        }
+
+        if (!$dev_company = DevCompany::where('id', $dev_company_id)->where('dev_group_id', $card->dev_group_id)->first()) {
+            return $this->sendError( '', "Забудовник $dev_company_id відсутній");
+        }
+
         if (count($validator->errors()->getMessages())) {
-            return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
+            return $this->sendError($validator->errors(), "Карта $card_id має наступні помилки");
         }
 
         DevFence::updateOrCreate(
