@@ -589,7 +589,6 @@ class ClientController extends BaseController
 
         if ($notary_id) {
             Notary::where('id', $notary_id)->update(
-                ['id' => $notary_id],
                 [
                     'surname_n' => $r['surname_n'],
                     'name_n' => $r['name_n'],
