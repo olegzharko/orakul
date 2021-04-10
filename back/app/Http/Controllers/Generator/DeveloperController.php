@@ -50,7 +50,6 @@ class DeveloperController extends BaseController
 
         $dev_companies_id = $dev_company_query->pluck('dev_companies.id')->toArray();
         $dev_company = $dev_company_query->get();
-        dd($dev_companies_id);
 
         foreach ($dev_company as $key => $company) {
             $result['dev_companies'][$key]['id'] = $company->id;
