@@ -77,7 +77,7 @@ Route::middleware('auth:api')->group(function () {
            Route::get('fence/{card_id}', [DeveloperController::class, 'get_fence']);
            Route::post('fence/{card_id}', [DeveloperController::class, 'update_fence']);
            Route::get('spouse/{card_id}', [DeveloperController::class, 'spouse']);
-//           Route::get('representative/{card_id}', [DeveloperController::class, 'get_representative']);
+           Route::get('representative/{card_id}', [DeveloperController::class, 'get_representative']);
            Route::post('representative/{card_id}', [DeveloperController::class, 'update_representative']);
        });
 

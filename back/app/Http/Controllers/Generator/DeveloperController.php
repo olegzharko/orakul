@@ -73,11 +73,20 @@ class DeveloperController extends BaseController
 
         $representative = $card->dev_representative;
 
-        $result['representative']['id'] = $representative->id;
-        $result['representative']['name'] =  $this->convert->get_full_name($representative);
-        $result['representative']['tax_code'] = $representative->code;
-        $result['representative']['address'] = $this->convert->get_client_full_address($representative);
-        $result['representative']['passpot_info'] = $this->collect_passport_info($representative);
+        $result['representative_id'] = $representative->id;
+        $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
+        $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
+        $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
+        $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
+        $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
+        $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
+
+        $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
+        $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
+        $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
+        $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
+        $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
+        $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
 
         return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
     }
@@ -177,16 +186,30 @@ class DeveloperController extends BaseController
     {
         $result = [];
 
-        $card = Card::find($card_id);
-        $result['dev_representative'] = $this->get_dev_company_representative($card);
-        $result['dev_representative_id'] = $card->dev_representative_id;
+//        $card = Card::find($card_id);
+//        $result['dev_representative'] = $this->get_dev_company_representative($card);
+//        $result['dev_representative_id'] = $card->dev_representative_id;
+//
+//        $representative = Client::find($card->dev_representative_id);
+//
+//        $result['representative']['name'] =  $this->convert->get_full_name($representative);
+//        $result['representative']['tax_code'] = $representative->code;
+//        $result['representative'] = array_merge($result['representative'], $this->collect_passport_info($representative));
+//        $result['representative']['address'] = $this->convert->get_client_full_address($representative);
 
-        $representative = Client::find($card->dev_representative_id);
+        $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
+        $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
+        $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
+        $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
+        $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
+        $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
 
-        $result['representative']['name'] =  $this->convert->get_full_name($representative);
-        $result['representative']['tax_code'] = $representative->code;
-        $result['representative'] = array_merge($result['representative'], $this->collect_passport_info($representative));
-        $result['representative']['address'] = $this->convert->get_client_full_address($representative);
+        $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
+        $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
+        $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
+        $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
+        $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
+        $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
 
         return $this->sendResponse($result, "Загальні дані по представнику забудовника.");
     }
