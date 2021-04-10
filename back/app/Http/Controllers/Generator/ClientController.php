@@ -600,7 +600,7 @@ class ClientController extends BaseController
                     'name_o' => $r['name_o'],
                     'patronymic_o' => $r['patronymic_o'],
                     'activity_n' => $r['activity_n'],
-                    'activity_n' => $r['activity_n'],
+                    'activity_o' => $r['activity_o'],
                     'separate_by_card' => $card_id,
                 ]);
             return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
