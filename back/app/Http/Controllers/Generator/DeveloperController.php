@@ -191,11 +191,13 @@ class DeveloperController extends BaseController
             return $this->sendError($validator->errors(), "Карта $card_id має наступні помилки");
         }
 
-        DevFence::where('card_id', $card_id)->update([
-            'date' => $r['date'] ? $r['date']->format('Y.m.d') : null,
-            'number' => $r['number'],
-            'pass' => $r['pass'],
-        ]);
+        DevFence::updateOrCreate(
+            ['card_id' => $card_id],
+            [
+                'date' => $r['date'] ? $r['date']->format('Y.m.d') : null,
+                'number' => $r['number'],
+                'pass' => $r['pass'],
+            ]);
 
 //        DevFence::updateOrCreate(
 //            [
