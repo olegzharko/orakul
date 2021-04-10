@@ -616,7 +616,7 @@ class ClientController extends BaseController
             $notary->patronymic_o = $r['patronymic_o'];
             $notary->activity_n = $r['activity_n'];
             $notary->activity_n = $r['activity_n'];
-            $notary->separate_by_card = $card_id,
+            $notary->separate_by_card = $card_id;
             $notary->save();
 
             return $this->sendResponse('', 'Нотаріус з ID: ' . $notary->id . ' створено');
