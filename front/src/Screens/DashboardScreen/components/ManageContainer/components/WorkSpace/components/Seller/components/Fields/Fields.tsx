@@ -30,17 +30,9 @@ const Fields = () => {
 
       <SectionWithTitle title="Подружжя">
         <div className="grid">
-          <TitleInfoDuet title="Шаблон згоди" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Тип шлюбного свідоцтва" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Серія свідоцтва" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Номер свідоцтва" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Виданий" info="Орган, що видав" />
-          <TitleInfoDuet title="Орган, що видав" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Реєстраційний номер свідоцтва" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Нотаріус" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Дата підписання заяви-згоди" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Номер реєстрації у нотаріуса" info="Іванов Іван Іванович" />
-          <TitleInfoDuet title="Пункт згоди у договорі" info="Іванов Іван Іванович" />
+          {meta.spouse.map(({ title, value }) => (
+            <TitleInfoDuet title={title} info={value} />
+          ))}
         </div>
       </SectionWithTitle>
     </main>

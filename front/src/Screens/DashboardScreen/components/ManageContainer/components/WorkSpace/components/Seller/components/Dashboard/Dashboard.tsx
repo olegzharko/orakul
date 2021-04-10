@@ -26,11 +26,12 @@ const Dashboard = () => {
           <Card
             key={id}
             title={title}
+            headerColor={color}
             link={`/seller/${meta.id}/${id}`}
           >
-            {/* {info.list.map((item) => (
+            {info.map((item) => (
               <span>{item}</span>
-            ))} */}
+            ))}
           </Card>
         ))}
       </div>
