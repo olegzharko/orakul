@@ -12,7 +12,7 @@ export default async function reqRepresentative(
       url: `${DEFAULT_URL}/api/generator/developer/representative/${id}`,
       headers: { Authorization: `Bearer ${token}` },
       method,
-      bodyData: { ...bodyData },
+      bodyData,
     });
 
     return data;
