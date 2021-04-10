@@ -1,4 +1,5 @@
 import * as React from 'react';
+import CustomDatePicker from '../../../../../../../../../../../../../../components/CustomDatePicker';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
@@ -18,15 +19,15 @@ const Passport = (props: Props) => {
             <RadioButtonsGroup
               buttons={sexButtons}
               onChange={(e) => setData({ ...data, gender: e.toString() })}
-              selected={+data.gender}
+              selected={data.gender}
               unicId="clients__passport-sex"
             />
           </div>
 
-          <CustomInput
+          <CustomDatePicker
             label="Дата народження"
-            onChange={(e) => setData({ ...data, date_of_birth: e })}
-            value={data.date_of_birth}
+            onSelect={(e) => setData({ ...data, date_of_birth: e })}
+            selectedDate={data.date_of_birth}
           />
           <CustomInput
             label="ІНН"
@@ -44,10 +45,10 @@ const Passport = (props: Props) => {
             onChange={(e) => setData({ ...data, passport_code: e })}
             value={data.passport_code}
           />
-          <CustomInput
+          <CustomDatePicker
             label="Дата видачі"
-            onChange={(e) => setData({ ...data, passport_date: e })}
-            value={data.passport_date}
+            onSelect={(e) => setData({ ...data, passport_date: e })}
+            selectedDate={data.passport_date}
           />
           <CustomInput
             label="Орган що видав паспорт"
@@ -59,10 +60,10 @@ const Passport = (props: Props) => {
             onChange={(e) => setData({ ...data, passport_demographic_code: e })}
             value={data.passport_demographic_code}
           />
-          <CustomInput
+          <CustomDatePicker
             label="Діє до"
-            onChange={(e) => setData({ ...data, passport_finale_date: e })}
-            value={data.passport_finale_date}
+            onSelect={(e) => setData({ ...data, passport_finale_date: e })}
+            selectedDate={data.passport_finale_date}
           />
         </div>
       </SectionWithTitle>

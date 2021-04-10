@@ -17,7 +17,7 @@ type InitialData = {
   mar_reg_num: string,
   sign_date: any,
   reg_num: string,
-  consent_spouse_words_id: string,
+  consent_spouse_word_id: string,
   notary?: SelectItem[],
   consent_templates?: SelectItem[],
   married_types?: SelectItem[],
@@ -49,7 +49,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
     mar_reg_num: '',
     sign_date: null,
     reg_num: '',
-    consent_spouse_words_id: '',
+    consent_spouse_word_id: '',
   });
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       sign_date: initialData?.sign_date
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
       reg_num: initialData?.reg_num || '',
-      consent_spouse_words_id: initialData?.consent_spouse_words_id || '',
+      consent_spouse_word_id: initialData?.consent_spouse_word_id || '',
     });
   }, [initialData]);
 
@@ -85,7 +85,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       mar_reg_num: '',
       sign_date: null,
       reg_num: '',
-      consent_spouse_words_id: '',
+      consent_spouse_word_id: '',
     });
   }, []);
 

@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeMonthWitDate, formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
-import reqImmovableGeneral from '../../../../../../../../../../../../../../services/generator/Immovable/reqImmovableGeneral';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import { State } from '../../../../../../../../../../../../../../store/types';
-import { SelectItem } from '../../../../../../../../../../../../../../types';
+import reqImmovableOwnership from '../../../../../../../../../../../../../../services/generator/Immovable/reqImmovableOwnership';
 
 type InitialData = {
   reg_date: any;
@@ -47,7 +46,7 @@ export const useOwnership = ({ initialData, id }: Props) => {
         discharge_date: formatDate(data.discharge_date),
       };
 
-      const { success, message } = await reqImmovableGeneral(token, id, 'PUT', reqData);
+      const { success, message } = await reqImmovableOwnership(token, id, 'PUT', reqData);
       dispatch(
         setModalInfo({
           open: true,
