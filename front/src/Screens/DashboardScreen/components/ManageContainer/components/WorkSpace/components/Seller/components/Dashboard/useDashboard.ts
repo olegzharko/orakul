@@ -14,7 +14,7 @@ type DeveloperCardData = {
   info: {
     title: string;
     value: string;
-  }
+  }[]
 }
 
 type RepresentativeData = {
@@ -40,7 +40,8 @@ export const useDashboard = () => {
 
   const onSave = useCallback(async () => {
     if (token) {
-      const res = await reqRepresentative(token, id, 'POST', { dev_representative_id: selectedRepresentative });
+      const data = { dev_representative_id: selectedRepresentative };
+      const res = await reqRepresentative(token, id, 'POST', data);
 
       dispatch(
         setModalInfo({
@@ -50,7 +51,7 @@ export const useDashboard = () => {
         })
       );
     }
-  }, [token, id]);
+  }, [token, id, selectedRepresentative]);
 
   useEffect(() => {
     if (token) {
