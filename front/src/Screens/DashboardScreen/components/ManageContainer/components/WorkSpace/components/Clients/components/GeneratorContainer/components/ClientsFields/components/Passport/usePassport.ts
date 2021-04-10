@@ -4,17 +4,18 @@ import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../../../store/types';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import reqClientPassport from '../../../../../../../../../../../../../../services/generator/Client/reqClientPassport';
+import { formatDate, changeMonthWitDate } from '../../../../../../../../../../../../../../utils/formatDates';
 
 type InitialData = {
   gender: string,
-  date_of_birth: string,
+  date_of_birth: any,
   tax_code: string,
   passport_type_id: string,
   passport_code: string,
-  passport_date: string
+  passport_date: any
   passport_department: string,
   passport_demographic_code: string,
-  passport_finale_date: string,
+  passport_finale_date: any,
   passport_types?: SelectItem[],
 }
 
@@ -30,30 +31,15 @@ export const usePassport = ({ initialData, id }: Props) => {
   const [passportTypes, setPassportTypes] = useState<SelectItem[]>([]);
   const [data, setData] = useState<InitialData>({
     gender: 'female',
-    date_of_birth: '',
     tax_code: '',
     passport_type_id: '',
     passport_code: '',
-    passport_date: '',
     passport_department: '',
     passport_demographic_code: '',
-    passport_finale_date: '',
+    passport_date: null,
+    passport_finale_date: null,
+    date_of_birth: null,
   });
-
-  useEffect(() => {
-    setPassportTypes(initialData?.passport_types || []);
-    setData({
-      gender: initialData?.gender || 'female',
-      date_of_birth: initialData?.date_of_birth || '',
-      tax_code: initialData?.tax_code || '',
-      passport_type_id: initialData?.passport_type_id || '',
-      passport_code: initialData?.passport_code || '',
-      passport_date: initialData?.passport_date || '',
-      passport_department: initialData?.passport_department || '',
-      passport_demographic_code: initialData?.passport_demographic_code || '',
-      passport_finale_date: initialData?.passport_finale_date || '',
-    });
-  }, [initialData]);
 
   const sexButtons = useMemo(() => [
     {
@@ -69,20 +55,28 @@ export const usePassport = ({ initialData, id }: Props) => {
   const onClear = useCallback(() => {
     setData({
       gender: 'female',
-      date_of_birth: '',
       tax_code: '',
       passport_type_id: '',
       passport_code: '',
-      passport_date: '',
       passport_department: '',
       passport_demographic_code: '',
-      passport_finale_date: '',
+      passport_date: null,
+      passport_finale_date: null,
+      date_of_birth: null,
+
     });
   }, []);
 
   const onSave = useCallback(async () => {
     if (token) {
-      const { success, message } = await reqClientPassport(token, id, 'PUT', data);
+      const reqData = {
+        ...data,
+        date_of_birth: formatDate(data.date_of_birth),
+        passport_date: formatDate(data.passport_date),
+        passport_finale_date: formatDate(data.passport_finale_date),
+      };
+
+      const { success, message } = await reqClientPassport(token, id, 'PUT', reqData);
       dispatch(
         setModalInfo({
           open: true,
@@ -92,6 +86,24 @@ export const usePassport = ({ initialData, id }: Props) => {
       );
     }
   }, [data, token]);
+
+  useEffect(() => {
+    setPassportTypes(initialData?.passport_types || []);
+    setData({
+      gender: initialData?.gender || 'female',
+      tax_code: initialData?.tax_code || '',
+      passport_type_id: initialData?.passport_type_id || '',
+      passport_code: initialData?.passport_code || '',
+      passport_department: initialData?.passport_department || '',
+      passport_demographic_code: initialData?.passport_demographic_code || '',
+      passport_finale_date: initialData?.passport_finale_date
+        ? new Date(changeMonthWitDate(initialData?.passport_finale_date)) : null,
+      date_of_birth: initialData?.date_of_birth
+        ? new Date(changeMonthWitDate(initialData?.date_of_birth)) : null,
+      passport_date: initialData?.passport_date
+        ? new Date(changeMonthWitDate(initialData?.passport_date)) : null,
+    });
+  }, [initialData]);
 
   return {
     sexButtons,

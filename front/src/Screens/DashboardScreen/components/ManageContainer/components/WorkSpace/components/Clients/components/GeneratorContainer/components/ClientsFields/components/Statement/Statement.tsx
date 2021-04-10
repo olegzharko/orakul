@@ -28,8 +28,8 @@ const Statement = (props: Props) => {
           <CustomSelect
             label="Пункт згоди у договорі"
             data={meta.consentSpouseWords}
-            onChange={(e) => meta.setData({ ...meta.data, consent_spouse_words_id: e })}
-            selectedValue={meta.data.consent_spouse_words_id}
+            onChange={(e) => meta.setData({ ...meta.data, consent_spouse_word_id: e })}
+            selectedValue={meta.data.consent_spouse_word_id}
           />
           <CustomInput
             label="Серія свідоцтва"

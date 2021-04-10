@@ -2,7 +2,6 @@ import * as React from 'react';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
-import RadioButtonsGroup from '../../../../../../../../../../../../../../components/RadioButtonsGroup';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
 import { useGeneral, Props } from './useGeneral';
 
@@ -48,14 +47,14 @@ const General = (props: Props) => {
           />
 
           <CustomInput
-            label="Сума внеску зг. попереднього договору в грн"
-            onChange={(e) => meta.setData({ ...meta.data, reserve_grn: e })}
-            value={meta.data.reserve_grn}
-          />
-          <CustomInput
             label="Сума внеску зг. попереднього договору в дол"
             onChange={(e) => meta.setData({ ...meta.data, reserve_dollar: e })}
             value={meta.data.reserve_dollar}
+          />
+          <CustomInput
+            label="Сума внеску зг. попереднього договору в грн"
+            onChange={(e) => meta.setData({ ...meta.data, reserve_grn: e })}
+            value={meta.data.reserve_grn}
           />
 
           <CustomInput

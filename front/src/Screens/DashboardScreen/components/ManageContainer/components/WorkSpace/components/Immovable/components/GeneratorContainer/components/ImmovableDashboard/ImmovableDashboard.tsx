@@ -1,14 +1,21 @@
 import * as React from 'react';
 import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
 import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
+import Loader from '../../../../../../../../../../../../components/Loader/Loader';
 import { useImmovableDashboard } from './useImmovableDashboard';
 
 const ImmovableDashboard = () => {
   const meta = useImmovableDashboard();
 
+  if (meta.isLoading) {
+    return (
+      <Loader />
+    );
+  }
+
   return (
     <div className="immovable__dashboard">
-      <div className="immovable__dashboard-header section-title">Нерухомість</div>
+      <div className="dashboard-header section-title">Нерухомість</div>
 
       <div className="grid">
         {meta.immovables.map((immovable) => (
