@@ -52,6 +52,9 @@ class DeveloperController extends BaseController
             $result['dev_companies'][$key]['id'] = $company->id;
             $result['dev_companies'][$key]['title'] = $company->title;
             $result['dev_companies'][$key]['color'] = $company->color;
+            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
+            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
+            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
         }
 
         $dev_representatives = Client::select(
@@ -100,14 +103,9 @@ class DeveloperController extends BaseController
         $result['dev_company']['title'] = $dev_company->title;
         $result['dev_company']['color'] = $dev_company->color;
 
-//        $owner = DevCompanyEmployer::select('clients.*')
-//            ->where('dev_company_id', $dev_company->id)
-//            ->where('type_id', $this->developer_type)
-//            ->join('clients', 'clients.id', '=', 'dev_company_employers.employer_id')
-//            ->first();
-//
-//        $owner->name = $this->convert->get_full_name($owner);
-//        $owner->address = $this->convert->get_client_full_address($owner);
+        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
+        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
+        $result['dev_company']['info'][] = ['title' => 'FENCE 1', 'value' => 'INFO 1'];
 
         $result['ceo_info'][] = ['title' => 'CEO 1', 'value' => 'DATA 1'];
         $result['ceo_info'][] = ['title' => 'CEO 2', 'value' => 'DATA 2'];
@@ -122,24 +120,6 @@ class DeveloperController extends BaseController
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 4', 'value' => 'INFO 4'];
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 5', 'value' => 'INFO 5'];
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 6', 'value' => 'INFO 6'];
-
-//        $result['ceo_info']['name'] = $owner->name;
-//        $result['ceo_info']['tax_code'] = $owner->code;
-//        $result['ceo_info']['married'] = $owner->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
-//        $owner->passport_date = \DateTime::createFromFormat('Y-m-d H:i:s', $owner->passport_date);
-//        $result['ceo_info'] = array_merge($result['ceo_info'], $this->collect_passport_info($owner));
-//        $result['ceo_info']['address'] = $owner->address;
-
-        $result['dev_fence']['date'] = null;
-        $result['dev_fence']['number'] = null;
-        $result['dev_fence']['pass'] = null;
-
-        if ($fence = DevFence::where('dev_company_id', $dev_company->owner->id)->orderBy('date', 'desc')->first() ) {
-            $result['dev_fence']['date'] = $fence->date->format('d.m.Y. H:i');
-            $result['dev_fence']['number'] = $fence->number;
-            $result['dev_fence']['pass'] = $fence->pass;
-        }
-
 
         return $this->sendResponse($result, 'Загальні дані по забудовнику.');
     }
@@ -271,7 +251,8 @@ class DeveloperController extends BaseController
         $errors = $validator->errors()->messages();
 
         $dev_company_id = Card::where('id', $card_id)->value('dev_company_id');
-        $developer_representative = Client::where('id', $r['dev_representative_id'])
+        $developer_representative = Client::select('clients.*')
+            ->where('id', $r['dev_representative_id'])
             ->where('type_id', $this->representative_type)
             ->where('dev_company_id', $dev_company_id)
             ->first();
