@@ -34,7 +34,10 @@ class MainController extends BaseController
         $instructions = $this->step->todo_list($card);
 
         $result['date_info'] = $date_info;
-        $result['instructions'] = $instructions;
+        $result['instructions'][] = ['title' => 'CONTR 1', 'value' => 'INFO 1'];
+        $result['instructions'][] = ['title' => 'CONTR 2', 'value' => 'INFO 2'];
+        $result['instructions'][] = ['title' => 'CONTR 3', 'value' => 'INFO 3'];
+        $result['instructions'][] = ['title' => 'CONTR 4', 'value' => 'INFO 4'];
 
         return $this->sendResponse($result, "Дані для головної створення договору");
     }
