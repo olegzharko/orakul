@@ -574,7 +574,7 @@ class ClientController extends BaseController
         )->where('id', $notary_id)->first();
 
 
-        $result['notary'] = $notary;
+        $result = $notary;
 
         return $this->sendResponse($result, 'Сторонні нотаріус з ID:' . $notary_id);
     }
