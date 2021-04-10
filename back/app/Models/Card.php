@@ -29,7 +29,7 @@ class Card extends Model
     {
         return Contract::select(
             'cards.*',
-        )->where('contract.id', $contract_id)->join('cards', 'cards.id', '=', 'contract.card_id')->first();
+        )->where('contracts.id', $contract_id)->join('cards', 'cards.id', '=', 'contracts.card_id')->first();
     }
 
     public function room()

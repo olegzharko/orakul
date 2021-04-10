@@ -571,7 +571,8 @@ class ClientController extends BaseController
             'patronymic_o',
             'activity_n',
             'activity_o',
-        )->find($notary_id);
+        )->where('id', $notary_id)->first();
+
 
         $result['notary'] = $notary;
 
@@ -631,7 +632,6 @@ class ClientController extends BaseController
 
         $clients = Client::whereIn('id', $clients_id)->get();
 
-
         foreach ($clients as $key => $client) {
             $result[$key]['client'] = [];
             $result[$key]['spouse'] = null;
@@ -640,17 +640,17 @@ class ClientController extends BaseController
             $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
             $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
 
-            if ($client->spouse) {
+            if ($client->married) {
                 $result[$key]['spouse'] = [];
-                $result[$key]['spouse']['id'] = $client->spouse->id;
-                $result[$key]['spouse']['full_name'] = $client->spouse->convert->get_full_name($client);
+                $result[$key]['spouse']['id'] = $client->married->spouse->id;
+                $result[$key]['spouse']['full_name'] = $this->convert->get_full_name($client->married->spouse);
                 $result[$key]['spouse']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
             }
 
             if ($client->representative) {
                 $result[$key]['representative'] = [];
                 $result[$key]['representative']['id'] = $client->representative->id;
-                $result[$key]['representative']['full_name'] = $client->representative->convert->get_full_name($client);
+                $result[$key]['representative']['full_name'] = $this->convert->get_full_name($client->representative->confidant);
                 $result[$key]['representative']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
             }
         }

@@ -15,4 +15,14 @@ class ClientSpouseConsentContract extends Model
     ];
 
     protected $table = 'client_spouse_consent_contract';
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
+
+    public function client_spouse_consent()
+    {
+        return $this->belongsTo(ClientSpouseConsent::class, 'client_spouse_consent_id');
+    }
 }

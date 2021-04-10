@@ -17,6 +17,7 @@ class Notary extends Model implements Sortable
     ];
 
     protected $fillable = [
+            'id',
             'surname_n',
             'name_n',
             'short_name',

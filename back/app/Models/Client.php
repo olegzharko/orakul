@@ -74,7 +74,7 @@ class Client extends Model implements Sortable
 
     public function married()
     {
-        return $this->hasOne(Spouse::class);
+        return $this->hasOne(Spouse::class, 'client_id');
     }
 
     public function member()
