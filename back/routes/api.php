@@ -75,7 +75,7 @@ Route::middleware('auth:api')->group(function () {
            Route::get('group/{card_id}', [DeveloperController::class, 'group']); // postman
            Route::get('main/{dev_company_id}', [DeveloperController::class, 'main']); // postman
 //           Route::get('fence/{card_id}', [DeveloperController::class, 'get_fence']);
-           Route::post('fence/{dev_company_id}/{card_id}', [DeveloperController::class, 'update_fence']);
+           Route::post('fence/{dev_company_id}/{card_id}', [DeveloperController::class, 'update_fence']); // postman
 //           Route::get('spouse/{card_id}', [DeveloperController::class, 'spouse']);
            Route::get('representative/{card_id}', [DeveloperController::class, 'get_representative']); // postman
            Route::post('representative/{card_id}', [DeveloperController::class, 'update_representative']);

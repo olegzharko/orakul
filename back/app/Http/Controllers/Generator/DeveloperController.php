@@ -250,26 +250,25 @@ class DeveloperController extends BaseController
 
         $errors = $validator->errors()->messages();
 
-        $dev_company_id = Card::where('id', $card_id)->value('dev_company_id');
-        $developer_representative = Client::select('clients.*')
-            ->where('id', $r['dev_representative_id'])
+        $dev_group_id = Card::where('id', $card_id)->value('dev_group_id');
+
+        $dev_companies_id = DevCompany::where('dev_group_id', $dev_group_id)->pluck('id')->toArray();
+        $dev_employer_id = DevCompanyEmployer::whereIn('dev_company_id', $dev_companies_id)
+            ->where('employer_id', $r['dev_representative_id'])
             ->where('type_id', $this->representative_type)
-            ->where('dev_company_id', $dev_company_id)
             ->first();
 
-        if (!isset($errors['dev_representative_id']) && !$developer_representative) {
-            $validator->getMessageBag()->add('dev_representative_id', 'Представник забудовника з ID:' . $r['dev_representative_id'] . " не знайдено");
+
+        if ($dev_employer_id) {
+            Card::where('id', $card_id)->update([
+               'dev_representative_id' => $r['dev_representative_id']
+            ]);
+
+            return $this->sendResponse('', "Дані були успішно оновлені");
+        } else {
+            return $this->sendError('', "Представник відсутній");
         }
 
-        if (count($validator->errors()->getMessages())) {
-            return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
-        }
-
-        Card::where('id', $card_id)->update([
-           'dev_representative_id' => $r['dev_representative_id']
-        ]);
-
-        return $this->sendResponse('', "Дані були успішно оновлені");
     }
 
 //    private function ceo_info($dev_company_id)
