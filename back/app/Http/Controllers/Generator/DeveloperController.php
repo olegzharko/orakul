@@ -100,45 +100,70 @@ class DeveloperController extends BaseController
         $result['dev_company']['title'] = $dev_company->title;
         $result['dev_company']['color'] = $dev_company->color;
 
-        $owner = DevCompanyEmployer::select('clients.*')
-            ->where('dev_company_id', $dev_company->id)
-            ->where('type_id', $this->developer_type)
-            ->join('clients', 'clients.id', '=', 'dev_company_employers.employer_id')
-            ->first();
+//        $owner = DevCompanyEmployer::select('clients.*')
+//            ->where('dev_company_id', $dev_company->id)
+//            ->where('type_id', $this->developer_type)
+//            ->join('clients', 'clients.id', '=', 'dev_company_employers.employer_id')
+//            ->first();
+//
+//        $owner->name = $this->convert->get_full_name($owner);
+//        $owner->address = $this->convert->get_client_full_address($owner);
 
-        $owner->name = $this->convert->get_full_name($owner);
-        $owner->address = $this->convert->get_client_full_address($owner);
+        $result['ceo_info'][] = ['title' => 'CEO 1', 'value' => 'DATA 1'];
+        $result['ceo_info'][] = ['title' => 'CEO 2', 'value' => 'DATA 2'];
+        $result['ceo_info'][] = ['title' => 'CEO 3', 'value' => 'DATA 3'];
+        $result['ceo_info'][] = ['title' => 'CEO 4', 'value' => 'DATA 4'];
+        $result['ceo_info'][] = ['title' => 'CEO 5', 'value' => 'DATA 5'];
+        $result['ceo_info'][] = ['title' => 'CEO 6', 'value' => 'DATA 6'];
 
-        $result['ceo_info']['name'] = $owner->name;
-        $result['ceo_info']['tax_code'] = $owner->code;
-        $result['ceo_info']['married'] = $owner->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
-        $owner->passport_date = \DateTime::createFromFormat('Y-m-d H:i:s', $owner->passport_date);
-        $result['ceo_info'] = array_merge($result['ceo_info'], $this->collect_passport_info($owner));
-        $result['ceo_info']['address'] = $owner->address;
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 1', 'value' => 'INFO 1'];
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 2', 'value' => 'INFO 2'];
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 3', 'value' => 'INFO 3'];
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 4', 'value' => 'INFO 4'];
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 5', 'value' => 'INFO 5'];
+        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 6', 'value' => 'INFO 6'];
+
+//        $result['ceo_info']['name'] = $owner->name;
+//        $result['ceo_info']['tax_code'] = $owner->code;
+//        $result['ceo_info']['married'] = $owner->spouse_id ? Text::where('alias', 'yes')->value('value') : Text::where('alias', 'no')->value('value');
+//        $owner->passport_date = \DateTime::createFromFormat('Y-m-d H:i:s', $owner->passport_date);
+//        $result['ceo_info'] = array_merge($result['ceo_info'], $this->collect_passport_info($owner));
+//        $result['ceo_info']['address'] = $owner->address;
+
+        $result['dev_fence']['date'] = null;
+        $result['dev_fence']['number'] = null;
+        $result['dev_fence']['pass'] = null;
+
+        if ($fence = DevFence::where('dev_company_id', $dev_company->owner->id)->orderBy('date', 'desc')->first() ) {
+            $result['dev_fence']['date'] = $fence->date->format('d.m.Y. H:i');
+            $result['dev_fence']['number'] = $fence->number;
+            $result['dev_fence']['pass'] = $fence->pass;
+        }
+
 
         return $this->sendResponse($result, 'Загальні дані по забудовнику.');
     }
 
-    public function get_fence($card_id)
-    {
-        $result = [];
-        $card = Card::find($card_id);
+//    public function get_fence($card_id)
+//    {
+//        $result = [];
+//        $card = Card::find($card_id);
+//
+//        $result['date'] = null;
+//        $result['number'] = null;
+//        $result['pass'] = null;
+//
+//        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
+//        if ($fence = DevFence::where('dev_company_id', $card->dev_company->owner->id)->orderBy('date', 'desc')->first() ) {
+//            $result['date'] = $fence->date->format('d.m.Y. H:i');
+//            $result['number'] = $fence->number;
+//            $result['pass'] = $fence->pass;
+//        }
+//
+//        return $this->sendResponse($result, "Дані по забороні на продавця");
+//    }
 
-        $result['date'] = null;
-        $result['number'] = null;
-        $result['pass'] = null;
-
-        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
-        if ($fence = DevFence::where('dev_company_id', $card->dev_company->owner->id)->orderBy('date', 'desc')->first() ) {
-            $result['date'] = $fence->date->format('d.m.Y. H:i');
-            $result['number'] = $fence->number;
-            $result['pass'] = $fence->pass;
-        }
-
-        return $this->sendResponse($result, "Дані по забороні на продавця");
-    }
-
-    public function update_fence($card_id, Request $r)
+    public function update_fence($dev_company_id, $card_id, Request $r)
     {
         $result = [];
 
@@ -159,28 +184,31 @@ class DeveloperController extends BaseController
             return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
         }
 
-        $card = Card::find($card_id);
-
-        $fence = new DevFence();
-        $fence->date = $r['date'];
-        $fence->number = $r['number'];
-        $fence->save();
+        DevFence::updateOrCreate(
+            [
+                'card_id', $card_id
+            ],[
+                'dev_company_id' => $dev_company_id,
+                'date' => $r['date'],
+                'number' => $r['number'],
+                'pass' => $r['pass'],
+            ]);
 
         return $this->sendResponse('', 'Дані по забороні на продавця оновлені');
     }
 
-    public function spouse($card_id)
-    {
-        $card = Card::find($card_id);
-
-        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
-
-        if ($card->dev_company->owner->spouse) {
-            return $this->sendResponse('', 'Дані про подружжя не підготовлені. Розділ знаходиться на уточненні');
-        } else {
-            return $this->sendResponse('', 'Дані про подружжя відсутні');
-        }
-    }
+//    public function spouse($card_id)
+//    {
+//        $card = Card::find($card_id);
+//
+//        $card->dev_company->owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
+//
+//        if ($card->dev_company->owner->spouse) {
+//            return $this->sendResponse('', 'Дані про подружжя не підготовлені. Розділ знаходиться на уточненні');
+//        } else {
+//            return $this->sendResponse('', 'Дані про подружжя відсутні');
+//        }
+//    }
 
     public function get_representative($card_id)
     {
