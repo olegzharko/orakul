@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Generator;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
+use App\Http\Controllers\Helper\ToolsController;
 use App\Models\ClientType;
 use App\Models\DevCompany;
 use App\Models\DevCompanyEmployer;
@@ -19,12 +20,14 @@ use Validator;
 class DeveloperController extends BaseController
 {
     public $convert;
+    public $tools;
     public $developer_type;
     public $representative_type;
 
     public function __construct()
     {
         $this->convert = new ConvertController();
+        $this->tools = new ToolsController();
         $this->developer_type = DevEmployerType::where('alias', 'developer')->value('id');
         $this->representative_type = DevEmployerType::where('alias', 'representative')->value('id');
     }
@@ -250,16 +253,12 @@ class DeveloperController extends BaseController
 
         $errors = $validator->errors()->messages();
 
-        $dev_group_id = Card::where('id', $card_id)->value('dev_group_id');
+        $card = Card::find($card_id);
 
-        $dev_companies_id = DevCompany::where('dev_group_id', $dev_group_id)->pluck('id')->toArray();
-        $dev_employer_id = DevCompanyEmployer::whereIn('dev_company_id', $dev_companies_id)
-            ->where('employer_id', $r['dev_representative_id'])
-            ->where('type_id', $this->representative_type)
-            ->first();
+        $dev_representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
 
 
-        if ($dev_employer_id) {
+        if ($dev_representative) {
             Card::where('id', $card_id)->update([
                'dev_representative_id' => $r['dev_representative_id']
             ]);

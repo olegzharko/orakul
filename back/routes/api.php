@@ -152,7 +152,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'assistant'], function() {
-        Route::get('card/settings/{card_id}', [\App\Http\Controllers\Assistant\AssistantController::class, 'get_card_settings']);
+        Route::get('card/settings/{card_id}', [\App\Http\Controllers\Assistant\AssistantController::class, 'get_card_settings']); // postman
         Route::put('card/settings/{card_id}', [\App\Http\Controllers\Assistant\AssistantController::class, 'update_card_settings']);
     });
 
