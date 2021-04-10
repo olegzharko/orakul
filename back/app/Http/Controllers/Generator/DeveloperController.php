@@ -102,7 +102,7 @@ class DeveloperController extends BaseController
         return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
     }
 
-    public function main($dev_company_id)
+    public function main($dev_company_id, $card_id)
     {
         $result = [];
 
@@ -128,6 +128,16 @@ class DeveloperController extends BaseController
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 4', 'value' => 'INFO 4'];
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 5', 'value' => 'INFO 5'];
         $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 6', 'value' => 'INFO 6'];
+
+        $result['dev_fence']['date'] = null;
+        $result['dev_fence']['number'] = null;
+        $result['dev_fence']['pass'] = null;
+
+        if ($fence = DevFence::where('dev_company_id', $dev_company_id)->where('card_id', $card_id)->orderBy('date', 'desc')->first() ) {
+            $result['dev_fence']['date'] = $fence->date->format('d.m.Y. H:i');
+            $result['dev_fence']['number'] = $fence->number;
+            $result['dev_fence']['pass'] = $fence->pass;
+        }
 
         return $this->sendResponse($result, 'Загальні дані по забудовнику.');
     }
