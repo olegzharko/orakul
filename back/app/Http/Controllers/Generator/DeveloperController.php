@@ -78,7 +78,7 @@ class DeveloperController extends BaseController
         }
 
         $representative = $card->dev_representative;
-        dd($representative);
+        dd($card);
         $result['representative_id'] = $representative->id;
         $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
         $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
