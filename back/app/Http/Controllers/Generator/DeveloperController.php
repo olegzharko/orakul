@@ -55,9 +55,9 @@ class DeveloperController extends BaseController
             $result['dev_companies'][$key]['id'] = $company->id;
             $result['dev_companies'][$key]['title'] = $company->title;
             $result['dev_companies'][$key]['color'] = $company->color;
-            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
-            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
-            $result['dev_companies'][$key]['info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
+            $result['dev_companies'][$key]['info'][] = "Тест 1 Значення 1";
+            $result['dev_companies'][$key]['info'][] = "Тест 2 Значення 2";
+            $result['dev_companies'][$key]['info'][] = "Тест 3 Значення 3";
         }
 
         $dev_representatives = Client::select(
