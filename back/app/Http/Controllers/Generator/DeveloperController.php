@@ -167,7 +167,7 @@ class DeveloperController extends BaseController
     {
         $result = [];
 
-        $r['date'] = \DateTime::createFromFormat('Y.m.d. H:i', $r['date']);
+        $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
 
         $validator = Validator::make([
             'date' => $r['date'],
@@ -193,15 +193,21 @@ class DeveloperController extends BaseController
             return $this->sendError($validator->errors(), "Карта $card_id має наступні помилки");
         }
 
-        DevFence::updateOrCreate(
-            [
-                'card_id', $card_id
-            ],[
-                'dev_company_id' => $dev_company_id,
-                'date' => $r['date'],
-                'number' => $r['number'],
-                'pass' => $r['pass'],
-            ]);
+        DevFence::where('card_id', $card_id)->update([
+            'date' => $r['date'] ? $r['date']->format('Y.m.d') : null,
+            'number' => $r['number'],
+            'pass' => $r['pass'],
+        ]);
+
+//        DevFence::updateOrCreate(
+//            [
+//                'card_id', $card_id
+//            ],[
+//                'dev_company_id' => $dev_company_id,
+//                'date' => $r['date'] ? $r['date']->format('Y.m.d') : null,
+//                'number' => $r['number'],
+//                'pass' => $r['pass'],
+//            ]);
 
         return $this->sendResponse('', 'Дані по забороні на продавця оновлені');
     }
