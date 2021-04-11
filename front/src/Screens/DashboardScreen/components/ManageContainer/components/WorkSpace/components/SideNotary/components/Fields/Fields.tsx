@@ -6,6 +6,7 @@ import { useFields } from './useFields';
 
 const Fields = () => {
   const meta = useFields();
+  console.log(meta);
 
   return (
     <main className="side-notaries">

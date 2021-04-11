@@ -3,6 +3,7 @@ import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
 import setSchedulerFilter from '../../services/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
+import getCardsByContractType from '../../services/generator/getCardsByContractType';
 
 export const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
@@ -66,6 +67,21 @@ export const fetchAppointmentsByFilter = (bodyData: FilterData) => async (
 
     if (success) {
       dispatch(setAppointments(Object.values(data)));
+    }
+  }
+};
+
+export const fetchAppointmentsByContracts = (url: string) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main.user;
+
+  if (token) {
+    const res = await getCardsByContractType(token, url);
+
+    if (res?.success) {
+      dispatch(setAppointments(Object.values(res.data)));
     }
   }
 };

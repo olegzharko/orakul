@@ -4,12 +4,17 @@ import { DashboardContractNavigation } from '../../../../useDashboardScreen';
 import Clients from './components/Clients';
 import Seller from './components/Seller';
 import SideNotary from './components/SideNotary/SideNotary';
+import Main from './components/Main';
 
 type Props = {
   selectedNav?: DashboardContractNavigation
 }
 
 const WorkSpace = (props: Props) => {
+  if (props.selectedNav === DashboardContractNavigation.MAIN) {
+    return <Main />;
+  }
+
   if (props.selectedNav === DashboardContractNavigation.SELLER) {
     return <Seller />;
   }

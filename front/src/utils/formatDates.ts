@@ -1,6 +1,8 @@
 export const changeMonthWitDate = (date: string): string => date && date.replace(/(\d{2}).(\d{2}).(\d{4})/, '$2.$1.$3');
 
 export const formatDate = (date: Date): string => {
+  if (!date) return date;
+
   const day = date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate();
   const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   const year = date.getFullYear();

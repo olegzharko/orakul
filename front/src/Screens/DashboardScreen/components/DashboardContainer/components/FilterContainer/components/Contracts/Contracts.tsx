@@ -1,49 +1,48 @@
-import * as React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './index.scss';
 
-const data = [
-  {
-    key: 0,
-    title: 'Усі',
-    quantity: 50,
-  },
-  {
-    key: 1,
-    title: 'Готові',
-    quantity: 10,
-  },
-  {
-    key: 2,
-    title: 'Основних',
-    quantity: 30,
-  },
-  {
-    key: 3,
-    title: 'Попередніх',
-    quantity: 4,
-  },
-  {
-    key: 4,
-    title: 'Скасовано',
-    quantity: 2,
-  },
-];
+type Props = {
+  data: any,
+  onChange: (value: string) => void;
+}
 
-const Contracts = () => (
-  <div className="dashboard__filter-contracts">
-    <span className="title">Договори</span>
-    <div className="cards">
-      {data.map((item: any) => (
-        <div className="item" key={item.key}>
-          <div className="item__left">
-            <img src="/icons/contract.svg" alt="contract" />
-            <span className="name">{item.title}</span>
+const Contracts = ({ data, onChange }: Props) => {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const handleChange = useCallback((type: string) => {
+    if (selected === type) return;
+    setSelected(type);
+    onChange(type);
+  }, []);
+
+  useEffect(() => {
+    setSelected(data ? data[0].type : null);
+  }, [data]);
+
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <div className="dashboard__filter-contracts">
+      <span className="title">Договори</span>
+      <div className="cards">
+        {data.map((item: any) => (
+          <div
+            key={item.key}
+            className={`item ${selected === item.type ? 'selected' : ''}`}
+            onClick={() => handleChange(item.type)}
+          >
+            <div className="item__left">
+              <img src="/icons/contract.svg" alt="contract" />
+              <span className="name">{item.title}</span>
+            </div>
+            <span className="quantity">{item.count}</span>
           </div>
-          <span className="quantity">{item.quantity}</span>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Contracts;
