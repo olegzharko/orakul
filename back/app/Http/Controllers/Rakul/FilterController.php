@@ -193,7 +193,9 @@ class FilterController extends BaseController
         foreach ($filter_tyep as $key => $type) {
             $result[$key]['title'] = $type->title;
             $result[$key]['type'] = $type->alias;
-            if (strpos($type->alias, 'ready')) {
+            if (strpos($type->alias, 'total')) {
+                $result[$key]['count'] = $this->count_total_cards();
+            } elseif (strpos($type->alias, 'ready')) {
                 $result[$key]['count'] = $this->count_ready_cards();
             } elseif (strpos($type->alias,'main')) {
                 $result[$key]['count'] = $this->count_by_type('main');
@@ -255,6 +257,16 @@ class FilterController extends BaseController
             ->whereIn('room_id', $this->rooms)
             ->where('date_time', '>=', $this->date)
             ->where('cancelled', true)
+            ->count();
+
+        return $count_cards;
+    }
+
+    private function count_total_cards()
+    {
+        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
+            ->whereIn('room_id', $this->rooms)
+            ->where('date_time', '>=', $this->date)
             ->count();
 
         return $count_cards;
