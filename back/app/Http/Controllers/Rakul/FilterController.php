@@ -191,17 +191,15 @@ class FilterController extends BaseController
         $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->get();
 
         foreach ($filter_tyep as $key => $type) {
+            $result[$key]['title'] = $type->title;
+            $result[$key]['type'] = $type->alias;
             if ($type->alias == 'ready') {
-                $result[$key]['type'] = $type->alias;
                 $result[$key]['count'] = $this->count_ready_cards();
             } elseif ($type->alias == 'main') {
-                $result[$key]['type'] = $type->alias;
                 $result[$key]['count'] = $this->count_by_type($type->alias);
             } elseif ($type->alias == 'preliminary') {
-                $result[$key]['type'] = $type->alias;
                 $result[$key]['count'] = $this->count_by_type($type->alias);
             } elseif ($type->alias == 'cancelled') {
-                $result[$key]['type'] = $type->alias;
                 $result[$key]['count'] = $this->count_cancelled_cards();
             }
         }
