@@ -18,6 +18,22 @@
           align-items: center;
           justify-content: space-between;
           padding: 10px;
+          cursor: pointer;
+          transition: $transition_default;
+
+          &:hover {
+            opacity: .5;
+          }
+
+          &.selected {
+            background-color: $grey_light;
+            border-radius: $border_radius;
+            cursor: default;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
 
           &__left {
             display: flex;

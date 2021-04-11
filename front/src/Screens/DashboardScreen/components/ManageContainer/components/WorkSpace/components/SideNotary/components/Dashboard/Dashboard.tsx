@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import CardWithClose from '../../../../../../../../../../components/CardWithClose';
-import ConfirmDialog from '../../../../../../../../../../components/ConfirmDialog';
+import Card from '../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../components/Loader/Loader';
 import { useDashboard } from './useDashboard';
 
@@ -15,35 +14,26 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="side-notaries">
+    <div className="side-notaries side-notaries__dashboard">
       <div className="dashboard-header section-title">Сторонній нотаріус</div>
 
-      <div className="grid">
+      <div className="grid grid-stretch">
         {meta.notaries.map((notary) => (
-          <CardWithClose
+          <Card
             key={notary.id}
             title={notary.title}
-            onClick={() => meta.onModalShow(notary.id.toString())}
             link={`/side-notaries/${meta.id}/${notary.id}`}
           >
             {notary.list.map((item) => (
               <span>{item}</span>
             ))}
-          </CardWithClose>
+          </Card>
         ))}
 
         <Link to={`/side-notaries/${meta.id}/create`} className="add-item-card">
           <img src="/icons/plus-big.svg" alt="create" />
         </Link>
       </div>
-
-      <ConfirmDialog
-        open={meta.showModal}
-        title="Видалення нотаріуса"
-        message="Ви впевнені, що бажаєте видалити даного нотаріуса"
-        handleClose={() => meta.onModalCancel()}
-        handleConfirm={() => meta.onModalConfirm()}
-      />
     </div>
   );
 };

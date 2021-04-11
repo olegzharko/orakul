@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchAppointmentsByFilter } from '../../../../../../store/appointments/actions';
-import { FilterData } from '../../../../../../store/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAppointmentsByContracts, fetchAppointmentsByFilter } from '../../../../../../store/appointments/actions';
+import { FilterData, State } from '../../../../../../store/types';
 
 export const useFilterContainer = () => {
   const dispatch = useDispatch();
+  const { filterInitialData } = useSelector((state: State) => state.filter);
+
   const [filterData, setFilterData] = useState<FilterData>();
 
   const onFilterDataChange = useCallback((data: FilterData) => {
@@ -17,5 +19,14 @@ export const useFilterContainer = () => {
     }
   }, [filterData]);
 
-  return { onFilterDataChange, onFilterSubmit };
+  const onContractsFilterChange = useCallback((url: string) => {
+    dispatch(fetchAppointmentsByContracts(url));
+  }, []);
+
+  return {
+    filterInitialData,
+    onFilterDataChange,
+    onFilterSubmit,
+    onContractsFilterChange,
+  };
 };
