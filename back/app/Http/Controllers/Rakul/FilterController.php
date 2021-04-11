@@ -188,7 +188,7 @@ class FilterController extends BaseController
     {
         $result = [];
 
-        $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->get();
+        $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->orderBy('sort_order')->get();
 
         foreach ($filter_tyep as $key => $type) {
             $result[$key]['title'] = $type->title;
