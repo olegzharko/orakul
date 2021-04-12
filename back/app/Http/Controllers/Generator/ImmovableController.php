@@ -384,7 +384,7 @@ class ImmovableController extends BaseController
         $result['discharge_number'] = null;
 
         if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->first()) {
-            $this->sendResponse($result, 'Дані по перевірці на власність відсутні.');
+            return $this->sendResponse($result, 'Дані по перевірці на власність відсутні.');
         }
 
         $result['reg_date'] = $imm_own->gov_reg_date ? $imm_own->gov_reg_date->format('d.m.Y') : null;
