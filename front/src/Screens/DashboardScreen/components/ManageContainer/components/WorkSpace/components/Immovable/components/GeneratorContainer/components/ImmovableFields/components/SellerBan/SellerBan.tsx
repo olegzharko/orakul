@@ -8,7 +8,7 @@ const SellerBan = (props: Props) => {
 
   return (
     <>
-      <CheckBanFields data={meta.data} setData={meta.setData} title="Заборони на продавця" />
+      <CheckBanFields data={meta.data} setData={meta.setData} title="Заборони на нерухомість" />
       <div className="middle-button">
         <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={meta.disableSaveButton} />
       </div>
