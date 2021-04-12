@@ -17,43 +17,6 @@ export const useDashboard = () => {
   const [notaries, setNotaries] = useState<SideNotary[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>();
 
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [notaryNeedToRemove, setNotaryNeedToRemove] = useState<any>();
-
-  const clientRemove = useCallback((personId: string) => {
-    // (async () => {
-    //   if (token) {
-    //     const { success, message, data } = await reqClientName(token, id, personId, 'DELETE');
-
-    //     if (success) {
-    //       dispatch(setClients(data));
-    //       dispatch(
-    //         setModalInfo({
-    //           open: true,
-    //           success,
-    //           message,
-    //         })
-    //       );
-    //     }
-    //   }
-    // })();
-  }, [token, notaryNeedToRemove]);
-
-  const onModalShow = useCallback((personId: string) => {
-    setShowModal(true);
-    setNotaryNeedToRemove(personId);
-  }, []);
-
-  const onModalConfirm = useCallback(() => {
-    setShowModal(false);
-    clientRemove(notaryNeedToRemove);
-  }, [notaryNeedToRemove]);
-
-  const onModalCancel = useCallback(() => {
-    setShowModal(false);
-    setNotaryNeedToRemove(undefined);
-  }, []);
-
   useEffect(() => {
     if (token) {
       // get SIDE_NOTARIES
@@ -73,9 +36,5 @@ export const useDashboard = () => {
     id,
     isLoading,
     notaries,
-    showModal,
-    onModalCancel,
-    onModalConfirm,
-    onModalShow,
   };
 };
