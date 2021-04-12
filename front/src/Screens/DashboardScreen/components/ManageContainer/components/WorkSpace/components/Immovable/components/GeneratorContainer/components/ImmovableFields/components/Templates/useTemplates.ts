@@ -70,9 +70,10 @@ export const useTemplates = ({ initialData, id }: Props) => {
     if (token) {
       const reqData = {
         ...data,
-        sign_date: formatDate(data.sign_date),
-        final_sign_date: formatDate(data.final_sign_date),
+        sign_date: formatDate(new Date(data.sign_date)),
+        final_sign_date: formatDate(new Date(data.sign_date)),
       };
+      console.log(reqData);
 
       const { success, message } = await reqImmovableTemplate(token, id, 'PUT', reqData);
       dispatch(
