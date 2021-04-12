@@ -70,6 +70,7 @@ class ManagerController extends BaseController
         $representative = $this->tools->developer_employer_by_type($card->dev_group_id, $representative_type_id);
         $manager = $this->tools->developer_employer_by_type($card->dev_group_id, $manager_type_id);
 
+        $generator = $this->tools->get_generator_staff();
 
         $contact_person_type = ContactType::get_contact_type();
         $contact_person_info = Contact::contact_by_card($card_id);
@@ -79,6 +80,7 @@ class ManagerController extends BaseController
         $result['developer'] = $developer;
         $result['representative'] = $representative;
         $result['manager'] = $manager;
+        $result['generator'] = $generator;
         $result['contact_person_type'] = $contact_person_type;
         $result['contact_person_info'] = $contact_person_info;
 
@@ -86,6 +88,7 @@ class ManagerController extends BaseController
         $result['developer_id'] = $card->dev_company_id;
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
+        $result['generator_id'] = $card->staff_generator_id;
 
         return $this->sendResponse($result, 'Дані по карточкці ID:' . $card_id);
     }
