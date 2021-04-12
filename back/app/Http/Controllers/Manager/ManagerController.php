@@ -162,7 +162,7 @@ class ManagerController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['address'] = $this->generator->full_ascending_address_r($immovable);
+            $result[$key]['address'] = $this->generator->full_ascending_address($immovable);
             $result[$key]['list'] = ['Тест M інформація 1', 'Тест M інформація 2', 'Тест M інформація 3'];
         }
 

@@ -623,6 +623,7 @@ class DocumentController extends GeneratorController
         $word->setValue('sign-d-r', $document->str_day->title);
         $word->setValue('sign-m-r', $document->str_month->title_r);
         $word->setValue('sign-y-r', $document->str_year->title_r);
+        $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
 
         $word->setValue('sign-d-r-up', $this->mb_ucfirst($document->str_day->title));
         $word->setValue('sign-m-r-up', $this->mb_ucfirst($document->str_month->title_r));
@@ -1114,7 +1115,7 @@ class DocumentController extends GeneratorController
              * Об'єкт - адреса
              * */
             $word->setValue('imm-full-addr', $this->contract->immovable->address);
-            $word->setValue('imm-full-asc-addr-r', $this->full_ascending_address_r($this->contract->immovable));
+//            $word->setValue('imm-full-asc-addr-r', $this->full_ascending_address($this->contract->immovable));
 
             $word->setValue('imm-num', $this->contract->immovable->immovable_number);
             $word->setValue('imm-num-str', $this->convert->number_to_string($this->contract->immovable->immovable_number));
@@ -1157,8 +1158,8 @@ class DocumentController extends GeneratorController
              * */
 
             if ($this->contract->immovable->developer_building->building_permit) {
-                $word->setValue('imm-res-num', $this->contract->immovable->developer_building->building_permit->resolution);
-                $word->setValue('imm-res-date-m-r', $this->day_quotes_month_year($this->contract->immovable->developer_building->building_permit->sign_date));
+                $word->setValue('imm-res-per-num', $this->contract->immovable->developer_building->building_permit->resolution);
+                $word->setValue('imm-res-per-date-qd-m', $this->day_quotes_month_year($this->contract->immovable->developer_building->building_permit->sign_date));
             }
             /*
              * Об'єкт - реєстраційний номер
@@ -1205,11 +1206,6 @@ class DocumentController extends GeneratorController
         /*
          * Перевірка заборон на власника
          * */
-//        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->fence && $this->contract->dev_company->owner->fence->number && $this->contract->dev_company->owner->fence->date) {
-//            $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->owner->fence->date));
-//            $word->setValue('dev-fence-num', $this->contract->dev_company->owner->fence->number);
-//        }
-
         if ($this->contract->dev_company && $this->contract->dev_company->fence && $this->contract->dev_company->fence->number && $this->contract->dev_company->fence->date) {
             $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->fence->date));
             $word->setValue('dev-fence-num', $this->contract->dev_company->fence->number);

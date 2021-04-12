@@ -176,12 +176,12 @@ class GeneratorController extends Controller
     public function get_immovable($immovable)
     {
         $immovable->fence = ImmFence::where('immovable_id', $immovable->id)->first();
-        $immovable->address = $this->full_ascending_address_r($immovable);
+        $immovable->address = $this->full_ascending_address($immovable);
 
         return $immovable;
     }
 
-    public function full_ascending_address_r($immovable)
+    public function full_ascending_address($immovable)
     {
         $address = null;
 

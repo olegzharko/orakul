@@ -73,7 +73,7 @@ class AssistantController extends BaseController
         $imm_res = [];
         foreach ($immovables as $key => $immovable) {
             $imm_res[$key]['immovable_id'] = $immovable->id;
-            $imm_res[$key]['address'] = $this->generator->full_ascending_address_r($immovable);
+            $imm_res[$key]['address'] = $this->generator->full_ascending_address($immovable);
             $imm_res[$key]['reader_id'] = $immovable->reader_id;
             $imm_res[$key]['accompanying_id'] = $immovable->accompanying_id;
             $imm_res[$key]['printer_id'] = $immovable->printer_id;

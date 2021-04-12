@@ -32,10 +32,16 @@ class ContractTemplate extends Resource
 
     public function title()
     {
-        if ($this->template_type)
-            return $this->template_type->title;
-        else
-            return '';
+        $title = '';
+
+        if ($this->type)
+            $title .= $this->type->title . ' ';
+
+        if ($this->developer)
+            $title .= $this->developer->title;
+
+
+        return $title;
     }
 
     /**
