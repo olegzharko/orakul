@@ -98,6 +98,7 @@ class ToolsController extends Controller
         $buildings_id = DevGroup::where('dev_groups.id', $dev_group_id)
             ->join('dev_companies', 'dev_companies.dev_group_id', '=', 'dev_groups.id')
             ->join('developer_buildings', 'developer_buildings.dev_company_id', '=', 'dev_companies.id')
+            ->orderBy('developer_buildings.title')
             ->distinct('developer_buildings.id')
             ->pluck('developer_buildings.id');
 
