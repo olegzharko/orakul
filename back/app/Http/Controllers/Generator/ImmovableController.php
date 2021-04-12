@@ -446,7 +446,7 @@ class ImmovableController extends BaseController
         $result['statement_templates'] = $statement_templates;
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
-        $result['final_sign_date'] = $final_sing_date->sign_date ? $final_sing_date->sign_date->format('d.m.Y') : null;
+        $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date ? $final_sing_date->sign_date->format('d.m.Y') : null;
         $result['ready'] = $contract->ready ? true : false;
         $result['type_id'] = $contract->type_id;
         $result['template_id'] = $contract->template_id;
