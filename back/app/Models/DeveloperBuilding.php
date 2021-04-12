@@ -56,7 +56,7 @@ class DeveloperBuilding extends Model implements Sortable
 
     public static function get_dev_group_buildings($buildings_id)
     {
-        return DeveloperBuilding::whereIn('id', $buildings_id)->get();
+        return DeveloperBuilding::whereIn('id', $buildings_id)->orderBy('developer_buildings.title')->get();
     }
 
     public static function get_developer_building($dev_company_id)
