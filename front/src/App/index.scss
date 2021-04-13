@@ -54,7 +54,6 @@ body, p {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 20px;
-  align-items: flex-end;
 }
 
 .grid-center-duet {
@@ -149,7 +148,7 @@ body, p {
   cursor: pointer;
   transition: $transition_default;
   text-decoration: none;
-  padding: 50px;
+  padding: 80px;
 
   &:hover {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));

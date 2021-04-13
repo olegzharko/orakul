@@ -1,0 +1,26 @@
+@import '../../../../../../../../../../../../constants.scss';
+
+.clients {
+
+  &__colorful-title {
+    @include form_text;
+    font-size: 20px;
+    line-height: 26px;
+    color: white;
+    padding: 8px 16px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
+    border-radius: $border_radius;
+
+    &.blue {
+      background-color: $blue;
+    }
+
+    &.yellow {
+      background-color: $yellow;
+    }
+
+    &.green {
+      background-color: $green;
+    }
+  }
+}

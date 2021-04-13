@@ -4,13 +4,26 @@ import './index.scss';
 type Props = {
   title: string;
   children: React.ReactNode;
+  headerColor?: string;
   onClear?: () => void;
 }
 
-const SectionWithTitle = ({ title, children, onClear }: Props) => (
+const SectionWithTitle = ({ title, children, onClear, headerColor }: Props) => (
   <div className="section-with-title">
-    <div className="section-with-title__header">
-      <h2 className="section-title">{title}</h2>
+    <div
+      className="section-with-title__header"
+      style={{
+        backgroundColor: headerColor || '',
+      }}
+    >
+      <h2
+        className="section-title"
+        style={{
+          color: headerColor ? 'white' : '',
+        }}
+      >
+        {title}
+      </h2>
       {onClear && (
         <button type="button" className="clear-button">
           <img

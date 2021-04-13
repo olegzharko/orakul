@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import getImmovables from '../../services/generator/Immovable/getImmovables';
+import getImmovables from '../../services/getImmovables';
 import { State } from '../types';
 
 export const ACTIONS = {

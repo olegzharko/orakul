@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './index.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
   data: any,
@@ -29,7 +30,7 @@ const Contracts = ({ data, onChange }: Props) => {
       <div className="cards">
         {data.map((item: any) => (
           <div
-            key={item.key}
+            key={uuidv4()}
             className={`item ${selected === item.type ? 'selected' : ''}`}
             onClick={() => handleChange(item.type)}
           >
