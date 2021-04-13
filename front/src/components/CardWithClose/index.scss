@@ -1,6 +1,8 @@
 @import '../../constants.scss';
 
 .card-close {
+  display: flex;
+  flex-direction: column;
   border-radius: $border_radius;
   cursor: pointer;
   transition: $transition_default;
@@ -39,6 +41,7 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     color: black;
+    flex-grow: 1;
 
     & > span {
       margin-bottom: 15px;

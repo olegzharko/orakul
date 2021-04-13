@@ -5,6 +5,7 @@ import Modal from '../../../../components/Modal';
 import Dashboard from '../../../../components/Dashboard';
 import { useDashboardContainer } from './useDashboardContainer';
 import ContentPanel from '../../../../components/ContentPanel';
+import Loader from '../../../../components/Loader/Loader';
 
 const DashboardContainer = () => {
   const modalProps = useModal();
@@ -14,11 +15,13 @@ const DashboardContainer = () => {
     <div className="dashboard-screen">
       <Filter />
       <ContentPanel>
-        <Dashboard
-          link="main"
-          sections={formatAppointments}
-          isChangeTypeButton
-        />
+        {!formatAppointments.length ? <Loader /> : (
+          <Dashboard
+            link="main"
+            sections={formatAppointments}
+            isChangeTypeButton
+          />
+        )}
       </ContentPanel>
       <Modal {...modalProps} />
     </div>

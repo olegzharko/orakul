@@ -1,0 +1,11 @@
+.main {
+
+  & > div {
+    margin-bottom: 25px;
+  }
+
+  &__person-block {
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+}

@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
   ChangeEvent, useState, useEffect, useCallback
@@ -8,6 +9,7 @@ import useDebounce from './utils/useDebounce';
 
 export const useHeader = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [searchText, setSearchText] = useState<string>('');
   const [count, setCount] = useState<number>(0);
 
@@ -29,6 +31,7 @@ export const useHeader = () => {
   const onLogout = useCallback(() => {
     localStorage.clear();
     dispatch(setUser({ type: null, token: null }));
+    history.push('/');
   }, []);
 
   return { onSearch, onLogout, searchText };
