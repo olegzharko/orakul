@@ -10,6 +10,7 @@ use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\CheckList;
 use App\Models\Contact;
 use App\Models\Contract;
+use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use Illuminate\Http\Request;
 use App\Models\Card;
