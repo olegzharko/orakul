@@ -87,8 +87,10 @@ class SortController extends BaseController
         elseif (auth()->user()->type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)->where('generator_step', true)->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
-        }
-        else {
+        } elseif (auth()->user()->type == 'manager') {
+            $cards = $cards_query->orderBy('date_time')->get();
+            $result = $this->get_cards_in_generator_format($cards);
+        } else {
             return $this->sendError("Користувач не може завантажити даний розділ");
         }
 
