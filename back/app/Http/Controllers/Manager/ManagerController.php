@@ -144,17 +144,13 @@ class ManagerController extends BaseController
         $old_contact_id = Contact::where('card_id', $card_id)->pluck('id');
 
         foreach ($data as $key => $value) {
-            Contact::updateOrCreate(
-                ['id' => $value->id],
-                [
-                    'person_type' => $value->person_type,
-                    'name' => $value->name,
-                    'phone' => $value->phone,
-                    'email' => $value->email,
-                ]);
-            if (($key = array_search($value->id, $old_contact_id)) !== false) {
-                unset($old_contact_id[$key]);
-            }
+
+            $contact = new Contact();
+            $contact->person_type => $value->person_type,
+            $contact->name = $value->name;
+            $contact->phone = $value->phone;
+            $contact->email = $value->email;
+            $contact->save();
         }
 
         Contact::whereIn('id', $old_contact_id)->delete();
