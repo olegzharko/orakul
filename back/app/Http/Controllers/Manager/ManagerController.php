@@ -173,7 +173,7 @@ class ManagerController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['address'] = $this->generator->full_ascending_address($immovable);
+            $result[$key]['title'] = $this->generator->full_ascending_address($immovable);
             $result[$key]['list'] = ['Тест M інформація 1', 'Тест M інформація 2', 'Тест M інформація 3'];
         }
 
@@ -182,8 +182,8 @@ class ManagerController extends BaseController
 
     public function get_immovable($immovable_id)
     {
-
         $result = [];
+        $result['title'] = '';
         $result['immovable_type'] = null;
         $result['building'] = null;
         $result['reader'] = null;
@@ -202,13 +202,15 @@ class ManagerController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        $result['title'] = $this->generator->full_ascending_address($immovable);
+
         $immovable_type = ImmovableType::get_immovable_type();
         $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
         $building = [];
         foreach ($developer_building as $key => $dev_building) {
             $building[$key]['id'] = $dev_building->id;
-            $building[$key]['address'] = $this->convert->get_full_address($dev_building);
+            $building[$key]['title'] = $this->convert->get_full_address($dev_building);
         }
 
         $reader = $this->tools->get_reader_staff();
