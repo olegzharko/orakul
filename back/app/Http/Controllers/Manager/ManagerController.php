@@ -146,7 +146,7 @@ class ManagerController extends BaseController
         foreach ($data as $key => $value) {
 
             $contact = new Contact();
-            $contact->contract_type_id = $value['person_type'];
+            $contact->contact_type_id = $value['person_type'];
             $contact->name = $value['name'];
             $contact->phone = $value['phone'];
             $contact->email = $value['email'];
