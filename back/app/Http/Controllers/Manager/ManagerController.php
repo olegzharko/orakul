@@ -81,7 +81,7 @@ class ManagerController extends BaseController
         $representative_type_id = DevEmployerType::get_representative_type_id();
         $manager_type_id = DevEmployerType::get_manager_type_id();
 
-        $representative = $this->tools->developer_employer_by_type($card->dev_group_id, $representative_type_id);
+        $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $representative_type_id);
         $manager = $this->tools->developer_employer_by_type($card->dev_group_id, $manager_type_id);
 
         $generator = $this->tools->get_generator_staff();
