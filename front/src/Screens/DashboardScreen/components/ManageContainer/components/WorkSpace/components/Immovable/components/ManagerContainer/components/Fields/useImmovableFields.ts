@@ -14,15 +14,15 @@ export const useImmovableFields = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
   const { immovableId } = useParams<{clientId: string, immovableId: string}>();
+  const [title, setTitle] = useState('');
 
   // Selects
   const [immovableTypes, setImmovableTypes] = useState<SelectItem[]>([]);
   const [buildings, setBuildings] = useState<SelectItem[]>([]);
-
   const [reader, setReader] = useState<SelectItem[]>([]);
   const [accompanying, setAccompanying] = useState<SelectItem[]>([]);
-
   const [contracts, setContracts] = useState<SelectItem[]>([]);
+  const [checkList, setCheckList] = useState<ManagerChecksData>([]);
 
   // Fields Data
   const [general, setGeneral] = useState<ManagerGeneralData>({
@@ -36,19 +36,14 @@ export const useImmovableFields = () => {
     accompanying_id: null,
   });
   const [contractType, setContractType] = useState<ManagerContractData>({
-    contract_type: null,
+    contract_type_id: null,
   });
-  const [checks, setChecks] = useState<ManagerChecksData>({
-    right_establishing: false,
-    technical_passport: false,
-    rating: false,
-    fund_evaluation: false,
-  });
+  const [checks, setChecks] = useState<any>();
 
   const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(immovableId)), [immovableId]);
 
   const onSave = useCallback(async () => {
-    const data = {
+    const bodyData = {
       ...general,
       ...responsible,
       ...contractType,
@@ -56,7 +51,7 @@ export const useImmovableFields = () => {
     };
 
     if (token) {
-      const res = await reqManagerImmovables(token, immovableId, 'PUT', data);
+      const res = await reqManagerImmovables(token, immovableId, 'PUT', bodyData);
 
       dispatch(
         setModalInfo({
@@ -75,6 +70,8 @@ export const useImmovableFields = () => {
         const res = await reqManagerImmovables(token, immovableId);
 
         if (res?.success) {
+          setTitle(res?.data.title);
+
           setImmovableTypes(res?.data.immovable_type || []);
           setBuildings(res?.data.building || []);
           setGeneral({
@@ -91,14 +88,21 @@ export const useImmovableFields = () => {
             accompanying_id: res?.data.accompanying_id || null,
           });
 
-          setContracts(res?.data.contracts);
-          setContractType(res?.data.contract_id);
+          setContracts(res?.data.contract_type);
+          setContractType({ contract_type_id: res?.data.contract_type_id || null });
+
+          setCheckList(res?.data.check_list || []);
+          setChecks(res?.data.check_list.reduce((acc: any, item: any) => {
+            acc[item.key] = item.value;
+            return acc;
+          }, {}));
         }
       })();
     }
   }, [token, isCorrectId]);
 
   return {
+    title,
     general,
     immovableTypes,
     buildings,
@@ -107,6 +111,7 @@ export const useImmovableFields = () => {
     responsible,
     contracts,
     contractType,
+    checkList,
     checks,
     setChecks,
     setContractType,

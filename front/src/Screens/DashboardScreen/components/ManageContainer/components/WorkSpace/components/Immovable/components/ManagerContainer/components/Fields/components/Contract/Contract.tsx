@@ -6,18 +6,18 @@ import { SelectItem } from '../../../../../../../../../../../../../../types';
 
 type Props = {
   onChange: (arg: ManagerContractData) => void;
-  type: SelectItem[],
+  types: SelectItem[],
   data: ManagerContractData;
 }
 
 export type ManagerContractData = {
-  contract_type: string | null,
+  contract_type_id: string | null,
 };
 
-const Contract = ({ data, onChange, type }: Props) => {
+const Contract = ({ data, onChange, types }: Props) => {
   const handleClear = () => {
     onChange({
-      contract_type: null
+      contract_type_id: null
     });
   };
 
@@ -27,9 +27,9 @@ const Contract = ({ data, onChange, type }: Props) => {
         <div style={{ width: '360px' }}>
           <CustomSelect
             label="Тип договору"
-            data={type}
-            onChange={(e) => onChange({ ...data, contract_type: e })}
-            selectedValue={data?.contract_type}
+            data={types}
+            onChange={(e) => onChange({ ...data, contract_type_id: e })}
+            selectedValue={data?.contract_type_id}
           />
         </div>
       </div>
