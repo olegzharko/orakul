@@ -366,7 +366,6 @@ class ConvertController extends GeneratorController
 
     public function number_to_string($value)
     {
-
         $result  = null;
         $str = null;
 
@@ -590,6 +589,63 @@ class ConvertController extends GeneratorController
         $full_address = trim($full_address);
 
         return $full_address;
+    }
+
+    public function building_address($immovable)
+    {
+        $result = '';
+
+        $imm_addr_type_r = $immovable->developer_building->address_type->title_r;
+        $imm_addr_title = $immovable->developer_building->title;
+
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $this->building_num_str($immovable->developer_building->number);
+
+        $result = "$imm_addr_type_r $imm_addr_title $imm_build_num ($imm_build_num_str)";
+
+        return $result;
+    }
+
+    public function building_num_str($num)
+    {
+        $resutl = [];
+
+        $num_arr = explode('/', $num);
+
+        if (count($num_arr) == 2) {
+            $resutl[] = $this->number_to_string($num_arr[0]);
+            $resutl[] = 'дріб';
+            $resutl[] = $this->number_to_string($num_arr[1]);
+
+            return implode(' ', $resutl);
+        }
+
+        $num_arr = explode('-', $num);
+
+        if (count($num_arr) == 2) {
+            $resutl[] = $this->number_to_string($num_arr[0]);
+            $resutl[] = $num_arr[1];
+
+            return implode(' ', $resutl);
+        }
+
+        $result = $this->number_to_string($num);
+
+        return $result;
+    }
+
+    public function number_with_string($number)
+    {
+        $number_str = $this->number_to_string($number);
+
+        $resutl = "$number ($number_str)";
+
+        return $resutl;
+    }
+
+    public function get_immovable_floor($floor)
+    {
+        return KeyWord::where('key', 'floor_' . $floor)->value('title_d');
     }
 }
 

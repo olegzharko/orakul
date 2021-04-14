@@ -269,8 +269,17 @@ class FolderFileController extends Controller
     public function create_file_for_contract($template, $title)
     {
         if (!file_exists($title)) {
-            $data = file_get_contents($template);
-            file_put_contents($title, $data);
+//            $data = file_get_contents($template);
+
+            $data =curl_init();
+            curl_setopt($data, CURLOPT_URL,$template);
+            curl_setopt($data, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($data, CURLOPT_USERAGENT, 'Document Template');
+            $result = curl_exec($data);
+            curl_close($data);
+
+            file_put_contents($title, $result);
         }
     }
 }

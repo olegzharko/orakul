@@ -55,9 +55,9 @@ class ExchangeRate extends Resource
             BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable')->nullable(),
             Text::make('Посилання сторінку з курсом долара', 'web_site_link'),
             Text::make('Назва сайту', 'web_site_root'),
-            Money::make('rate_dig', 'UAH')->storedInMinorUnits(),
-            Text::make('Гривні словами', 'rate_str'),
-            Text::make('Копійки словами', 'rate_cent_str'),
+            Money::make('rate', 'UAH')->storedInMinorUnits(),
+//            Text::make('Гривні словами', 'rate_str'),
+//            Text::make('Копійки словами', 'rate_cent_str'),
         ];
     }
 

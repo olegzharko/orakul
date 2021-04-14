@@ -35,4 +35,9 @@ class Proxy extends Model
     {
         return $this->hasMany(DeveloperBuilding::class, 'dev_company_id');
     }
+
+    public function dev_representative()
+    {
+        return $this->belongsTo(Client::class, 'dev_representative_id');
+    }
 }

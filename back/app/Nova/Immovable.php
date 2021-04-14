@@ -81,7 +81,7 @@ class Immovable extends Resource
             ID::make(__('ID'), 'id')->sortable(),
 
             BelongsTo::make('Адреса', 'developer_building', 'App\Nova\DeveloperBuilding')->rules('required'),
-            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy')->onlyOnForms()->nullable(),
+//            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy')->onlyOnForms()->nullable(),
 //            Number::make('Номер будинку', 'building_number')->rules('required'),
             BelongsTo::make('Тип нерухомості', 'immovable_type', 'App\Nova\ImmovableType')->rules('required'),
             Number::make('Номер нерухомості', 'immovable_number')->rules('required'),
@@ -109,8 +109,8 @@ class Immovable extends Resource
             BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\RoominessType')->nullable(),
             AdvancedNumber::make('Загальна площа', 'total_space')->thousandsSeparator(',')->decimals(1),
             AdvancedNumber::make('Житлова площа', 'living_space')->thousandsSeparator(',')->decimals(1),
-            AdvancedNumber::make('Номер поверху цифрою', 'floor_dig'),
-            Text::make('Номер поверху словами', 'floor_str'),
+            AdvancedNumber::make('Номер поверху цифрою', 'floor'),
+//            Text::make('Номер поверху словами', 'floor_str'),
             AdvancedNumber::make('Номер секції цифрою', 'section'),
 
             HasOne::make('Забезпечувальний платіж', 'security_payment', 'App\Nova\SecurityPayment'),

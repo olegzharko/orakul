@@ -54,7 +54,7 @@ class CalendarCards extends Resource
             DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm')->onlyOnForms(),
             BelongsTo::make('Кімната', 'room', 'App\Nova\Room'),
             BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary')->nullable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->nullable(),
+            BelongsTo::make('Забудовник', 'dev_group', 'App\Nova\DevGroup')->nullable(),
             BelongsTo::make('Підписант', 'dev_representative', 'App\Nova\Client')->onlyOnForms()->nullable(),
             BelongsTo::make('Менеджер', 'manager', 'App\Nova\Client')->onlyOnForms()->nullable(),
             BelongsTo::make('Місце складання договору', 'city', 'App\Nova\City')->onlyOnForms()->nullable(),

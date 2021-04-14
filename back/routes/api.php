@@ -64,8 +64,8 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'generator'], function() {
-       Route::get('main/{card_id}', [\App\Http\Controllers\Generator\MainController::class, 'main']); // postman
-       Route::get('create/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']); // postman
+        Route::get('main/{card_id}', [\App\Http\Controllers\Generator\MainController::class, 'main']); // postman
+        Route::get('create/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']); // postman
 
        Route::get('city/create', [ClientController::class, 'start_data_create_city']); // postman
        Route::get('region/district/{region_id}', [ClientController::class, 'district_by_region']); // postman

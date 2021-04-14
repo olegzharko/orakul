@@ -16,6 +16,7 @@ use App\Models\Contract;
 use App\Models\ImmFence;
 use App\Models\ImmovableOwnership;
 use App\Models\KeyWord;
+use App\Models\Proxy;
 use App\Models\DevFence;
 use Validator;
 
@@ -27,6 +28,7 @@ class GeneratorController extends Controller
     public $pack_contract;
     public $consents_id;
     public $convert;
+    public $card_id;
 
     public function __construct()
     {
@@ -36,11 +38,13 @@ class GeneratorController extends Controller
         $this->pack_contract = null;
         $this->consents_id = [];
         $this->convert = new ConvertController();
+        $this->card_id = null;
     }
 
     public function create_contract_by_card_id($card_id)
     {
         if ($this->get_contracts_id_by_card_id($card_id)) {
+            $this->card_id = $card_id;
             $this->start_generate_contract();
         }
     }
@@ -177,6 +181,7 @@ class GeneratorController extends Controller
     {
         $immovable->fence = ImmFence::where('immovable_id', $immovable->id)->first();
         $immovable->address = $this->full_ascending_address($immovable);
+        $immovable->proxy = $this->get_proxy($immovable);
 
         return $immovable;
     }
@@ -185,7 +190,7 @@ class GeneratorController extends Controller
     {
         $address = null;
 
-        $building_num_str = $this->building_num_str($immovable->developer_building->number);
+        $building_num_str = $this->convert->building_num_str($immovable->developer_building->number);
 
 
         $imm_num = $immovable->immovable_number;
@@ -210,31 +215,42 @@ class GeneratorController extends Controller
         return $address;
     }
 
-    public function building_num_str($num)
+    public function get_proxy($immovable)
     {
-        $resutl = [];
+        $dev_company_id = $immovable->developer_building->dev_company_id;
+        $dev_representative_id = Card::find($this->card_id)->value('dev_representative_id');
 
-        $num_arr = explode('/', $num);
+        $proxy = Proxy::where('dev_company_id', $dev_company_id)->where('dev_representative_id', $dev_representative_id)->first();
 
-        if (count($num_arr) == 2) {
-            $resutl[] = $this->convert->number_to_string($num_arr[0]);
-            $resutl[] = 'дріб';
-            $resutl[] = $this->convert->number_to_string($num_arr[1]);
-
-            return implode(' ', $resutl);
-        }
-
-        $num_arr = explode('-', $num);
-
-        if (count($num_arr) == 2) {
-            $resutl[] = $this->convert->number_to_string($num_arr[0]);
-            $resutl[] = $num_arr[1];
-
-            return implode(' ', $resutl);
-        }
-
-
-        return $this->convert->number_to_string($num);
+        return $proxy;
     }
+
+//    public function building_num_str($num)
+//    {
+//        $resutl = [];
+//
+//        $num_arr = explode('/', $num);
+//
+//        if (count($num_arr) == 2) {
+//            $resutl[] = $this->convert->number_to_string($num_arr[0]);
+//            $resutl[] = 'дріб';
+//            $resutl[] = $this->convert->number_to_string($num_arr[1]);
+//
+//            return implode(' ', $resutl);
+//        }
+//
+//        $num_arr = explode('-', $num);
+//
+//        if (count($num_arr) == 2) {
+//            $resutl[] = $this->convert->number_to_string($num_arr[0]);
+//            $resutl[] = $num_arr[1];
+//
+//            return implode(' ', $resutl);
+//        }
+//
+//        $result = $this->convert->number_to_string($num);
+//
+//        return $result;
+//    }
 }
 
