@@ -261,7 +261,6 @@ class ManagerController extends BaseController
         Contract::where('id', $contract->id)->update([
             'reader_id' => $r['reader_id'],
             'accompanying_id' => $r['accompanying_id'],
-            'printer_id' => $r['printer_id'],
         ]);
 
         Immovable::updateOrCreate(
