@@ -131,6 +131,7 @@ class ManagerController extends BaseController
         }
 
         foreach ($r as $key => $value) {
+            dd($value);
             $validator = $this->validate_data($value);
 
             if (count($validator->errors()->getMessages())) {
