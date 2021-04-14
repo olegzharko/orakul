@@ -26,10 +26,10 @@ class ImmovableCheckList extends Model
     {
         $imm_check_list = new ImmovableCheckList();
         $imm_check_list->immovable_id = $immovable_id;
-        $imm_check_list->right_establishing = false;
-        $imm_check_list->technical_passport = false;
-        $imm_check_list->pv_price = false;
-        $imm_check_list->pv_price = false;
+        $imm_check_list->right_establishing = 0;
+        $imm_check_list->technical_passport = 0;
+        $imm_check_list->pv_price = 0;
+        $imm_check_list->pv_price = 0;
         $imm_check_list->save();
 
         return $imm_check_list;
