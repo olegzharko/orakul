@@ -16,7 +16,7 @@ use App\Models\Card;
 use App\Models\Notary;
 use App\Models\DevCompany;
 use App\Models\Client;
-use App\Models\ClientType;
+//use App\Models\ClientType;
 use App\Models\ContactType;
 use App\Models\Immovable;
 use App\Models\MarriageType;
@@ -29,12 +29,18 @@ class ManagerController extends BaseController
     public $tools;
     public $genrator;
     public $convert;
+    public $developer_type;
+    public $representative_type;
+    public $manager_type;
 
     public function __construct()
     {
         $this->tools = new ToolsController();
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
+        $this->developer_type = DevEmployerType::where('alias', 'developer')->value('id');
+        $this->representative_type = DevEmployerType::where('alias', 'representative')->value('id');
+        $this->manager_type = DevEmployerType::where('alias', 'manager')->value('id');
     }
 
     public function main($card_id)
@@ -130,7 +136,6 @@ class ManagerController extends BaseController
         }
 
         $old_contact_id = Contact::where('card_id', $card_id)->pluck('id');
-
 
         foreach ($r as $key => $value) {
             Contact::updateOrCreate(
@@ -393,24 +398,14 @@ class ManagerController extends BaseController
 
         if (!isset($errors['representative_id']) && isset($r['representative_id']) && !empty($r['representative_id']) &&
             !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            $representative_type_id = ClientType::get_representative_type_id();
-            if (!Client::where([
-                        'id' => $r['representative_id'],
-                        'dev_company_id' => $r['developer_id'],
-                        'type_id' => $representative_type_id,
-                    ])->first()) {
+            if (!$dev_representative = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $this->representative_type)) {
                 $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
             }
         }
 
         if (!isset($errors['manager_id']) && isset($r['manager_id']) && !empty($r['manager_id']) &&
             !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            $manager_type_id = ClientType::get_manager_type_id();
-            if (!Client::where([
-                        'id' => $r['manager_id'],
-                        'dev_company_id' => $r['developer_id'],
-                        'type_id' => $manager_type_id,
-                    ])->first()) {
+            if (!$dev_manager = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $this->manager_type)) {
                 $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
             }
         }
