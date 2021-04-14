@@ -150,6 +150,7 @@ class ManagerController extends BaseController
             $contact->full_name = $value['name'];
             $contact->phone = $value['phone'];
             $contact->email = $value['email'];
+            $contact->card_id = $card_id;
             $contact->save();
         }
 
