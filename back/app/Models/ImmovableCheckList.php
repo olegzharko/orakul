@@ -22,6 +22,19 @@ class ImmovableCheckList extends Model
         return $this->belongsTo(Immovable::class, 'immovable_id');
     }
 
+    public static function create_new($immovable_id)
+    {
+        $imm_check_list = new ImmovableCheckList();
+        $imm_check_list->immovable_id = $immovable_id;
+        $imm_check_list->right_establishing = false;
+        $imm_check_list->technical_passport = false;
+        $imm_check_list->pv_price = false;
+        $imm_check_list->pv_price = false;
+        $imm_check_list->save();
+
+        return $imm_check_list;
+    }
+
     public static function get_check_list($immovable_id)
     {
         $result = [];
@@ -29,8 +42,14 @@ class ImmovableCheckList extends Model
             'right_establishing',
             'technical_passport',
             'pv_price',
-            'evaluation_on_the_fund',
-        )->where('immovable_id', $immovable_id)->first()->toArray();
+            'pv_price',
+        )->where('immovable_id', $immovable_id)->first();
+
+        if (!$check_list) {
+            $check_list = ImmovableCheckList::create_new($immovable_id);
+        }
+
+        $check_list = $check_list->toArray();
 
         $i = 0;
         foreach ($check_list as $key => $value) {

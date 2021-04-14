@@ -191,6 +191,7 @@ class CardController extends BaseController
 
         $card_id = Card::new_card($r);
 
+//        $immovables_info = $this->immovable->add_immovables($r);
         $immovables_info = $this->immovable->add_immovables($r);
 
         $this->contract->add_contracts_on_immovabel($card_id, $immovables_info);
