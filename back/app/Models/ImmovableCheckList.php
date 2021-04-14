@@ -14,7 +14,7 @@ class ImmovableCheckList extends Model
             'right_establishing',
             'technical_passport',
             'pv_price',
-            'evaluation_on_the_fund',
+            'fund_evaluation',
     ];
 
     public function immovable()
@@ -29,7 +29,7 @@ class ImmovableCheckList extends Model
         $imm_check_list->right_establishing = 0;
         $imm_check_list->technical_passport = 0;
         $imm_check_list->pv_price = 0;
-        $imm_check_list->evaluation_on_the_fund = 0;
+        $imm_check_list->fund_evaluation = 0;
         $imm_check_list->save();
 
         return $imm_check_list;
@@ -42,7 +42,7 @@ class ImmovableCheckList extends Model
             'right_establishing',
             'technical_passport',
             'pv_price',
-            'evaluation_on_the_fund',
+            'fund_evaluation',
         )->where('immovable_id', $immovable_id)->first();
 
         if (!$check_list) {
@@ -51,7 +51,7 @@ class ImmovableCheckList extends Model
                 'right_establishing',
                 'technical_passport',
                 'pv_price',
-                'evaluation_on_the_fund',
+                'fund_evaluation',
             )->where('immovable_id', $immovable_id)->first();
         }
 
