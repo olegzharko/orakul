@@ -205,15 +205,15 @@ class ManagerController extends BaseController
         $result['accompanying_id'] = null;
         $result['contract_type_id'] = null;
 
-//        if (!$immovable = Immovable::find($immovable_id))
-//            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
-
         $immovable_type = ImmovableType::get_immovable_type();
         $reader = $this->tools->get_reader_staff();
         $accompanying = $this->tools->get_accompanying_staff();
         $contract_type = ContractType::select('id', 'title')->get();
 
-        if ($immovable) {
+        if ($immovable_id) {
+            if (!$immovable = Immovable::find($immovable_id))
+                return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
             $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
             $building = [];
