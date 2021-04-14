@@ -302,6 +302,7 @@ class ManagerController extends BaseController
             $contract->reader_id = $r['reader_id'];
             $contract->accompanying_id = $r['accompanying_id'];
             $contract->type_id = $r['contract_type_id'];
+            $contract->card_id = $card_id;
             $contract->save();
 
         }
