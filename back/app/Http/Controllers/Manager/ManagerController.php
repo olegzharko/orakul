@@ -130,7 +130,7 @@ class ManagerController extends BaseController
             return $this->sendError('', 'Картка відсутня');
         }
 
-        dd($r);
+        dd($r->toArray());
         foreach ($r as $key => $value) {
             $validator = $this->validate_data($value);
 
