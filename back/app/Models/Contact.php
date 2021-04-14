@@ -28,8 +28,8 @@ class Contact extends Model
     {
         return Contact::select(
             "id",
-            "contact_type_id",
-            "full_name",
+            "contact_type_id as person_type",
+            "full_name as name",
             "phone",
             "email",
         )->where('card_id', $card_id)->get();
