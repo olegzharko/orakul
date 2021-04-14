@@ -9,19 +9,21 @@ import Loader from '../../../../components/Loader/Loader';
 
 const DashboardContainer = () => {
   const modalProps = useModal();
-  const { formatAppointments } = useDashboardContainer();
+  const { formatAppointments, isLoading } = useDashboardContainer();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="dashboard-screen">
       <Filter />
       <ContentPanel>
-        {!formatAppointments.length ? <Loader /> : (
-          <Dashboard
-            link="main"
-            sections={formatAppointments}
-            isChangeTypeButton
-          />
-        )}
+        <Dashboard
+          link="main"
+          sections={formatAppointments}
+          isChangeTypeButton
+        />
       </ContentPanel>
       <Modal {...modalProps} />
     </div>
