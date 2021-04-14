@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CheckList extends Model
+class ClientCheckList extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'client_check_lists';
 
     protected $casts = [
         'deleted_at' => 'datetime',

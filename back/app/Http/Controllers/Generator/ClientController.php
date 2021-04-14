@@ -8,7 +8,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Models\AddressType;
 use App\Models\ApartmentType;
 use App\Models\BuildingType;
-use App\Models\CheckList;
+use App\Models\ClientCheckList;
 use App\Models\Citizenship;
 use App\Models\CityType;
 use App\Models\Client;
@@ -82,7 +82,7 @@ class ClientController extends BaseController
         }
 
         ClientContract::where('client_id', $client->id)->delete();
-        CheckList::where('client_id', $client->id)->delete();
+        ClientCheckList::where('client_id', $client->id)->delete();
         ClientContract::where('client_id', $client->id)->delete();
         Contract::where('client_id', $client->id)->delete();
 

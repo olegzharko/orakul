@@ -7,13 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
-use App\Models\CheckList;
+use App\Models\ClientCheckList;
 use App\Models\ClientType;
 use App\Models\Contact;
 use App\Models\Contract;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use App\Models\DevGroup;
+use App\Models\ImmovableCheckList;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Notary;
@@ -203,8 +204,6 @@ class ManagerController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-
-
         $immovable_type = ImmovableType::get_immovable_type();
         $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
@@ -227,6 +226,7 @@ class ManagerController extends BaseController
         $result['building'] = $building;
         $result['reader'] = $reader;
         $result['accompanying'] = $accompanying;
+        $result['check_list'] = ImmovableCheckList::get_check_list($immovable_id);
 
         $result['building_id'] = $immovable->developer_building_id;
         $result['immovable_type_id'] = $immovable->immovable_type_id;
@@ -300,7 +300,7 @@ class ManagerController extends BaseController
                 $confidant = $this->tools->get_id_and_full_name($confidant);
 
             if ($client) {
-                $check_list = CheckList::select(
+                $check_list = ClientCheckList::select(
                     "spouse_consent",
                     "current_place_of_residence",
                     "photo_in_the_passport",

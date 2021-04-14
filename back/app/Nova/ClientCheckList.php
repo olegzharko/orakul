@@ -8,14 +8,14 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
 
-class CheckList extends Resource
+class ClientCheckList extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\CheckList::class;
+    public static $model = \App\Models\ClientCheckList::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

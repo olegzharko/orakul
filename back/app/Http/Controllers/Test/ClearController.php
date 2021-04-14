@@ -10,7 +10,7 @@ use App\Models\BankTaxesPayment;
 use App\Models\BuildingType;
 use App\Models\CardClient;
 //use App\Models\CardContract;
-use App\Models\CheckList;
+use App\Models\ClientCheckList;
 use App\Models\Client;
 use App\Models\ClientContract;
 use App\Models\ClientInvestmentAgreement;
@@ -59,7 +59,7 @@ class ClearController  extends TestController
 
         Card::truncate();
         BankAccountPayment::truncate();
-        CheckList::truncate();
+        ClientCheckList::truncate();
         InvestmentAgreement::truncate();
         ClientInvestmentAgreement::truncate();
         ClientContract::truncate();
