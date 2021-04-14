@@ -270,7 +270,7 @@ class ManagerController extends BaseController
             'right_establishing' => $r['right_establishing'],
             'technical_passport' => $r['technical_passport'],
             'pv_price' => $r['pv_price'],
-            'pv_price' => $r['evaluation_on_the_fund'],
+            'fund_evaluation' => $r['evaluation_on_the_fund'],
         ]);
 
         return $this->sendResponse('', 'Додані дані картки, контракту та нерухомості оновлено');

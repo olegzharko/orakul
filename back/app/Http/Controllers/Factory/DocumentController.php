@@ -569,6 +569,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-pssprt-full-n-up', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_n));
             $word->setValue('cs-pssprt-full-o-up', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
             $word->setValue('cs-pssprt-id-short', $this->client->married->spouse->passport_type->short_info);
+            $word->setValue('ПОД-ПАСПОРТ-Н', $this->client->married->spouse->passport_type->description_n);
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -843,6 +844,7 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('cl-full-name-n', $this->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-О', $this->get_full_name_o($this->client));
             $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->get_full_name_n_upper($this->client));
 
             $word->setValue('cl-surname-n', $this->client->surname_n);
@@ -1032,11 +1034,16 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-surname-r', $this->client->married->spouse->surname_r);
             $word->setValue('cs-name-r', $this->client->married->spouse->name_r);
             $word->setValue('cs-patr-r', $this->client->married->spouse->patronymic_r);
+
+            $word->setValue('ПОД-ПІБ-Н', $this->get_full_name_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПІБ-Р', $this->get_full_name_r($this->client->married->spouse));
+
             $word->setValue('cs-surname-o', $this->client->married->spouse->surname_o);
             $word->setValue('cs-name-o', $this->client->married->spouse->name_o);
             $word->setValue('cs-patr-o', $this->client->married->spouse->patronymic_o);
             $word->setValue('cs-birth_date', $this->display_date($this->client->married->spouse->birth_date));
 
+            $word->setValue('ПОД-ДН', $this->display_date($this->client->married->spouse->birth_date));
             /*
              * Подружжя клієнта - паспорт та код
              * */
@@ -1568,11 +1575,36 @@ class DocumentController extends GeneratorController
         return $full_name;
     }
 
+    public function get_full_name_r($client)
+    {
+        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+
+        return $full_name;
+    }
+
+    public function get_full_name_o($client)
+    {
+        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
+
+        return $full_name;
+    }
+
     public function get_full_name_n_upper($client)
     {
         $surname = mb_strtoupper($client->surname_n);
         $name = mb_strtoupper($client->name_n);
         $patronymic = mb_strtoupper($client->patronymic_n);
+
+        $full_name = "$surname $name $patronymic";
+
+        return $full_name;
+    }
+
+    public function get_full_name_r_upper($client)
+    {
+        $surname = mb_strtoupper($client->surname_r);
+        $name = mb_strtoupper($client->name_r);
+        $patronymic = mb_strtoupper($client->patronymic_r);
 
         $full_name = "$surname $name $patronymic";
 
