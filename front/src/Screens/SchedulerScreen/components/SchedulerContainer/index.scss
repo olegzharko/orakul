@@ -18,11 +18,11 @@
 
   &__form {
     width: 30%;
-    height: 100vh;
-    position: sticky;
+    height: calc(100vh - 100px);
     overflow-y: scroll;
+    position: sticky;
     right: 0;
-    top: 0;
+    top: 100px;
     background-color: white;
   }
 }

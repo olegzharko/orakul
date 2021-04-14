@@ -13,7 +13,7 @@ import { setModalInfo } from '../../../../../../../../../../../../store/main/act
 export const useImmovableFields = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
-  const { immovableId } = useParams<{clientId: string, immovableId: string}>();
+  const { immovableId, clientId } = useParams<{clientId: string, immovableId: string}>();
   const [title, setTitle] = useState('');
 
   // Selects
@@ -40,7 +40,10 @@ export const useImmovableFields = () => {
   });
   const [checks, setChecks] = useState<any>();
 
-  const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(immovableId)), [immovableId]);
+  const isOnSaveDisabled = useMemo(() => !general.immovable_type_id
+    || !general.building_id
+    || !general.immovable_number,
+  [general]);
 
   const onSave = useCallback(async () => {
     const bodyData = {
@@ -51,7 +54,7 @@ export const useImmovableFields = () => {
     };
 
     if (token) {
-      const res = await reqManagerImmovables(token, immovableId, 'PUT', bodyData);
+      const res = await reqManagerImmovables(token, clientId, immovableId, 'PUT', bodyData);
 
       dispatch(
         setModalInfo({
@@ -64,10 +67,10 @@ export const useImmovableFields = () => {
   }, [token, immovableId, general, responsible, contractType, checks]);
 
   useEffect(() => {
-    if (token && isCorrectId) {
+    if (token) {
       // get MANAGER_GENERAL
       (async () => {
-        const res = await reqManagerImmovables(token, immovableId);
+        const res = await reqManagerImmovables(token, clientId, immovableId);
 
         if (res?.success) {
           setTitle(res?.data.title);
@@ -99,7 +102,7 @@ export const useImmovableFields = () => {
         }
       })();
     }
-  }, [token, isCorrectId]);
+  }, [token]);
 
   return {
     title,
@@ -113,6 +116,7 @@ export const useImmovableFields = () => {
     contractType,
     checkList,
     checks,
+    isOnSaveDisabled,
     setChecks,
     setContractType,
     setGeneral,

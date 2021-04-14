@@ -3,13 +3,14 @@ import requestApi from '../../utils/requestApi';
 
 export default async function reqManagerImmovables(
   token: string,
+  clientId: string,
   id: string,
   method: 'GET' | 'PUT' | undefined = 'GET',
   bodyData?: any
 ) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/manager/immovable/${id}`,
+      url: `${DEFAULT_URL}/api/manager/immovable/${clientId}${id === 'create' ? '' : `/${id}`}`,
       headers: { Authorization: `Bearer ${token}` },
       method,
       bodyData,

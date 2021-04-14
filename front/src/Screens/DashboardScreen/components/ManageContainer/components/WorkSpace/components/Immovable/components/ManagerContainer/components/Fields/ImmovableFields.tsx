@@ -33,14 +33,16 @@ const ImmovableFields = () => {
         onChange={meta.setContractType}
       />
 
-      <Checks
-        checksList={meta.checkList}
-        data={meta.checks}
-        onChange={meta.setChecks}
-      />
+      {meta.checks && (
+        <Checks
+          checksList={meta.checkList}
+          data={meta.checks}
+          onChange={meta.setChecks}
+        />
+      )}
 
       <div className="middle-button">
-        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
+        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={meta.isOnSaveDisabled} />
       </div>
     </div>
   );
