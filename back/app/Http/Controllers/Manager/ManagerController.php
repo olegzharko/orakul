@@ -114,9 +114,10 @@ class ManagerController extends BaseController
 
         Card::where('id', $card_id)->update([
             'notary_id' => $r['notary_id'],
-            'dev_company_id' => $r['developer_id'],
+            'dev_group_id' => $r['developer_id'],
             'dev_representative_id' => $r['representative_id'],
             'dev_manager_id' => $r['manager_id'],
+            'staff_generator_id' => $r['generator_id'],
         ]);
 
         return $this->sendResponse('', 'Дані учасників угоди оновлено в карточці з ID:' . $card_id . ' оновлено.');
