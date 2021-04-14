@@ -242,16 +242,6 @@ class ManagerController extends BaseController
 
     public function update_immovable($immovable_id, Request $r)
     {
-        $result = [];
-        $result['immovable_type_id'] = null;
-        $result['building_id'] = null;
-        $result['immovable_number'] = null;
-        $result['immovable_reg_num'] = null;
-
-        $result['reader_id'] = null;
-        $result['accompanying_id'] = null;
-        $result['printer_id'] = null;
-
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
