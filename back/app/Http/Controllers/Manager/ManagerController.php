@@ -8,6 +8,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\CheckList;
+use App\Models\ClientType;
 use App\Models\Contact;
 use App\Models\Contract;
 use App\Models\DevCompanyEmployer;
@@ -132,19 +133,19 @@ class ManagerController extends BaseController
 
         $data = $r->toArray();
 
-//        foreach ($data as $key => $value) {
-//            $validator = $this->validate_data($value);
-//
-//            if (count($validator->errors()->getMessages())) {
-//                return $this->sendError('Форма передає помилкові дані', $validator->errors());
-//            }
-//        }
+        foreach ($data as $key => $value) {
+            $validator = $this->validate_contract_data($value);
+
+            if (count($validator->errors()->getMessages())) {
+                return $this->sendError('Форма передає помилкові дані', $validator->errors());
+            }
+        }
 
         $old_contact_id = Contact::where('card_id', $card_id)->pluck('id');
 
         foreach ($data as $key => $value) {
             Contact::updateOrCreate(
-                ['id' =>  $value->id],
+                ['id' => $value->id],
                 [
                     'person_type' => $value->person_type,
                     'name' => $value->name,
@@ -416,6 +417,34 @@ class ManagerController extends BaseController
         }
 
         return $validator;
+    }
+
+    private function validate_contract_data($r)
+    {
+        $validator = Validator::make([
+            'name' => $r['name'],
+            'phone' => $r['phone'],
+            'email' => $r['email'],
+            'person_type' => $r['person_type'],
+        ], [
+            'name' => ['string', 'nullable'],
+            'phone' => ['string', 'nullable'],
+            'email' => ['string', 'nullable'],
+            'person_type' => ['numeric', 'nullable'],
+        ], [
+            'name.string' => 'Необхідно передати в строковому форматі',
+            'phone.string' => 'Необхідно передати в строковому форматі',
+            'email.string' => 'Необхідно передати в строковому форматі',
+            'person_type.string' => 'Необхідно передати ID в числовому форматі',
+        ]);
+
+        $errors = $validator->errors()->messages();
+
+        if (!isset($errors['person_type']) && isset($r['person_type']) && !empty($r['person_type'])) {
+            if (!ContactType::find($r['person_type'])) {
+                $validator->getMessageBag()->add('person_type', 'Клієнта з ID:' . $r['person_type'] . " не знайдено");
+            }
+        }
     }
 
     private function validate_client($r)
