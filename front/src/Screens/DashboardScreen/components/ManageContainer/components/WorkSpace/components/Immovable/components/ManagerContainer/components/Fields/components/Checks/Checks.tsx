@@ -4,22 +4,21 @@ import SectionWithTitle from '../../../../../../../../../../../../../../componen
 
 export type ManagerChecksData = {
   value: boolean;
-  key: string;
   title: string;
+  key: string;
 }[];
 
 type Props = {
   checksList: ManagerChecksData;
-  data: any,
-  onChange: (arg: ManagerChecksData) => void,
+  data: {[key: string]: boolean},
+  onChange: (arg: {[key: string]: boolean}) => void,
 }
 
 const Checks = ({ data, onChange, checksList }: Props) => {
   const handleClear = () => {
-    onChange(data.reduce((acc: any, item: any) => {
-      acc[item.key] = '';
-      return acc;
-    }, {}));
+    const newData: {[key: string]: boolean} = {};
+    Object.keys(data).forEach((key) => { newData[key] = false; });
+    onChange(newData);
   };
 
   return (

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './index.scss';
 import ContentPanel from '../../../../components/ContentPanel';
 import Modal from '../../../../components/Modal';
 import { useModal } from '../../../../components/Modal/useModal';
