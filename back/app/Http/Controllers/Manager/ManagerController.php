@@ -209,6 +209,7 @@ class ManagerController extends BaseController
         $reader = $this->tools->get_reader_staff();
         $accompanying = $this->tools->get_accompanying_staff();
         $contract_type = ContractType::select('id', 'title')->get();
+        $immovable_check_list = ImmovableCheckList::get_check_list($immovable_id);
 
         if ($immovable_id) {
             if (!$immovable = Immovable::find($immovable_id))
@@ -226,7 +227,6 @@ class ManagerController extends BaseController
             $card = Card::get_card_by_contract($contract->id);
 
             $result['title'] = $this->generator->full_ascending_address($immovable);
-            $result['check_list'] = ImmovableCheckList::get_check_list($immovable_id);
             $result['building'] = $building;
             $result['building_id'] = $immovable->developer_building_id;
             $result['immovable_type_id'] = $immovable->immovable_type_id;
@@ -238,6 +238,7 @@ class ManagerController extends BaseController
             $result['accompanying_id'] = $contract->accompanying_id;
         }
 
+        $result['check_list'] = $immovable_check_list;
         $result['contract_type'] = $contract_type;
         $result['immovable_type'] = $immovable_type;
         $result['reader'] = $reader;
