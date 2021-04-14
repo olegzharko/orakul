@@ -45,6 +45,7 @@ class AssistantController extends BaseController
         $result['developer_id'] = null;
         $result['representative_id'] = null;
         $result['manager_id'] = null;
+        $result['generator'] = null;
 
         if (!$card = Card::find($card_id)) {
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
@@ -57,6 +58,7 @@ class AssistantController extends BaseController
 
         $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
         $manager = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->manager_type);
+        $generator = $this->tools->get_generator_staff();
 
         $immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id');
 
@@ -84,6 +86,7 @@ class AssistantController extends BaseController
         $result['developer'] = $developer;
         $result['representative'] = $representative;
         $result['manager'] = $manager;
+        $result['generator'] = $generator;
 
         $result['notary_id'] = $card->notary_id;
         $result['developer_id'] = $card->dev_company_id;
