@@ -46,7 +46,13 @@ class ImmovableCheckList extends Model
         )->where('immovable_id', $immovable_id)->first();
 
         if (!$check_list) {
-            $check_list = ImmovableCheckList::create_new($immovable_id);
+            ImmovableCheckList::create_new($immovable_id);
+            $check_list = ImmovableCheckList::select(
+                'right_establishing',
+                'technical_passport',
+                'pv_price',
+                'pv_price',
+            )->where('immovable_id', $immovable_id)->first();
         }
 
         $check_list = $check_list->toArray();
