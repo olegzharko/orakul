@@ -148,7 +148,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('immovable/{immovable_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_immovable']); // postman
         Route::put('immovable/{immovable_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_immovable']);
         Route::get('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_client']); // postman
-        Route::put('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_client']);
+        Route::put('client/{card_id}/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_client']);
     });
 
     Route::group(['prefix' => 'assistant'], function() {

@@ -15,4 +15,12 @@ class ClientContract extends Model
     ];
 
     protected $table = "client_contract";
+
+    public static function create_card_client($card_id, $client_id)
+    {
+        $card_client = new CardClient();
+        $card_client->card_id = $card_id;
+        $card_client->client_id = $client_id;
+        $card_client->save();
+    }
 }

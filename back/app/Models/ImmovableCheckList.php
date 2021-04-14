@@ -51,7 +51,7 @@ class ImmovableCheckList extends Model
                 'right_establishing',
                 'technical_passport',
                 'pv_price',
-                'pv_price',
+                'evaluation_on_the_fund',
             )->where('immovable_id', $immovable_id)->first();
         }
 

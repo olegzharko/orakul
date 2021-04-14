@@ -62,6 +62,7 @@ class Client extends Model implements Sortable
     {
         return $this->belongsTo(ApartmentType::class, 'apartment_type_id');
     }
+
     public function client_type()
     {
         return $this->belongsTo(ClientType::class, 'type_id');
@@ -105,15 +106,4 @@ class Client extends Model implements Sortable
 //            ])->get();
 //    }
 
-    public static function update_by_manager($client)
-    {
-        Client::where('id', $r['client']['id'])->udpate([
-            'id' => $client['id'],
-            'surname' => $client['surname'],
-            'name' => $client['name'],
-            'patronymic' => $client['patronymic'],
-            'phone' => $client['phone'],
-            'email' => $client['email'],
-        ]);
-    }
 }

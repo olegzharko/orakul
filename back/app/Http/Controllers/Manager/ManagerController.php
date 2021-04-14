@@ -15,6 +15,7 @@ use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use App\Models\DevGroup;
 use App\Models\ImmovableCheckList;
+use App\Models\Representative;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Notary;
@@ -27,6 +28,8 @@ use App\Models\MarriageType;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
 use App\Models\ContractType;
+use App\Models\Spouse;
+use App\Models\Text;
 use Validator;
 
 class ManagerController extends BaseController
@@ -263,6 +266,13 @@ class ManagerController extends BaseController
             ]
         );
 
+        ImmovableCheckList::where('immovable_id', $immovable_id)->update([
+            'right_establishing' => $r['right_establishing'],
+            'technical_passport' => $r['technical_passport'],
+            'pv_price' => $r['pv_price'],
+            'pv_price' => $r['evaluation_on_the_fund'],
+        ]);
+
         return $this->sendResponse('', 'Додані дані картки, контракту та нерухомості оновлено');
     }
 
@@ -280,7 +290,7 @@ class ManagerController extends BaseController
         if ($client_id) {
             $client = Client::find($client_id);
             if ($client && $client->spouse_id) {
-                $spouse = Client::find($client->spouse_id);
+                $spouse = Client::find($client->married->spouse->id);
             }
 
             if ($client && $client->representative && $client->representative->confidant) {
@@ -290,47 +300,32 @@ class ManagerController extends BaseController
             if ($client) {
                 $phone = $client->phone;
                 $email = $client->email;
-                $client = $this->tools->get_id_and_full_name($client);
+                $client = $this->tools->get_client_data_for_manager($client);
                 $client['phone'] = $phone;
                 $client['email'] = $email;
             }
             if ($spouse)
-                $spouse = $this->tools->get_id_and_full_name($spouse);
+                $spouse = $this->tools->get_client_data_for_manager($spouse);
             if ($confidant)
-                $confidant = $this->tools->get_id_and_full_name($confidant);
+                $confidant = $this->tools->get_client_data_for_manager($confidant);
 
-            if ($client) {
-                $check_list = ClientCheckList::select(
-                    "spouse_consent",
-                    "current_place_of_residence",
-                    "photo_in_the_passport",
-                    "immigrant_help",
-                    "passport",
-                    "tax_code",
-                    "evaluation_in_the_fund",
-                    "check_fop",
-                    "document_scans",
-                    "unified_register_of_court_decisions",
-                    "sanctions",
-                    "financial_monitoring",
-                    "unified_register_of_debtors",
-                )->where('client_id', $client_id)->first();
-            }
-
+        } else {
+            $result['client']['info'] =  $this->start_quesetionnaire_info();
+            $result['spouse']['info'] =  $this->start_quesetionnaire_info();
+            $result['confidant']['info'] =  $this->start_quesetionnaire_info();
         }
 
         $result['married_types'] = $married_types;
-        $result['client'] = $client;
-        $result['spouse'] = $spouse;
-        $result['confidant'] = $confidant;
-        $result['check_list'] = $check_list;
+        $result['client']['data'] = $client;
+        $result['spouse']['data'] = $spouse;
+        $result['confidant']['data'] = $confidant;
 
         return $this->sendResponse($result, 'Дані покупця під ID:' . $client_id);
     }
 
-    public function update_client($client_id, Request $r)
+    public function update_client($card_id, $client_id = null, Request $r)
     {
-        if (!$client = Client::find($client_id)) {
+        if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
         }
 
@@ -341,15 +336,18 @@ class ManagerController extends BaseController
         }
 
         if ($r['client']) {
-            Client::update_by_manager($r['client']);
+            $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']);
+            $this->card_client($client_id, $card_id);
         }
 
         if ($r['spouse']) {
-            Client::update_by_manager($r['spouse']);
+            $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']);
+            $this->client_spouse($client_id, $spouse_id);
         }
 
         if ($r['confidant']) {
-            Client::update_by_manager($r['confidant']);
+            $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']);
+            $this->client_representative($client_id, $representative_id);
         }
 
         return $this->sendResponse('', 'Дані клієнта під ID:' . $client_id . ' оновлено.');
@@ -472,5 +470,79 @@ class ManagerController extends BaseController
         }
 
         return $validator;
+    }
+
+    public function create_or_update_client($card_id, $client_id, $data)
+    {
+        if ($client_id) {
+            Client::where('id', $client_id)->udpate([
+                'id' => $data['id'],
+                'surname' => $data['surname'],
+                'name' => $data['name'],
+                'patronymic' => $data['patronymic'],
+                'phone' => $data['phone'],
+                'email' => $data['email'],
+            ]);
+        } else {
+            $client = new Client();
+            $client->surname = $data['surname'];
+            $client->name = $data['name'];
+            $client->patronymic = $data['patronymic'];
+            $client->phone = $data['phone'];
+            $client->email = $data['email'];
+            $client->save();
+        }
+
+        return $client->id;
+    }
+
+    public function card_client($client_id, $card_id)
+    {
+        CardClient::updateOrCreate(
+            ['client_id' => $client_id],
+            ['card_id' => $card_id]);
+    }
+
+    public function client_spouse($client_id, $spouse_id)
+    {
+        Spouse::updateOrCreate(
+            ['client_id' => $client_id],
+            ['spouse_id' => $spouse_id]);
+    }
+
+    public function client_representative($client_id, $representative_id)
+    {
+        Representative::updateOrCreate(
+            ['client_id' => $client_id],
+            ['representative_id' => $representative_id]);
+    }
+
+    public function start_quesetionnaire_info()
+    {
+        $result = [];
+
+        $check_list = [
+            "spouse_consent",
+            "current_place_of_residence",
+            "photo_in_the_passport",
+            "immigrant_help",
+            "passport",
+            "tax_code",
+            "evaluation_in_the_fund",
+            "check_fop",
+            "document_scans",
+            "unified_register_of_court_decisions",
+            "sanctions",
+            "financial_monitoring",
+            "unified_register_of_debtors",
+        ];
+
+        foreach ($check_list as $key => $value) {
+            $result[$key]['title'] = Text::where('alias', $value)->value('value');
+            $result[$key]['key'] = $value;
+            $result[$key]['value'] = false;
+        }
+
+        return $result;
     }
 }

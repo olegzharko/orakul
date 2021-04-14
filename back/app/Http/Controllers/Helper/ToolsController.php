@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Helper;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
+use App\Models\ClientCheckList;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevGroup;
 use App\Models\Room;
@@ -166,7 +167,7 @@ class ToolsController extends Controller
         return $convert_data;
     }
 
-    public function get_id_and_full_name($client)
+    public function get_client_data_for_manager($client)
     {
         $resutl = [];
 
@@ -176,8 +177,34 @@ class ToolsController extends Controller
         if ($client) {
             $resutl['id'] = $client->id;
             $resutl['full_name'] = $this->convert->get_full_name($client);
+            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
         }
 
         return $resutl;
+    }
+
+    public function check_list_by_client_id($client_id)
+    {
+        $check_list = [];
+
+        ClientCheckList::firstOrCreate(['client_id' => $client_id]);
+
+        $check_list = ClientCheckList::select(
+                                        "spouse_consent",
+                                        "current_place_of_residence",
+                                        "photo_in_the_passport",
+                                        "immigrant_help",
+                                        "passport",
+                                        "tax_code",
+                                        "evaluation_in_the_fund",
+                                        "check_fop",
+                                        "document_scans",
+                                        "unified_register_of_court_decisions",
+                                        "sanctions",
+                                        "financial_monitoring",
+                                        "unified_register_of_debtors",
+                                    )->where('client_id', $client_id)->first()->toArray();
+
+        return $check_list;
     }
 }
