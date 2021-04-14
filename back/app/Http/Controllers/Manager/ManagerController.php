@@ -85,7 +85,7 @@ class ManagerController extends BaseController
         $result['contact_person_info'] = $contact_person_info;
 
         $result['notary_id'] = $card->notary_id;
-        $result['developer_id'] = $card->dev_company_id;
+        $result['developer_id'] = $card->dev_group_id;
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
         $result['generator_id'] = $card->staff_generator_id;
