@@ -145,7 +145,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('notary/developer/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_notary_developer']);
         Route::put('contact/person/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_contact_person']);
         Route::get('immovables/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'immovable']); // postman
-        Route::get('immovable/{immovable_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_immovable']); // postman
+        Route::get('immovable/{card_id}/{immovable_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_immovable']); // postman
         Route::put('immovable/{immovable_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_immovable']);
         Route::get('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_client']); // postman
         Route::put('client/{card_id}/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_client']);

@@ -185,7 +185,7 @@ class ManagerController extends BaseController
         return $this->sendResponse($result, 'Нерухомості по карті ID:' . $card_id);
     }
 
-    public function get_immovable($immovable_id = null)
+    public function get_immovable($card_id, $immovable_id = null)
     {
         $result = [];
         $result['title'] = '';
@@ -211,6 +211,8 @@ class ManagerController extends BaseController
         $contract_type = ContractType::select('id', 'title')->get();
         $immovable_check_list = ImmovableCheckList::get_check_list($immovable_id);
 
+        $card = Card::find($card_id);
+
         if ($immovable_id) {
             if (!$immovable = Immovable::find($immovable_id))
                 return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
@@ -224,7 +226,6 @@ class ManagerController extends BaseController
             }
 
             $contract = Contract::get_contract_by_immovable($immovable_id);
-            $card = Card::get_card_by_contract($contract->id);
 
             $result['title'] = $this->generator->full_ascending_address($immovable);
             $result['building'] = $building;
@@ -236,6 +237,9 @@ class ManagerController extends BaseController
             $result['contract_type_id'] = Contract::where('immovable_id', $immovable->id)->value('type_id');
             $result['reader_id'] = $contract->reader_id;
             $result['accompanying_id'] = $contract->accompanying_id;
+        } else {
+            $building = $this->tools->dev_group_buildings($card->dev_group_id);
+            $result['building'] = $building;
         }
 
         $result['check_list'] = $immovable_check_list;
