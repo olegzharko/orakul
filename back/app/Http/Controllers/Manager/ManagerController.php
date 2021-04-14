@@ -251,7 +251,7 @@ class ManagerController extends BaseController
         return $this->sendResponse($result, 'Дані по нерухомості ID:' . $immovable_id);
     }
 
-    public function update_immovable($immovable_id, Request $r)
+    public function update_immovable($card_id, $immovable_id = null, Request $r)
     {
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
