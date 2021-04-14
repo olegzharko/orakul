@@ -291,6 +291,7 @@ class ManagerController extends BaseController
             $immovable->save();
 
             $immovable_check_list = new ImmovableCheckList();
+            $immovable_check_list->immovable_id = $immovable->id;
             $immovable_check_list->right_establishing = $r['right_establishing'];
             $immovable_check_list->technical_passport = $r['technical_passport'];
             $immovable_check_list->pv_price = $r['pv_price'];
