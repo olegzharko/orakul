@@ -130,8 +130,8 @@ class ManagerController extends BaseController
             return $this->sendError('', 'Картка відсутня');
         }
 
-        dd($r->toArray());
-        foreach ($r as $key => $value) {
+        $data = $r->toArray();
+        foreach ($data as $key => $value) {
             $validator = $this->validate_data($value);
 
             if (count($validator->errors()->getMessages())) {
@@ -141,7 +141,7 @@ class ManagerController extends BaseController
 
         $old_contact_id = Contact::where('card_id', $card_id)->pluck('id');
 
-        foreach ($r as $key => $value) {
+        foreach ($data as $key => $value) {
             Contact::updateOrCreate(
                 ['id' =>  $value->id],
                 [
