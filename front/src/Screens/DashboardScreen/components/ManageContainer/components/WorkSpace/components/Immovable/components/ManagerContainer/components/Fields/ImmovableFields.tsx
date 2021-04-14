@@ -13,7 +13,7 @@ const ImmovableFields = () => {
   return (
     <div className="immovable__fields">
       <General
-        title=""
+        title={meta.title}
         data={meta.general}
         onChange={meta.setGeneral}
         immovableTypes={meta.immovableTypes}
@@ -29,11 +29,12 @@ const ImmovableFields = () => {
 
       <Contract
         data={meta.contractType}
-        type={[]}
+        types={meta.contracts}
         onChange={meta.setContractType}
       />
 
       <Checks
+        checksList={meta.checkList}
         data={meta.checks}
         onChange={meta.setChecks}
       />

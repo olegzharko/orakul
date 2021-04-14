@@ -6,7 +6,7 @@ import { State } from '../../../../store/types';
 
 export const useDashboardContainer = () => {
   const dispatch = useDispatch();
-  const { appointments } = useSelector((state: State) => state.appointments);
+  const { appointments, isLoading } = useSelector((state: State) => state.appointments);
 
   useEffect(() => {
     dispatch(fetchAppointments());
@@ -24,5 +24,5 @@ export const useDashboardContainer = () => {
     }))
   })), [appointments]);
 
-  return { formatAppointments };
+  return { formatAppointments, isLoading };
 };

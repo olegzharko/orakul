@@ -20,14 +20,14 @@ const Participants = (props: Props) => {
 
           <CustomSelect
             label="Представник"
-            data={props.initialData?.representative || []}
+            data={meta.representatives}
             onChange={(e) => meta.setData({ ...meta.data, representative_id: e })}
             selectedValue={meta.data.representative_id}
           />
 
           <CustomSelect
             label="Менеджер"
-            data={props.initialData?.manager || []}
+            data={meta.manager}
             onChange={(e) => meta.setData({ ...meta.data, manager_id: e })}
             selectedValue={meta.data.manager_id}
           />
