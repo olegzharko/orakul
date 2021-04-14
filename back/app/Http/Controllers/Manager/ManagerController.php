@@ -131,13 +131,14 @@ class ManagerController extends BaseController
         }
 
         $data = $r->toArray();
-        foreach ($data as $key => $value) {
-            $validator = $this->validate_data($value);
 
-            if (count($validator->errors()->getMessages())) {
-                return $this->sendError('Форма передає помилкові дані', $validator->errors());
-            }
-        }
+//        foreach ($data as $key => $value) {
+//            $validator = $this->validate_data($value);
+//
+//            if (count($validator->errors()->getMessages())) {
+//                return $this->sendError('Форма передає помилкові дані', $validator->errors());
+//            }
+//        }
 
         $old_contact_id = Contact::where('card_id', $card_id)->pluck('id');
 
