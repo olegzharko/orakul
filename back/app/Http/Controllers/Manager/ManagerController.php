@@ -227,7 +227,7 @@ class ManagerController extends BaseController
 
             $result['title'] = $this->generator->full_ascending_address($immovable);
             $result['check_list'] = ImmovableCheckList::get_check_list($immovable_id);
-
+            $result['building'] = $building;
             $result['building_id'] = $immovable->developer_building_id;
             $result['immovable_type_id'] = $immovable->immovable_type_id;
             $result['immovable_number'] = $immovable->immovable_number;
@@ -240,7 +240,6 @@ class ManagerController extends BaseController
 
         $result['contract_type'] = $contract_type;
         $result['immovable_type'] = $immovable_type;
-        $result['building'] = $building;
         $result['reader'] = $reader;
         $result['accompanying'] = $accompanying;
 
