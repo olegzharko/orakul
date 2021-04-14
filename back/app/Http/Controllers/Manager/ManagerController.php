@@ -25,6 +25,7 @@ use App\Models\Immovable;
 use App\Models\MarriageType;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
+use App\Models\ContractType;
 use Validator;
 
 class ManagerController extends BaseController
@@ -188,7 +189,7 @@ class ManagerController extends BaseController
         $result['building'] = null;
         $result['reader'] = null;
         $result['accompanying'] = null;
-        $result['printer'] = null;
+        $result['contract_type'] = null;
 
         $result['immovable_type_id'] = null;
         $result['building_id'] = null;
@@ -197,12 +198,12 @@ class ManagerController extends BaseController
 
         $result['reader_id'] = null;
         $result['accompanying_id'] = null;
-        $result['printer_id'] = null;
+        $result['contract_type_id'] = null;
 
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        $result['title'] = $this->generator->full_ascending_address($immovable);
+
 
         $immovable_type = ImmovableType::get_immovable_type();
         $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
@@ -215,26 +216,26 @@ class ManagerController extends BaseController
 
         $reader = $this->tools->get_reader_staff();
         $accompanying = $this->tools->get_accompanying_staff();
-        $printer = $this->tools->get_company_notary();
 
         $contract = Contract::get_contract_by_immovable($immovable_id);
         $card = Card::get_card_by_contract($contract->id);
 
+        $result['title'] = $this->generator->full_ascending_address($immovable);
+
+        $result['contract_type'] = ContractType::select('id', 'title')->get();
         $result['immovable_type'] = $immovable_type;
         $result['building'] = $building;
         $result['reader'] = $reader;
         $result['accompanying'] = $accompanying;
-        $result['printer'] = $printer;
 
-        $result['immovable_type_id'] = $immovable->immovable_type_id;
         $result['building_id'] = $immovable->developer_building_id;
+        $result['immovable_type_id'] = $immovable->immovable_type_id;
         $result['immovable_number'] = $immovable->immovable_number;
         $result['immovable_reg_num'] = $immovable->registration_number;
 
+        $result['contract_type_id'] = Contract::where('immovable_id', $immovable->id)->value('type_id');
         $result['reader_id'] = $contract->reader_id;
         $result['accompanying_id'] = $contract->accompanying_id;
-
-        $result['printer_id'] = $contract->printer_id;
 
         return $this->sendResponse($result, 'Дані по нерухомості ID:' . $immovable_id);
     }
