@@ -253,35 +253,58 @@ class ManagerController extends BaseController
 
     public function update_immovable($card_id, $immovable_id = null, Request $r)
     {
-        if (!$immovable = Immovable::find($immovable_id))
-            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+        if ($immovable_id) {
+            if (!$immovable = Immovable::find($immovable_id))
+                return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        $contract = Contract::get_contract_by_immovable($immovable_id);
-        $card = Card::get_card_by_contract($contract->id);
+            $contract = Contract::get_contract_by_immovable($immovable_id);
+            $card = Card::get_card_by_contract($contract->id);
 
-        Contract::where('id', $contract->id)->update([
-            'reader_id' => $r['reader_id'],
-            'accompanying_id' => $r['accompanying_id'],
-            'type_id' => $r['contract_type_id'],
-        ]);
+            Contract::where('id', $contract->id)->update([
+                'reader_id' => $r['reader_id'],
+                'accompanying_id' => $r['accompanying_id'],
+                'type_id' => $r['contract_type_id'],
+            ]);
 
-        Immovable::updateOrCreate(
-            ['id' => $immovable_id],
-            [
-                'immovable_type_id' => $r['immovable_type_id'],
-                'developer_building_id' => $r['building_id'],
-                'immovable_number' => $r['immovable_number'],
-                'registration_number' => $r['immovable_reg_num'],
-            ]
-        );
+            Immovable::where('id', $immovable_id)->update(
+                [
+                    'immovable_type_id' => $r['immovable_type_id'],
+                    'developer_building_id' => $r['building_id'],
+                    'immovable_number' => $r['immovable_number'],
+                    'registration_number' => $r['immovable_reg_num'],
+                ]
+            );
 
-        ImmovableCheckList::where('immovable_id', $immovable_id)->update([
-            'right_establishing' => $r['right_establishing'],
-            'technical_passport' => $r['technical_passport'],
-            'pv_price' => $r['pv_price'],
-            'fund_evaluation' => $r['fund_evaluation'],
-        ]);
+            ImmovableCheckList::where('immovable_id', $immovable_id)->update([
+                'right_establishing' => $r['right_establishing'],
+                'technical_passport' => $r['technical_passport'],
+                'pv_price' => $r['pv_price'],
+                'fund_evaluation' => $r['fund_evaluation'],
+            ]);
 
+        } else {
+            $immovable = new Immovable();
+            $immovable->immovable_type_id = $r['immovable_type_id'];
+            $immovable->developer_building_id = $r['building_id'];
+            $immovable->immovable_number = $r['immovable_number'];
+            $immovable->registration_number = $r['immovable_reg_num'];
+            $immovable->save();
+
+            $immovable_check_list = new ImmovableCheckList();
+            $immovable_check_list->right_establishing = $r['right_establishing'];
+            $immovable_check_list->technical_passport = $r['technical_passport'];
+            $immovable_check_list->pv_price = $r['pv_price'];
+            $immovable_check_list->fund_evaluation = $r['fund_evaluation'];
+            $immovable_check_list->save();
+
+            $contract = new Contract();
+            $contract->immovable_id = $immovable->id;
+            $contract->reader_id = $r['reader_id'];
+            $contract->accompanying_id = $r['accompanying_id'];
+            $contract->type_id = $r['contract_type_id'];
+            $contract->save();
+
+        }
         return $this->sendResponse('', 'Додані дані картки, контракту та нерухомості оновлено');
     }
 
