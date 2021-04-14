@@ -12,6 +12,7 @@ use App\Models\Contact;
 use App\Models\Contract;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
+use App\Models\DevGroup;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Notary;
@@ -393,8 +394,8 @@ class ManagerController extends BaseController
         }
 
         if (!isset($errors['developer_id']) && isset($r['developer_id']) && !empty($r['developer_id'])) {
-            if (!DevCompany::find($r['developer_id'])) {
-                $validator->getMessageBag()->add('developer_id', 'Забудовник з ID:' . $r['developer_id'] . " не знайдено");
+            if (!DevGroup::find($r['developer_id'])) {
+                $validator->getMessageBag()->add('developer_id', 'Група забудовника з ID:' . $r['developer_id'] . " не знайдено");
             }
         }
 
