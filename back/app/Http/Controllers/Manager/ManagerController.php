@@ -445,6 +445,8 @@ class ManagerController extends BaseController
                 $validator->getMessageBag()->add('person_type', 'Клієнта з ID:' . $r['person_type'] . " не знайдено");
             }
         }
+
+        return $validator;
     }
 
     private function validate_client($r)
