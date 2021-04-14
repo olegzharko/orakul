@@ -399,14 +399,14 @@ class ManagerController extends BaseController
 
         if (!isset($errors['representative_id']) && isset($r['representative_id']) && !empty($r['representative_id']) &&
             !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            if (!$dev_representative = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $this->representative_type)) {
+            if (!$dev_representative = DevCompanyEmployer::get_dev_employers_by_type($r['developer_id'], $this->representative_type)) {
                 $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
             }
         }
 
         if (!isset($errors['manager_id']) && isset($r['manager_id']) && !empty($r['manager_id']) &&
             !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            if (!$dev_manager = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $this->manager_type)) {
+            if (!$dev_manager = DevCompanyEmployer::get_dev_employers_by_type($r['developer_id'], $this->manager_type)) {
                 $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
             }
         }
