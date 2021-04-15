@@ -298,7 +298,7 @@ class ManagerController extends BaseController
                 'fund_evaluation' => $r['fund_evaluation'],
             ]);
 
-            return $this->sendResponse('', 'Додані дані картки, контракту та нерухомості оновлено');
+            return $this->sendResponse('', 'Нерухомість оновлено');
 
         } else {
             $immovable = new Immovable();
@@ -327,7 +327,7 @@ class ManagerController extends BaseController
             $result = [];
             $result['immovable_id'] = $immovable->id;
 
-            return $this->sendResponse($result, 'Додані дані картки, контракту та нерухомості оновлено');
+            return $this->sendResponse($result, 'Додано нерухомість оновлено');
         }
     }
 
@@ -407,14 +407,13 @@ class ManagerController extends BaseController
 
     public function update_client($card_id, $client_id = null, Request $r)
     {
-
         $new = false;
 
         if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
         }
 
-        if (!$client_id)
+        if ($client_id == null)
             $new = true;
 
         $validator = $this->validate_data($r);
@@ -442,7 +441,7 @@ class ManagerController extends BaseController
             $result = [];
             $result['client_id'] = $client_id;
 
-            return $this->sendResponse($result, 'Дані клієнта під ID:' . $client_id . ' оновлено.');
+            return $this->sendResponse($result, 'Клієнта під ID:' . $client_id . ' створено.');
         }
         else
             return $this->sendResponse('', 'Дані клієнта під ID:' . $client_id . ' оновлено.');

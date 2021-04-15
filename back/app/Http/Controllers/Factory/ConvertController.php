@@ -499,7 +499,7 @@ class ConvertController extends GeneratorController
             }
         }
 
-        return $str;
+        return trim($str);
     }
 
     public function get_surname_and_initials($person)

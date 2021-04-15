@@ -178,6 +178,7 @@ class ToolsController extends Controller
         if ($client) {
             $resutl['id'] = $client->id;
             $resutl['full_name'] = $this->convert->get_full_name($client);
+            $resutl['passport_type_id'] = $client->passport_type_id;
 //            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
         }
 
