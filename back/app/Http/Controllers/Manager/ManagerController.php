@@ -594,7 +594,7 @@ class ManagerController extends BaseController
     {
         if (count($data)) {
             if ($client_id) {
-                Client::where('id', $client_id)->udpate([
+                Client::where('id', $client_id)->update([
                     'surname_n' => $data['surname'],
                     'name_n' => $data['name'],
                     'patronymic_n' => $data['patronymic'],
