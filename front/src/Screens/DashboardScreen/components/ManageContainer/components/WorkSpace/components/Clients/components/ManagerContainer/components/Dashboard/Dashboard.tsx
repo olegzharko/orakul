@@ -40,7 +40,7 @@ const Dashboard = () => {
       <ConfirmDialog
         open={meta.showModal}
         title="Видалення клієнта"
-        message="Ви впевнені, що бажаєте видалити даного клієнта"
+        message="Ви впевнені, що бажаєте видалити даного клієнта?"
         handleClose={() => meta.onModalCancel()}
         handleConfirm={() => meta.onModalConfirm()}
       />

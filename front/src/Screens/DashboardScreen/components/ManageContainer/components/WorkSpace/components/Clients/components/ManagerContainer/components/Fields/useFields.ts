@@ -94,8 +94,8 @@ export const useFields = () => {
         })
       );
 
-      if (res?.success && personId === 'create') {
-        history.push(`/clients/${clientId}/${res?.data.clientId}`);
+      if (res?.success && personId === 'create' && !Number.isNaN(parseFloat(res?.data.client_id))) {
+        history.push(`/clients/${clientId}/${res?.data.client_id}`);
       }
     }
   }, [token, client, spouse, confidant, clientChecks, spouseChecks, confidantChecks]);
@@ -107,11 +107,25 @@ export const useFields = () => {
         const res = await reqManagerClient(token, clientId, personId);
 
         if (res?.success) {
-          setClient(res?.data.client.data || {});
+          setClient(res?.data.client.data || {
+            surname: '',
+            name: '',
+            patronymic: '',
+            phone: '',
+            email: '',
+          });
           setClientChecks(res?.data.client.info);
-          setSpouse(res?.data.spouse.data || {});
+          setSpouse(res?.data.spouse.data || {
+            surname: '',
+            name: '',
+            patronymic: '',
+          });
           setSpouseChecks(res?.data.spouse.info);
-          setConfidant(res?.data.confidant.data || {});
+          setConfidant(res?.data.confidant.data || {
+            surname: '',
+            name: '',
+            patronymic: '',
+          });
           setConfidantChecks(res?.data.confidant.info);
           setMarriedTypes(res?.data.married_types || []);
           setPassportTypes(res?.data.passport_type || []);
