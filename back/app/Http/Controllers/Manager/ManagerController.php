@@ -592,6 +592,7 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
+        dd($data);
         if (count($data)) {
             if ($client_id) {
                 Client::where('id', $client_id)->udpate([
