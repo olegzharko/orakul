@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
+use App\Models\Text;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use Illuminate\Http\Request;
@@ -177,34 +178,76 @@ class ToolsController extends Controller
         if ($client) {
             $resutl['id'] = $client->id;
             $resutl['full_name'] = $this->convert->get_full_name($client);
-            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
+//            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
         }
 
         return $resutl;
     }
 
-    public function check_list_by_client_id($client_id)
+//    public function check_list_by_client_id($client_id)
+//    {
+//        $result = [];
+//
+//        $client_check_list = ClientCheckList::select(
+//            "spouse_consent",
+//            "current_place_of_residence",
+//            "photo_in_the_passport",
+//            "immigrant_help",
+//            "passport",
+//            "tax_code",
+//            "evaluation_in_the_fund",
+//            "check_fop",
+//            "document_scans",
+//            "unified_register_of_court_decisions",
+//            "sanctions",
+//            "financial_monitoring",
+//            "unified_register_of_debtors",
+//        )->firstOrCreate(['client_id' => $client_id])->toArray();
+//
+//        $i = 0;
+//        foreach ($client_check_list as $key => $value) {
+//
+//            $result[$i]['title'] = Text::where('alias', $key)->value('value');
+//            $result[$i]['key'] = $key;
+//            $result[$i]['value'] = $value ? true : false;
+//            $i++;
+//        }
+//
+//        return $result;
+//
+//        return $check_list;
+//    }
+
+    public function clinet_quesetionnaire_info($client_id)
     {
-        $check_list = [];
+        $result = [];
 
-        ClientCheckList::firstOrCreate(['client_id' => $client_id]);
+        $client_check_list = ClientCheckList::select(
+            "spouse_consent",
+            "current_place_of_residence",
+            "photo_in_the_passport",
+            "immigrant_help",
+            "passport",
+            "tax_code",
+            "evaluation_in_the_fund",
+            "check_fop",
+            "document_scans",
+            "unified_register_of_court_decisions",
+            "sanctions",
+            "financial_monitoring",
+            "unified_register_of_debtors",
+        )->firstOrCreate(['client_id' => $client_id])->toArray();
 
-        $check_list = ClientCheckList::select(
-                                        "spouse_consent",
-                                        "current_place_of_residence",
-                                        "photo_in_the_passport",
-                                        "immigrant_help",
-                                        "passport",
-                                        "tax_code",
-                                        "evaluation_in_the_fund",
-                                        "check_fop",
-                                        "document_scans",
-                                        "unified_register_of_court_decisions",
-                                        "sanctions",
-                                        "financial_monitoring",
-                                        "unified_register_of_debtors",
-                                    )->where('client_id', $client_id)->first()->toArray();
+        $i = 0;
+        foreach ($client_check_list as $key => $value) {
 
-        return $check_list;
+            $result[$i]['title'] = Text::where('alias', $key)->value('value');
+            $result[$i]['key'] = $key;
+            $result[$i]['value'] = $value ? true : false;
+            $i++;
+        }
+
+        return $result;
     }
+
 }

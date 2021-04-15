@@ -267,27 +267,28 @@ class ManagerController extends BaseController
 
     public function update_immovable($card_id, $immovable_id = null, Request $r)
     {
+        if (!$card = Card::find($card_id)) {
+            return $this->sendError('', 'Картка відсутня');
+        }
+
         if ($immovable_id) {
             if (!$immovable = Immovable::find($immovable_id))
                 return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
             $contract = Contract::get_contract_by_immovable($immovable_id);
-            $card = Card::get_card_by_contract($contract->id);
 
             Contract::where('id', $contract->id)->update([
+                'type_id' => $r['contract_type_id'],
                 'reader_id' => $r['reader_id'],
                 'accompanying_id' => $r['accompanying_id'],
-                'type_id' => $r['contract_type_id'],
             ]);
 
-            Immovable::where('id', $immovable_id)->update(
-                [
-                    'immovable_type_id' => $r['immovable_type_id'],
-                    'developer_building_id' => $r['building_id'],
-                    'immovable_number' => $r['immovable_number'],
-                    'registration_number' => $r['immovable_reg_num'],
-                ]
-            );
+            Immovable::where('id', $immovable_id)->update([
+                'immovable_type_id' => $r['immovable_type_id'],
+                'developer_building_id' => $r['building_id'],
+                'immovable_number' => $r['immovable_number'],
+                'registration_number' => $r['immovable_reg_num'],
+            ]);
 
             ImmovableCheckList::where('immovable_id', $immovable_id)->update([
                 'right_establishing' => $r['right_establishing'],
@@ -327,46 +328,71 @@ class ManagerController extends BaseController
     public function get_client($client_id = null)
     {
         $result = [];
+
         $client = null;
+        $buyer = null;
         $spouse = null;
         $confidant = null;
         $married_types = null;
         $check_list = null;
+        $buyer_data = null;
+        $buyer_info = null;
+        $spouse_data = null;
+        $spouse_info = null;
+        $confidant_data = null;
+        $confidant_info = null;
+
+        $start_info = $this->start_quesetionnaire_info();
 
         $married_types = MarriageType::select('id', 'title')->get();
 
+        $result['married_types'] = $married_types;
+
+        $result['client']['data'] = null;
+        $result['client']['info'] =  $start_info;
+
+        $result['spouse']['data'] = null;
+        $result['spouse']['info'] = $start_info;
+
+        $result['confidant']['data'] =  null;
+        $result['confidant']['info'] =  $start_info;
+
         if ($client_id) {
             $client = Client::find($client_id);
-            if ($client && $client->spouse_id) {
-                $spouse = Client::find($client->married->spouse->id);
-            }
-
-            if ($client && $client->representative && $client->representative->confidant) {
-                $confidant = Client::find($client->representative->confidant->id);
-            }
 
             if ($client) {
                 $phone = $client->phone;
                 $email = $client->email;
-                $client = $this->tools->get_client_data_for_manager($client);
-                $client['phone'] = $phone;
-                $client['email'] = $email;
+
+                $buyer_data = $this->tools->get_client_data_for_manager($client);
+                $buyer_data['phone'] = $phone;
+                $buyer_data['email'] = $email;
+                $buyer_info = $this->tools->clinet_quesetionnaire_info($client->id);
+
+                $result['client']['data'] = $buyer_data;
+                $result['client']['info'] = $buyer_info;
             }
-            if ($spouse)
-                $spouse = $this->tools->get_client_data_for_manager($spouse);
-            if ($confidant)
-                $confidant = $this->tools->get_client_data_for_manager($confidant);
 
-        } else {
-            $result['client']['info'] =  $this->start_quesetionnaire_info();
-            $result['spouse']['info'] =  $this->start_quesetionnaire_info();
-            $result['confidant']['info'] =  $this->start_quesetionnaire_info();
+            if ($client && $client->married && $client->married->spouse) {
+                if ($spouse = Client::find($client->married->spouse->id)) {
+                    $spouse_data = $this->tools->get_client_data_for_manager($spouse);
+                    $spouse_info = $this->tools->clinet_quesetionnaire_info($spouse->id);
+
+                    $result['spouse']['data'] = $spouse_data;
+                    $result['spouse']['info'] = $spouse_info;
+                }
+            }
+
+            if ($client && $client->representative && $client->representative->confidant) {
+                if ($confidant = Client::find($client->representative->confidant->id)) {
+                    $confidant_data = $this->tools->get_client_data_for_manager($confidant);
+                    $confidant_info = $this->tools->clinet_quesetionnaire_info($confidant->id);
+
+                    $result['confidant']['data'] = $confidant_data;
+                    $result['confidant']['info'] = $confidant_info;
+                }
+            }
         }
-
-        $result['married_types'] = $married_types;
-        $result['client']['data'] = $client;
-        $result['spouse']['data'] = $spouse;
-        $result['confidant']['data'] = $confidant;
 
         return $this->sendResponse($result, 'Дані покупця під ID:' . $client_id);
     }
