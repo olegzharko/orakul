@@ -104,6 +104,7 @@ class ClientController extends BaseController
             $result[$key]['client']['id'] = $client->id;
             $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
             $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+        }
 
         return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
     }
