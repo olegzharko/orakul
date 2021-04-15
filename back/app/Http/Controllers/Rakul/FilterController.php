@@ -221,35 +221,6 @@ class FilterController extends BaseController
         return $result;
     }
 
-    private function count_by_type($contract_type)
-    {
-        if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
-            return null;
-
-        $count_cards = Card::select(
-                "cards.id",
-                "cards.notary_id",
-                "cards.room_id",
-                "cards.date_time",
-                "cards.city_id",
-                "cards.dev_company_id",
-                "cards.dev_representative_id",
-                "cards.dev_manager_id",
-                "cards.generator_step",
-                "cards.ready",
-                "cards.cancelled",
-            )
-        ->where('staff_generator_id', auth()->user()->id)
-        ->whereIn('cards.room_id', $this->rooms)
-        ->where('cards.date_time', '>=', $this->date)
-        ->where('contracts.type_id', $contract_type_id)
-        ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
-        ->distinct('cards.id')
-        ->count();
-
-        return $count_cards;
-    }
-
     private function start_card_query()
     {
         $query_cards = Card::whereIn('room_id', $this->rooms)
@@ -262,6 +233,39 @@ class FilterController extends BaseController
     {
         return $query_cards->where('staff_generator_id', auth()->user()->id)
                         ->where('generator_step', true);
+    }
+
+    private function count_by_type($contract_type)
+    {
+        if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
+            return null;
+
+        $query_cards = $this->start_card_query();
+
+        $query_cards = $query_cards->select(
+                "cards.id",
+                "cards.notary_id",
+                "cards.room_id",
+                "cards.date_time",
+                "cards.city_id",
+                "cards.dev_company_id",
+                "cards.dev_representative_id",
+                "cards.dev_manager_id",
+                "cards.generator_step",
+                "cards.ready",
+                "cards.cancelled",
+            )
+        ->where('contracts.type_id', $contract_type_id)
+        ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+        ->distinct('cards.id');
+
+        if (auth()->user()->type == 'generator'){
+            $query_cards = $this->query_for_generator($query_cards);
+        }
+
+        $count_cards = $query_cards->count();
+
+        return $count_cards;
     }
 
     private function count_total_cards()
