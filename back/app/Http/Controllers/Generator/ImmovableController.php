@@ -194,14 +194,26 @@ class ImmovableController extends BaseController
 
         $currency_exchage = round($r->exchange_rate, 2);
 
-        // ExchangeRate::where('immovable_id', $immovable_id)->update([
-        //     'rate' => $currency_exchage * 100,
-        // ]);
-
         ExchangeRate::updateOrCreate(
             ['immovable_id' => $immovable_id],
             ['rate' => $currency_exchage * 100]
         );
+
+        $currency_rate = $currency_exchage;
+        $imm_update = [];
+        $imm_update['price_dollar'] = $immovable->price_grn ? round($immovable->price_grn  / $currency_rate, 2) : null;
+        $imm_update['reserve_grn'] = $immovable->reserve_grn ? round($immovable->reserve_grn / $currency_rate, 2) : null;
+        $imm_update['m2_dollar'] = $immovable->m2_grn ? round($immovable->m2_grn / $currency_rate, 2) : null;
+
+        Immovable::where('id', $immovable_id)->update($imm_update);
+
+        $security_payment = SecurityPayment::where('immovable_id', $immovable_id)->first();
+
+        $security_update = [];
+        $security_update['first_part_dollar'] = $security_payment->first_part_dollar ? round($security_payment->first_part_dollar / $currency_rate, 2) : null;
+        $security_update['last_part_dollar'] = $security_payment->last_part_dollar ? round($security_payment->last_part_dollar / $currency_rate, 2) : null;
+
+        SecurityPayment::where('immovable_id', $immovable_id)->update($security_update);
 
         $result['exchange_rate'] = $currency_exchage;
 
