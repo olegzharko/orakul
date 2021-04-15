@@ -343,10 +343,10 @@ class ManagerController extends BaseController
         $clients = Client::whereIn('id', $clients_id)->get();
 
         foreach ($clients as $key => $client) {
-            $result[$key]['client'] = [];
-            $result[$key]['client']['id'] = $client->id;
-            $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+            $result[$key] = [];
+            $result[$key]['id'] = $client->id;
+            $result[$key]['full_name'] = $this->convert->get_full_name($client);
+            $result[$key]['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
         }
 
         return $this->sendResponse($result, 'Клієнти по карточці ID' . $card_id);
