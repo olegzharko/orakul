@@ -443,17 +443,17 @@ class ManagerController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        if ($r['client']) {
+        if ($r['client'] && count($r['client'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']);
             $this->card_client($client_id, $card_id);
         }
 
-        if ($r['spouse']) {
+        if ($r['spouse'] && count($r['client'])) {
             $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']);
             $this->client_spouse($client_id, $spouse_id);
         }
 
-        if ($r['confidant']) {
+        if ($r['confidant'] && count($r['client'])) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']);
             $this->client_representative($client_id, $representative_id);
         }
