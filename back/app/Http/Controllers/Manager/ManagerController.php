@@ -331,6 +331,27 @@ class ManagerController extends BaseController
         }
     }
 
+    public function get_card_client($card_id)
+    {
+        $result = [];
+
+        $clients_id = Card::where('cards.id', $card_id)
+            ->join('contracts',  'contracts.card_id', '=', 'cards.id')
+            ->join('client_contract','client_contract.contract_id', '=', 'contracts.id' )
+            ->pluck('client_contract.client_id');
+
+        $clients = Client::whereIn('id', $clients_id)->get();
+
+        foreach ($clients as $key => $client) {
+            $result[$key]['client'] = [];
+            $result[$key]['client']['id'] = $client->id;
+            $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
+            $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+        }
+
+        return $result;
+    }
+
     public function get_client($client_id = null)
     {
         $result = [];
