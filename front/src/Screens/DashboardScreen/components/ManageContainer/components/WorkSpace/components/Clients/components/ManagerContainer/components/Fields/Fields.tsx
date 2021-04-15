@@ -21,7 +21,7 @@ const Fields = () => {
         Клієнт
       </div>
 
-      <SectionWithTitle title="" onClear={() => console.log('clear')}>
+      <SectionWithTitle title="" onClear={meta.onClear}>
         <div className="grid">
           <CustomInput
             label="Прізвище"
