@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
-import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
+import Card from '../../../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
-import { GenerateClient } from '../../../../../../../../../../../../store/clients/store';
 import './index.scss';
 import { useClientsDashboard } from './useClientsDashboard';
 
@@ -22,33 +20,34 @@ const ClientsDashboard = () => {
         <div className="clients__colorful-title green">Представник</div>
       </div>
 
-      {meta.clients.map((client: GenerateClient) => (
+      {meta.clients.map((client) => (
         <div className="grid" key={uuidv4()}>
-          {Object.values(client).map((person) => {
+          {Object.values(client).map((person: any) => {
             if (!person) return <div />;
 
             return (
-              <CardWithClose
+              <Card
                 key={person.id}
                 title={person.full_name}
-                onClick={() => meta.onModalShow(person.id.toString())}
+                // onClick={() => meta.onModalShow(person.id.toString())}
                 link={`/clients/${meta.id}/${person.id}`}
               >
-                {person.list.map((item) => (
+                {person.list.map((item: any) => (
                   <span>{item}</span>
                 ))}
-              </CardWithClose>
+              </Card>
             );
           })}
         </div>
       ))}
-      <ConfirmDialog
+
+      {/* <ConfirmDialog
         open={meta.showModal}
         title="Видалення клієнта"
         message="Ви впевнені, що бажаєте видалити даного клієнта"
         handleClose={() => meta.onModalCancel()}
         handleConfirm={() => meta.onModalConfirm()}
-      />
+      /> */}
     </main>
   );
 };

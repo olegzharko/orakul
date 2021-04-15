@@ -11,12 +11,9 @@ type InitialData = {
   roominess_id: string;
   imm_number: string;
   registration_number: string;
-  price_dollar: string;
   price_grn: string;
   reserve_grn: string;
-  reserve_dollar: string;
   m2_grn: string;
-  m2_dollar: string;
   total_space: string;
   living_space: string;
   floor: string;
@@ -45,12 +42,9 @@ export const useGeneral = ({ initialData, id }: Props) => {
     roominess_id: '',
     imm_number: '',
     registration_number: '',
-    price_dollar: '',
     price_grn: '',
     reserve_grn: '',
-    reserve_dollar: '',
     m2_grn: '',
-    m2_dollar: '',
     total_space: '',
     living_space: '',
     floor: '',
@@ -64,12 +58,9 @@ export const useGeneral = ({ initialData, id }: Props) => {
       roominess_id: '',
       imm_number: '',
       registration_number: '',
-      price_dollar: '',
       price_grn: '',
       reserve_grn: '',
-      reserve_dollar: '',
       m2_grn: '',
-      m2_dollar: '',
       total_space: '',
       living_space: '',
       floor: '',
@@ -107,12 +98,9 @@ export const useGeneral = ({ initialData, id }: Props) => {
       roominess_id: initialData?.roominess_id || '',
       imm_number: initialData?.imm_number || '',
       registration_number: initialData?.registration_number || '',
-      price_dollar: initialData?.price_dollar || '',
       price_grn: initialData?.price_grn || '',
       reserve_grn: initialData?.reserve_grn || '',
-      reserve_dollar: initialData?.reserve_dollar || '',
       m2_grn: initialData?.m2_grn || '',
-      m2_dollar: initialData?.m2_dollar || '',
       total_space: initialData?.total_space || '',
       living_space: initialData?.living_space || '',
       floor: initialData?.floor || '',

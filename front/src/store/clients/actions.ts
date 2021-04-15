@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import { UserTypes } from '../../types';
 import getClients from '../../services/generator/Client/getClients';
 import { State } from '../types';
 
@@ -11,7 +12,7 @@ export const setClients = (payload: any) => ({ type: ACTIONS.SET_CLIENTS, payloa
 export const setIsLoading = (payload: boolean) => ({ type: ACTIONS.SET_LOADING, payload });
 
 // Thunk actions
-export const fetchClients = (id: string) => async (
+export const fetchClients = (id: string, userType: UserTypes) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
@@ -19,7 +20,7 @@ export const fetchClients = (id: string) => async (
 
   if (token) {
     dispatch(setIsLoading(true));
-    const { success, data } = await getClients(token, id);
+    const { success, data } = await getClients(token, id, userType);
 
     if (success) {
       dispatch(setClients(data));

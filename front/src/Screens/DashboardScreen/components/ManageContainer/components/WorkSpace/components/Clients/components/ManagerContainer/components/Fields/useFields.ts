@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useCallback, useState } from 'react';
 import { SelectItem } from '../../../../../../../../../../../../types';
@@ -6,44 +6,8 @@ import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerClient from '../../../../../../../../../../../../services/manager/Clients/reqManagerClient';
 import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
 
-type Client = {
-  surname: string | null,
-  name: string | null,
-  patronymic: string | null,
-  phone: string | null,
-  email: string | null,
-  id?: string,
-}
-
-type SellerCheck = {
-  passport: boolean,
-  tax_code: boolean,
-  evaluation_in_the_fund: boolean,
-  check_fop: boolean,
-  document_scans: boolean,
-  unified_register_of_court_decisions: boolean,
-  sanctions: boolean,
-  financial_monitoring: boolean,
-  unified_register_of_debtors: boolean,
-}
-
-type General = {
-  spouse_consent: boolean,
-  current_place_of_residence: boolean
-  photo_in_the_passport: boolean,
-  immigrant_help: boolean,
-  married_type: string | null,
-  document_type: string | null,
-}
-
-type Spouse = {
-  surname: string | null;
-  name: string | null;
-  patronymic: string | null;
-  id?: string;
-}
-
 export const useFields = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const { token } = useSelector((state: State) => state.main.user);
@@ -51,53 +15,68 @@ export const useFields = () => {
 
   // Selects
   const [marriedTypes, setMarriedTypes] = useState<SelectItem[]>([]);
+  const [passportTypes, setPassportTypes] = useState<SelectItem[]>([]);
 
   // Fields Data
-  const [client, setClient] = useState<Client>({
-    surname: null,
-    name: null,
-    patronymic: null,
-    phone: null,
-    email: null,
-  });
+  const [client, setClient] = useState<any>({});
+  const [clientChecks, setClientChecks] = useState<any>([]);
+  const [general, setGeneral] = useState<any>({});
+  const [spouse, setSpouse] = useState<any>({});
+  const [spouseChecks, setSpouseChecks] = useState<any>([]);
+  const [confidant, setConfidant] = useState<any>({});
+  const [confidantChecks, setConfidantChecks] = useState<any>([]);
 
-  const [sellerCheck, setSellerCheck] = useState<SellerCheck>({
-    passport: false,
-    tax_code: false,
-    evaluation_in_the_fund: false,
-    check_fop: false,
-    document_scans: false,
-    unified_register_of_court_decisions: false,
-    sanctions: false,
-    financial_monitoring: false,
-    unified_register_of_debtors: false,
-  });
+  const onClientChecksChange = useCallback((index: number, value: boolean) => {
+    clientChecks[index].value = value;
+    setClientChecks(clientChecks);
+  }, [clientChecks]);
 
-  const [general, setGeneral] = useState<General>({
-    spouse_consent: false,
-    current_place_of_residence: false,
-    photo_in_the_passport: false,
-    immigrant_help: false,
-    married_type: null,
-    document_type: null,
-  });
+  const onSpouseChecksChange = useCallback((index: number, value: boolean) => {
+    spouseChecks[index].value = value;
+    setSpouseChecks(spouseChecks);
+  }, [spouseChecks]);
 
-  const [spouse, setSpouse] = useState<Spouse>({
-    surname: null,
-    name: null,
-    patronymic: null,
-  });
+  const onConfidantChecksChange = useCallback((index: number, value: boolean) => {
+    confidantChecks[index].value = value;
+    setConfidantChecks(confidantChecks);
+  }, [confidantChecks]);
 
   const onSave = useCallback(async () => {
     if (token) {
-      const data = {
-        ...client,
-        ...sellerCheck,
-        ...general,
-        ...spouse,
+      // format clientsChecks for request
+      const clientChecksValues: any = {};
+      clientChecks.forEach((item: any) => {
+        clientChecksValues[item.key] = item.value;
+      });
+
+      // format spouseChecks for request
+      const spouseChecksValues: any = {};
+      spouseChecks.forEach((item: any) => {
+        spouseChecksValues[item.key] = item.value;
+      });
+
+      // format confidantChecks for request
+      const confidantChecksValues: any = {};
+      confidantChecks.forEach((item: any) => {
+        confidantChecksValues[item.key] = item.value;
+      });
+
+      const bodyData = {
+        client: {
+          data: client,
+          info: clientChecksValues,
+        },
+        spouse: {
+          data: spouse,
+          info: spouseChecksValues,
+        },
+        representative: {
+          data: confidant,
+          info: confidantChecksValues,
+        }
       };
 
-      const res = await reqManagerClient(token, clientId, personId, 'PUT', data);
+      const res = await reqManagerClient(token, clientId, personId, 'PUT', bodyData);
 
       dispatch(
         setModalInfo({
@@ -106,8 +85,12 @@ export const useFields = () => {
           message: res?.message,
         })
       );
+
+      if (res?.success && personId === 'create') {
+        history.push(`/clients/${clientId}/${res?.data.clientId}`);
+      }
     }
-  }, [token, client, sellerCheck, general, spouse]);
+  }, [token, client, spouse, confidant, clientChecks, spouseChecks, confidantChecks]);
 
   useEffect(() => {
     if (token) {
@@ -116,29 +99,14 @@ export const useFields = () => {
         const res = await reqManagerClient(token, clientId, personId);
 
         if (res?.success) {
-          setClient(res?.data.client);
-          setSellerCheck({
-            passport: res?.data.passport || false,
-            tax_code: res?.data.tax_code || false,
-            evaluation_in_the_fund: res?.data.evaluation_in_the_fund || false,
-            check_fop: res?.data.check_fop || false,
-            document_scans: res?.data.document_scans || false,
-            unified_register_of_court_decisions:
-              res?.data.unified_register_of_court_decisions || false,
-            sanctions: res?.data.sanctions || false,
-            financial_monitoring: res?.data.financial_monitoring || false,
-            unified_register_of_debtors: res?.data.unified_register_of_debtors || false,
-          });
-          setSpouse(res?.data.spouse);
+          setClient(res?.data.client.data || {});
+          setClientChecks(res?.data.client.info);
+          setSpouse(res?.data.spouse.data || {});
+          setSpouseChecks(res?.data.spouse.info);
+          setConfidant(res?.data.confidant.data || {});
+          setConfidantChecks(res?.data.confidant.info);
           setMarriedTypes(res?.data.married_types || []);
-          setGeneral({
-            spouse_consent: res?.data.spouse_consent || false,
-            current_place_of_residence: res?.data.current_place_of_residence || false,
-            photo_in_the_passport: res?.data.photo_in_the_passport || false,
-            immigrant_help: res?.data.immigrant_help || false,
-            married_type: res?.data.married_type || null,
-            document_type: res?.data.document_type || null,
-          });
+          setPassportTypes(res?.data.passport_type || []);
         }
       })();
     }
@@ -148,14 +116,21 @@ export const useFields = () => {
     clientId,
     personId,
     client,
-    sellerCheck,
-    spouse,
-    marriedTypes,
+    clientChecks,
     general,
+    spouse,
+    spouseChecks,
+    confidant,
+    confidantChecks,
+    marriedTypes,
+    passportTypes,
+    setClient,
     setGeneral,
     setSpouse,
-    setSellerCheck,
-    setClient,
+    setConfidant,
+    onClientChecksChange,
+    onSpouseChecksChange,
+    onConfidantChecksChange,
     onSave,
   };
 };

@@ -18,13 +18,13 @@ const General = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, imm_type_id: +e })}
             selectedValue={meta.data.imm_type_id}
           />
-
           <CustomSelect
             label="Адреса"
             data={meta.building}
             onChange={(e) => meta.setData({ ...meta.data, building_id: e })}
             selectedValue={meta.data.building_id}
           />
+
           <CustomInput
             label="Номер нерухомості"
             onChange={(e) => meta.setData({ ...meta.data, imm_number: e })}
@@ -35,21 +35,11 @@ const General = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, registration_number: e })}
             value={meta.data.registration_number}
           />
-          <CustomInput
-            label="Повна вартість в доларах"
-            onChange={(e) => meta.setData({ ...meta.data, price_dollar: e })}
-            value={meta.data.price_dollar}
-          />
+
           <CustomInput
             label="Повна вартість в гривнях"
             onChange={(e) => meta.setData({ ...meta.data, price_grn: e })}
             value={meta.data.price_grn}
-          />
-
-          <CustomInput
-            label="Сума внеску зг. попереднього договору в дол"
-            onChange={(e) => meta.setData({ ...meta.data, reserve_dollar: e })}
-            value={meta.data.reserve_dollar}
           />
           <CustomInput
             label="Сума внеску зг. попереднього договору в грн"
@@ -57,11 +47,6 @@ const General = (props: Props) => {
             value={meta.data.reserve_grn}
           />
 
-          <CustomInput
-            label="Вартість 1 кв. м. доларах"
-            onChange={(e) => meta.setData({ ...meta.data, m2_dollar: e })}
-            value={meta.data.m2_dollar}
-          />
           <CustomInput
             label="Вартість 1 кв. м. гривнях"
             onChange={(e) => meta.setData({ ...meta.data, m2_grn: e })}

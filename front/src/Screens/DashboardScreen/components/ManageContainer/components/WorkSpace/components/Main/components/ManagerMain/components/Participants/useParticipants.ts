@@ -24,6 +24,7 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
     representative_id: initialData?.representative_id || null,
     manager_id: initialData?.manager_id || null,
     generator_id: initialData?.generator_id || null,
+    generation_ready: initialData?.generation_ready || false,
   });
 
   const onClear = useCallback(() => {
@@ -33,6 +34,7 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
       representative_id: null,
       manager_id: null,
       generator_id: null,
+      generation_ready: false,
     });
   }, []);
 
