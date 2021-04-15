@@ -525,7 +525,7 @@ class ImmovableController extends BaseController
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');
     }
 
-    public function destroy($immovable_id)
+    public function destroy($immovable_id, $card_id)
     {
         $result = [];
 
