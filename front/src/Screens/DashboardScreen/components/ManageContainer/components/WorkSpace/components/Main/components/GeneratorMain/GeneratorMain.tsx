@@ -3,6 +3,7 @@ import Loader from '../../../../../../../../../../components/Loader/Loader';
 import PrimaryButton from '../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../components/SectionWithTitle';
 import TitleInfoDuet from '../../../../../../../../../../components/TitleInfoDuet';
+import ExchangeRate from '../../../Immovable/components/GeneratorContainer/components/ImmovableFields/components/ExchangeRate';
 import { useGeneratorMain } from './useGeneratorMain';
 
 const GeneratorMain = () => {
@@ -15,6 +16,8 @@ const GeneratorMain = () => {
   return (
     <main className="main">
       <div className="dashboard-header section-title">{meta.title}</div>
+
+      <ExchangeRate initialData={meta.exchange} id={meta.id} />
 
       <SectionWithTitle title="Дані які не додані до договору ">
         <div className="grid">

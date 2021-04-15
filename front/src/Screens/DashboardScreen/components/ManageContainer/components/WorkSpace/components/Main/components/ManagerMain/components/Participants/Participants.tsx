@@ -1,5 +1,6 @@
 import * as React from 'react';
 import CustomSelect from '../../../../../../../../../../../../components/CustomSelect';
+import CustomSwitch from '../../../../../../../../../../../../components/CustomSwitch';
 import PrimaryButton from '../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../components/SectionWithTitle';
 import { useParticipants, Props } from './useParticipants';
@@ -44,6 +45,12 @@ const Participants = (props: Props) => {
             data={props.initialData?.generator || []}
             onChange={(e) => meta.setData({ ...meta.data, generator_id: e })}
             selectedValue={meta.data.generator_id}
+          />
+
+          <CustomSwitch
+            label="Готово до генерації"
+            onChange={(e) => meta.setData({ ...meta.data, generation_ready: e })}
+            selected={meta.data.generation_ready}
           />
         </div>
       </SectionWithTitle>

@@ -45,6 +45,7 @@ export type ManagerParticipantsData = {
   notary_id: string;
   generator: SelectItem[];
   generator_id: string;
+  generation_ready: boolean;
 }
 
 export const useManagerMain = () => {
@@ -84,6 +85,7 @@ export const useManagerMain = () => {
             notary_id: res?.data.notary_id || '',
             generator: res?.data.generator || '',
             generator_id: res?.data.generator_id || '',
+            generation_ready: res?.data.generation_ready || false,
           });
         }
 

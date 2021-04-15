@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
 import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
-import { GenerateClient } from '../../../../../../../../../../../../store/clients/store';
 import './index.scss';
 import { useDashboard } from './useDashboard';
 
@@ -20,18 +19,18 @@ const Dashboard = () => {
       <div className="dashboard-header section-title">Клієнти</div>
 
       <div className="grid">
-        {/* {meta.clients.map((immovable) => (
+        {meta.clients.map((person: any) => (
           <CardWithClose
-            key={immovable.id}
-            title={immovable.title}
-            onClick={() => meta.onModalShow(immovable.id.toString())}
-            link={`/immovables/${meta.id}/${immovable.id}`}
+            key={person.id}
+            title={person.full_name}
+            onClick={() => meta.onModalShow(person.id.toString())}
+            link={`/clients/${meta.id}/${person.id}`}
           >
-            {immovable.list.map((item) => (
+            {person.list.map((item: any) => (
               <span>{item}</span>
             ))}
           </CardWithClose>
-        ))} */}
+        ))}
 
         <Link to={`/clients/${meta.id}/create`} className="add-item-card">
           <img src="/icons/plus-big.svg" alt="create" />

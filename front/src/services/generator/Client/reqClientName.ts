@@ -5,14 +5,12 @@ export default async function reqClientName(
   token: string,
   cardId: string,
   clientId: string,
-  method: 'GET' | 'PUT' | 'DELETE' | undefined = 'GET',
+  method: 'GET' | 'PUT' | undefined = 'GET',
   bodyData?: any
 ) {
   try {
-    const url = method === 'DELETE' ? `/api/generator/client/delete/${clientId}/${cardId}` : `/api/generator/client/name/${clientId}`;
-
     const data = await requestApi({
-      url: `${DEFAULT_URL}${url}`,
+      url: `${DEFAULT_URL}/api/generator/client/name/${clientId}`,
       headers: { Authorization: `Bearer ${token}` },
       method,
       bodyData,

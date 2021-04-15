@@ -39,26 +39,6 @@
       }
     }
 
-    .exchange {
-      justify-content: center;
-      align-items: center;
-
-      & > span {
-        @include form_text;
-        line-height: 1;
-        color: $dark;
-      }
-
-      & > div {
-        width: 150px;
-        margin: 0 20px;
-      }
-
-      & > button {
-        width: 220px;
-      }
-    }
-
     .security-payment {
 
       &__currency {

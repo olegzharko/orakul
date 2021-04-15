@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { SelectItem } from '../../../../../../../../../../../../types';
@@ -11,6 +11,7 @@ import { ManagerChecksData } from './components/Checks/Checks';
 import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
 
 export const useImmovableFields = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
   const { immovableId, clientId } = useParams<{clientId: string, immovableId: string}>();
@@ -63,6 +64,10 @@ export const useImmovableFields = () => {
           message: res?.message,
         })
       );
+
+      if (res?.success && immovableId === 'create') {
+        history.push(`/immovables/${clientId}/${res?.data.immovable_id}`);
+      }
     }
   }, [token, immovableId, general, responsible, contractType, checks]);
 

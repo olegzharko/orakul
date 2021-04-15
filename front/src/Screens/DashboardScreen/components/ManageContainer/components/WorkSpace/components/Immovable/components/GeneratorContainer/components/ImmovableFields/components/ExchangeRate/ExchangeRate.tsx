@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './index.scss';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../../../../../../../../../components/SecondaryButton';

@@ -1,20 +1,20 @@
 import { REDUX_ACTION } from '../types';
 import { ACTIONS } from './actions';
 
-type ClientCardInfo = {
-  full_name: string;
-  id: number;
-  list: string[];
-}
+// type ClientCardInfo = {
+//   full_name: string;
+//   id: number;
+//   list: string[];
+// }
 
-export type GenerateClient = {
-  client: null | ClientCardInfo,
-  representative: null | ClientCardInfo,
-  spouse: null | ClientCardInfo,
-}
+// export type GenerateClient = {
+//   client: null | ClientCardInfo,
+//   representative: null | ClientCardInfo,
+//   spouse: null | ClientCardInfo,
+// }
 
 export type ClientsState = {
-  clients: GenerateClient[];
+  clients: any[];
   isLoading: false;
 };
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './index.scss';
 import { Link } from 'react-router-dom';
+import ReactHtmlParser from 'react-html-parser';
 
 type Props = {
   title: string;
@@ -28,7 +29,7 @@ const Card = ({ title, headerColor, children, link, haveStatus }: Props) => {
   return (
     <Link to={link} className="card">
       <div className="card__header" style={{ backgroundColor: getTitleBackgroundColor() }}>
-        <span style={{ color: getTextColor() }}>{title}</span>
+        <span style={{ color: getTextColor() }}>{ReactHtmlParser(title)}</span>
         {haveStatus && (
           <div className="status" style={{ backgroundColor: headerColor || '' }} />
         )}
