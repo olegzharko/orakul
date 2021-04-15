@@ -609,8 +609,10 @@ class ManagerController extends BaseController
                 $client->surname_n = $data['surname'];
                 $client->name_n = $data['name'];
                 $client->patronymic_n = $data['patronymic'];
-                $client->phone = $data['phone'];
-                $client->email = $data['email'];
+                if (isset($data['phone']))
+                    $client->phone = $data['phone'];
+                if (isset($data['email']))
+                    $client->email = $data['email'];
                 $client->save();
 
                  return $client->id;
