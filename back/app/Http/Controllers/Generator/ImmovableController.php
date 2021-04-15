@@ -527,6 +527,8 @@ class ImmovableController extends BaseController
 
     public function destroy($immovable_id)
     {
+        $result = [];
+
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
@@ -538,7 +540,7 @@ class ImmovableController extends BaseController
         SecurityPayment::where('immovable_id', $immovable_id)->delete();
         Immovable::find($immovable_id)->delete();
 
-        return $this->sendResponse('', 'Нерухомысть по ID:' . $immovable_id . ' було успішно видалено.');
+        return $this->sendResponse($result, 'Нерухомысть по ID:' . $immovable_id . ' було успішно видалено.');
     }
 
     private function validate_imm_data($r)
