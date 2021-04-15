@@ -445,7 +445,6 @@ class ManagerController extends BaseController
         }
 
         if ($r['client'] && count($r['client']['data'])) {
-            dd($r['client']['data']);
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']['data']);
             if ($client_id)
                 $this->card_client($client_id, $card_id);
@@ -594,6 +593,7 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
+        dd($card_id, $client_id, $data);
             if ($client_id) {
                 Client::where('id', $client_id)->update([
                     'surname_n' => $data['surname'],
