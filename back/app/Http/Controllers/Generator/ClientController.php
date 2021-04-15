@@ -86,7 +86,25 @@ class ClientController extends BaseController
         ClientCheckList::where('client_id', $client->id)->delete();
         Client::where('id', $client->id)->delete();
 
-        $result = $this->get_client_by_card_id($card_id);
+//        $result = $this->get_client_by_card_id($card_id);
+
+        $result = [];
+
+        $clients_id = Card::where('cards.id', $card_id)
+            ->join('contracts',  'contracts.card_id', '=', 'cards.id')
+            ->join('client_contract','client_contract.contract_id', '=', 'contracts.id' )
+            ->pluck('client_contract.client_id')->toArray();
+
+        $clients = Client::whereIn('id', $clients_id)->get();
+
+        foreach ($clients as $key => $client) {
+            $result[$key]['client'] = [];
+            $result[$key]['spouse'] = null;
+            $result[$key]['representative'] = null;
+            $result[$key]['client']['id'] = $client->id;
+            $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
+            $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+
         return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
     }
 
