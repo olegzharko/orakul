@@ -531,7 +531,7 @@ class ImmovableController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         Contract::where('immovable_id', $immovable_id)->delete();
-        ExchangeRate::where('immovable_id', $immovable_id)->delete();
+//        ExchangeRate::where('immovable_id', $immovable_id)->delete();
         ImmovableOwnership::where('immovable_id', $immovable_id)->delete();
         ImmFence::where('immovable_id', $immovable_id)->delete();
         PropertyValuationPrice::where('immovable_id', $immovable_id)->delete();
