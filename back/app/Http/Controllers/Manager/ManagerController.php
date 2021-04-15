@@ -445,17 +445,20 @@ class ManagerController extends BaseController
 
         if ($r['client'] && count($r['client'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']);
-            $this->card_client($client_id, $card_id);
+            if ($client_id)
+                $this->card_client($client_id, $card_id);
         }
 
         if ($r['spouse'] && count($r['client'])) {
             $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']);
-            $this->client_spouse($client_id, $spouse_id);
+            if ($spouse_id)
+                $this->client_spouse($client_id, $spouse_id);
         }
 
         if ($r['confidant'] && count($r['client'])) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']);
-            $this->client_representative($client_id, $representative_id);
+            if ($representative_id)
+                $this->client_representative($client_id, $representative_id);
         }
 
         if ($new) {
@@ -589,25 +592,33 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
-        if ($client_id) {
-            Client::where('id', $client_id)->udpate([
-                'surname_n' => $data['surname'],
-                'name_n' => $data['name'],
-                'patronymic_n' => $data['patronymic'],
-                'phone' => $data['phone'],
-                'email' => $data['email'],
-            ]);
+        if (count($data)) {
+            if ($client_id) {
+                Client::where('id', $client_id)->udpate([
+                    'surname_n' => $data['surname'],
+                    'name_n' => $data['name'],
+                    'patronymic_n' => $data['patronymic'],
+                    'phone' => $data['phone'],
+                    'email' => $data['email'],
+                ]);
+
+                return $client_id;
+            } else {
+                $client = new Client();
+                $client->surname_n = $data['surname'];
+                $client->name_n = $data['name'];
+                $client->patronymic_n = $data['patronymic'];
+                $client->phone = $data['phone'];
+                $client->email = $data['email'];
+                $client->save();
+
+                 return $client->id;
+            }
+
         } else {
-            $client = new Client();
-            $client->surname_n = $data['surname'];
-            $client->name_n = $data['name'];
-            $client->patronymic_n = $data['patronymic'];
-            $client->phone = $data['phone'];
-            $client->email = $data['email'];
-            $client->save();
+            return null;
         }
 
-        return $client->id;
     }
 
     public function card_client($client_id, $card_id)
