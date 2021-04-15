@@ -118,6 +118,13 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        $currency_rate = $this->get_currency_rate($immovable_id);
+        $price_dollar = $r['price_grn'] * 100 * $currency_rate;
+        $reserve_grn = $r['reserve_grn'] * 100 * $currency_rate;
+        $m2_dollar = $r['m2_grn'] * 100 * $currency_rate;
+
+        echo "Курс: $currency_rate, Цена: $price_dollar, Резерв: $reserve_grn, М2: $m2_dollar<br>";
+
         if ($imm = Immovable::find($immovable_id)) {
             Immovable::where('id', $immovable_id)->update([
                 'immovable_type_id' => $r['imm_type_id'],
@@ -125,12 +132,12 @@ class ImmovableController extends BaseController
                 'roominess_id' => $r['roominess_id'],
                 'immovable_number' => $r['imm_number'],
                 'registration_number' => $r['registration_number'],
-                'dollar' => $r['price_dollar'] * 100,
                 'grn' => $r['price_grn'] * 100,
+                'dollar' => $price_dollar,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $r['reserve_dollar'] * 100,
+                'reserve_dollar' => $reserve_grn,
                 'm2_grn' => $r['m2_grn'] * 100,
-                'm2_dollar' => $r['m2_dollar'] * 100,
+                'm2_dollar' => $m2_dollar,
                 'total_space' => $r['total_space'],
                 'living_space' => $r['living_space'],
                 'floor' => $r['floor'],
@@ -155,12 +162,13 @@ class ImmovableController extends BaseController
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->first()) {
 
-                $exchange_rate = $minfin->rate;
 
                 $new_exchange_rate = new ExchangeRate();
                 $new_exchange_rate->immovable_id = $immovable_id;
                 $new_exchange_rate->rate = $minfin->rate;
                 $new_exchange_rate->save();
+
+                $exchange_rate = $minfin->rate;
             }
             else
                 $exchange_rate = null;
@@ -707,5 +715,18 @@ class ImmovableController extends BaseController
         }
 
         return $validator;
+    }
+
+    public function get_currency_rate($immovable_id)
+    {
+        $rate = ExchangeRate::get_rate_by_imm_id($immovable_id);
+
+        if (!$rate) {
+            $rate = Exchange::get_minfin_rate();
+
+            ExchangeRate::update_rate($immovable_id, $rate);
+        }
+
+        return $rate;
     }
 }

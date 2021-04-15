@@ -23,4 +23,14 @@ class ExchangeRate extends Model
     {
         return $this->belongsTo(Immovable::class, 'immovable_id');
     }
+
+    public static function get_rate_by_imm_id($immovable_id)
+    {
+        return ExchangeRate::where('immovable_id', $immovable_id)->value('rate');
+    }
+
+    public function update_rate($immovable_id, $rate)
+    {
+        ExchangeRate::updateOrCreate(['immovable_id' => $immovable_id], ['rate' => $rate]);
+    }
 }

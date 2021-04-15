@@ -13,4 +13,9 @@ class Exchange extends Model
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
+
+    public function get_minfin_rate()
+    {
+        return Exchange::orderBy('created_at', 'desc')->value('rate');
+    }
 }
