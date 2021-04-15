@@ -138,7 +138,7 @@ class FilterController extends BaseController
         if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
             return $this->sendError("Данний ключ типу договору відсутній");
 
-        $cards = Card::select(
+        $query_cards = Card::select(
                 "cards.id",
                 "cards.notary_id",
                 "cards.room_id",
@@ -151,16 +151,20 @@ class FilterController extends BaseController
                 "cards.ready",
                 "cards.cancelled",
             )
-        ->where('staff_generator_id', auth()->user()->id)
         ->whereIn('cards.room_id', $this->rooms)
-        ->where('cards.date_time', '>=', $this->date)
-        ->where('contract_types.id', $contract_type_id)
-        ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
-        ->leftJoin('contract_types', 'contract_types.id', '=', 'contracts.type_id')
-        ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
-        ->distinct('cards.id')
-        ->get();
+            ->where('cards.date_time', '>=', $this->date)
+            ->where('contract_types.id', $contract_type_id)
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->leftJoin('contract_types', 'contract_types.id', '=', 'contracts.type_id')
+            ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
+            ->distinct('cards.id');
 
+
+        if (auth()->user()->type == 'generator') {
+            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+        }
+
+        $cards = $query_cards->get();
         $result = $this->card->get_cards_in_generator_format($cards);
 
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
