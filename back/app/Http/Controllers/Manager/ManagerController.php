@@ -550,7 +550,6 @@ class ManagerController extends BaseController
     {
         if ($client_id) {
             Client::where('id', $client_id)->udpate([
-                'id' => $data['id'],
                 'surname' => $data['surname'],
                 'name' => $data['name'],
                 'patronymic' => $data['patronymic'],
