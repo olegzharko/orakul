@@ -540,6 +540,8 @@ class ImmovableController extends BaseController
         SecurityPayment::where('immovable_id', $immovable_id)->delete();
         Immovable::find($immovable_id)->delete();
 
+        $result = $this->get_immovables_by_card($card_id);
+
         return $this->sendResponse($result, 'Нерухомысть по ID:' . $immovable_id . ' було успішно видалено.');
     }
 
