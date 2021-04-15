@@ -3,11 +3,13 @@ import requestApi from '../../utils/requestApi';
 
 export default async function deleteImmovable(
   token: string,
+  clientId: string,
   immovableId: string,
 ) {
   try {
+    console.log(clientId, immovableId);
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/manager/immovable/delete/${immovableId}`,
+      url: `${DEFAULT_URL}/api/manager/immovable/delete/${immovableId}/${clientId}`,
       headers: { Authorization: `Bearer ${token}` },
       method: 'DELETE',
     });

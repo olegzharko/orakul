@@ -41,6 +41,14 @@ export const useFields = () => {
     setConfidantChecks(confidantChecks);
   }, [confidantChecks]);
 
+  const onClear = useCallback(() => {
+    const clearClient: any = {};
+    Object.keys(client).forEach((item: string) => {
+      clearClient[item] = '';
+    });
+    setClient(clearClient);
+  }, [client]);
+
   const onSave = useCallback(async () => {
     if (token) {
       // format clientsChecks for request
@@ -131,6 +139,7 @@ export const useFields = () => {
     onClientChecksChange,
     onSpouseChecksChange,
     onConfidantChecksChange,
+    onClear,
     onSave,
   };
 };
