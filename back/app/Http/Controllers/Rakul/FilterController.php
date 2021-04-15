@@ -250,34 +250,55 @@ class FilterController extends BaseController
         return $count_cards;
     }
 
+    private function start_card_query()
+    {
+        $query_cards = Card::whereIn('room_id', $this->rooms)
+            ->where('date_time', '>=', $this->date);
+
+        return $query_cards;
+    }
+
+    private function query_for_generator($query_cards)
+    {
+        return $query_cards->where('staff_generator_id', auth()->user()->id)
+                        ->where('generator_step', true);
+    }
+
+    private function count_total_cards()
+    {
+        $query_cards = $this->start_card_query();
+
+        if (auth()->user()->type == 'generator'){
+            $query_cards = $this->query_for_generator($query_cards);
+        }
+
+        $count_cards = $query_cards->where('cancelled', false)->count();
+
+        return $count_cards;
+    }
+
     private function count_ready_cards()
     {
-        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
-            ->whereIn('room_id', $this->rooms)
-            ->where('ready', true)
-            ->where('date_time', '>=', $this->date)
-            ->count();
+        $query_cards = $this->start_card_query();
+
+        if (auth()->user()->type == 'generator'){
+            $query_cards = $this->query_for_generator($query_cards);
+        }
+
+        $count_cards = $query_cards->where('ready', true)->where('cancelled', false)->count();
 
         return $count_cards;
     }
 
     private function count_cancelled_cards()
     {
-        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
-            ->whereIn('room_id', $this->rooms)
-            ->where('date_time', '>=', $this->date)
-            ->where('cancelled', true)
-            ->count();
+        $query_cards = $this->start_card_query();
 
-        return $count_cards;
-    }
+        if (auth()->user()->type == 'generator') {
+             $query_cards = $this->query_for_generator($query_cards);
+        }
 
-    private function count_total_cards()
-    {
-        $count_cards = Card::where('staff_generator_id', auth()->user()->id)
-            ->whereIn('room_id', $this->rooms)
-            ->where('date_time', '>=', $this->date)
-            ->count();
+        $count_cards = $query_cards->where('cancelled', true)->count();
 
         return $count_cards;
     }
