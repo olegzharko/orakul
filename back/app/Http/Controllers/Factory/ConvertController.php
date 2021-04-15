@@ -614,7 +614,7 @@ class ConvertController extends GeneratorController
 
         if (count($num_arr) == 2) {
             $resutl[] = $this->number_to_string(intval($num_arr[0]));
-            $resutl[] = 'дріб';
+            $resutl[] = str_replace(intval($num_arr[0]), '', $num_arr[0]) . ' дріб ';
             $resutl[] = $this->number_to_string($num_arr[1]);
 
             return implode(' ', $resutl);
