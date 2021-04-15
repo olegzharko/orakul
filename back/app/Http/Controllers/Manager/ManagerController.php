@@ -456,7 +456,7 @@ class ManagerController extends BaseController
                 $this->client_spouse($client_id, $spouse_id);
         }
 
-        if ($r['confidant'] && count($r['spouse']['data'])) {
+        if ($r['confidant'] && count($r['confidant']['data'])) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']['data']);
             if ($representative_id)
                 $this->client_representative($client_id, $representative_id);
@@ -593,7 +593,6 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
-        if (count($data)) {
             if ($client_id) {
                 Client::where('id', $client_id)->update([
                     'surname_n' => $data['surname'],
@@ -615,10 +614,6 @@ class ManagerController extends BaseController
 
                  return $client->id;
             }
-
-        } else {
-            return null;
-        }
 
     }
 
