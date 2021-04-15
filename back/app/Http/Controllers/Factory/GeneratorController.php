@@ -44,6 +44,7 @@ class GeneratorController extends Controller
     public function create_contract_by_card_id($card_id)
     {
         if ($this->get_contracts_id_by_card_id($card_id)) {
+            Card::where('id', $card_id)->udpate(['ready' => true]);
             $this->card_id = $card_id;
             $this->start_generate_contract();
         }
