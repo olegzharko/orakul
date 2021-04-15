@@ -119,11 +119,14 @@ class FilterController extends BaseController
     {
         $result = null;
 
-        $cards = Card::where('staff_generator_id', auth()->user()->id)
-            ->whereIn('room_id', $this->rooms)
+        $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('ready', true)
-            ->where('date_time', '>=', $this->date)
-            ->get();
+            ->where('date_time', '>=', $this->date);
+
+        if (auth()->user()->type == 'generator')
+            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+
+        $cards = $query_cards->get();
 
         $result = $this->card->get_cards_in_generator_format($cards);
 
@@ -172,11 +175,14 @@ class FilterController extends BaseController
 
     public function cancelled_cards()
     {
-        $cards = Card::where('staff_generator_id', auth()->user()->id)
-            ->whereIn('room_id', $this->rooms)
+        $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('date_time', '>=', $this->date)
-            ->where('cancelled', true)
-            ->get();
+            ->where('cancelled', true);
+
+        if (auth()->user()->type == 'generator')
+            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+
+        $cards = $query_cards->get();
 
         if (auth()->user()->type != 'reception') {
             $result = $this->card->get_cards_in_generator_format($cards);
