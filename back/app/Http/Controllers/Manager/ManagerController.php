@@ -32,7 +32,6 @@ use App\Models\DeveloperBuilding;
 use App\Models\ContractType;
 use App\Models\Spouse;
 use App\Models\Text;
-use App\Models\CardClient;
 use Validator;
 
 class ManagerController extends BaseController
