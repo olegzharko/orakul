@@ -191,7 +191,6 @@ class GeneratorController extends Controller
     {
         $address = null;
 
-        dd($immovable->developer_building->number);
         $building_num_str = $this->convert->building_num_str($immovable->developer_building->number);
 
 
