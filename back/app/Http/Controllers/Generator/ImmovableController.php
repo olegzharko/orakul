@@ -178,7 +178,7 @@ class ImmovableController extends BaseController
 
         $result['exchange_rate'] = round($exchange_rate / 100, 2);
 
-        return $this->sendResponse($result, 'Курс для нерухомості ID:' . $immovable_id);
+        return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
     }
 
     public function update_exchange($card_id, Request $r)
