@@ -201,7 +201,7 @@ class ImmovableController extends BaseController
 
         $currency_rate = $currency_exchage;
         $imm_update = [];
-        $imm_update['price_dollar'] = $immovable->price_grn ? round($immovable->price_grn  / $currency_rate, 2) : null;
+        $imm_update['dollar'] = $immovable->price_grn ? round($immovable->price_grn  / $currency_rate, 2) : null;
         $imm_update['reserve_grn'] = $immovable->reserve_grn ? round($immovable->reserve_grn / $currency_rate, 2) : null;
         $imm_update['m2_dollar'] = $immovable->m2_grn ? round($immovable->m2_grn / $currency_rate, 2) : null;
 
