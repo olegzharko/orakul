@@ -599,8 +599,8 @@ class ManagerController extends BaseController
                     'surname_n' => $data['surname'],
                     'name_n' => $data['name'],
                     'patronymic_n' => $data['patronymic'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
+                    'phone' => isset($data['phone']) ? $data['phone'] : null,
+                    'email' => isset($data['email']) ? $data['email'] : null,
                 ]);
 
                 return $client_id;
@@ -609,10 +609,8 @@ class ManagerController extends BaseController
                 $client->surname_n = $data['surname'];
                 $client->name_n = $data['name'];
                 $client->patronymic_n = $data['patronymic'];
-                if (isset($data['phone']))
-                    $client->phone = $data['phone'];
-                if (isset($data['email']))
-                    $client->email = $data['email'];
+                $client->phone = isset($data['phone']) ? $data['phone'] : null;
+                $client->email = isset($data['email']) ? $data['email'] : null;
                 $client->save();
 
                  return $client->id;
