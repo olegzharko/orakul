@@ -381,7 +381,7 @@ class ManagerController extends BaseController
 
         if ($r['confidant']) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']);
-            $this->client_reprclient_representativeesentative($client_id, $representative_id);
+            $this->client_representative($client_id, $representative_id);
         }
 
         return $this->sendResponse('', 'Дані клієнта під ID:' . $client_id . ' оновлено.');
@@ -544,7 +544,7 @@ class ManagerController extends BaseController
             ['spouse_id' => $spouse_id]);
     }
 
-    public function ($client_id, $representative_id)
+    public function client_representative($client_id, $representative_id)
     {
         Representative::updateOrCreate(
             ['client_id' => $client_id],
