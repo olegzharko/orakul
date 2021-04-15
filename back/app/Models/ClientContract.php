@@ -10,6 +10,11 @@ class ClientContract extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'client_id',
+        'contract_id',
+    ];
+
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
