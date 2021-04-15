@@ -10,6 +10,11 @@ class Spouse extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'client_id',
+        'spouse_id',
+    ];
+
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
