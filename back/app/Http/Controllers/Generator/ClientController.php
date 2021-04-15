@@ -84,11 +84,7 @@ class ClientController extends BaseController
 
         ClientContract::where('client_id', $client->id)->delete();
         ClientCheckList::where('client_id', $client->id)->delete();
-        ClientContract::where('client_id', $client->id)->delete();
-//        Contract::where('client_id', $client->id)->delete();
-
-        if ($client)
-            $client->delete();
+        Client::where('client_id', $client->id)->delete();
 
         $result = $this->get_client_by_card_id($card_id);
         return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
