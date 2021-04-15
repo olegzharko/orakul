@@ -119,9 +119,9 @@ class ImmovableController extends BaseController
         }
 
         $currency_rate = $this->get_currency_rate($immovable_id);
-        $price_dollar = $r['price_grn']  * $currency_rate;
-        $reserve_grn = $r['reserve_grn'] * $currency_rate;
-        $m2_dollar = $r['m2_grn'] $currency_rate;
+        $price_dollar = round($r['price_grn']  / $currency_rate, 2);
+        $reserve_grn = round($r['reserve_grn'] / $currency_rate, 2);
+        $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
 
         echo "Курс: $currency_rate, Цена: $price_dollar, Резерв: $reserve_grn, М2: $m2_dollar<br>";
 
@@ -133,11 +133,11 @@ class ImmovableController extends BaseController
                 'immovable_number' => $r['imm_number'],
                 'registration_number' => $r['registration_number'],
                 'grn' => $r['price_grn'] * 100,
-                'dollar' => $price_dollar,
+                'dollar' => $price_dollar * 100,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $reserve_grn,
+                'reserve_dollar' => $reserve_grn * 100,
                 'm2_grn' => $r['m2_grn'] * 100,
-                'm2_dollar' => $m2_dollar,
+                'm2_dollar' => $m2_dollar * 100,
                 'total_space' => $r['total_space'],
                 'living_space' => $r['living_space'],
                 'floor' => $r['floor'],
