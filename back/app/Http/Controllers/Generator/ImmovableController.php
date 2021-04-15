@@ -247,13 +247,17 @@ class ImmovableController extends BaseController
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 //        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
 
+        $currency_rate = $this->get_currency_rate($immovable_id);
+        $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
+        $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
+
         SecurityPayment::where('immovable_id', $immovable_id)->update([
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
             'reg_num' => $r['reg_num'],
-            'first_part_grn' => $r['first_part_grn'],
-            'first_part_dollar' => $r['first_part_dollar'],
-            'last_part_grn' => $r['last_part_grn'],
-            'last_part_dollar' => $r['last_part_dollar'],
+            'first_part_grn' => $r['first_part_grn'] * 100,
+            'first_part_dollar' => $first_part_dollar * 100,
+            'last_part_grn' => $r['last_part_grn'] * 100,
+            'last_part_dollar' => $last_part_dollar * 100,
             'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d.') : null,
         ]);
 
