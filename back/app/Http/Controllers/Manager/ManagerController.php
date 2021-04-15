@@ -8,6 +8,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\ClientCheckList;
+use App\Models\ClientContract;
 use App\Models\ClientType;
 use App\Models\Contact;
 use App\Models\Contract;
@@ -626,7 +627,7 @@ class ManagerController extends BaseController
     {
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
         foreach ($contracts_id as $contr_id) {
-            CardClient::updateOrCreate(
+            ClientContract::updateOrCreate(
                 ['client_id' => $client_id],
                 ['contract_id' => $contr_id]);
         }
