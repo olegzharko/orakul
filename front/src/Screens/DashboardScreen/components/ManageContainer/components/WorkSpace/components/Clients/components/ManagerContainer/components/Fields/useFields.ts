@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { SelectItem } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerClient from '../../../../../../../../../../../../services/manager/Clients/reqManagerClient';
@@ -88,8 +88,6 @@ export const useFields = () => {
     patronymic: null,
   });
 
-  const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(personId)), [personId]);
-
   const onSave = useCallback(async () => {
     if (token) {
       const data = {
@@ -99,7 +97,7 @@ export const useFields = () => {
         ...spouse,
       };
 
-      const res = await reqManagerClient(token, personId, 'PUT', data);
+      const res = await reqManagerClient(token, clientId, personId, 'PUT', data);
 
       dispatch(
         setModalInfo({
@@ -112,10 +110,10 @@ export const useFields = () => {
   }, [token, client, sellerCheck, general, spouse]);
 
   useEffect(() => {
-    if (token && isCorrectId) {
+    if (token) {
       // get CLIENT_DATA
       (async () => {
-        const res = await reqManagerClient(token, personId);
+        const res = await reqManagerClient(token, clientId, personId);
 
         if (res?.success) {
           setClient(res?.data.client);
