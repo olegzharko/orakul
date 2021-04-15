@@ -626,10 +626,10 @@ class ManagerController extends BaseController
     {
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
         foreach ($contracts_id as $contr_id) {
-            ClientContract::updateOrCreate(
-                ['client_id' => $client_id],
-                ['contract_id' => $contr_id]);
-        }
+//            ClientContract::updateOrCreate(
+//                ['client_id' => $client_id],
+//                ['contract_id' => $contr_id]);
+//        }
     }
 
     public function client_spouse($client_id, $spouse_id)
