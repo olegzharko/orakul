@@ -7,7 +7,6 @@ export default async function deleteImmovable(
   immovableId: string,
 ) {
   try {
-    console.log(clientId, immovableId);
     const data = await requestApi({
       url: `${DEFAULT_URL}/api/manager/immovable/delete/${immovableId}/${clientId}`,
       headers: { Authorization: `Bearer ${token}` },

@@ -9,7 +9,6 @@ export default async function reqManagerClient(
   bodyData?: any
 ) {
   try {
-    console.log(clientId, personId);
     const url = method === 'GET'
       ? `/api/manager/client${personId === 'create' ? '' : `/${personId}`}`
       : `/api/manager/client/${clientId}${personId === 'create' ? '' : `/${personId}`}`;
