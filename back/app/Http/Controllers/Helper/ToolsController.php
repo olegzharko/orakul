@@ -183,6 +183,7 @@ class ToolsController extends Controller
             $resutl['name'] = $client->name_n;
             $resutl['patronymic'] = $client->patronymic_n;
             $resutl['passport_type_id'] = $client->passport_type_id;
+            $resutl['married_type_id'] = $client->client_spouse_consent->marriage_type_id;
 //            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
         }
 
