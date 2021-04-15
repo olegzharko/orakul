@@ -398,8 +398,6 @@ class ManagerController extends BaseController
                 $buyer_data['email'] = $email;
                 $buyer_info = $this->tools->clinet_quesetionnaire_info($client->id);
 
-                dd($buyer_info);
-
                 $result['client']['data'] = $buyer_data;
                 $result['client']['info'] = $buyer_info;
             }
