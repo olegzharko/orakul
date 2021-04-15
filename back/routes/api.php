@@ -82,6 +82,7 @@ Route::middleware('auth:api')->group(function () {
 
        Route::group(['prefix' => 'immovable'], function() {
             Route::get('main/{card_id}', [ImmovableController::class, 'main']);
+            Route::get('{card_id}', [ImmovableController::class, 'main']);
 
             Route::get('general/{immovable_id}', [ImmovableController::class, 'get_general']); // postman
             Route::put('general/{immovable_id}', [ImmovableController::class, 'update_general']);
@@ -110,6 +111,7 @@ Route::middleware('auth:api')->group(function () {
 
        Route::group(['prefix' => 'client'], function() {
             Route::get('main/{card_id}', [ClientController::class, 'main']); // postman
+            Route::get('{card_id}', [ClientController::class, 'main']); // postman
 
             Route::get('name/{client_id}', [ClientController::class, 'get_name']); // postman
             Route::put('name/{client_id}', [ClientController::class, 'update_name']);
