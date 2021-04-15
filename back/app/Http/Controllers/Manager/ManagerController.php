@@ -349,7 +349,7 @@ class ManagerController extends BaseController
             $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
         }
 
-        return $result;
+        return $this->sendResponse($result, 'Клієнти по карточці ID' . $card_id);
     }
 
     public function get_client($client_id = null)
