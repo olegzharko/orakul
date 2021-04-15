@@ -119,9 +119,9 @@ class ImmovableController extends BaseController
         }
 
         $currency_rate = $this->get_currency_rate($immovable_id);
-        $price_dollar = $r['price_grn'] * 100 * $currency_rate;
-        $reserve_grn = $r['reserve_grn'] * 100 * $currency_rate;
-        $m2_dollar = $r['m2_grn'] * 100 * $currency_rate;
+        $price_dollar = $r['price_grn']  * $currency_rate;
+        $reserve_grn = $r['reserve_grn'] * $currency_rate;
+        $m2_dollar = $r['m2_grn'] $currency_rate;
 
         echo "Курс: $currency_rate, Цена: $price_dollar, Резерв: $reserve_grn, М2: $m2_dollar<br>";
 
@@ -726,6 +726,8 @@ class ImmovableController extends BaseController
 
             ExchangeRate::update_rate($immovable_id, $rate);
         }
+
+        $rate = round($rate/100, 2);
 
         return $rate;
     }
