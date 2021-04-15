@@ -428,7 +428,6 @@ class ManagerController extends BaseController
 
     public function update_client($card_id, $client_id = null, Request $r)
     {
-        dd($r);
         $new = false;
 
         if ($client_id && !$client = Client::find($client_id)) {
@@ -444,19 +443,19 @@ class ManagerController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        if ($r['client'] && count($r['client'])) {
+        if ($r['client'] && count($r['client']['data'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']);
             if ($client_id)
                 $this->card_client($client_id, $card_id);
         }
 
-        if ($r['spouse'] && count($r['client'])) {
+        if ($r['spouse'] && count($r['client']['data'])) {
             $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']);
             if ($spouse_id)
                 $this->client_spouse($client_id, $spouse_id);
         }
 
-        if ($r['confidant'] && count($r['client'])) {
+        if ($r['confidant'] && count($r['client']['data'])) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']);
             if ($representative_id)
                 $this->client_representative($client_id, $representative_id);
