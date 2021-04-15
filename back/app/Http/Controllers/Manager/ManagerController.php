@@ -26,6 +26,7 @@ use App\Models\ContactType;
 use App\Models\Immovable;
 use App\Models\MarriageType;
 use App\Models\ImmovableType;
+use App\Models\PassportTemplate;
 use App\Models\DeveloperBuilding;
 use App\Models\ContractType;
 use App\Models\Spouse;
@@ -345,8 +346,10 @@ class ManagerController extends BaseController
         $start_info = $this->start_quesetionnaire_info();
 
         $married_types = MarriageType::select('id', 'title')->get();
+        $passport_type = PassportTemplate::select('id', 'title')->get();
 
         $result['married_types'] = $married_types;
+        $result['passport_type'] = $passport_type;
 
         $result['client']['data'] = null;
         $result['client']['info'] =  $start_info;
