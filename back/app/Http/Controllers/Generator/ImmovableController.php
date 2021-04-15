@@ -214,10 +214,10 @@ class ImmovableController extends BaseController
 
         $result['sign_date'] = $payment->sign_date ? $payment->sign_date->format('d.m.Y') : null;
         $result['reg_num'] = $payment->reg_num;
-        $result['first_part_grn'] = $payment->first_part_grn;
-        $result['first_part_dollar'] = $payment->first_part_dollar;
-        $result['last_part_grn'] = $payment->last_part_grn;
-        $result['last_part_dollar'] = $payment->last_part_dollar;
+        $result['first_part_grn'] = round($payment->first_part_grn / 100,2);
+        $result['first_part_dollar'] = round($payment->first_part_dollar / 100,2);
+        $result['last_part_grn'] = round($payment->last_part_grn / 100,2);
+        $result['last_part_dollar'] = round($payment->last_part_dollar / 100,2);
         $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id);
