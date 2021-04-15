@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useCallback, useState } from 'react';
 import { fetchImmovables, setImmovables } from '../../../../../../../../../../../../store/immovables/actions';
 import { State } from '../../../../../../../../../../../../store/types';
+import { UserTypes } from '../../../../../../../../../../../../types';
+import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
+import deleteImmovable from '../../../../../../../../../../../../services/generator/Immovable/deleteImmovable';
 
 export const useDashboard = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,22 +18,22 @@ export const useDashboard = () => {
   const [immovableNeedToRemove, setImmovableNeedToRemove] = useState<any>();
 
   const clientRemove = useCallback((personId: string) => {
-    // (async () => {
-    //   if (token) {
-    //     const { success, message, data } = await reqClientName(token, id, personId, 'DELETE');
+    (async () => {
+      if (token) {
+        const { success, message, data } = await deleteImmovable(token, personId);
 
-    //     if (success) {
-    //       dispatch(setClients(data));
-    //       dispatch(
-    //         setModalInfo({
-    //           open: true,
-    //           success,
-    //           message,
-    //         })
-    //       );
-    //     }
-    //   }
-    // })();
+        if (success) {
+          dispatch(setImmovables(data));
+          dispatch(
+            setModalInfo({
+              open: true,
+              success,
+              message,
+            })
+          );
+        }
+      }
+    })();
   }, [token, immovableNeedToRemove]);
 
   const onModalShow = useCallback((personId: string) => {
@@ -49,7 +52,7 @@ export const useDashboard = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchImmovables(id));
+    dispatch(fetchImmovables(id, UserTypes.MANAGER));
 
     return () => { dispatch(setImmovables([])); };
   }, []);

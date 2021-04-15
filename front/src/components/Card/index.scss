@@ -14,7 +14,6 @@
   }
   
   &__header {
-    flex-grow: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,6 +35,7 @@
 
   &__main {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     align-items: flex-start;
     padding: 15px;

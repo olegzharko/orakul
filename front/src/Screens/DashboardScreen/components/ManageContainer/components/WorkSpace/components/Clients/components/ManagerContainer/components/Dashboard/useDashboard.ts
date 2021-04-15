@@ -1,10 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useEffect, useCallback, useState } from 'react';
+
+import { UserTypes } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import { fetchClients, setClients } from '../../../../../../../../../../../../store/clients/actions';
 import reqClientName from '../../../../../../../../../../../../services/generator/Client/reqClientName';
 import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
+import deleteManagerClient from '../../../../../../../../../../../../services/manager/Clients/deleteManagerClient';
 
 export const useDashboard = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +22,7 @@ export const useDashboard = () => {
   const clientRemove = useCallback((personId: string) => {
     (async () => {
       if (token) {
-        const { success, message, data } = await reqClientName(token, id, personId, 'DELETE');
+        const { success, message, data } = await deleteManagerClient(token, personId, id);
 
         if (success) {
           dispatch(setClients(data));
@@ -51,7 +54,7 @@ export const useDashboard = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchClients(id));
+    dispatch(fetchClients(id, UserTypes.MANAGER));
   }, [id]);
 
   return {

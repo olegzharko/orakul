@@ -1,6 +1,5 @@
 import * as React from 'react';
-import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
-import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
+import Card from '../../../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
 import { useDashboard } from './useDashboard';
 
@@ -19,26 +18,17 @@ const Dashboard = () => {
 
       <div className="grid">
         {meta.immovables.map((immovable) => (
-          <CardWithClose
+          <Card
             key={immovable.id}
             title={immovable.title}
-            onClick={() => meta.onModalShow(immovable.id.toString())}
             link={`/immovables/${meta.id}/${immovable.id}`}
           >
             {immovable.list.map((item) => (
               <span>{item}</span>
             ))}
-          </CardWithClose>
+          </Card>
         ))}
       </div>
-
-      <ConfirmDialog
-        open={meta.showModal}
-        title="Видалення нерухомості"
-        message="Ви впевнені, що бажаєте видалити дану нерухомість"
-        handleClose={() => meta.onModalCancel()}
-        handleConfirm={() => meta.onModalConfirm()}
-      />
     </div>
   );
 };

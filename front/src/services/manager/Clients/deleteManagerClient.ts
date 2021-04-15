@@ -1,11 +1,16 @@
 import { DEFAULT_URL } from '../../Constants';
 import requestApi from '../../utils/requestApi';
 
-export default async function createContract(token: string, id: string) {
+export default async function deleteManagerClient(
+  token: string,
+  clientId: string,
+  cardId: string,
+) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/create/${id}`,
+      url: `${DEFAULT_URL}/api/manager/client/delete/${clientId}/${cardId}`,
       headers: { Authorization: `Bearer ${token}` },
+      method: 'DELETE',
     });
 
     return data;

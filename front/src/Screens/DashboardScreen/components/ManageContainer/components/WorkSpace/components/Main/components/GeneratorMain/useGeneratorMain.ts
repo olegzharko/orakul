@@ -6,6 +6,7 @@ import { State } from '../../../../../../../../../../store/types';
 import getMainData from '../../../../../../../../../../services/generator/Main/getMainData';
 import createContract from '../../../../../../../../../../services/generator/Main/createContract';
 import { setModalInfo } from '../../../../../../../../../../store/main/actions';
+import reqImmovableExchange from '../../../../../../../../../../services/generator/Immovable/reqImmovableExchange';
 
 export const useGeneratorMain = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export const useGeneratorMain = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
   const [instructions, setInstructions] = useState([]);
+  const [exchange, setExchange] = useState();
 
   const onSave = useCallback(async () => {
     if (token) {
@@ -44,13 +46,23 @@ export const useGeneratorMain = () => {
 
         setIsLoading(false);
       })();
+
+      (async () => {
+        const res = await reqImmovableExchange(token, id);
+
+        if (res?.success) {
+          setExchange(res.data);
+        }
+      })();
     }
   }, [token, id]);
 
   return {
+    id,
     title,
     instructions,
     isLoading,
+    exchange,
     onSave,
   };
 };
