@@ -428,6 +428,7 @@ class ManagerController extends BaseController
 
     public function update_client($card_id, $client_id = null, Request $r)
     {
+        dd($r);
         $new = false;
 
         if ($client_id && !$client = Client::find($client_id)) {
