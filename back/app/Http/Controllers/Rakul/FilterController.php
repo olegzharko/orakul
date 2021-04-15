@@ -52,7 +52,7 @@ class FilterController extends BaseController
         $accompanying = $this->tools->get_accompanying_staff();
         $generator = $this->tools->get_generator_staff();
         $contract_type = ContractType::get_active_contract_type();
-        $developer = $this->tools->get_developer();
+        $developer = $this->tools->get_dev_group();
         $sort_type = SortType::get_all_sort_type();
         $filter_type = $this->get_filter_type();
 

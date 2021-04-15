@@ -46,21 +46,24 @@ class ManagerController extends BaseController
         $this->tools = new ToolsController();
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
-        $this->developer_type = DevEmployerType::where('alias', 'developer')->value('id');
-        $this->representative_type = DevEmployerType::where('alias', 'representative')->value('id');
-        $this->manager_type = DevEmployerType::where('alias', 'manager')->value('id');
+        $this->developer_type = DevEmployerType::get_developer_type_id();
+        $this->representative_type = DevEmployerType::get_representative_type_id();
+        $this->manager_type = DevEmployerType::get_manager_type_id();;
     }
 
     public function main($card_id)
     {
         $result = [];
         $result['date_info'] = null;
+
         $result['notary'] = null;
         $result['developer'] = null;
         $result['representative'] = null;
         $result['manager'] = null;
+
         $result['contact_person_type'] = null;
         $result['contact_person_info'] = null;
+
         $result['notary_id'] = null;
         $result['developer_id'] = null;
         $result['representative_id'] = null;
@@ -70,6 +73,11 @@ class ManagerController extends BaseController
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
 
+        /*
+         * Якщо менеджер почав передивлятись картку
+         * то вона переходить в режим редагування лише
+         * відділом обробки данних
+         * */
         if (!$card->generator_step) {
             Card::where('id', $card_id)->update(['generator_step' => true]);
         }
@@ -77,12 +85,10 @@ class ManagerController extends BaseController
         $date_info = $this->tools->header_info($card);
 
         $notary = $this->tools->get_company_notary();
-        $developer = $this->tools->get_developer();
-        $representative_type_id = DevEmployerType::get_representative_type_id();
-        $manager_type_id = DevEmployerType::get_manager_type_id();
+        $developer = $this->tools->get_dev_group();
 
-        $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $representative_type_id);
-        $manager = $this->tools->developer_employer_by_type($card->dev_group_id, $manager_type_id);
+        $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
+        $manager = $this->tools->developer_employer_by_type($card->dev_group_id, $this->manager_type);
 
         $generator = $this->tools->get_generator_staff();
 
@@ -90,11 +96,13 @@ class ManagerController extends BaseController
         $contact_person_info = Contact::contact_by_card($card_id);
 
         $result['date_info'] = $date_info;
+
         $result['notary'] = $notary;
         $result['developer'] = $developer;
         $result['representative'] = $representative;
         $result['manager'] = $manager;
         $result['generator'] = $generator;
+
         $result['contact_person_type'] = $contact_person_type;
         $result['contact_person_info'] = $contact_person_info;
 
@@ -197,25 +205,29 @@ class ManagerController extends BaseController
         $result['immovable_number'] = null;
         $result['immovable_reg_num'] = null;
 
+        $result['contract_type'] = null;
+        $result['contract_type_id'] = null;
+
         $result['reader'] = null;
         $result['accompanying'] = null;
-        $result['contract_type'] = null;
 
         $result['reader_id'] = null;
         $result['accompanying_id'] = null;
-        $result['contract_type_id'] = null;
+
+        if (!$card = Card::find($card_id)) {
+            return $this->sendError('', 'Картка відсутня');
+        }
 
         $immovable_type = ImmovableType::get_immovable_type();
+        $contract_type = ContractType::select('id', 'title')->get();
+
         $reader = $this->tools->get_reader_staff();
         $accompanying = $this->tools->get_accompanying_staff();
-        $contract_type = ContractType::select('id', 'title')->get();
-        $immovable_check_list = ImmovableCheckList::get_check_list($immovable_id);
-
-        $card = Card::find($card_id);
 
         if ($immovable_id) {
             if (!$immovable = Immovable::find($immovable_id))
                 return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
 
             $developer_building = DeveloperBuilding::get_developer_building($immovable->developer_building->dev_company->id);
 
@@ -237,12 +249,14 @@ class ManagerController extends BaseController
             $result['contract_type_id'] = Contract::where('immovable_id', $immovable->id)->value('type_id');
             $result['reader_id'] = $contract->reader_id;
             $result['accompanying_id'] = $contract->accompanying_id;
+
+            $result['check_list'] = ImmovableCheckList::get_check_list($immovable_id);
         } else {
             $building = $this->tools->dev_group_buildings($card->dev_group_id);
             $result['building'] = $building;
+            $result['check_list'] = ImmovableCheckList::start_data_check_list();
         }
 
-        $result['check_list'] = $immovable_check_list;
         $result['contract_type'] = $contract_type;
         $result['immovable_type'] = $immovable_type;
         $result['reader'] = $reader;

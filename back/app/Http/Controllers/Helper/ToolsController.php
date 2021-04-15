@@ -143,7 +143,7 @@ class ToolsController extends Controller
         return $this->convertor_full_name($accompanying, 'full_name');
     }
 
-    public function get_developer()
+    public function get_dev_group()
     {
         $developer = DevGroup::where('active', true)->get();
 

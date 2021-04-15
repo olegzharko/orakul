@@ -67,4 +67,26 @@ class ImmovableCheckList extends Model
 
         return $result;
     }
+
+    public static function start_data_check_list()
+    {
+        $result = [];
+
+        $check_list = [
+            'right_establishing',
+            'technical_passport',
+            'pv_price',
+            'fund_evaluation',
+        ];
+
+        $i = 0;
+        foreach ($check_list as $key => $value) {
+            $result[$i]['title'] = Text::where('alias', $value)->value('value');
+            $result[$i]['key'] = $value;
+            $result[$i]['value'] = false;
+            $i++;
+        }
+
+        return $result;
+    }
 }

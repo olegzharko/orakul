@@ -54,7 +54,7 @@ class AssistantController extends BaseController
         $date_info = $this->tools->header_info($card);
 
         $notary = $this->tools->get_company_notary();
-        $developer = $this->tools->get_developer();
+        $developer = $this->tools->get_dev_group();
 
         $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
         $manager = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->manager_type);
