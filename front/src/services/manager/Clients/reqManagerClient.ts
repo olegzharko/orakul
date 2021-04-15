@@ -9,8 +9,11 @@ export default async function reqManagerClient(
   bodyData?: any
 ) {
   try {
+    const url = method === 'GET'
+      ? `/api/manager/client${personId === 'create' ? '' : `/${personId}`}`
+      : `/api/manager/client/${clientId}${personId === 'create' ? '' : `/${personId}`}`;
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/manager/client/${clientId}${personId === 'create' ? '' : `/${personId}`}`,
+      url: `${DEFAULT_URL}${url}`,
       headers: { Authorization: `Bearer ${token}` },
       method,
       bodyData,

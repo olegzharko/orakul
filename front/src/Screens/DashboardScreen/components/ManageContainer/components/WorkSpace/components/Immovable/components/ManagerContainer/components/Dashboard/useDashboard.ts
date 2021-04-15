@@ -20,7 +20,7 @@ export const useDashboard = () => {
   const clientRemove = useCallback((personId: string) => {
     (async () => {
       if (token) {
-        const { success, message, data } = await deleteImmovable(token, personId);
+        const { success, message, data } = await deleteImmovable(token, id, personId);
 
         if (success) {
           dispatch(setImmovables(data));
@@ -34,7 +34,7 @@ export const useDashboard = () => {
         }
       }
     })();
-  }, [token, immovableNeedToRemove]);
+  }, [token, immovableNeedToRemove, id]);
 
   const onModalShow = useCallback((personId: string) => {
     setShowModal(true);
@@ -44,7 +44,7 @@ export const useDashboard = () => {
   const onModalConfirm = useCallback(() => {
     setShowModal(false);
     clientRemove(immovableNeedToRemove);
-  }, [immovableNeedToRemove]);
+  }, [immovableNeedToRemove, clientRemove]);
 
   const onModalCancel = useCallback(() => {
     setShowModal(false);
