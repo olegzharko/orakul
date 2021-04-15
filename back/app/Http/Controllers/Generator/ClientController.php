@@ -24,6 +24,7 @@ use App\Models\Region;
 use App\Models\Representative;
 use App\Models\SpouseWord;
 use App\Models\Spouse;
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
