@@ -450,13 +450,13 @@ class ManagerController extends BaseController
                 $this->card_client($client_id, $card_id);
         }
 
-        if ($r['spouse'] && count($r['client']['data'])) {
+        if ($r['spouse'] && count($r['spouse']['data'])) {
             $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']['data']);
             if ($spouse_id)
                 $this->client_spouse($client_id, $spouse_id);
         }
 
-        if ($r['confidant'] && count($r['client']['data'])) {
+        if ($r['confidant'] && count($r['spouse']['data'])) {
             $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']['data']);
             if ($representative_id)
                 $this->client_representative($client_id, $representative_id);
