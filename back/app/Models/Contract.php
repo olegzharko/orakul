@@ -141,4 +141,9 @@ class Contract extends Model implements Sortable
     {
         return Contract::where('immovable_id', $immovable_id)->first();
     }
+
+    public static function get_card_id_by_immovable_id($immovable_id)
+    {
+        return Contract::where('immovable_id', $immovable_id)->value('card_id');
+    }
 }

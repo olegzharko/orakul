@@ -150,23 +150,25 @@ class ImmovableController extends BaseController
         }
     }
 
-    public function get_exchange($immovable_id)
+    public function get_exchange($card_id)
     {
         $result = [];
 
-        if (!$immovable = Immovable::find($immovable_id))
-            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+        if (!$card = Card::find($card_id))
+            return $this->sendError('', 'Карта по ID:' . $card_id . ' не було знайдено.');
 
-        if ($exchange = ExchangeRate::where(['immovable_id' => $immovable_id])->first()) {
+        if ($exchange = ExchangeRate::where(['card_id' => $card_id])->first()) {
             $exchange_rate = $exchange->rate;
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->first()) {
 
-
-                $new_exchange_rate = new ExchangeRate();
-                $new_exchange_rate->immovable_id = $immovable_id;
-                $new_exchange_rate->rate = $minfin->rate;
-                $new_exchange_rate->save();
+                ExchangeRate::updateOrCreate(
+                    ['card_id' => $card_id],
+                    ['rate' => $minfin->rate]);
+//                $new_exchange_rate = new ExchangeRate();
+//                $new_exchange_rate->card_id = $card_id;
+//                $new_exchange_rate->rate = $minfin->rate;
+//                $new_exchange_rate->save();
 
                 $exchange_rate = $minfin->rate;
             }
@@ -179,12 +181,12 @@ class ImmovableController extends BaseController
         return $this->sendResponse($result, 'Курс для нерухомості ID:' . $immovable_id);
     }
 
-    public function update_exchange($immovable_id, Request $r)
+    public function update_exchange($card_id, Request $r)
     {
         $result = [];
 
-        if (!$immovable = Immovable::find($immovable_id))
-            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+        if (!$card = Card::find($card_id))
+            return $this->sendError('', 'Карта по ID:' . $card . ' не було знайдено.');
 
         $validator = $this->validate_imm_data($r);
 
@@ -195,25 +197,25 @@ class ImmovableController extends BaseController
         $currency_exchage = round($r->exchange_rate, 2);
 
         ExchangeRate::updateOrCreate(
-            ['immovable_id' => $immovable_id],
+            ['card_id' => $card_id],
             ['rate' => $currency_exchage * 100]
         );
 
-        $currency_rate = $currency_exchage;
-        $imm_update = [];
-        $imm_update['dollar'] = $immovable->price_grn ? round($immovable->price_grn  / $currency_rate, 2) : null;
-        $imm_update['reserve_grn'] = $immovable->reserve_grn ? round($immovable->reserve_grn / $currency_rate, 2) : null;
-        $imm_update['m2_dollar'] = $immovable->m2_grn ? round($immovable->m2_grn / $currency_rate, 2) : null;
-
-        Immovable::where('id', $immovable_id)->update($imm_update);
-
-        $security_payment = SecurityPayment::where('immovable_id', $immovable_id)->first();
-
-        $security_update = [];
-        $security_update['first_part_dollar'] = $security_payment->first_part_dollar ? round($security_payment->first_part_dollar / $currency_rate, 2) : null;
-        $security_update['last_part_dollar'] = $security_payment->last_part_dollar ? round($security_payment->last_part_dollar / $currency_rate, 2) : null;
-
-        SecurityPayment::where('immovable_id', $immovable_id)->update($security_update);
+//        $currency_rate = $currency_exchage;
+//        $imm_update = [];
+//        $imm_update['dollar'] = $immovable->price_grn ? round($immovable->price_grn  / $currency_rate, 2) : null;
+//        $imm_update['reserve_grn'] = $immovable->reserve_grn ? round($immovable->reserve_grn / $currency_rate, 2) : null;
+//        $imm_update['m2_dollar'] = $immovable->m2_grn ? round($immovable->m2_grn / $currency_rate, 2) : null;
+//
+//        Immovable::where('id', $immovable_id)->update($imm_update);
+//
+//        $security_payment = SecurityPayment::where('immovable_id', $immovable_id)->first();
+//
+//        $security_update = [];
+//        $security_update['first_part_dollar'] = $security_payment->first_part_dollar ? round($security_payment->first_part_dollar / $currency_rate, 2) : null;
+//        $security_update['last_part_dollar'] = $security_payment->last_part_dollar ? round($security_payment->last_part_dollar / $currency_rate, 2) : null;
+//
+//        SecurityPayment::where('immovable_id', $immovable_id)->update($security_update);
 
         $result['exchange_rate'] = $currency_exchage;
 
@@ -276,7 +278,7 @@ class ImmovableController extends BaseController
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id . ' оновлено.');
     }
 
-    public function new_exchange($immovable_id)
+    public function new_exchange($card_id)
     {
         $result = [];
 
@@ -284,9 +286,7 @@ class ImmovableController extends BaseController
 
         $minfin = Exchange::orderBy('created_at', 'desc')->first();
 
-        ExchangeRate::where('immovable_id', $immovable_id)->update([
-            'rate' => $minfin->rate * 100,
-        ]);
+        ExchangeRate::updateOrCreate(['card_id' => $card_id], ['rate' => $minfin->rate]);
 
         $result['exchange_rate'] = round($minfin->rate / 100, 2);
 
@@ -735,12 +735,14 @@ class ImmovableController extends BaseController
 
     public function get_currency_rate($immovable_id)
     {
-        $rate = ExchangeRate::get_rate_by_imm_id($immovable_id);
+        $card_id = Contract::get_card_id_by_immovable_id($immovable_id);
+
+        $rate = ExchangeRate::get_rate_by_imm_id($card_id);
 
         if (!$rate) {
             $rate = Exchange::get_minfin_rate();
 
-            ExchangeRate::update_rate($immovable_id, $rate);
+            ExchangeRate::update_rate($card_id, $rate);
         }
 
         $rate = round($rate/100, 2);
