@@ -431,6 +431,8 @@ class ManagerController extends BaseController
     {
         $new = false;
 
+        dd($r->toArray());
+
         if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
         }
@@ -593,7 +595,6 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
-        dd($card_id, $client_id, $data);
             if ($client_id) {
                 Client::where('id', $client_id)->update([
                     'surname_n' => $data['surname'],
