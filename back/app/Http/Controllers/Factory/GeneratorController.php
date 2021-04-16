@@ -155,9 +155,9 @@ class GeneratorController extends BaseController
 
     public function notification($type, $message)
     {
-        if ($type == "Warning") {
-            echo "{$message}<br>";
-        }
+//        if ($type == "Warning") {
+//            echo "{$message}<br>";
+//        }
     }
 
     public function set_data_contract()
