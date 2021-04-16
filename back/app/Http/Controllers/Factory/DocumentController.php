@@ -156,7 +156,7 @@ class DocumentController extends GeneratorController
 */
 
             if ($this->client && $this->client->client_spouse_consent) {
-                dd($this->consents_id);
+
                 foreach ($this->client->client_spouse_consent as $this->consent) {
                     // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
                     dd(isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) );
