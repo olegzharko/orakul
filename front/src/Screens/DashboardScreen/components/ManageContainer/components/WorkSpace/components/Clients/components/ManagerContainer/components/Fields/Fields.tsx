@@ -73,8 +73,8 @@ const Fields = () => {
           <CustomSelect
             label="Тип свідоцтва про шлюб"
             data={meta.marriedTypes}
-            onChange={(e) => meta.setClient({ ...meta.client, married_type: e })}
-            selectedValue={meta.client.married_type}
+            onChange={(e) => meta.setClient({ ...meta.client, married_type_id: e })}
+            selectedValue={meta.client.married_type_id}
           />
 
           <CustomSelect

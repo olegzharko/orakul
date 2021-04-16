@@ -113,6 +113,8 @@ export const useFields = () => {
             patronymic: '',
             phone: '',
             email: '',
+            married_type_id: null,
+            passport_type_id: null,
           });
           setClientChecks(res?.data.client.info);
           setSpouse(res?.data.spouse.data || {
