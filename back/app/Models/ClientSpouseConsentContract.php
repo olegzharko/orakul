@@ -12,7 +12,7 @@ class ClientSpouseConsentContract extends Model
 
     protected $fillable = [
         'client_spouse_consent_id',
-        'client_id',
+        'contract_id',
     ];
 
     protected $casts = [
