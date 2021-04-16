@@ -154,6 +154,24 @@ class DocumentController extends GeneratorController
 //                }
             }
 
+            /*
+            if ($this->client && $this->client->client_spouse_consent) {
+                dd($this->consents_id);
+                foreach ($this->client->client_spouse_consent as $this->consent) {
+                    // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
+                    dd(isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) );
+                    if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
+                        $this->consent_template_set_data();
+                        if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
+                            unset($this->consents_id[$del_consents_id]);
+                        }
+                    }
+                    else
+                        $this->notification("Warning", "Згода подружжя відсутня");
+                }
+            }
+            * */
+
         }
     }
 
