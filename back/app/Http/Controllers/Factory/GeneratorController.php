@@ -60,7 +60,7 @@ class GeneratorController extends BaseController
         $cards_id = Card::where('ready', true)->pluck('id');
 
         foreach ($cards_id as $card_id) {
-            echo "CARD_ID $card_id <br>";
+//            echo "CARD_ID $card_id <br>";
             if ($this->get_contracts_id_by_card_id($card_id)) {
                 $this->start_generate_contract();
             }
