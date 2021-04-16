@@ -47,7 +47,6 @@ class GeneratorController extends Controller
     {
         if ($this->get_contracts_id_by_card_id($card_id)) {
             Card::where('id', $card_id)->update(['ready' => true]);
-            $this->card = Card::find($card_id);
             $this->card_id = $card_id;
             $this->start_generate_contract();
         }
@@ -141,7 +140,7 @@ class GeneratorController extends Controller
 
             }
             $this->client = $this->contract->client_contract;
-            $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id, $this->card);
+            $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id, $this->card_id);
             $this->word->creat_files();
         } else {
             dd("Увага: Угоди відсутні або не готові не генерації!");

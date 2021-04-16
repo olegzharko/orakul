@@ -6,6 +6,7 @@ use App\Models\CityType;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MainInfoType;
+use App\Models\Card;
 use App\Models\MonthConvert;
 use App\Models\BankTaxesList;
 use App\Models\Service;
@@ -38,7 +39,7 @@ class DocumentController extends GeneratorController
     public $card;
     public $card_id;
 
-    public function __construct($client, $pack_contract, $consents_id, $card)
+    public function __construct($client, $pack_contract, $consents_id, $card_id)
     {
         parent::__construct();
 
@@ -65,7 +66,7 @@ class DocumentController extends GeneratorController
         $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
         $this->style_space_line = "                                    ";
         $this->style_space_full_name = "                                                                              ";
-        $this->card = $card;
+        $this->card = Card::find($card_id);
     }
 
     public function creat_files()
@@ -1373,12 +1374,12 @@ class DocumentController extends GeneratorController
      * */
     public function set_exchange_rate($word)
     {
-        if ($this->contract->immovable && $this->contract->immovable->exchange_rate) {
-            $word->setValue('imm-exch-link', $this->contract->immovable->exchange_rate->web_site_link);
-            $word->setValue('imm-exch-root', $this->contract->immovable->exchange_rate->web_site_root);
-            $word->setValue('imm-exch', $this->convert->exchange_price($this->contract->immovable->exchange_rate->rate));
+        if ($this->contract->immovable && $this->card->exchange_rate) {
+            $word->setValue('imm-exch-link', $this->card->exchange_rate->web_site_link);
+            $word->setValue('imm-exch-root', $this->card->exchange_rate->web_site_root);
+            $word->setValue('imm-exch', $this->convert->exchange_price($this->card->exchange_rate->rate));
 
-            $word->setValue('КУРС-ДОЛАРА', $this->convert->exchange_price($this->contract->immovable->exchange_rate->rate));
+            $word->setValue('КУРС-ДОЛАРА', $this->convert->exchange_price($this->card->exchange_rate->rate));
         } else {
             $this->notification("Warning", "Курс долара: інформація відсутня");
         }

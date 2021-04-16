@@ -86,7 +86,7 @@ class Card extends Model
 
     public function exchange_rate()
     {
-        return $this->belongsTo(ExchangeRate::class, 'card_id');
+        return $this->hasOne(ExchangeRate::class, 'card_id');
     }
 
     public static function new_card($r)
