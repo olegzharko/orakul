@@ -153,7 +153,7 @@ class ConvertController extends GeneratorController
         $result = trim($result);
         $result = "($result) $currency_title";
 
-        echo $start_value . "  " . $result . "<br>";
+        // echo $start_value . "  " . $result . "<br>";
 
         return $result;
     }
@@ -197,7 +197,7 @@ class ConvertController extends GeneratorController
             $result = $str . " " . $result;
         }
 
-        echo $start_value . "    " . $result . "<br>";
+        // echo $start_value . "    " . $result . "<br>";
 
         $result = trim($result);
         if ($result)

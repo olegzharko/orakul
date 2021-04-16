@@ -51,6 +51,8 @@ class GeneratorController extends BaseController
             $this->card_id = $card_id;
             $this->start_generate_contract();
         }
+
+        return $this->sendResponse('', 'Договір створено');
     }
 
     public function create_all_contracts()
@@ -153,9 +155,7 @@ class GeneratorController extends BaseController
 
     public function notification($type, $message)
     {
-//        if ($type == "Warning") {
-//            echo "{$message}<br>";
-//        }
+
     }
 
     public function set_data_contract()

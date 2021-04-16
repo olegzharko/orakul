@@ -156,7 +156,7 @@ class FolderFileController extends Controller
         // Однакова назва для папки та договору
         $folder = $this->root_title();
 
-        echo "{$folder}<br><br>";
+        // echo "{$folder}<br><br>";
         $dev_company = $this->contract->dev_company->title;
 
         // Створення папки забудовника
