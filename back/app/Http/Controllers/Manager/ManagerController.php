@@ -622,7 +622,8 @@ class ManagerController extends BaseController
             return $client_id;
         }
         else {
-            if ($data['surname'] == null && $data['name'] == null && $data['patronymic'] == null) {
+            if ($data['surname'] == '' && $data['name'] == '' && $data['patronymic'] == '' ||
+                $data['surname'] == null && $data['name'] == null && $data['patronymic'] == null) {
                 return null;
             } else {
                 $client = new Client();
