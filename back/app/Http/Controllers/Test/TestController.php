@@ -69,7 +69,7 @@ class TestController extends Controller
 
     public $immovable_types_id;
     public $immovable_type_id;
-    public $proxy_id;
+//    public $proxy_id;
     public $developer_buildings_id;
     public $developer_building_id;
     public $immovable_number;

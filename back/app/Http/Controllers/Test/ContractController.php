@@ -182,7 +182,7 @@ class ContractController extends TestController
         while ($length--) {
             $immovable = new Immovable();
             $immovable->immovable_type_id = $this->get_rand_value($this->immovable_types_id);
-            $immovable->proxy_id = null;
+//            $immovable->proxy_id = null;
             $immovable->developer_building_id = $this->get_rand_value(DeveloperBuilding::where('dev_company_id', $this->dev_company_id)->pluck('id')->toArray());
             $immovable->immovable_number = rand(1, 1000);
             $immovable->registration_number = rand(242312311, 454455300);
