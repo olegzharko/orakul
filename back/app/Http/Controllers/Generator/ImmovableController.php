@@ -430,7 +430,7 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        ImmovableOwnership::where('immovable_id', $immovable_id)->update([
+        ImmovableOwnership::updateOrCreate(['immovable_id' => $immovable_id],[
             'gov_reg_number' => $r['reg_number'],
             'gov_reg_date' => $r['reg_date'],
             'discharge_number' => $r['discharge_number'],
