@@ -135,7 +135,7 @@ class DocumentController extends GeneratorController
                 $this->total_clients--;
             }
 
-
+            /*
 
             if ($this->client && $this->client->client_spouse_consent) {
 //                dd($this->consents_id);
@@ -154,7 +154,7 @@ class DocumentController extends GeneratorController
                         $this->notification("Warning", "Згода подружжя відсутня");
 //                }
             }
-
+*/
 /*
             if ($this->client && $this->client->client_spouse_consent) {
 
