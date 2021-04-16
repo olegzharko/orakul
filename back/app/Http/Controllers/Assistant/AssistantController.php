@@ -59,6 +59,8 @@ class AssistantController extends BaseController
         $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
         $manager = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->manager_type);
         $generator = $this->tools->get_generator_staff();
+        $accompanying = $this->tools->get_accompanying_staff();
+        $reader = $this->tools->get_reader_staff();
 
         $immovables_id = Contract::where('card_id', $card_id)->pluck('immovable_id');
 
@@ -85,6 +87,8 @@ class AssistantController extends BaseController
         $result['developer'] = $developer;
         $result['representative'] = $representative;
         $result['manager'] = $manager;
+        $result['accompanying'] = $accompanying;
+        $result['reader'] = $reader;
         $result['generator'] = $generator;
 
         $result['notary_id'] = $card->notary_id;
