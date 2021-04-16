@@ -465,7 +465,6 @@ class ConvertController extends GeneratorController
             $document->str_day = DayConvert::convert($num_day);
             $document->str_month = MonthConvert::convert($num_month);
             $document->str_year = YearConvert::convert($num_year);
-            dd($document);
         }
     }
 
