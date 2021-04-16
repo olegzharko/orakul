@@ -510,7 +510,7 @@ class ClientController extends BaseController
 
         $client_spouse_consent_id = ClientSpouseConsent::where('client_id', $client_id)->value('id');
 
-        ClientSpouseConsentContract::updateOrCreate(['client_id' => $client_id], ['contract_id' => $client_spouse_consent_id]);
+        ClientSpouseConsentContract::updateOrCreate(['client_id' => $client_id], ['client_spouse_consent_id' => $client_spouse_consent_id]);
 
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
     }
