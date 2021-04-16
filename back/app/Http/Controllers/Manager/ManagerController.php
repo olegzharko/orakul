@@ -609,7 +609,13 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
+        if ($data['surname'] == null && $data['name'] == null && $data['patronymic'] == null
+            || $data['surname'] == '' && $data['name'] == '' && $data['patronymic'] == '') {
+            return null;
+        }
+
         if ($client_id) {
+
             Client::where('id', $client_id)->update([
                 'surname_n' => $data['surname'],
                 'name_n' => $data['name'],
@@ -620,23 +626,17 @@ class ManagerController extends BaseController
             ]);
 
             return $client_id;
-        }
-        else {
-            if ($data['surname'] == null && $data['name'] == null && $data['patronymic'] == null
-                || $data['surname'] == '' && $data['name'] == '' && $data['patronymic'] == '') {
-                return null;
-            } else {
-                $client = new Client();
-                $client->surname_n = $data['surname'];
-                $client->name_n = $data['name'];
-                $client->patronymic_n = $data['patronymic'];
-                $client->phone = isset($data['phone']) ? $data['phone'] : null;
-                $client->email = isset($data['email']) ? $data['email'] : null;
-                $client->passport_type_id = isset($data['passport_type_id']) ? $data['passport_type_id'] : null;
-                $client->save();
+        } else {
+            $client = new Client();
+            $client->surname_n = $data['surname'];
+            $client->name_n = $data['name'];
+            $client->patronymic_n = $data['patronymic'];
+            $client->phone = isset($data['phone']) ? $data['phone'] : null;
+            $client->email = isset($data['email']) ? $data['email'] : null;
+            $client->passport_type_id = isset($data['passport_type_id']) ? $data['passport_type_id'] : null;
+            $client->save();
 
-                return $client->id;
-            }
+            return $client->id;
         }
     }
 
