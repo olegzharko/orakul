@@ -10,6 +10,11 @@ class ClientSpouseConsent extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'client_id',
+        'marriage_type_id',
+    ];
+
     protected $casts = [
         'sign_date' => 'datetime',
         'mar_date' => 'datetime',
