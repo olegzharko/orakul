@@ -496,7 +496,7 @@ class ClientController extends BaseController
         ClientSpouseConsent::where('client_id', $client_id)->update([
             'notary_id' => $r['notary_id'],
             'template_id' => $r['consent_template_id'],
-            'contract_spouse_word_id' => $r['consent_spouse_words_id'],
+            'contract_spouse_word_id' => $r['consent_spouse_word_id'],
             'marriage_type_id' => $r['married_type_id'],
             'mar_series' => $r['mar_series'],
             'mar_series_num' => $r['mar_series_num'],
