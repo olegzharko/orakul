@@ -508,17 +508,11 @@ class ImmovableController extends BaseController
 
         BankAccountPayment::updateOrCreate(
             ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['bank_template_id'],
-                'sign_date' => $r['sign_date'],
-            ]);
+            ['template_id' => $r['bank_template_id']]);
 
         BankTaxesPayment::updateOrCreate(
             ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['taxes_template_id'],
-                'sign_date' => $r['sign_date'],
-            ]);
+            ['template_id' => $r['taxes_template_id']]);
 
         Questionnaire::updateOrCreate(
             ['contract_id' => $contract_id],
