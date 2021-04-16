@@ -431,7 +431,7 @@ class ManagerController extends BaseController
     {
         $new = false;
 
-        dd($r->toArray());
+        dd($r->toArray(), $r['client'],$r['client']['data'], count($r['client']['data']));
 
         if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
