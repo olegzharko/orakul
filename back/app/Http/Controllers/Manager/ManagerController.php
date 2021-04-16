@@ -114,7 +114,7 @@ class ManagerController extends BaseController
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
         $result['generator_id'] = $card->staff_generator_id;
-        $result['generation_ready'] = $card->generator_step;
+        $result['generation_ready'] = $card->generator_step ? true : false;
 
         return $this->sendResponse($result, 'Дані по карточкці ID:' . $card_id);
     }
