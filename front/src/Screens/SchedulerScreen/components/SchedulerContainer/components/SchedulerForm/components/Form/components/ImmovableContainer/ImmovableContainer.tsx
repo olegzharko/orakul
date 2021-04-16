@@ -34,6 +34,7 @@ const ImmovableContainer = (props: Props) => {
 
           <div className="mv12">
             <CustomSelect
+              required
               onChange={(val) => meta.onBuildingChange(index, val)}
               data={meta.building}
               label="Будинок"
@@ -75,6 +76,7 @@ const ImmovableContainer = (props: Props) => {
 
           <div className="mv12 df-jc-sb">
             <CustomInput
+              required
               key="test"
               label="Номер приміщення"
               onChange={(val) => meta.onImmNumChange(index, val)}

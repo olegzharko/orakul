@@ -29,19 +29,6 @@ const SecurityPayment = (props: Props) => {
           />
 
           <CustomInput
-            label="I частина з. платежу у дол"
-            onChange={(e) => meta.setData({ ...meta.data, first_part_dollar: +e })}
-            value={meta.data.first_part_dollar}
-          />
-          <CustomInput
-            label="II частина з. платежу у дол"
-            onChange={(e) => meta.setData({ ...meta.data, last_part_dollar: +e })}
-            value={meta.data.last_part_dollar}
-          />
-
-          <div />
-
-          <CustomInput
             label="I частина з. платежу у грн"
             onChange={(e) => meta.setData({ ...meta.data, first_part_grn: +e })}
             value={meta.data.first_part_grn}

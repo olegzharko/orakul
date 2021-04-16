@@ -20,11 +20,13 @@ const CheckBanFields = ({ data, setData, title }: Props) => (
   <SectionWithTitle title={title}>
     <div className="grid">
       <CustomDatePicker
+        required
         label="Дата перевірки"
         onSelect={(val) => setData({ ...data, date: val })}
         selectedDate={data.date}
       />
       <CustomInput
+        required
         label="Номер перевірки"
         onChange={(val) => setData({ ...data, number: val })}
         value={data.number}

@@ -1,10 +1,10 @@
 import React from 'react';
 import './index.scss';
 import { v4 as uuidv4 } from 'uuid';
-import { useSchedulerTable } from './useSchedulerTable';
-import Loader from '../../../../../../components/Loader/Loader';
 
 // components
+import { useSchedulerTable } from './useSchedulerTable';
+import Loader from '../../../../../../components/Loader/Loader';
 import SchedulerDay from './components/SchedulerDay/SchedulerDay';
 import GridLayout from './components/GridLayout/GridLayout';
 import GridTable from './components/GridTable/GridTable';

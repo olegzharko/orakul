@@ -20,6 +20,7 @@ type Props = {
   disabled?: boolean;
   size?: 'medium' | 'small';
   className?: string;
+  required?: boolean;
 };
 
 const CustomSelect = ({
@@ -30,6 +31,7 @@ const CustomSelect = ({
   disabled,
   size = 'medium',
   className,
+  required,
 }: Props) => {
   const [selected, setSelected] = useState(selectedValue || '');
 
@@ -47,6 +49,7 @@ const CustomSelect = ({
     <FormControl variant="outlined" className={`customSelect ${className || ''}`} size={size}>
       <InputLabel>{label}</InputLabel>
       <Select
+        error={required && !selected}
         value={selected}
         onChange={handleChange}
         disabled={disabled || data.length === 0}

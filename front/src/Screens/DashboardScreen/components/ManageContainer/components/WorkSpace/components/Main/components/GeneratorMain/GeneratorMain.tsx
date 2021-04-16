@@ -3,7 +3,7 @@ import Loader from '../../../../../../../../../../components/Loader/Loader';
 import PrimaryButton from '../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../components/SectionWithTitle';
 import TitleInfoDuet from '../../../../../../../../../../components/TitleInfoDuet';
-import ExchangeRate from '../../../Immovable/components/GeneratorContainer/components/ImmovableFields/components/ExchangeRate';
+import ExchangeRate from './components/ExchangeRate';
 import { useGeneratorMain } from './useGeneratorMain';
 
 const GeneratorMain = () => {
