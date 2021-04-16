@@ -462,6 +462,8 @@ class ManagerController extends BaseController
             if ($spouse_id) {
                 $this->client_spouse($client_id, $spouse_id);
                 $this->update_check_list($spouse_id, $r['spouse']['info']);
+            } else {
+                $this->del_spouse($client_id);
             }
         }
 
@@ -472,6 +474,8 @@ class ManagerController extends BaseController
                 $this->client_representative($client_id, $representative_id);
                 $this->update_check_list($representative_id, $r['representative']['info']);
 
+            } else {
+                $this->del_representative($client_id);
             }
         }
 
@@ -616,19 +620,23 @@ class ManagerController extends BaseController
             ]);
 
             return $client_id;
-        } else {
-            $client = new Client();
-            $client->surname_n = $data['surname'];
-            $client->name_n = $data['name'];
-            $client->patronymic_n = $data['patronymic'];
-            $client->phone = isset($data['phone']) ? $data['phone'] : null;
-            $client->email = isset($data['email']) ? $data['email'] : null;
-            $client->passport_type_id = isset($data['passport_type_id']) ? $data['passport_type_id'] : null;
-            $client->save();
-
-            return $client->id;
         }
+        else {
+            if ($data['surname'] == null && $data['name'] == null && $data['patronymic'] == null) {
+                return null;
+            } else {
+                $client = new Client();
+                $client->surname_n = $data['surname'];
+                $client->name_n = $data['name'];
+                $client->patronymic_n = $data['patronymic'];
+                $client->phone = isset($data['phone']) ? $data['phone'] : null;
+                $client->email = isset($data['email']) ? $data['email'] : null;
+                $client->passport_type_id = isset($data['passport_type_id']) ? $data['passport_type_id'] : null;
+                $client->save();
 
+                return $client->id;
+            }
+        }
     }
 
     public function card_client($card_id, $client_id)
@@ -715,5 +723,23 @@ class ManagerController extends BaseController
         ClientSpouseConsent::updateOrCreate(['client_id' => $client_id], [
             'marriage_type_id' => isset($data['married_type_id']) ? $data['married_type_id'] : null,
         ]);
+    }
+
+    public function del_spouse($client_id)
+    {
+        $spouse_id = Spouse::where('client_id', $client_id)->value('spouse_id');
+        if ($spouse_id) {
+            Spouse::where('spouse_id', $spouse_id)->delete();
+            Client::where('id', $spouse_id)->delete();
+        }
+    }
+
+    public function del_representative($client_id)
+    {
+        $representative_id = Representative::where('client_id', $client_id)->value('confidant_id');
+        if ($representative_id) {
+            Representative::where('confidant_id', $representative_id)->delete();
+            Client::where('id', $representative_id)->delete();
+        }
     }
 }
