@@ -68,7 +68,7 @@ class CardController extends BaseController
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
             $result = $this->get_cards_in_generator_format($cards);
-        } elseif (auth()->user()->type == 'manager') {
+        } elseif (auth()->user()->type == 'manager' || auth()->user()->type == 'assistant') {
             $cards = $cards_query->orderBy('date_time')->get();
             $result = $this->get_cards_in_generator_format($cards);
         }

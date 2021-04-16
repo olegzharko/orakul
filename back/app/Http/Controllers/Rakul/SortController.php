@@ -87,7 +87,7 @@ class SortController extends BaseController
         elseif (auth()->user()->type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)->where('generator_step', true)->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
-        } elseif (auth()->user()->type == 'manager') {
+        } elseif (auth()->user()->type == 'manager' || auth()->user()->type == 'assistant') {
             $cards = $cards_query->orderBy('date_time')->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
         } else {
