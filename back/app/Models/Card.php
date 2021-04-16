@@ -84,6 +84,11 @@ class Card extends Model
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    public function exchange()
+    {
+        return $this->belongsTo(ExchangeRate::class, 'card_id');
+    }
+
     public static function new_card($r)
     {
         $work_city = \App\Models\City::where('notary', 1)->first();
