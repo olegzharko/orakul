@@ -435,10 +435,9 @@ class ManagerController extends BaseController
 
         if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
-        }
-
-        if ($client_id == null)
+        }else {
             $new = true;
+        }
 
         $validator = $this->validate_data($r);
 
@@ -449,7 +448,7 @@ class ManagerController extends BaseController
         if ($r['client'] && count($r['client']['data'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']['data']);
             if ($client_id)
-                $this->card_client($client_id, $card_id);
+                $this->card_client($card_id, $client_id);
         }
 
         if ($r['spouse'] && count($r['spouse']['data'])) {
@@ -614,19 +613,19 @@ class ManagerController extends BaseController
                 $client->email = isset($data['email']) ? $data['email'] : null;
                 $client->save();
 
-                 return $client->id;
+                return $client->id;
             }
 
     }
 
-    public function card_client($client_id, $card_id)
+    public function card_client($card_id, $client_id)
     {
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
-//        foreach ($contracts_id as $contr_id) {
-//            ClientContract::updateOrCreate(
-//                ['client_id' => $client_id],
-//                ['contract_id' => $contr_id]);
-//        }
+        foreach ($contracts_id as $contr_id) {
+            ClientContract::updateOrCreate(
+                ['client_id' => $client_id],
+                ['contract_id' => $contr_id]);
+        }
     }
 
     public function client_spouse($client_id, $spouse_id)
@@ -640,7 +639,7 @@ class ManagerController extends BaseController
     {
         Representative::updateOrCreate(
             ['client_id' => $client_id],
-            ['representative_id' => $representative_id]);
+            ['confidant_id' => $representative_id]);
     }
 
     public function start_quesetionnaire_info()
