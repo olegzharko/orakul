@@ -13,6 +13,7 @@ class DeveloperStatement extends Model
     public $fillable = [
         'contract_id',
         'template_id',
+        'sign_date',
     ];
 
     protected $casts = [

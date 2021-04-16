@@ -12,11 +12,13 @@ class BankTaxesPayment extends Model
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'sign_date' => 'datetime',
     ];
 
     public $fillable = [
         'contract_id',
         'template_id',
+        'sign_date',
     ];
 
     public function template()

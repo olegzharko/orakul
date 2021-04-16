@@ -16,6 +16,7 @@ class Questionnaire extends Model implements HasMedia
     public $fillable = [
         'contract_id',
         'template_id',
+        'sign_date',
     ];
 
     protected $casts = [

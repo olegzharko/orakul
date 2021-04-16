@@ -508,19 +508,31 @@ class ImmovableController extends BaseController
 
         BankAccountPayment::updateOrCreate(
             ['contract_id' => $contract_id],
-            ['template_id' => $r['bank_template_id']]);
+            [
+                'template_id' => $r['bank_template_id'],
+                'sign_date' => $r['sign_date'],
+            ]);
 
         BankTaxesPayment::updateOrCreate(
             ['contract_id' => $contract_id],
-            ['template_id' => $r['taxes_template_id']]);
+            [
+                'template_id' => $r['taxes_template_id'],
+                'sign_date' => $r['sign_date'],
+            ]);
 
         Questionnaire::updateOrCreate(
             ['contract_id' => $contract_id],
-            ['template_id' => $r['questionnaire_template_id']]);
+            [
+                'template_id' => $r['questionnaire_template_id'],
+                'sign_date' => $r['sign_date'],
+            ]);
 
         DeveloperStatement::updateOrCreate(
             ['contract_id' => $contract_id],
-            ['template_id' => $r['statement_template_id']]);
+            [
+                'template_id' => $r['statement_template_id'],
+                'sign_date' => $r['sign_date'],
+            ]);
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');
     }

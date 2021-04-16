@@ -452,7 +452,6 @@ class ConvertController extends GeneratorController
 
     public function date_to_string($document, $date)
     {
-
         $document->str_day = null;
         $document->str_month = null;
         $document->str_year = null;
