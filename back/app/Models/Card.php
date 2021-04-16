@@ -19,6 +19,7 @@ class Card extends Model
         'dev_group_id',
         'dev_representative_id',
         'dev_manager_id',
+        'cancelled',
     ];
 
 
