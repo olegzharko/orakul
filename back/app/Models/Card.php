@@ -84,7 +84,7 @@ class Card extends Model
         return $this->belongsTo(City::class, 'city_id');
     }
 
-    public function exchange()
+    public function exchange_rate()
     {
         return $this->belongsTo(ExchangeRate::class, 'card_id');
     }
