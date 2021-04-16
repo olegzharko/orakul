@@ -16,6 +16,7 @@ use App\Models\City;
 use App\Models\ClientContract;
 use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
+use App\Models\ClientSpouseConsentContract;
 use App\Models\ConsentTemplate;
 use App\Models\District;
 use App\Models\MarriageType;
@@ -506,6 +507,10 @@ class ClientController extends BaseController
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
             'reg_num' => $r['reg_num'],
         ]);
+
+        $client_spouse_consent_id = ClientSpouseConsent::where('client_id', $client_id)->value('id');
+
+        ClientSpouseConsentContract::updateOrCreate(['client_id' => $client_id], ['contract_id' => $client_spouse_consent_id]);
 
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
     }
