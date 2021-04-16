@@ -126,24 +126,26 @@ class ClientController extends BaseController
 
         foreach ($client as $key => $value) {
             if ($client['surname_r'] == null) {
-                $client['surname_r'] = $client['surname_n'];
+                $result['surname_r'] = $client['surname_n'];
             }
             if ($client['name_r'] == null) {
-                $client['name_r'] = $client['name_n'];
+                $result['name_r'] = $client['name_n'];
             }
             if ($client['patronymic_r'] == null) {
-                $client['patronymic_r'] = $client['patronymic_n'];
+                $result['patronymic_r'] = $client['patronymic_n'];
             }
             if ($client['surname_o'] == null) {
-                $client['surname_o'] = $client['surname_n'];
+                $result['surname_o'] = $client['surname_n'];
             }
             if ($client['name_o'] == null) {
-                $client['name_o'] = $client['name_n'];
+                $result['name_o'] = $client['name_n'];
             }
             if ($client['patronymic_o'] == null) {
-                $client['patronymic_o'] = $client['patronymic_n'];
+                $result['patronymic_o'] = $client['patronymic_n'];
             }
         }
+
+        dd($result);
 
         if (!$client) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
