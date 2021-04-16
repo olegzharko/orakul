@@ -462,7 +462,7 @@ class ConvertController extends GeneratorController
             $num_month = $date->format('m');
             $num_year = $date->format('Y');
 
-            dd($num_day,$num_month,$num_year,, $date);
+            dd($num_day,$num_month,$num_year, $date);
 
             $document->str_day = DayConvert::convert($num_day);
             $document->str_month = MonthConvert::convert($num_month);
