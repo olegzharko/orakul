@@ -13,12 +13,14 @@ const General = (props: Props) => {
       <SectionWithTitle title="Загальні дані" onClear={meta.onClear}>
         <div className="general grid-center-duet">
           <CustomSelect
+            required
             label="Тип нерухомості"
             data={meta.immType}
             onChange={(e) => meta.setData({ ...meta.data, imm_type_id: +e })}
             selectedValue={meta.data.imm_type_id}
           />
           <CustomSelect
+            required
             label="Адреса"
             data={meta.building}
             onChange={(e) => meta.setData({ ...meta.data, building_id: e })}
@@ -26,6 +28,7 @@ const General = (props: Props) => {
           />
 
           <CustomInput
+            required
             label="Номер нерухомості"
             onChange={(e) => meta.setData({ ...meta.data, imm_number: e })}
             value={meta.data.imm_number}

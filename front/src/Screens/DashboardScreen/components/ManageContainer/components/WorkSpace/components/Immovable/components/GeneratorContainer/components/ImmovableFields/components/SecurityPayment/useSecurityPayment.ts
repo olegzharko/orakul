@@ -11,8 +11,6 @@ type InitialData = {
   reg_num: number | null,
   first_part_grn: number | null,
   last_part_grn: number | null,
-  first_part_dollar: number | null,
-  last_part_dollar: number | null,
 }
 
 export type Props = {
@@ -31,8 +29,6 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
     reg_num: null,
     first_part_grn: null,
     last_part_grn: null,
-    first_part_dollar: null,
-    last_part_dollar: null,
   });
 
   const onClear = useCallback(() => {
@@ -42,8 +38,6 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
       reg_num: null,
       first_part_grn: null,
       last_part_grn: null,
-      first_part_dollar: null,
-      last_part_dollar: null,
     });
   }, []);
 
@@ -75,8 +69,6 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
       reg_num: initialData?.reg_num || null,
       first_part_grn: initialData?.first_part_grn || null,
       last_part_grn: initialData?.last_part_grn || null,
-      first_part_dollar: initialData?.first_part_dollar || null,
-      last_part_dollar: initialData?.last_part_dollar || null,
     });
   }, [initialData]);
 

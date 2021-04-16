@@ -1,6 +1,6 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useMemo } from 'react';
 import { SelectItem } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerClient from '../../../../../../../../../../../../services/manager/Clients/reqManagerClient';
@@ -28,26 +28,54 @@ export const useFields = () => {
 
   const onClientChecksChange = useCallback((index: number, value: boolean) => {
     clientChecks[index].value = value;
-    setClientChecks(clientChecks);
+    setClientChecks([...clientChecks]);
   }, [clientChecks]);
 
   const onSpouseChecksChange = useCallback((index: number, value: boolean) => {
     spouseChecks[index].value = value;
-    setSpouseChecks(spouseChecks);
+    setSpouseChecks([...spouseChecks]);
   }, [spouseChecks]);
 
   const onConfidantChecksChange = useCallback((index: number, value: boolean) => {
     confidantChecks[index].value = value;
-    setConfidantChecks(confidantChecks);
+    setConfidantChecks([...confidantChecks]);
   }, [confidantChecks]);
 
-  const onClear = useCallback(() => {
+  const onClientClear = useCallback(() => {
     const clearClient: any = {};
     Object.keys(client).forEach((item: string) => {
       clearClient[item] = '';
     });
     setClient(clearClient);
+    setClientChecks((prev: any) => prev.map((item: any) => {
+      item.value = false;
+      return item;
+    }));
   }, [client]);
+
+  const onSpouseClear = useCallback(() => {
+    const clearSpouse: any = {};
+    Object.keys(spouse).forEach((item: string) => {
+      clearSpouse[item] = '';
+    });
+    setSpouse(clearSpouse);
+    setSpouseChecks((prev: any) => prev.map((item: any) => {
+      item.value = false;
+      return item;
+    }));
+  }, [spouse]);
+
+  const onConfidantClear = useCallback(() => {
+    const clearConfidant: any = {};
+    Object.keys(confidant).forEach((item: string) => {
+      clearConfidant[item] = '';
+    });
+    setConfidant(clearConfidant);
+    setConfidantChecks((prev: any) => prev.map((item: any) => {
+      item.value = false;
+      return item;
+    }));
+  }, [confidant]);
 
   const onSave = useCallback(async () => {
     if (token) {
@@ -100,6 +128,10 @@ export const useFields = () => {
     }
   }, [token, client, spouse, confidant, clientChecks, spouseChecks, confidantChecks]);
 
+  const isSaveButtonDisabled = useMemo(() => !client.name
+    || !client.surname
+    || !client.passport_type_id, [client.name, client.surname, client.passport_type_id]);
+
   useEffect(() => {
     if (token) {
       // get CLIENT_DATA
@@ -148,6 +180,7 @@ export const useFields = () => {
     confidantChecks,
     marriedTypes,
     passportTypes,
+    isSaveButtonDisabled,
     setClient,
     setGeneral,
     setSpouse,
@@ -155,7 +188,9 @@ export const useFields = () => {
     onClientChecksChange,
     onSpouseChecksChange,
     onConfidantChecksChange,
-    onClear,
+    onClientClear,
+    onSpouseClear,
+    onConfidantClear,
     onSave,
   };
 };

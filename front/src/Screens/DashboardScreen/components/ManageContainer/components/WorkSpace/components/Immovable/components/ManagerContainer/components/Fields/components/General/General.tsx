@@ -33,6 +33,7 @@ const General = ({ title, data, onChange, immovableTypes, buildings }: Props) =>
     <SectionWithTitle title={title} onClear={handleClear}>
       <div className="grid-center-duet">
         <CustomSelect
+          required
           label="Тип нерухомості"
           data={immovableTypes}
           onChange={(e) => onChange({ ...data, immovable_type_id: e })}
@@ -40,6 +41,7 @@ const General = ({ title, data, onChange, immovableTypes, buildings }: Props) =>
         />
 
         <CustomSelect
+          required
           label="Будинок"
           data={buildings}
           onChange={(e) => onChange({ ...data, building_id: e })}
@@ -47,6 +49,7 @@ const General = ({ title, data, onChange, immovableTypes, buildings }: Props) =>
         />
 
         <CustomInput
+          required
           label="Номер нерухомості"
           onChange={(e) => onChange({ ...data, immovable_number: e })}
           value={data?.immovable_number}

@@ -99,6 +99,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
       setDevCompanyId(value);
       setDevManagerId(null);
       setDevRepresentativeId(null);
+      setImmovables((prev) => prev.map((item) => ({ ...item, building_id: null })));
 
       if (!value) {
         dispatch(setDevelopersInfo({}));

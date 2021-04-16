@@ -6,6 +6,7 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import $ from 'jquery';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -53,7 +54,7 @@ export default function GridLayout({
           style={{ borderLeft: `4px solid ${appointment.color}` }}
           onClickCapture={() => handleClick(appointment)}
         >
-          <div className="appointment__title">{appointment.title}</div>
+          <div className="appointment__title">{ReactHtmlParser(appointment.title)}</div>
           <table className="appointment__table">
             <tbody>
               <tr>

@@ -19,12 +19,21 @@ const ClientsFields = () => {
       <Citizenship initialData={meta.citizenship} id={meta.personId} />
       <Passport initialData={meta.passport} id={meta.personId} />
       <Address initialData={meta.address} id={meta.personId} />
-      <Statement initialData={meta.consents} clientId={meta.clientId} personId={meta.personId} />
-      <PowerOfAttorney
-        initialData={meta.representative}
-        clientId={meta.clientId}
-        personId={meta.personId}
-      />
+
+      {meta.userType === 'client' && (
+        <>
+          <Statement
+            initialData={meta.consents}
+            clientId={meta.clientId}
+            personId={meta.personId}
+          />
+          <PowerOfAttorney
+            initialData={meta.representative}
+            clientId={meta.clientId}
+            personId={meta.personId}
+          />
+        </>
+      )}
     </main>
   );
 };

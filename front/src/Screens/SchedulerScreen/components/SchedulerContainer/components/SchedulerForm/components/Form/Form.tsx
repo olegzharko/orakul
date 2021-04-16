@@ -66,6 +66,7 @@ const SchedulerForm = (props: Props) => {
 
         <div className="mv12">
           <CustomSelect
+            required
             label="Забудовник"
             data={meta.developers}
             onChange={meta.onDeveloperChange}

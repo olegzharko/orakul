@@ -16,11 +16,10 @@ export const useFields = () => {
 
   // Fields Data
   const [general, setGeneral] = useState();
-  const [exchange, setExchange] = useState();
   const [sellerBan, setSellerBan] = useState();
   const [ownerShip, setOwnerShip] = useState();
   const [securityPayment, setSecurityPayment] = useState();
-  const [rating, setReting] = useState();
+  const [retting, setRetting] = useState();
   const [templates, setTemplates] = useState();
 
   const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(immovableId)), [immovableId]);
@@ -33,15 +32,6 @@ export const useFields = () => {
 
         if (res?.success) {
           setGeneral(res.data);
-        }
-      })();
-
-      // get EXCHANGE
-      (async () => {
-        const res = await reqImmovableExchange(token, immovableId);
-
-        if (res?.success) {
-          setExchange(res.data);
         }
       })();
 
@@ -77,7 +67,7 @@ export const useFields = () => {
         const res = await reqImmovableRating(token, immovableId);
 
         if (res?.success) {
-          setReting(res.data);
+          setRetting(res.data);
         }
       })();
 
@@ -95,11 +85,10 @@ export const useFields = () => {
   return {
     general,
     immovableId,
-    exchange,
     sellerBan,
     ownerShip,
     securityPayment,
-    rating,
+    retting,
     templates,
   };
 };

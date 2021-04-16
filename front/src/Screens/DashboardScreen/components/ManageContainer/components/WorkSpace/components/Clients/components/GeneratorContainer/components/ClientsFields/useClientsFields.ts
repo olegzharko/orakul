@@ -14,6 +14,7 @@ export const useClientsFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
   const { clientId, personId } = useParams<{clientId: string, personId: string}>();
 
+  const [userType, setUserType] = useState();
   // Fields Data
   const [fioData, setFioData] = useState();
   const [contacts, setContacts] = useState();
@@ -29,10 +30,11 @@ export const useClientsFields = () => {
     if (token && isCorrectId) {
       // get FIO
       (async () => {
-        const { success, data } = await reqClientName(token, '', personId);
+        const res = await reqClientName(token, '', personId);
 
-        if (success) {
-          setFioData(data);
+        if (res?.success) {
+          setFioData(res.data);
+          setUserType(res.data.type);
         }
       })();
 
@@ -93,6 +95,7 @@ export const useClientsFields = () => {
   }, [token, clientId, personId, isCorrectId]);
 
   return {
+    userType,
     clientId,
     personId,
     fioData,
