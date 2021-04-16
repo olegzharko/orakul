@@ -1373,8 +1373,6 @@ class DocumentController extends GeneratorController
      * */
     public function set_exchange_rate($word)
     {
-
-        dd($this->card->exchange_rate);
         if ($this->contract->immovable && $this->contract->immovable->exchange_rate) {
             $word->setValue('imm-exch-link', $this->contract->immovable->exchange_rate->web_site_link);
             $word->setValue('imm-exch-root', $this->contract->immovable->exchange_rate->web_site_root);
