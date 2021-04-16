@@ -12,9 +12,10 @@ type Props = {
   label: string;
   onSelect: (value: any) => void;
   selectedDate?: Date | null;
+  required?: boolean;
 }
 
-const CustomDatePicker = ({ selectedDate, onSelect, label }: Props) => {
+const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) => {
   const [value, setValue] = useState<MaterialUiPickersDate | undefined>(selectedDate);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const CustomDatePicker = ({ selectedDate, onSelect, label }: Props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker
+        error={required && !value}
         margin="normal"
         label={label}
         format="dd/MM/yyyy"

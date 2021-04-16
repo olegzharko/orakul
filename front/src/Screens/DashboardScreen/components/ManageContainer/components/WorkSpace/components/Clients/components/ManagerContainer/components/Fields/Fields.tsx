@@ -21,15 +21,17 @@ const Fields = () => {
         Клієнт
       </div>
 
-      <SectionWithTitle title="" onClear={meta.onClear}>
+      <SectionWithTitle title="" onClear={meta.onClientClear}>
         <div className="grid">
           <CustomInput
+            required
             label="Прізвище"
             onChange={(e) => meta.setClient({ ...meta.client, surname: e })}
             value={meta.client?.surname}
           />
 
           <CustomInput
+            required
             label="Ім’я"
             onChange={(e) => meta.setClient({ ...meta.client, name: e })}
             value={meta.client?.name}
@@ -78,6 +80,7 @@ const Fields = () => {
           />
 
           <CustomSelect
+            required
             label="Тип документа"
             data={meta.passportTypes}
             onChange={(e) => meta.setClient({ ...meta.client, passport_type_id: e })}
@@ -86,7 +89,7 @@ const Fields = () => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Подружжя" headerColor="#FFB800">
+      <SectionWithTitle title="Подружжя" headerColor="#FFB800" onClear={meta.onSpouseClear}>
         <div className="grid">
           <CustomInput
             label="Прізвище"
@@ -117,7 +120,7 @@ const Fields = () => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Представник" headerColor="#04BC00">
+      <SectionWithTitle title="Представник" headerColor="#04BC00" onClear={meta.onConfidantClear}>
         <div className="grid">
           <CustomInput
             label="Прізвище"
@@ -149,7 +152,7 @@ const Fields = () => {
       </SectionWithTitle>
 
       <div className="middle-button">
-        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
+        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={meta.isSaveButtonDisabled} />
       </div>
     </main>
   );

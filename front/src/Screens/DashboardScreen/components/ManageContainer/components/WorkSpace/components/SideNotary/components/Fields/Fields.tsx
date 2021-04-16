@@ -12,18 +12,21 @@ const Fields = () => {
       <SectionWithTitle title="Називний відмінок та скорочення" onClear={meta.onDenominativeClear}>
         <div className="grid mb20">
           <CustomInput
+            required
             label="Прізвище"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, surname_n: e })}
             value={meta.denominative.surname_n}
           />
 
           <CustomInput
+            required
             label="Ім'я"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, name_n: e })}
             value={meta.denominative.name_n}
           />
 
           <CustomInput
+            required
             label="По батькові"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, patronymic_n: e })}
             value={meta.denominative.patronymic_n}
@@ -34,12 +37,14 @@ const Fields = () => {
           <div />
 
           <CustomInput
+            required
             label="Ім'я скорочено з крапкою"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, short_name: e })}
             value={meta.denominative.short_name}
           />
 
           <CustomInput
+            required
             label="По батькові скорочено з крапкою"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, short_patronymic: e })}
             value={meta.denominative.short_patronymic}
@@ -47,6 +52,7 @@ const Fields = () => {
         </div>
 
         <CustomInput
+          required
           label="Повна діяльнісь у називному відмінку"
           onChange={(e) => meta.setDenominate({ ...meta.denominative, activity_n: e })}
           value={meta.denominative.activity_n}
@@ -56,18 +62,21 @@ const Fields = () => {
       <SectionWithTitle title="Орудний відмінок" onClear={meta.onAblativeClear}>
         <div className="grid mb20">
           <CustomInput
+            required
             label="Прізвище"
             onChange={(e) => meta.setAblative({ ...meta.ablative, surname_o: e })}
             value={meta.ablative.surname_o}
           />
 
           <CustomInput
+            required
             label="Ім'я"
             onChange={(e) => meta.setAblative({ ...meta.ablative, name_o: e })}
             value={meta.ablative.name_o}
           />
 
           <CustomInput
+            required
             label="По батькові"
             onChange={(e) => meta.setAblative({ ...meta.ablative, patronymic_o: e })}
             value={meta.ablative.patronymic_o}
@@ -75,6 +84,7 @@ const Fields = () => {
         </div>
 
         <CustomInput
+          required
           label="Повна діяльнісь в орудному відмінку"
           onChange={(e) => meta.setAblative({ ...meta.ablative, activity_o: e })}
           value={meta.ablative.activity_o}

@@ -20,7 +20,7 @@ const Fio = (props: Props) => {
         </button>
       </div>
 
-      <SectionWithTitle title="Називний відмінок">
+      <SectionWithTitle title="Називний відмінок: Хто? Що?">
         <div className="grid">
           <CustomInput
             label="Прізвище"
@@ -42,7 +42,7 @@ const Fio = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Родовий відмінок">
+      <SectionWithTitle title="Родовий відмінок: Кого? Чого?">
         <div className="grid">
           <CustomInput
             label="Прізвище"
@@ -64,7 +64,7 @@ const Fio = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Орудний відмінок">
+      <SectionWithTitle title="Орудний відмінок: Ким? Чим?">
         <div className="grid">
           <CustomInput
             label="Прізвище"

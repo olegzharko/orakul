@@ -36,15 +36,15 @@ type ManagerMainData = {
 
 export type ManagerParticipantsData = {
   developer: SelectItem[];
-  developer_id: string;
+  developer_id: string | null;
   representative: SelectItem[];
-  representative_id: string;
+  representative_id: string | null;
   manager: SelectItem[];
-  manager_id: string;
+  manager_id: string | null;
   notary: SelectItem[];
-  notary_id: string;
+  notary_id: string | null;
   generator: SelectItem[];
-  generator_id: string;
+  generator_id: string | null;
   generation_ready: boolean;
 }
 
@@ -76,15 +76,15 @@ export const useManagerMain = () => {
           setPersonsData(res?.data.contact_person_info);
           setParticipantsData({
             developer: res?.data.developer || [],
-            developer_id: res?.data.developer_id || '',
+            developer_id: res?.data.developer_id || null,
             representative: res?.data.representative || [],
-            representative_id: res?.data.representative_id || '',
+            representative_id: res?.data.representative_id || null,
             manager: res?.data.manager || [],
-            manager_id: res?.data.manager_id || '',
+            manager_id: res?.data.manager_id || null,
             notary: res?.data.notary || [],
-            notary_id: res?.data.notary_id || '',
-            generator: res?.data.generator || '',
-            generator_id: res?.data.generator_id || '',
+            notary_id: res?.data.notary_id || null,
+            generator: res?.data.generator || null,
+            generator_id: res?.data.generator_id || null,
             generation_ready: res?.data.generation_ready || false,
           });
         }

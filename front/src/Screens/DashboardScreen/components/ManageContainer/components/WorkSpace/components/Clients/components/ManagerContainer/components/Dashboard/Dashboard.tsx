@@ -19,7 +19,7 @@ const Dashboard = () => {
       <div className="dashboard-header section-title">Клієнти</div>
 
       <div className="grid">
-        {meta.clients.map((person: any) => (
+        {(meta.clients || []).map((person: any) => (
           <CardWithClose
             key={person.id}
             title={person.full_name}

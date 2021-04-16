@@ -17,6 +17,7 @@ const ForgotPassword = () => {
 
         <div className="mv12">
           <CustomInput
+            required
             label="E-mail"
             value={meta.email}
             onChange={meta.setEmail}

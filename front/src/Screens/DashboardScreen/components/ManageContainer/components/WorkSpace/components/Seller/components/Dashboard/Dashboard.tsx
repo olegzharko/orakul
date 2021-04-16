@@ -39,6 +39,7 @@ const Dashboard = () => {
       <SectionWithTitle title="Підписант">
         <div className="seller__signer">
           <CustomSelect
+            required
             label="Підписант"
             data={meta.devRepresentative}
             onChange={(e) => meta.setSelectedRepresentative(e)}

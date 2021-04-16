@@ -25,6 +25,7 @@
     background-color: white;
     cursor: pointer;
     z-index: 1;
+    overflow: hidden;
   
     &:hover .appointment__table {
       opacity: 1;
