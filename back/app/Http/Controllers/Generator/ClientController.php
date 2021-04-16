@@ -289,7 +289,7 @@ class ClientController extends BaseController
         $result['address_type'] = $address_type;
         $result['building_type'] = $building_type;
         $result['apartment_type'] = $apartment_type;
-        $result['region_id'] = $client->city->region_id;
+        $result['region_id'] = $client->city ? $client->city->region_id : null;
         $result['city_id'] = $client->city_id;
         $result['address_type_id'] = $client->address_type_id;
         $result['address'] = $client->address;
