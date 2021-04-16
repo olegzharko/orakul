@@ -194,7 +194,7 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->contract_generate_file);
 
         unset($word);
-        echo "<br>";
+        // echo "<br>";
     }
 
     public function questionnaire_template_set_data()
@@ -213,7 +213,7 @@ class DocumentController extends GeneratorController
 
         unset($word);
 
-        echo "<br>";
+        // echo "<br>";
     }
 
     public function developer_statement_template_set_data()
@@ -232,7 +232,7 @@ class DocumentController extends GeneratorController
 
         unset($word);
 
-        echo "<br>";
+        // echo "<br>";
     }
 
     public function consent_template_set_data()
@@ -250,7 +250,7 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->consent_generate_file);
 
         unset($word);
-        echo "<br>";
+        // echo "<br>";
     }
 
     public function bank_account_template_set_data()
@@ -270,7 +270,7 @@ class DocumentController extends GeneratorController
 
         unset($word);
 
-        echo "<br>";
+        // echo "<br>";
     }
 
     public function bank_taxes_template_set_data()
@@ -293,7 +293,7 @@ class DocumentController extends GeneratorController
 
         unset($word);
 
-        echo "<br>";
+        // echo "<br>";
     }
 
 
