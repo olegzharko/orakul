@@ -35,8 +35,10 @@ class DocumentController extends GeneratorController
     public $style_end;
     public $style_space_line;
     public $style_space_full_name;
+    public $card;
+    public $card_id;
 
-    public function __construct($client, $pack_contract, $consents_id)
+    public function __construct($client, $pack_contract, $consents_id, $card)
     {
         parent::__construct();
 
@@ -63,6 +65,7 @@ class DocumentController extends GeneratorController
         $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
         $this->style_space_line = "                                    ";
         $this->style_space_full_name = "                                                                              ";
+        $this->card = $card;
     }
 
     public function creat_files()
@@ -1370,6 +1373,8 @@ class DocumentController extends GeneratorController
      * */
     public function set_exchange_rate($word)
     {
+
+        dd($this->card->exchange_rate);
         if ($this->contract->immovable && $this->contract->immovable->exchange_rate) {
             $word->setValue('imm-exch-link', $this->contract->immovable->exchange_rate->web_site_link);
             $word->setValue('imm-exch-root', $this->contract->immovable->exchange_rate->web_site_root);

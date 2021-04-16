@@ -121,7 +121,28 @@ class ClientController extends BaseController
             'surname_o',
             'name_o',
             'patronymic_o',
-        )->where('id', $client_id)->first();
+        )->where('id', $client_id)->first()->toArray();
+
+        foreach ($client as $key => $value) {
+            if ($client['surname_r'] == null) {
+                $client['surname_r'] = $client['surname_n'];
+            }
+            if ($client['name_r'] == null) {
+                $client['name_r'] = $client['name_n'];
+            }
+            if ($client['patronymic_r'] == null) {
+                $client['patronymic_r'] = $client['patronymic_n'];
+            }
+            if ($client['surname_o'] == null) {
+                $client['surname_o'] = $client['surname_n'];
+            }
+            if ($client['name_o'] == null) {
+                $client['name_o'] = $client['name_n'];
+            }
+            if ($client['patronymic_o'] == null) {
+                $client['patronymic_o'] = $client['patronymic_n'];
+            }
+        }
 
         if (!$client) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
@@ -256,6 +277,7 @@ class ClientController extends BaseController
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
+
         Client::where('id', $client_id)->update([
             'gender' => $r['gender'],
             'birth_date' => $r['date_of_birth'],
@@ -642,10 +664,11 @@ class ClientController extends BaseController
     {
         $result = [];
 
-        $clients_id = Card::where('cards.id', $card_id)
+        $clients_id = Card::where('cards.id', $card_id)->where('clients.deleted_at', null)
             ->join('contracts',  'contracts.card_id', '=', 'cards.id')
             ->join('client_contract','client_contract.contract_id', '=', 'contracts.id' )
-            ->pluck('client_contract.client_id')->toArray();
+            ->join('clients','clients.id', '=', 'client_contract.client_id' )
+            ->pluck('clients.id')->toArray();
 
         $clients = Client::whereIn('id', $clients_id)->get();
 
@@ -668,7 +691,7 @@ class ClientController extends BaseController
 
             if ($client->representative) {
                 $result[$key]['representative'] = [];
-                $result[$key]['representative']['id'] = $client->representative->id;
+                $result[$key]['representative']['id'] = $client->representative->confidant_id;
                 $result[$key]['representative']['full_name'] = $this->convert->get_full_name($client->representative->confidant);
                 $result[$key]['representative']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
             }
@@ -680,11 +703,11 @@ class ClientController extends BaseController
     private function validate_client_data($r)
     {
         if (isset($r['date_of_birth']) && !empty($r['date_of_birth']))
-            $r['date_of_birth'] = \DateTime::createFromFormat('d.m.Y', $r['date_of_birth']);
+            $r['date_of_birth'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date_of_birth']);
         if (isset($r['passport_date']) && !empty($r['passport_date']))
-            $r['passport_date'] = \DateTime::createFromFormat('d.m.Y', $r['passport_date']);
+            $r['passport_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['passport_date']);
         if (isset($r['passport_finale_date']) && !empty($r['passport_finale_date']))
-            $r['passport_finale_date'] = \DateTime::createFromFormat('d.m.Y', $r['passport_finale_date']);
+            $r['passport_finale_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['passport_finale_date']);
         if (isset($r['mar_date']) && !empty($r['mar_date']))
             $r['mar_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['mar_date']);
         if (isset($r['sign_date']) && !empty($r['sign_date']))
@@ -757,7 +780,7 @@ class ClientController extends BaseController
             'passport_code' => ['string', 'nullable'],
             'passport_date' => ['date_format:Y.m.d.', 'nullable'],
             'passport_department' => ['string', 'nullable'],
-            'passport_demographic_code' => ['numeric', 'nullable'],
+            'passport_demographic_code' => ['string', 'nullable'],
             'passport_finale_date' => ['date_format:Y.m.d.', 'nullable'],
 
             'region_id' => ['numeric', 'nullable'],

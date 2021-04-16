@@ -28,6 +28,7 @@ class GeneratorController extends Controller
     public $pack_contract;
     public $consents_id;
     public $convert;
+    public $card;
     public $card_id;
 
     public function __construct()
@@ -38,6 +39,7 @@ class GeneratorController extends Controller
         $this->pack_contract = null;
         $this->consents_id = [];
         $this->convert = new ConvertController();
+        $this->card = null;
         $this->card_id = null;
     }
 
@@ -45,6 +47,7 @@ class GeneratorController extends Controller
     {
         if ($this->get_contracts_id_by_card_id($card_id)) {
             Card::where('id', $card_id)->update(['ready' => true]);
+            $this->card = Card::find($card_id);
             $this->card_id = $card_id;
             $this->start_generate_contract();
         }
@@ -89,15 +92,15 @@ class GeneratorController extends Controller
             return $this->sendError("Карта $card_id має наступні помилки", $validator->errors());
         }
 
-        $contracts_fale = Contract::where('card_id', $card_id)->where('ready', false)->pluck('id');
-        if (count($contracts_fale)) {
-            $title = "Картка $card_id <br>";
-            foreach ($contracts_fale as $item) {
-                $title .= "Контракт під ID:" . $item . " не готові до обробки<br>";
-            }
-            echo $title . "<br>";
-            return false;
-        }
+//        $contracts_fale = Contract::where('card_id', $card_id)->where('ready', false)->pluck('id');
+//        if (count($contracts_fale)) {
+//            $title = "Картка $card_id <br>";
+//            foreach ($contracts_fale as $item) {
+//                $title .= "Контракт під ID:" . $item . " не готові до обробки<br>";
+//            }
+//            echo $title . "<br>";
+//            return false;
+//        }
 
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id')->toArray();
 
@@ -125,6 +128,7 @@ class GeneratorController extends Controller
 
     public function start_generate_contract()
     {
+
         if (count($this->pack_contract)) {
             // Підготувати данні до обробки
             foreach ($this->pack_contract as $key => $this->contract) {
@@ -137,7 +141,7 @@ class GeneratorController extends Controller
 
             }
             $this->client = $this->contract->client_contract;
-            $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id);
+            $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id, $this->card);
             $this->word->creat_files();
         } else {
             dd("Увага: Угоди відсутні або не готові не генерації!");
