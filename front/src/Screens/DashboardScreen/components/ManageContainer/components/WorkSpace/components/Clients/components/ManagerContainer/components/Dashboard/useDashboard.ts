@@ -55,6 +55,8 @@ export const useDashboard = () => {
 
   useEffect(() => {
     dispatch(fetchClients(id, UserTypes.MANAGER));
+
+    return () => { dispatch(setClients([])); };
   }, [id]);
 
   return {
