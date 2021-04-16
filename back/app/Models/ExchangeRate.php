@@ -15,7 +15,7 @@ class ExchangeRate extends Model
     ];
 
     protected $fillable = [
-      'immovable_id',
+      'card_id',
       'rate',
     ];
 
