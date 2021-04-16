@@ -119,10 +119,9 @@ class DocumentController extends GeneratorController
                     $this->bank_taxes_template_set_data();
                 else
                     $this->notification("Warning", "Податки відсутні");
-
+/*
                 if ($this->client && $this->client->client_spouse_consent &&  $this->client->client_spouse_consent->template_id) {
                         // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
-                    $this->consent = $this->client->client_spouse_consent;
                     $this->consent_template_set_data();
                     if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
                         unset($this->consents_id[$del_consents_id]);
@@ -130,7 +129,7 @@ class DocumentController extends GeneratorController
                 } else {
                      $this->notification("Warning", "Згода подружжя відсутня");
                 }
-
+*/
 
                 $this->total_clients--;
             }
@@ -155,7 +154,7 @@ class DocumentController extends GeneratorController
 //                }
             }
 */
-            /*
+
             if ($this->client && $this->client->client_spouse_consent) {
                 dd($this->consents_id);
                 foreach ($this->client->client_spouse_consent as $this->consent) {
@@ -171,8 +170,6 @@ class DocumentController extends GeneratorController
                         $this->notification("Warning", "Згода подружжя відсутня");
                 }
             }
-            * */
-
         }
     }
 
