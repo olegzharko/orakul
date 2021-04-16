@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Factory;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
@@ -20,7 +21,7 @@ use App\Models\Proxy;
 use App\Models\DevFence;
 use Validator;
 
-class GeneratorController extends Controller
+class GeneratorController extends BaseController
 {
     public $word;
     public $client;
@@ -50,6 +51,8 @@ class GeneratorController extends Controller
             $this->card_id = $card_id;
             $this->start_generate_contract();
         }
+
+        return $this->sendResponse('', 'Договір сформовано');
     }
 
     public function create_all_contracts()
