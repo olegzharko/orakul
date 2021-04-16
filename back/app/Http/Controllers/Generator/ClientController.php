@@ -514,8 +514,8 @@ class ClientController extends BaseController
 
         if (count($contracts_id)) {
             foreach ($contracts_id as $contr_id) {
-                dd($contr_id, $client_spouse_consent_id);
-                ClientSpouseConsentContract::updateOrCreate(['contract_id' => $contr_id], ['client_spouse_consent_id' => $client_spouse_consent_id]);
+                if ($contr_id)
+                    ClientSpouseConsentContract::updateOrCreate(['contract_id' => $contr_id], ['client_spouse_consent_id' => $client_spouse_consent_id]);
             }
         }
 
