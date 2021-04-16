@@ -136,7 +136,7 @@ class ManagerController extends BaseController
             'dev_representative_id' => $r['representative_id'],
             'dev_manager_id' => $r['manager_id'],
             'staff_generator_id' => $r['generator_id'],
-            'generator_step' => $r['generation_ready'],
+            'generator_step' => $r['generation_ready'] ? 0 : 1,
         ]);
 
         return $this->sendResponse('', 'Дані учасників угоди оновлено в карточці з ID:' . $card_id . ' оновлено.');
