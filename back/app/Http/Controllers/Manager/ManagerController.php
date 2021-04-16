@@ -9,6 +9,7 @@ use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\ClientCheckList;
 use App\Models\ClientContract;
+use App\Models\ClientSpouseConsent;
 use App\Models\ClientType;
 use App\Models\Contact;
 use App\Models\Contract;
@@ -337,8 +338,8 @@ class ManagerController extends BaseController
         $result = [];
 
         $clients_id = Card::where('cards.id', $card_id)
-            ->join('contracts',  'contracts.card_id', '=', 'cards.id')
-            ->join('client_contract','client_contract.contract_id', '=', 'contracts.id' )
+            ->join('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
             ->pluck('client_contract.client_id');
 
         $clients = Client::whereIn('id', $clients_id)->get();
@@ -379,13 +380,13 @@ class ManagerController extends BaseController
         $result['passport_type'] = $passport_type;
 
         $result['client']['data'] = null;
-        $result['client']['info'] =  $start_info;
+        $result['client']['info'] = $start_info;
 
         $result['spouse']['data'] = null;
         $result['spouse']['info'] = $start_info;
 
-        $result['confidant']['data'] =  null;
-        $result['confidant']['info'] =  $start_info;
+        $result['confidant']['data'] = null;
+        $result['confidant']['info'] = $start_info;
 
         if ($client_id) {
             $client = Client::find($client_id);
@@ -432,11 +433,11 @@ class ManagerController extends BaseController
         $new = false;
 
 //        dd($r->toArray(), $r['client'], $r['client']['data'], count($r['client']['data']));
-        dd($r['client'], $r['spouse'], $r['confidant']);
+//        dd($r['client'], $r['spouse'], $r['representative']);
 
         if ($client_id && !$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт під ID:' . $client_id . ' відсутній.');
-        }else {
+        } else {
             $new = true;
         }
 
@@ -448,20 +449,30 @@ class ManagerController extends BaseController
 
         if ($r['client'] && count($r['client']['data'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']['data']);
-            if ($client_id)
+            if ($client_id) {
                 $this->card_client($card_id, $client_id);
+                $this->update_check_list($client_id, $r['client']['info']);
+                $this->create_client_spouse_consents($client_id, $r['client']['data']);
+            }
         }
 
         if ($r['spouse'] && count($r['spouse']['data'])) {
-            $spouse_id = $this->create_or_update_client($card_id, $client_id, $r['spouse']['data']);
-            if ($spouse_id)
+            $spouse_id = Spouse::where('client_id', $client_id)->value('spouse_id');
+            $spouse_id = $this->create_or_update_client($card_id, $spouse_id, $r['spouse']['data']);
+            if ($spouse_id) {
                 $this->client_spouse($client_id, $spouse_id);
+                $this->update_check_list($spouse_id, $r['spouse']['info']);
+            }
         }
 
-        if ($r['confidant'] && count($r['confidant']['data'])) {
-            $representative_id = $this->create_or_update_client($card_id, $client_id, $r['confidant']['data']);
-            if ($representative_id)
+        if ($r['representative'] && count($r['representative']['data'])) {
+            $representative_id = Representative::where('client_id', $client_id)->value('confidant_id');
+            $representative_id = $this->create_or_update_client($card_id, $representative_id, $r['representative']['data']);
+            if ($representative_id) {
                 $this->client_representative($client_id, $representative_id);
+                $this->update_check_list($representative_id, $r['representative']['info']);
+
+            }
         }
 
         if ($new) {
@@ -469,8 +480,7 @@ class ManagerController extends BaseController
             $result['client_id'] = $client_id;
 
             return $this->sendResponse($result, 'Клієнта під ID:' . $client_id . ' створено.');
-        }
-        else
+        } else
             return $this->sendResponse('', 'Дані клієнта під ID:' . $client_id . ' оновлено.');
     }
 
@@ -595,27 +605,29 @@ class ManagerController extends BaseController
 
     public function create_or_update_client($card_id, $client_id, $data)
     {
-            if ($client_id) {
-                Client::where('id', $client_id)->update([
-                    'surname_n' => $data['surname'],
-                    'name_n' => $data['name'],
-                    'patronymic_n' => $data['patronymic'],
-                    'phone' => isset($data['phone']) ? $data['phone'] : null,
-                    'email' => isset($data['email']) ? $data['email'] : null,
-                ]);
+        if ($client_id) {
+            Client::where('id', $client_id)->update([
+                'surname_n' => $data['surname'],
+                'name_n' => $data['name'],
+                'patronymic_n' => $data['patronymic'],
+                'phone' => isset($data['phone']) ? $data['phone'] : null,
+                'email' => isset($data['email']) ? $data['email'] : null,
+                'passport_type_id' => isset($data['passport_type_id']) ? $data['passport_type_id'] : null,
+            ]);
 
-                return $client_id;
-            } else {
-                $client = new Client();
-                $client->surname_n = $data['surname'];
-                $client->name_n = $data['name'];
-                $client->patronymic_n = $data['patronymic'];
-                $client->phone = isset($data['phone']) ? $data['phone'] : null;
-                $client->email = isset($data['email']) ? $data['email'] : null;
-                $client->save();
+            return $client_id;
+        } else {
+            $client = new Client();
+            $client->surname_n = $data['surname'];
+            $client->name_n = $data['name'];
+            $client->patronymic_n = $data['patronymic'];
+            $client->phone = isset($data['phone']) ? $data['phone'] : null;
+            $client->email = isset($data['email']) ? $data['email'] : null;
+            $client->passport_type_id = isset($data['passport_type_id']) ? $data['passport_type_id'] : null;
+            $client->save();
 
-                return $client->id;
-            }
+            return $client->id;
+        }
 
     }
 
@@ -670,5 +682,38 @@ class ManagerController extends BaseController
         }
 
         return $result;
+    }
+
+    public function update_check_list($client_id, $data)
+    {
+        ClientCheckList::updateOrCreate(
+            [
+                'client_id' => $client_id
+            ], [
+            "spouse_consent" => $data['spouse_consent'],
+            "current_place_of_residence" => $data['current_place_of_residence'],
+            "photo_in_the_passport" => $data['photo_in_the_passport'],
+            "immigrant_help" => $data['immigrant_help'],
+            "passport" => $data['passport'],
+            "tax_code" => $data['tax_code'],
+            "evaluation_in_the_fund" => $data['evaluation_in_the_fund'],
+            "check_fop" => $data['check_fop'],
+            "document_scans" => $data['document_scans'],
+            "unified_register_of_court_decisions" => $data['unified_register_of_court_decisions'],
+            "sanctions" => $data['sanctions'],
+            "financial_monitoring" => $data['financial_monitoring'],
+            "unified_register_of_debtors" => $data['unified_register_of_debtors'],
+        ]);
+    }
+
+    public function create_client_spouse_consents($client_id, $data)
+    {
+//        ClientSpouseConsent::updateOrCreate(['client_id' => $client_id], [
+//            'marriage_type_id' => $data['married_type'],
+//        ]);
+
+        ClientSpouseConsent::updateOrCreate(['client_id' => $client_id], [
+            'marriage_type_id' => isset($data['married_type_id']) ? $data['married_type_id'] : null,
+        ]);
     }
 }
