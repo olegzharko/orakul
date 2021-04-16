@@ -122,35 +122,40 @@ class ClientController extends BaseController
             'surname_o',
             'name_o',
             'patronymic_o',
-        )->where('id', $client_id)->first()->toArray();
-
-        foreach ($client as $key => $value) {
-            if ($client['surname_r'] == null) {
-                $result['surname_r'] = $client['surname_n'];
-            }
-            if ($client['name_r'] == null) {
-                $result['name_r'] = $client['name_n'];
-            }
-            if ($client['patronymic_r'] == null) {
-                $result['patronymic_r'] = $client['patronymic_n'];
-            }
-            if ($client['surname_o'] == null) {
-                $result['surname_o'] = $client['surname_n'];
-            }
-            if ($client['name_o'] == null) {
-                $result['name_o'] = $client['name_n'];
-            }
-            if ($client['patronymic_o'] == null) {
-                $result['patronymic_o'] = $client['patronymic_n'];
-            }
-        }
-
-        dd($result);
+        )->where('id', $client_id)->first();
 
         if (!$client) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
+        $client = $client->toArray();
+
+        foreach ($client as $key => $value) {
+            if ($client['surname_r'] == null) {
+                $client['surname_r'] = $client['surname_n'];
+            }
+            if ($client['name_r'] == null) {
+                $client['name_r'] = $client['name_n'];
+            }
+            if ($client['patronymic_r'] == null) {
+                $client['patronymic_r'] = $client['patronymic_n'];
+            }
+            if ($client['surname_o'] == null) {
+                $client['surname_o'] = $client['surname_n'];
+            }
+            if ($client['name_o'] == null) {
+                $client['name_o'] = $client['name_n'];
+            }
+            if ($client['patronymic_o'] == null) {
+                $client['patronymic_o'] = $client['patronymic_n'];
+            }
+        }
+
+        if (ClientContract::where('client_id', $client_id)->first()) {
+            $client['type'] = 'client';
+        } else {
+            $client['type'] = 'other';
+        }
         return $this->sendResponse($client, 'Дані по клієнту з ID: ' . $client_id);
     }
 
