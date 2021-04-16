@@ -92,7 +92,7 @@ class AssistantController extends BaseController
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
         $result['generator_id'] = $card->staff_generator_id;
-        $result['cancelled'] = $card->cancelled;
+        $result['cancelled'] = $card->cancelled ? true : false;
 
         $result['immovables'] = $imm_res;
 
@@ -125,7 +125,7 @@ class AssistantController extends BaseController
             'dev_representative_id' => $r['representative_id'],
             'dev_manager_id' => $r['manager_id'],
             'staff_generator_id' => $r['generator_id'],
-            'cancelled' => $r['cancelled'],
+            'cancelled' => $r['cancelled'] ? 1 : 0,
         ]);
 
         foreach ($r['immovables'] as $key => $value) {
