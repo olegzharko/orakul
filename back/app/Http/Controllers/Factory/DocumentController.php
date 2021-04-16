@@ -93,7 +93,6 @@ class DocumentController extends GeneratorController
                     $this->contract_template_set_data();
                 else
                     $this->notification("Warning", "Контракт відсутній");
-
                 if ($this->contract->questionnaire)
                     $this->questionnaire_template_set_data();
                 else

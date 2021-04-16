@@ -235,7 +235,9 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($this->contract->bank_account_payment->template);
+
         $this->create_file_for_contract($template, $title);
+
         return $title;
     }
 
