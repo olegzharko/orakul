@@ -88,7 +88,7 @@ class AssistantController extends BaseController
         $result['generator'] = $generator;
 
         $result['notary_id'] = $card->notary_id;
-        $result['developer_id'] = $card->dev_company_id;
+        $result['developer_id'] = $card->dev_group_id;
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
         $result['generator_id'] = $card->staff_generator_id;
@@ -121,7 +121,7 @@ class AssistantController extends BaseController
 
         Card::where('id', $card_id)->update([
             'notary_id' => $r['notary_id'],
-            'dev_company_id' => $r['developer_id'],
+            'dev_group_id' => $r['developer_id'],
             'dev_representative_id' => $r['representative_id'],
             'dev_manager_id' => $r['manager_id'],
             'staff_generator_id' => $r['generator_id'],
