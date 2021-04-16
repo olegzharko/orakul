@@ -29,7 +29,7 @@ class ExchangeRate extends Model
         return ExchangeRate::where('card_id', $card_id)->value('rate');
     }
 
-    public function update_rate($card_id, $rate)
+    public static function update_rate($card_id, $rate)
     {
         ExchangeRate::updateOrCreate(['card_id' => $card_id], ['rate' => $rate]);
     }
