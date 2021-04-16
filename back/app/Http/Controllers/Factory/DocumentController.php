@@ -93,33 +93,33 @@ class DocumentController extends GeneratorController
                 if ($this->contract)
                     $this->contract_template_set_data();
                 else
-                    $this->notification("Warning", "Контракт відсутній");
+                    // $this->notification("Warning", "Контракт відсутній");
 
                 if ($this->contract->questionnaire)
                     $this->questionnaire_template_set_data();
                 else
-                    $this->notification("Warning", "Анкета відсутняя");
+                    // $this->notification("Warning", "Анкета відсутняя");
 
                 if ($this->contract->developer_statement)
                     $this->developer_statement_template_set_data();
                 else
-                    $this->notification("Warning", "Заява від забудовника відсутня");
+                    // $this->notification("Warning", "Заява від забудовника відсутня");
 
 
                 if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id)
                     $this->bank_account_template_set_data();
                 else
-                    $this->notification("Warning", "Рахунок відсутній");
+                    // $this->notification("Warning", "Рахунок відсутній");
 
 //                if ($this->contract->bank_account_payment)
 //                    $this->bank_account_template_set_data();
 //                else
-//                    $this->notification("Warning", "Рахунок відсутній");
+// //                    $this->notification("Warning", "Рахунок відсутній");
 
                 if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template_id)
                     $this->bank_taxes_template_set_data();
                 else
-                    $this->notification("Warning", "Податки відсутні");
+                    // $this->notification("Warning", "Податки відсутні");
 /*
                 if ($this->client && $this->client->client_spouse_consent &&  $this->client->client_spouse_consent->template_id) {
                         // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
@@ -128,7 +128,7 @@ class DocumentController extends GeneratorController
                         unset($this->consents_id[$del_consents_id]);
                     }
                 } else {
-                     $this->notification("Warning", "Згода подружжя відсутня");
+                     // $this->notification("Warning", "Згода подружжя відсутня");
                 }
 */
 
@@ -150,7 +150,7 @@ class DocumentController extends GeneratorController
                         }
                     }
                     else
-                        $this->notification("Warning", "Згода подружжя відсутня");
+                        // $this->notification("Warning", "Згода подружжя відсутня");
 //                }
             }
 
@@ -167,7 +167,7 @@ class DocumentController extends GeneratorController
                         }
                     }
                     else
-                        $this->notification("Warning", "Згода подружжя відсутня");
+                        // $this->notification("Warning", "Згода подружжя відсутня");
                 }
             }
             * */
@@ -416,7 +416,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-sp-word', $cl_sp_word);
             $word->setValue('ЗАЯВА-ЗГОДА', $cl_sp_word);
         } else {
-            $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
+            // $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
         }
 
         $word->saveAs($this->contract_generate_file);
@@ -509,7 +509,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $this->contract->dev_company->owner->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні забудовника відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні забудовника відсутні");
         }
 
         /*
@@ -530,7 +530,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $this->contract->immovable->developer_building->investment_agreement->investor->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні інвестора відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні інвестора відсутні");
         }
 
 
@@ -559,7 +559,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $this->client->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні клієнта відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні клієнта відсутні");
         }
 
         /*
@@ -581,7 +581,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $this->client->representative->confidant->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні представника покупця відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні представника покупця відсутні");
         }
 
         /*
@@ -605,7 +605,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $this->client->married->spouse->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні подружжя відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні подружжя відсутні");
         }
 
         if ($this->contract->immovable->developer_building->investment_agreement && $this->contract->immovable->developer_building->investment_agreement->investor) {
@@ -621,7 +621,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-demogr', $investor->passport_demographic_code);
             $word->saveAs($template_generate_file);
         } else {
-            $this->notification("Warning", "Паспортний шаблон: данні подружжя відсутні");
+            // $this->notification("Warning", "Паспортний шаблон: данні подружжя відсутні");
         }
     }
 
@@ -664,7 +664,7 @@ class DocumentController extends GeneratorController
 
             $word->saveAs($template);
         } else {
-            $this->notification("Warning", "Відсутня інформація про нотаріуса у документі {$template}");
+            // $this->notification("Warning", "Відсутня інформація про нотаріуса у документі {$template}");
         }
     }
 
@@ -760,7 +760,7 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('dev-f-addr', $this->convert->get_client_full_address($this->contract->dev_company->owner));
         } else {
-            $this->notification("Warning", "Відсутня інформація про забудовнику");
+            // $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
 
         return $word;
@@ -778,10 +778,10 @@ class DocumentController extends GeneratorController
                 $word->setValue('dev-consent-sign-date', $this->display_date($this->contract->developer_spouse_consent->sign_date));
                 $word->setValue('dev-consent-reg-num', $this->contract->developer_spouse_consent->reg_num);
             } else {
-                $this->notification("Warning", "Відсутня інформація про згоду подружжя забудовника");
+                // $this->notification("Warning", "Відсутня інформація про згоду подружжя забудовника");
             }
         } else {
-            $this->notification("Warning", "Згода подружжя забудовника: інформація відсутня");
+            // $this->notification("Warning", "Згода подружжя забудовника: інформація відсутня");
         }
 
         return $word;
@@ -820,7 +820,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
 //            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
         } else {
-            $this->notification("Warning", "Інвестеційний договір: відсутній");
+            // $this->notification("Warning", "Інвестеційний договір: відсутній");
         }
 
         return $word;
@@ -853,7 +853,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
         } else {
-            $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
+            // $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
         }
 
         return $word;
@@ -953,7 +953,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-phone', $this->client->phone);
             $word->setValue('КЛ-ТЕЛЕФОН', $this->client->phone);
         } else {
-            $this->notification("Warning", "Відсутня інформація про клієнта");
+            // $this->notification("Warning", "Відсутня інформація про клієнта");
         }
 
         return $word;
@@ -1034,7 +1034,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-phone', $this->client->representative->confidant->phone);
 
         } else {
-            $this->notification("Warning", "Представник відсутній");
+            // $this->notification("Warning", "Представник відсутній");
         }
 
         return $word;
@@ -1122,7 +1122,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('cs-citizenship', $this->get_citizenship($this->client->married->spouse));
         } else {
-            $this->notification("Warning", "Відсутня інформація про подружжя клієнта");
+            // $this->notification("Warning", "Відсутня інформація про подружжя клієнта");
         }
 
         return $word;
@@ -1139,7 +1139,7 @@ class DocumentController extends GeneratorController
             $word->setValue('consent-married-part', $this->consent->marriage_type->description);
             $word->saveAs($this->consent_generate_file);
         } else {
-            $this->notification("Warning", "Згода подружжя: шаблон підтвердження шлюбу відсутній");
+            // $this->notification("Warning", "Згода подружжя: шаблон підтвердження шлюбу відсутній");
         }
     }
 
@@ -1161,7 +1161,7 @@ class DocumentController extends GeneratorController
                 $word->setValue('mar-depart', $this->consent->mar_depart);
                 $word->setValue('mar-reg-num', $this->consent->mar_reg_num);
             } elseif ($this->consent && $this->consent->mar_date) {
-                $this->notification("Warning", "Дата про шлюбні документи відсутні");
+                // $this->notification("Warning", "Дата про шлюбні документи відсутні");
             }
 
             /*
@@ -1170,7 +1170,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-consent-sign-date', $this->display_date($this->consent->sign_date));
             $word->setValue('cs-consent-reg-num', $this->consent->reg_num);
         } else {
-            $this->notification("Warning", "Відсутня інформація про згоду подружжя клієнта");
+            // $this->notification("Warning", "Відсутня інформація про згоду подружжя клієнта");
         }
 
         return $word;
@@ -1273,7 +1273,7 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('imm-reg-num', $this->contract->immovable->registration_number);
         } else {
-            $this->notification("Warning", "Відсутня інформація про об'єкт нерухомості");
+            // $this->notification("Warning", "Відсутня інформація про об'єкт нерухомості");
         }
 
         return $word;
@@ -1297,7 +1297,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
             $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
         } else {
-            $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
+            // $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
 
         /*
@@ -1307,7 +1307,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
         } else {
-            $this->notification("Warning", "Перевірка: відсутня інформація по забороні на нерухомість");
+            // $this->notification("Warning", "Перевірка: відсутня інформація по забороні на нерухомість");
         }
 
         /*
@@ -1317,7 +1317,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->fence->date));
             $word->setValue('dev-fence-num', $this->contract->dev_company->fence->number);
         } else {
-            $this->notification("Warning", "Перевірка: відсутня інформація по заборонам на власника");
+            // $this->notification("Warning", "Перевірка: відсутня інформація по заборонам на власника");
         }
 
         return $word;
@@ -1335,7 +1335,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pv-date', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
             $word->setValue('pv-price-grn', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
         } else {
-            $this->notification("Warning", "Оцінка: відсутня інформація від оціночної компанії");
+            // $this->notification("Warning", "Оцінка: відсутня інформація від оціночної компанії");
         }
 
         return $word;
@@ -1385,7 +1385,7 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
             $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
         } else {
-            $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
+            // $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
         }
 
         return $word;
@@ -1403,7 +1403,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('КУРС-ДОЛАРА', $this->convert->exchange_price($this->card->exchange_rate->rate));
         } else {
-            $this->notification("Warning", "Курс долара: інформація відсутня");
+            // $this->notification("Warning", "Курс долара: інформація відсутня");
         }
 
         return $word;
@@ -1422,7 +1422,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-reg-date', $this->set_style_color($this->display_date($this->client->representative->reg_date)));
             $word->setValue('cr-reg-num', $this->set_style_color($this->client->representative->reg_num));
         } else {
-            $this->notification("Warning", "Ноторіальні данні по довіренності представника покупця: інформація відсутня");
+            // $this->notification("Warning", "Ноторіальні данні по довіренності представника покупця: інформація відсутня");
         }
         return $word;
     }
@@ -1446,7 +1446,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
         } else {
-            $this->notification("Warning", "Договір доручення: інформація відсутня");
+            // $this->notification("Warning", "Договір доручення: інформація відсутня");
         }
 
         return $word;
@@ -1654,7 +1654,7 @@ class DocumentController extends GeneratorController
             }
 
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
-            $this->notification('Warning', $price * $percent . " " . $i);
+            // $this->notification('Warning', $price * $percent . " " . $i);
             $sheet->setCellValue("A{$i}", $price * $percent);
             $sheet->setCellValue("B{$i}", $this->get_full_name_n($pay_buy_client));
             $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
