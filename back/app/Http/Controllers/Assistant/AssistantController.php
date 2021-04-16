@@ -78,7 +78,6 @@ class AssistantController extends BaseController
             $imm_res[$key]['address'] = $this->generator->full_ascending_address($immovable);
             $imm_res[$key]['reader_id'] = $immovable->reader_id;
             $imm_res[$key]['accompanying_id'] = $immovable->accompanying_id;
-            $imm_res[$key]['printer_id'] = $immovable->printer_id;
         }
 
         $result['date_info'] = $date_info;
@@ -92,6 +91,7 @@ class AssistantController extends BaseController
         $result['developer_id'] = $card->dev_company_id;
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
+        $result['generator_id'] = $card->staff_generator_id;
 
         $result['immovables'] = $imm_res;
 
@@ -123,13 +123,13 @@ class AssistantController extends BaseController
             'dev_company_id' => $r['developer_id'],
             'dev_representative_id' => $r['representative_id'],
             'dev_manager_id' => $r['manager_id'],
+            'staff_generator_id' => $r['generator_id'],
         ]);
 
         foreach ($r['immovables'] as $key => $value) {
             Contract::where('immovable_id', $value['immovable_id'])->update([
                 'reader_id' => $value['reader_id'],
                 'accompanying_id' => $value['accompanying_id'],
-                'printer_id' => $value['printer_id'],
             ]);
         }
 
