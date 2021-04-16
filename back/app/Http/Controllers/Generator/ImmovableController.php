@@ -473,7 +473,7 @@ class ImmovableController extends BaseController
         $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date ? $final_sing_date->sign_date->format('d.m.Y') : null;
         $result['ready'] = $contract->ready ? true : false;
         $result['type_id'] = $contract->type_id;
-        $result['template_id'] = $contract->template->id;
+        $result['contract_template_id'] = $contract->template->id;
         $result['bank_template_id'] = $bank->template_id ?? null;
         $result['taxes_template_id'] = $taxes->template_id ?? null;
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
