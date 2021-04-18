@@ -234,6 +234,7 @@ class FolderFileController extends Controller
             . "{$this->file_type_docx}"
             . "";
 
+
         $template = $this->file_path($this->contract->bank_account_payment->template);
 
         $this->create_file_for_contract($template, $title);

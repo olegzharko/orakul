@@ -5,6 +5,7 @@ import { State } from '../../../../../../../../store/types';
 import { UserTypes } from '../../../../../../../../types';
 import GeneratorMain from './components/GeneratorMain';
 import ManagerMain from './components/ManagerMain';
+import AssistantMain from './components/Assistant';
 
 const Main = () => {
   const { user: { type } } = useSelector((state: State) => state.main);
@@ -15,6 +16,10 @@ const Main = () => {
 
   if (type === UserTypes.MANAGER) {
     return <ManagerMain />;
+  }
+
+  if (type === UserTypes.ASSISTANT) {
+    return <AssistantMain />;
   }
 
   return null;
