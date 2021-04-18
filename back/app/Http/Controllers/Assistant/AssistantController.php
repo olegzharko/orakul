@@ -197,29 +197,29 @@ class AssistantController extends BaseController
             }
         }
 
-        if (!isset($errors['representative_id']) && isset($r['representative_id']) && !empty($r['representative_id']) &&
-            !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            $representative_type_id = ClientType::get_representative_type_id();
-            if (!Client::where([
-                        'id' => $r['representative_id'],
-                        'dev_company_id' => $r['developer_id'],
-                        'type_id' => $representative_type_id,
-                    ])->first()) {
-                $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
-            }
-        }
-
-        if (!isset($errors['manager_id']) && isset($r['manager_id']) && !empty($r['manager_id']) &&
-            !isset($errors['developer_id']) && isset($r['developer_id'])) {
-            $manager_type_id = ClientType::get_manager_type_id();
-            if (!Client::where([
-                        'id' => $r['manager_id'],
-                        'dev_company_id' => $r['developer_id'],
-                        'type_id' => $manager_type_id,
-                    ])->first()) {
-                $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
-            }
-        }
+//        if (!isset($errors['representative_id']) && isset($r['representative_id']) && !empty($r['representative_id']) &&
+//            !isset($errors['developer_id']) && isset($r['developer_id'])) {
+//            $representative_type_id = ClientType::get_representative_type_id();
+//            if (!Client::where([
+//                        'id' => $r['representative_id'],
+//                        'dev_company_id' => $r['developer_id'],
+//                        'type_id' => $representative_type_id,
+//                    ])->first()) {
+//                $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
+//            }
+//        }
+//
+//        if (!isset($errors['manager_id']) && isset($r['manager_id']) && !empty($r['manager_id']) &&
+//            !isset($errors['developer_id']) && isset($r['developer_id'])) {
+//            $manager_type_id = ClientType::get_manager_type_id();
+//            if (!Client::where([
+//                        'id' => $r['manager_id'],
+//                        'dev_company_id' => $r['developer_id'],
+//                        'type_id' => $manager_type_id,
+//                    ])->first()) {
+//                $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
+//            }
+//        }
 
         if (!isset($errors['immovable_id']) && isset($r['immovable_id']) && !empty($r['immovable_id'])) {
             if (!Immovable::find($r['immovable_id'])) {
