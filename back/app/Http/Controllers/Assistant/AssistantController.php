@@ -12,6 +12,9 @@ use App\Models\Contract;
 use App\Models\Immovable;
 use App\Models\DevEmployerType;
 use App\Models\Staff;
+use App\Models\Notary;
+use App\Models\Client;
+use App\Models\DevCompany;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -224,23 +227,23 @@ class AssistantController extends BaseController
             }
         }
 
-        if (!isset($errors['reader_id']) && isset($r['reader_id']) && !empty($r['reader_id'])) {
-            if (!Staff::where('id', $r['reader_id'])->where('reader', true)->first()) {
-                $validator->getMessageBag()->add('reader_id', 'Читач з ID:' . $r['reader_id'] . " не знайдено");
-            }
-        }
-
-        if (!isset($errors['accompanying_id']) && isset($r['accompanying_id']) && !empty($r['accompanying_id'])) {
-            if (!Staff::where('id', $r['accompanying_id'])->where('accompanying', true)->first()) {
-                $validator->getMessageBag()->add('accompanying_id', 'Видавач з ID:' . $r['accompanying_id'] . " не знайдено");
-            }
-        }
-
-        if (!isset($errors['printer_id']) && isset($r['printer_id']) && !empty($r['printer_id'])) {
-            if (!Staff::where('id', $r['printer_id'])->where('printer', true)->first()) {
-                $validator->getMessageBag()->add('printer_id', 'Набирач з ID:' . $r['printer_id'] . " не знайдено");
-            }
-        }
+//        if (!isset($errors['reader_id']) && isset($r['reader_id']) && !empty($r['reader_id'])) {
+//            if (!Staff::where('id', $r['reader_id'])->where('reader', true)->first()) {
+//                $validator->getMessageBag()->add('reader_id', 'Читач з ID:' . $r['reader_id'] . " не знайдено");
+//            }
+//        }
+//
+//        if (!isset($errors['accompanying_id']) && isset($r['accompanying_id']) && !empty($r['accompanying_id'])) {
+//            if (!Staff::where('id', $r['accompanying_id'])->where('accompanying', true)->first()) {
+//                $validator->getMessageBag()->add('accompanying_id', 'Видавач з ID:' . $r['accompanying_id'] . " не знайдено");
+//            }
+//        }
+//
+//        if (!isset($errors['printer_id']) && isset($r['printer_id']) && !empty($r['printer_id'])) {
+//            if (!Staff::where('id', $r['printer_id'])->where('printer', true)->first()) {
+//                $validator->getMessageBag()->add('printer_id', 'Набирач з ID:' . $r['printer_id'] . " не знайдено");
+//            }
+//        }
 
         return $validator;
     }
