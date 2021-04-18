@@ -109,6 +109,7 @@ class AssistantController extends BaseController
 
     public function update_card_settings($card_id, Request $r)
     {
+        dd($r->toArray());
         if (!$card = Card::find($card_id)) {
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
