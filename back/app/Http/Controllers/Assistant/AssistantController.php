@@ -13,6 +13,7 @@ use App\Models\Immovable;
 use App\Models\DevEmployerType;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Validator;
 
 class AssistantController extends BaseController
 {
