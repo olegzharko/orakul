@@ -161,7 +161,7 @@ class AssistantController extends BaseController
             'building_id' => $r['building_id'],
             'reader_id' => $r['reader_id'],
             'accompanying_id' => $r['accompanying_id'],
-            'printer_id' => $r['printer_id'],
+            'generator_id' => $r['generator_id'],
         ], [
             'notary_id' => ['numeric', 'nullable'],
             'developer_id' => ['numeric', 'nullable'],
@@ -171,7 +171,7 @@ class AssistantController extends BaseController
             'building_id' => ['numeric', 'nullable'],
             'reader_id' => ['numeric', 'nullable'],
             'accompanying_id' => ['numeric', 'nullable'],
-            'printer_id' => ['numeric', 'nullable'],
+            'generator_id' => ['numeric', 'nullable'],
         ], [
             'notary_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'developer_id.numeric' => 'Необхідно передати ID в числовому форматі',
@@ -181,7 +181,7 @@ class AssistantController extends BaseController
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'reader_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'accompanying_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'printer_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'generator_id.numeric' => 'Необхідно передати ID в числовому форматі',
         ]);
 
         $errors = $validator->errors()->messages();
