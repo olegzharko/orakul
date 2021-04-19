@@ -180,6 +180,7 @@ class ImmovableController extends BaseController
         }
 
         $result['exchange_rate'] = round($exchange_rate / 100, 2);
+        $result['exchange_rate'] = number_format($exchange_rate, 2);;
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
     }
