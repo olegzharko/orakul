@@ -905,8 +905,8 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-gender-sp-role-r', KeyWord::where('key', $this->client->gender)->value('title_r'));
             $word->setValue('cl-gender-sp-role-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
 
-            $word->setValue('КЛ-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->gender)->value('title_o'));
-            $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->gender)->value('title_r'));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
 
             $word->setValue('cl-gender-sp-role-o', KeyWord::where('key', $this->client->gender)->value('title_o'));
             $word->setValue('cl-gender-sp-role-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
