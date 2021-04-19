@@ -811,6 +811,8 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-ЗАРЕЄСТР', GenderWord::where('alias', "registration")->value($investment_agreement->investor->gender));
             $word->setValue('ІНВ-ЯК', GenderWord::where('alias', "which-adjective")->value($investment_agreement->investor->gender));
             $word->setValue('ІНВ-ПІБ', $this->get_full_name_n($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-О', $this->get_full_name_o($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-Р', $this->get_full_name_r($investment_agreement->investor));
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
             $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
 //            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
