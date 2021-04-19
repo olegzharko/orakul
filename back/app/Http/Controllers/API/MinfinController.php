@@ -18,8 +18,7 @@ class MinfinController extends BaseController
     public function get_rate_exchange()
     {
         $client = new \GuzzleHttp\Client();
-//        $response = $client->request('GET', 'https://api.minfin.com.ua/nbu/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
-        $response = $client->request('GET', 'https://api.minfin.com.ua/auction/info/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
+        $response = $client->request('GET', 'https://api.minfin.com.ua/nbu/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
 //        $response = $client->request('GET', 'https://api.minfin.com.ua/auction/info/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
 
         $api_data = json_decode($response->getBody());
