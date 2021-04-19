@@ -1117,6 +1117,9 @@ class DocumentController extends GeneratorController
             $cs_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-pronoun', $cs_gender_pronoun);
             $word->setValue('cs-gender-pronoun-up', $this->mb_ucfirst($cs_gender_pronoun));
+            $word->setValue('ПОД-ЇХ', $cs_gender_pronoun);
+            $word->setValue('ПОД-ЇХ-UP', $this->mb_ucfirst($cs_gender_pronoun));
+
 
             $cs_gender_mine = GenderWord::where('alias', "mine")->value($this->client->gender);
             $word->setValue('cs-gender-mine', $cs_gender_mine);
@@ -1134,6 +1137,9 @@ class DocumentController extends GeneratorController
             $cs_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-which-adj', $this->set_style_color($cs_gender_which_adjective));
             $word->setValue('ПОД-ЯК', $this->set_style_color($cs_gender_which_adjective));
+
+            $cs_gender_sign = GenderWord::where('alias', "sign")->value($this->client->married->spouse->gender);
+            $word->setValue('ПОД-ПІДПИС', $this->set_style_color($cs_gender_sign));
 
             $cs_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-acq', $this->set_style_color($cs_gender_acquainted));
