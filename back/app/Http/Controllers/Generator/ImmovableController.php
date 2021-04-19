@@ -179,8 +179,7 @@ class ImmovableController extends BaseController
                 $exchange_rate = null;
         }
 
-//        $result['exchange_rate'] = round($exchange_rate / 100, 2);
-        $result['exchange_rate'] = printf("%.2f", $exchange_rate);;
+        $result['exchange_rate'] = round($exchange_rate / 100, 2);
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
     }
