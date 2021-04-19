@@ -35,6 +35,7 @@ use App\Models\StatementTemplate;
 use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use App\Models\Card;
+use Laravel\Nova\Fields\DateTime;
 use Tests\Unit\ExampleTest;
 use Validator;
 use DB;
@@ -45,6 +46,7 @@ class ImmovableController extends BaseController
     public $generator;
     public $convert;
     public $minfin;
+    public $date;
 
     public function __construct()
     {
@@ -52,6 +54,7 @@ class ImmovableController extends BaseController
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
         $this->minfin = new MinfinController();
+        $this->date = new DateTime();
     }
 
     public function main($card_id)
@@ -160,7 +163,7 @@ class ImmovableController extends BaseController
         if ($exchange = ExchangeRate::where(['card_id' => $card_id])->first()) {
             $exchange_rate = $exchange->rate;
         } else {
-            if ($minfin = Exchange::orderBy('created_at', 'desc')->first()) {
+            if ($minfin = Exchange::orderBy('created_at', 'desc')->where('created_at', '>=', $this->date->format('Y.m.d'))->first()) {
 
                 ExchangeRate::updateOrCreate(
                     ['card_id' => $card_id],
