@@ -1133,6 +1133,7 @@ class DocumentController extends GeneratorController
 
             $cs_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-which-adj', $this->set_style_color($cs_gender_which_adjective));
+            $word->setValue('ПОД-ЯК', $this->set_style_color($cs_gender_which_adjective));
 
             $cs_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-acq', $this->set_style_color($cs_gender_acquainted));
