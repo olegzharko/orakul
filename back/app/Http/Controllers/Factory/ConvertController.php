@@ -243,8 +243,6 @@ class ConvertController extends GeneratorController
 
     public function get_convert_price($price, $type)
     {
-        $price = 150000000;
-
         $result = null;
 
         $integer = $this->get_number_format_thousand($price);
