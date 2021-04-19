@@ -179,7 +179,7 @@ class ImmovableController extends BaseController
                 $exchange_rate = null;
         }
 
-        $result['exchange_rate'] = round($exchange_rate / 100, 2);
+//        $result['exchange_rate'] = round($exchange_rate / 100, 2);
         $result['exchange_rate'] = number_format($exchange_rate / 100, 2);;
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
@@ -451,7 +451,6 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
-        $contract_type = ContractType::select('id', 'title')->get();
         $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
         $bank_templates = BankAccountTemplate::select('id', 'title')->get();
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
@@ -459,6 +458,10 @@ class ImmovableController extends BaseController
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
+
+        $contract_type = ContractType::select('id', 'title')->get();
+        if ($contract->type == 2)
+            $contract_type = ContractType::select('id', 'title')->orderBy('id', 'desc')->get();
 
         $bank = BankAccountPayment::where('contract_id', $contract->id)->first();
         $taxes = BankTaxesPayment::where('contract_id', $contract->id)->first();
