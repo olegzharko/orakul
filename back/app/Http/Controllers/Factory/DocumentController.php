@@ -89,17 +89,17 @@ class DocumentController extends GeneratorController
                     $this->consent = null;
 
 
-                if ($this->contract)
+                if ($this->contract && $this->contract->template_id)
                     $this->contract_template_set_data();
                 else
                     $this->notification("Warning", "Контракт відсутній");
 
-                if ($this->contract->questionnaire)
+                if ($this->contract->questionnaire && $this->contract->questionnaire->template_id)
                     $this->questionnaire_template_set_data();
                 else
                     $this->notification("Warning", "Анкета відсутняя");
 
-                if ($this->contract->developer_statement)
+                if ($this->contract->developer_statement && $this->contract->developer_statement->template_id)
                     $this->developer_statement_template_set_data();
                 else
                     $this->notification("Warning", "Заява від забудовника відсутня");
