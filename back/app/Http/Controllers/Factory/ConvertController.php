@@ -330,9 +330,10 @@ class ConvertController extends GeneratorController
         if ($number < 11 || $number > 19) {
             $number = $integer_space % 10;
         }
-        if ($number == '0') {
-            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'point')->value('title_r');
-        } elseif ($number == '1') {
+//        if ($number == '0') {
+//            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'point')->value('title_r');
+//        } elseif ($number == '1') {
+        if ($number == '1') {
             $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'point')->value('title_n');
         } elseif ($number == '2') {
             $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'point')->value('title_r');
