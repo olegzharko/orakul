@@ -656,6 +656,16 @@ class DocumentController extends GeneratorController
 
             $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($notary));
 
+            $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
+            $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
+            $word->setValue('НОТ-АКТ-Д', $notary->activity_d);
+            $word->setValue('НОТ-АКТ-О', $notary->activity_o);
+
+            $word->setValue('НОТ-АКТ-Н-UP', $this->mb_ucfirst($notary->activity_n));
+            $word->setValue('НОТ-АКТ-Р-UP', $this->mb_ucfirst($notary->activity_r));
+            $word->setValue('НОТ-АКТ-Д-UP', $this->mb_ucfirst($notary->activity_d));
+            $word->setValue('НОТ-АКТ-О-UP', $this->mb_ucfirst($notary->activity_o));
+
             $word->saveAs($template);
         } else {
             $this->notification("Warning", "Відсутня інформація про нотаріуса у документі {$template}");
