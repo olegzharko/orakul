@@ -680,6 +680,7 @@ class DocumentController extends GeneratorController
         $word->setValue('sign-m-r', $document->str_month->title_r);
         $word->setValue('sign-y-r', $document->str_year->title_r);
         $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
+        $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
 
         $word->setValue('sign-d-r-up', $this->mb_ucfirst($document->str_day->title));
         $word->setValue('sign-m-r-up', $this->mb_ucfirst($document->str_month->title_r));
@@ -868,7 +869,9 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('cl-full-name-n', $this->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-О', $this->get_full_name_o($this->client));
+            $word->setValue('КЛ-ПІБ-Р', $this->get_full_name_r($this->client));
             $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->get_full_name_n_upper($this->client));
 
             $word->setValue('cl-surname-n', $this->client->surname_n);
@@ -903,8 +906,21 @@ class DocumentController extends GeneratorController
 
             $word->setValue('cl-gender-sp-role-r', KeyWord::where('key', $this->client->gender)->value('title_r'));
             $word->setValue('cl-gender-sp-role-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
+
+            $word->setValue('КЛ-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->gender)->value('title_o'));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+
             $word->setValue('cl-gender-sp-role-o', KeyWord::where('key', $this->client->gender)->value('title_o'));
             $word->setValue('cl-gender-sp-role-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+
+            $word->setValue('КЛ-ШЛ-РОЛЬ-О', KeyWord::where('key', $this->client->gender)->value('title_o'));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-О-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+
+            if ($this->client->married)
+                $cs_agree = GenderWord::where('alias', "agree")->value($this->client->married->spouse->gender);
+            else
+                $cs_agree = null;
+            $word->setValue('ПОД-ЗГОД', $cs_agree);
 
 
             if ($this->client->married)
@@ -1072,6 +1088,7 @@ class DocumentController extends GeneratorController
              * Подружжя клієнта - паспорт та код
              * */
             $word->setValue('cs-tax-code', $this->client->married->spouse->tax_code);
+            $word->setValue('ПОД-ІПН', $this->client->married->spouse->tax_code);
             $word->setValue('cs-pssprt-code', $this->client->married->spouse->passport_code);
             $word->setValue('cs-pssprt-date', $this->display_date($this->client->married->spouse->passport_date));
             $word->setValue('cs-pssprt-dep', $this->client->married->spouse->passport_department);
@@ -1081,6 +1098,7 @@ class DocumentController extends GeneratorController
              * */
 //            dd($this->client->married->spouse->city->city_type);
             $word->setValue('cs-f-addr', $this->convert->get_client_full_address($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->married->spouse->city->title);
@@ -1105,6 +1123,9 @@ class DocumentController extends GeneratorController
             $cs_gender_mine = GenderWord::where('alias', "mine")->value($this->client->gender);
             $word->setValue('cs-gender-mine', $cs_gender_mine);
             $word->setValue('cs-gender-mine-up', $this->mb_ucfirst($cs_gender_mine));
+
+            $word->setValue('ПОД-МОЄ', $cs_gender_mine);
+            $word->setValue('ПОД-МОЄ-UP', $this->mb_ucfirst($cs_gender_mine));
 
             $cs_gender_registration = GenderWord::where('alias', "registration")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-reg', $cs_gender_registration);
@@ -1135,6 +1156,7 @@ class DocumentController extends GeneratorController
         if ($this->consent && $this->consent->marriage_type) {
             $word = new TemplateProcessor($this->consent_generate_file);
             $word->setValue('consent-married-part', $this->consent->marriage_type->description);
+            $word->setValue('ШАБЛОН-ДЛЯ-ДОКУМЕНТА', $this->consent->marriage_type->description);
             $word->saveAs($this->consent_generate_file);
         } else {
             $this->notification("Warning", "Згода подружжя: шаблон підтвердження шлюбу відсутній");
