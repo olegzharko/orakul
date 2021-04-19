@@ -113,7 +113,7 @@ class DocumentController extends GeneratorController
                     $this->bank_taxes_template_set_data();
                 else
                     $this->notification("Warning", "Податки відсутні");
-/*
+
                 if ($this->client && $this->client->client_spouse_consent &&  $this->client->client_spouse_consent->template_id) {
                     $this->consent = $this->client->client_spouse_consent;
                         // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
@@ -124,7 +124,7 @@ class DocumentController extends GeneratorController
                 } else {
                      $this->notification("Warning", "Згода подружжя відсутня");
                 }
-*/
+
 
                 $this->total_clients--;
             }
