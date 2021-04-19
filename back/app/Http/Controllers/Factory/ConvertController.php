@@ -27,6 +27,7 @@ class ConvertController extends GeneratorController
 
     public function convert_price_int_part_to_string($start_value, $currency)
     {
+
         $gender = null;
         $result  = null;
         $str = null;
@@ -35,6 +36,7 @@ class ConvertController extends GeneratorController
         $price = intval($start_value / 100);
 
         $hundreds = $price % 1000;
+
         $price = intval($price / 1000);
 
         $thousands = $price % 1000;
@@ -82,6 +84,7 @@ class ConvertController extends GeneratorController
 
         /* старт тисячі */
         $number = $thousands % 100;
+
         if ($number) {
             if ($number < 11 || $number > 19) {
                 $number = $thousands % 10;
@@ -103,14 +106,14 @@ class ConvertController extends GeneratorController
 
         $number = $thousands % 100;
         if ($number) {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . KeyWord::where('key', 'thousand')->value('title_r');
             $result = $str . " " . $result;
         }
         $thousands = $thousands - $number;
 
         $number = $thousands % 1000;
         if ($number) {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . GenderWord::where('alias', "thousand_four_infinity")->value('many');
             $result = $str . " " . $result;
         }
         /* кінець тисячі */
@@ -240,6 +243,8 @@ class ConvertController extends GeneratorController
 
     public function get_convert_price($price, $type)
     {
+        $price = 150000000;
+
         $result = null;
 
         $integer = $this->get_number_format_thousand($price);
