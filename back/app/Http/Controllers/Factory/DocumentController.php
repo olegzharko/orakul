@@ -1208,7 +1208,8 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-type-r', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('imm-type-o', $this->contract->immovable->immovable_type->title_r);
 
-            $word->setValue('Н-ТИП-Р-UP', $this->contract->immovable->immovable_type->title_r);
+            $word->setValue('Н-ТИП-Р', $this->contract->immovable->immovable_type->title_r);
+            $word->setValue('Н-ТИП-Р-UP',  $this->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
 
             if ($this->contract->immovable->roominess) {
                 $word->setValue('imm-app-type-title', $this->contract->immovable->roominess->title);
