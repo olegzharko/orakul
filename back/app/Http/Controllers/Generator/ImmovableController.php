@@ -54,7 +54,7 @@ class ImmovableController extends BaseController
         $this->generator = new GeneratorController();
         $this->convert = new ConvertController();
         $this->minfin = new MinfinController();
-        $this->date = new DateTime();
+        $this->date = new \DateTime();
     }
 
     public function main($card_id)
