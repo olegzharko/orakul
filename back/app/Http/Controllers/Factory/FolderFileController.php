@@ -174,9 +174,12 @@ class FolderFileController extends Controller
         $title = null;
         $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type_docx}";
 
+//        $title = str_replace(" ", "_", $title);
+
         $title = trim($title);
 
         $template = $this->file_path($this->contract->template);
+
         $this->create_file_for_contract($template, $title);
         return $title;
     }

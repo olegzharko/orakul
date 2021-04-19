@@ -93,6 +93,7 @@ class DocumentController extends GeneratorController
                     $this->contract_template_set_data();
                 else
                     $this->notification("Warning", "Контракт відсутній");
+
                 if ($this->contract->questionnaire)
                     $this->questionnaire_template_set_data();
                 else
@@ -103,16 +104,10 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Заява від забудовника відсутня");
 
-
                 if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id)
                     $this->bank_account_template_set_data();
                 else
                     $this->notification("Warning", "Рахунок відсутній");
-
-//                if ($this->contract->bank_account_payment)
-//                    $this->bank_account_template_set_data();
-//                else
-//                    $this->notification("Warning", "Рахунок відсутній");
 
                 if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template_id)
                     $this->bank_taxes_template_set_data();
@@ -180,6 +175,7 @@ class DocumentController extends GeneratorController
         $this->convert->date_to_string($this->contract, $this->contract->sign_date);
         // містить шаблон для паспорту
         $this->set_full_info_template($this->contract_generate_file);
+
         $this->set_spouse_word_template_part();
         // метод для файлів де використовуються паспортні дані
         // передаєм необхідний шлях до необхідного шаблону
@@ -422,8 +418,8 @@ class DocumentController extends GeneratorController
 
     public function set_full_info_template($template_generate_file)
     {
-        $word = new TemplateProcessor($template_generate_file);
 
+        $word = new TemplateProcessor($template_generate_file);
         /*
          * Додати шаблон для даних представника так покупця або чисто шаблон покупця
          * */

@@ -35,7 +35,7 @@ class ToolsController extends Controller
         $week = WorkDay::where('active', true)->orderBy('num')->pluck('title', 'num')->toArray();
         $room = Room::where('id', $card->room_id)->value('title');
 
-        $result['day'] = $week[$card->date_time->format('w')];
+        $result['day'] = $card->date_time->format('w') ? $week[$card->date_time->format('w')] : "Вихідний";
         $result['date'] = $card->date_time->format('d.m');
         $result['time'] = $card->date_time->format('H:i');
         $result['room'] = $room;

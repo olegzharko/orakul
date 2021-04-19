@@ -9,9 +9,9 @@ use App\Http\Controllers\Helper\ToolsController;
 use App\Http\Controllers\Factory\GeneratorController;
 use App\Models\Card;
 use App\Models\Contract;
+use App\Models\DevGroup;
 use App\Models\Immovable;
 use App\Models\DevEmployerType;
-use App\Models\Staff;
 use App\Models\Notary;
 use App\Models\Client;
 use App\Models\DevCompany;
@@ -61,6 +61,7 @@ class AssistantController extends BaseController
         $developer = $this->tools->get_dev_group();
 
         $representative = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->representative_type);
+
         $manager = $this->tools->dev_group_employer_by_type($card->dev_group_id, $this->manager_type);
         $generator = $this->tools->get_generator_staff();
         $accompanying = $this->tools->get_accompanying_staff();
@@ -109,7 +110,7 @@ class AssistantController extends BaseController
 
     public function update_card_settings($card_id, Request $r)
     {
-        dd($r->toArray());
+
         if (!$card = Card::find($card_id)) {
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
@@ -121,7 +122,7 @@ class AssistantController extends BaseController
         }
 
         foreach ($r['immovables'] as $key => $value) {
-            $validator = $this->validate_data($value);
+            $validator = $this->validate_data_immovable($value);
 
             if (count($validator->errors()->getMessages())) {
                 return $this->sendError('Форма передає помилкові дані', $validator->errors());
@@ -153,38 +154,35 @@ class AssistantController extends BaseController
 //            $r['date'] = \DateTime::createFromFormat('d.m.Y', $r['date']);
 
         $validator = Validator::make([
-            'notary_id' => $r['notary_id'],
+            'cancelled' => $r['cancelled'],
             'developer_id' => $r['developer_id'],
-            'representative_id' => $r['representative_id'],
-            'manager_id' => $r['manager_id'],
-
-            'building_id' => $r['building_id'],
-            'reader_id' => $r['reader_id'],
-            'accompanying_id' => $r['accompanying_id'],
             'generator_id' => $r['generator_id'],
+            'manager_id' => $r['manager_id'],
+            'notary_id' => $r['notary_id'],
+            'representative_id' => $r['representative_id'],
         ], [
-            'notary_id' => ['numeric', 'nullable'],
+            'cancelled' => ['boolean', 'nullable'],
             'developer_id' => ['numeric', 'nullable'],
-            'representative_id' => ['numeric', 'nullable'],
-            'manager_id' => ['numeric', 'nullable'],
-
-            'building_id' => ['numeric', 'nullable'],
-            'reader_id' => ['numeric', 'nullable'],
-            'accompanying_id' => ['numeric', 'nullable'],
             'generator_id' => ['numeric', 'nullable'],
+            'manager_id' => ['numeric', 'nullable'],
+            'notary_id' => ['numeric', 'nullable'],
+            'representative_id' => ['numeric', 'nullable'],
         ], [
-            'notary_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'cancelled.boolean' => 'Необхідно передати статус в boolean фомраті',
             'developer_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'representative_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'manager_id.numeric' => 'Необхідно передати ID в числовому форматі',
-
-            'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'reader_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'accompanying_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'generator_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'manager_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'notary_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'representative_id.numeric' => 'Необхідно передати ID в числовому форматі',
         ]);
 
         $errors = $validator->errors()->messages();
+
+        if (!isset($errors['developer_id']) && isset($r['developer_id']) && !empty($r['developer_id'])) {
+            if (!DevGroup::find($r['developer_id'])) {
+                $validator->getMessageBag()->add('developer_id', 'Група забудовників з ID:' . $r['developer_id'] . " не знайдено");
+            }
+        }
 
         if (!isset($errors['notary_id']) && isset($r['notary_id']) && !empty($r['notary_id'])) {
             if (!Notary::find($r['notary_id'])) {
@@ -192,59 +190,36 @@ class AssistantController extends BaseController
             }
         }
 
-        if (!isset($errors['developer_id']) && isset($r['developer_id']) && !empty($r['developer_id'])) {
-            if (!DevCompany::find($r['developer_id'])) {
-                $validator->getMessageBag()->add('developer_id', 'Забудовник з ID:' . $r['developer_id'] . " не знайдено");
-            }
-        }
+        return $validator;
+    }
 
-//        if (!isset($errors['representative_id']) && isset($r['representative_id']) && !empty($r['representative_id']) &&
-//            !isset($errors['developer_id']) && isset($r['developer_id'])) {
-//            $representative_type_id = ClientType::get_representative_type_id();
-//            if (!Client::where([
-//                        'id' => $r['representative_id'],
-//                        'dev_company_id' => $r['developer_id'],
-//                        'type_id' => $representative_type_id,
-//                    ])->first()) {
-//                $validator->getMessageBag()->add('representative_id', 'Представник з ID:' . $r['representative_id'] . " не знайдено");
-//            }
-//        }
-//
-//        if (!isset($errors['manager_id']) && isset($r['manager_id']) && !empty($r['manager_id']) &&
-//            !isset($errors['developer_id']) && isset($r['developer_id'])) {
-//            $manager_type_id = ClientType::get_manager_type_id();
-//            if (!Client::where([
-//                        'id' => $r['manager_id'],
-//                        'dev_company_id' => $r['developer_id'],
-//                        'type_id' => $manager_type_id,
-//                    ])->first()) {
-//                $validator->getMessageBag()->add('manager_id', 'Менеджер з ID:' . $r['manager_id'] . " не знайдено");
-//            }
-//        }
+
+    private function validate_data_immovable($r)
+    {
+        $validator = Validator::make([
+            'accompanying_id' => $r['accompanying_id'],
+            'address' => $r['address'],
+            'immovable_id' => $r['immovable_id'],
+            'reader_id' => $r['reader_id'],
+        ], [
+            'accompanying_id' => ['numeric', 'nullable'],
+            'address' => ['string', 'nullable'],
+            'immovable_id' => ['numeric', 'nullable'],
+            'reader_id' => ['numeric', 'nullable'],
+        ], [
+            'accompanying_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'address.string' => 'Необхідно передати назву в числовому форматі',
+            'immovable_id.numeric' => 'Необхідно передати ID в числовому форматі',
+            'reader_id.numeric' => 'Необхідно передати ID в числовому форматі',
+        ]);
+
+        $errors = $validator->errors()->messages();
 
         if (!isset($errors['immovable_id']) && isset($r['immovable_id']) && !empty($r['immovable_id'])) {
             if (!Immovable::find($r['immovable_id'])) {
                 $validator->getMessageBag()->add('immovable_id', 'Нерухомість з ID:' . $r['immovable_id'] . " не знайдено");
             }
         }
-
-//        if (!isset($errors['reader_id']) && isset($r['reader_id']) && !empty($r['reader_id'])) {
-//            if (!Staff::where('id', $r['reader_id'])->where('reader', true)->first()) {
-//                $validator->getMessageBag()->add('reader_id', 'Читач з ID:' . $r['reader_id'] . " не знайдено");
-//            }
-//        }
-//
-//        if (!isset($errors['accompanying_id']) && isset($r['accompanying_id']) && !empty($r['accompanying_id'])) {
-//            if (!Staff::where('id', $r['accompanying_id'])->where('accompanying', true)->first()) {
-//                $validator->getMessageBag()->add('accompanying_id', 'Видавач з ID:' . $r['accompanying_id'] . " не знайдено");
-//            }
-//        }
-//
-//        if (!isset($errors['printer_id']) && isset($r['printer_id']) && !empty($r['printer_id'])) {
-//            if (!Staff::where('id', $r['printer_id'])->where('printer', true)->first()) {
-//                $validator->getMessageBag()->add('printer_id', 'Набирач з ID:' . $r['printer_id'] . " не знайдено");
-//            }
-//        }
 
         return $validator;
     }
