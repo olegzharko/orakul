@@ -460,7 +460,8 @@ class ImmovableController extends BaseController
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
         $contract_type = ContractType::select('id', 'title')->get();
-        if ($contract->type == 2)
+
+        if ($contract->type->alias == 'main')
             $contract_type = ContractType::select('id', 'title')->orderBy('id', 'desc')->get();
 
         $bank = BankAccountPayment::where('contract_id', $contract->id)->first();
