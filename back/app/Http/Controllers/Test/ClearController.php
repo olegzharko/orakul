@@ -58,14 +58,12 @@ class ClearController  extends TestController
      public function clear_table()
     {
 
-        Card::truncate();
         BankAccountPayment::truncate();
-        ClientCheckList::truncate();
-        InvestmentAgreement::truncate();
-        ClientInvestmentAgreement::truncate();
-        ClientContract::truncate();
         Spouse::truncate();
 //        Client::where('id' , '>', 30)->forceDelete();
+        ClientCheckList::truncate();
+        ClientContract::truncate();
+        Card::truncate();
         Client::where('id' , '>', 30)->delete();
         ClientSpouseConsent::truncate();
         ClientSpouseConsentContract::truncate();

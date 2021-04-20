@@ -1488,6 +1488,9 @@ class DocumentController extends GeneratorController
 
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
+            $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
         } else {
             $this->notification("Warning", "Договір доручення: інформація відсутня");
         }
