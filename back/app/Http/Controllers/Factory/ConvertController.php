@@ -106,14 +106,14 @@ class ConvertController extends GeneratorController
 
         $number = $thousands % 100;
         if ($number) {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . KeyWord::where('key', 'thousand')->value('title_r');
+            $str = \App\Models\NumericConvert::where('original', $number)->value('title');
             $result = $str . " " . $result;
         }
         $thousands = $thousands - $number;
 
         $number = $thousands % 1000;
         if ($number) {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . GenderWord::where('alias', "thousand_four_infinity")->value('many');
+            $str = \App\Models\NumericConvert::where('original', $number)->value('title');
             $result = $str . " " . $result;
         }
         /* кінець тисячі */
