@@ -939,6 +939,9 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-gender-pronoun', $cl_gender_pronoun);
             $word->setValue('cl-gender-pronoun-up', $this->mb_ucfirst($cl_gender_pronoun));
 
+            $word->setValue('КЛ-ЇХ', $cs_gender_pronoun);
+            $word->setValue('КЛ-ЇХ-UP', $this->mb_ucfirst($cs_gender_pronoun));
+
             $word->setValue('cl-widowhood', GenderWord::where('alias', "widowhood")->value($this->client->gender));
 
             $cl_gender_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
