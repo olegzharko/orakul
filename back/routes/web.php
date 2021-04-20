@@ -21,7 +21,7 @@ use App\Http\Controllers\PassportAuthController;
 
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);
-Route::get('test_price_convert', [ConvertController::class, 'test_price_convert']);
+Route::get('test_price_convert/{number}', [ConvertController::class, 'test_price_convert']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');

@@ -16,13 +16,9 @@ class ConvertController extends GeneratorController
 
     }
 
-    public function test_price_convert()
+    public function test_price_convert($number)
     {
-        $i = 1;
-        while($i < 10) {
-            $this->convert_price_int_part_to_string(rand(0, 1), 'dollar');
-            $i++;
-        }
+        echo $this->convert_price_int_part_to_string($number, 'grn');
     }
 
     public function convert_price_int_part_to_string($start_value, $currency)
@@ -64,6 +60,7 @@ class ConvertController extends GeneratorController
             $result = $str . " " . $result;
         }
 
+
         $currency_title = $this->get_currency_title($number, $currency);
 
         $hundreds = $hundreds - $number;
@@ -99,8 +96,9 @@ class ConvertController extends GeneratorController
             } else {
                 $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . GenderWord::where('alias', "thousand_four_infinity")->value('many');
             }
-
             $result = $str . " " . $result;
+        } elseif ($thousands) {
+            $result = GenderWord::where('alias', "thousand_four_infinity")->value('many');
         }
         $thousands = $thousands - $number;
 
