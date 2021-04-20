@@ -29,6 +29,7 @@ use App\Models\Exchange;
 use App\Models\FinalSignDate;
 use App\Models\ImmFence;
 use App\Models\Immovable;
+use App\Models\ImmovableCheckList;
 use App\Models\ImmovableOwnership;
 use App\Models\ImmovableType;
 use App\Models\InvestmentAgreement;
@@ -69,6 +70,7 @@ class ClearController  extends TestController
         ClientSpouseConsent::truncate();
         ClientSpouseConsentContract::truncate();
         ClientContract::truncate();
+        ClientCheckList::truncate();
         Contact::truncate();
         Contract::truncate();
         DevFence::truncate();
@@ -77,6 +79,7 @@ class ClearController  extends TestController
         FinalSignDate::truncate();
         Immovable::truncate();
         ImmovableOwnership::truncate();
+        ImmovableCheckList::truncate();
         ImmFence::truncate();
         PropertyValuationPrice::truncate();
         Questionnaire::truncate();
