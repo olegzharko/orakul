@@ -25,7 +25,7 @@ class Proxy extends Resource
      * @var string
      */
 
-    public static $group = "Сторонні угоди";
+    public static $group = "Забудовник";
 
     public function title()
     {
