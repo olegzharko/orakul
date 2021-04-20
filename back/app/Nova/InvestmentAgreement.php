@@ -36,7 +36,7 @@ class InvestmentAgreement extends Resource
         return $title;
     }
 
-    public static $group = "Сторонні угоди";
+    public static $group = "Забудовник";
 
     public static function label()
     {
