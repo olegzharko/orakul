@@ -1295,7 +1295,6 @@ class DocumentController extends GeneratorController
              * Об'єкт - дозвіл на будівництво
              * */
 
-
             if ($this->contract->immovable->developer_building->building_permit) {
                 $word->setValue('imm-res-per-num', $this->contract->immovable->developer_building->building_permit->resolution);
                 $word->setValue('imm-res-per-date-qd-m', $this->day_quotes_month_year($this->contract->immovable->developer_building->building_permit->sign_date));
