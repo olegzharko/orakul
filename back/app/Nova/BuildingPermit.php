@@ -25,7 +25,7 @@ class BuildingPermit extends Resource
      */
     public static $title = 'id';
 
-    public static $group = "Перевірки";
+    public static $group = "Забудовник";
 
     public static function label()
     {
