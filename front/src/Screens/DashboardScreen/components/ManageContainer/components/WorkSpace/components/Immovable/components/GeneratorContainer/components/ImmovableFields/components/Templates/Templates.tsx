@@ -8,6 +8,7 @@ import { useTemplates, Props } from './useTemplates';
 
 const Templates = (props: Props) => {
   const meta = useTemplates(props);
+  console.log(meta.data);
   return (
     <div className="templates">
       <SectionWithTitle title="Договір">
