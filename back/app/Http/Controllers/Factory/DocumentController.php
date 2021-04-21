@@ -1410,9 +1410,9 @@ class DocumentController extends GeneratorController
      * */
     public function set_secure_payment($word)
     {
-        if ($this->contract->immovable->security_payment) {
+        if ($this->contract->immovable->security_payment && $this->contract->immovable->security_payment->sign_date) {
             $word->setValue('secur-sign-date', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
-            $word->setValue('secur-reg-num', $this->contract->immovable->security_payment->reg_num);
+            $word->setValue('secur-reg-num', $this->contract->immovable->security_payment->reg_num ?? "####");
 
             $word->setValue('secur-first-grn', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_grn, 'grn'));
             $word->setValue('secur-first-dollar', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
@@ -1427,6 +1427,13 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
             $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
+        } elseif ($this->contract->immovable->security_payment) {
+            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', "#######");
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', "#######");
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', "#######");
+
+            $word->setValue('Н-ЗАБ-ПЛ-НОМ', "####");
+            $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', "########");
         } else {
             $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
         }

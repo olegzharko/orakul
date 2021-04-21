@@ -361,6 +361,7 @@ class ConvertController extends GeneratorController
             $result = $str . " " . $result;
         }
 
+        $space = str_replace('.', ',', $space);
         $result = "$space ($result)";
 
         return $result;
@@ -529,54 +530,54 @@ class ConvertController extends GeneratorController
     public function get_client_full_address($c)
     {
         $region = null;
-        $region_type_short = null;
+        $region_type = null;
         $region_title = null;
 
         $district = null;
-        $district_type_short = null;
+        $district_type = null;
         $district_title = null;
 
         $city = null;
-        $city_type_short = null;
+        $city_type = null;
         $city_title = null;
 
         $address = null;
-        $address_type_short = null;
+        $address_type = null;
         $address_title = null;
 
-        $building_type_short = null;
+        $building_type = null;
         $building_num = null;
         $building = null;
 
         if ($c->city && $c->city->region_root == false && $c->city->region) {
-            $region_type_short = trim(KeyWord::where('key', 'region')->value('title_n'));
+            $region_type = trim(KeyWord::where('key', 'region')->value('title_n'));
             $region_title = trim($c->city->region->title_n);
-            $region = "$region_title $region_type_short, ";
+            $region = "$region_title $region_type, ";
         }
 
         if ($c->city && $c->city->district_root == false && $c->city->district) {
-            $district_type_short = trim(KeyWord::where('key', 'district')->value('title_n'));
+            $district_type = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
-            $district = "$district_title $district_type_short, ";
+            $district = "$district_title $district_type, ";
         }
 
         if ($c->city && $c->city->city_type) {
-            $city_type_short = trim($c->city->city_type->short);
+            $city_type = trim($c->city->city_type->title_n);
             $city_title = trim($c->city->title);
-            $city = "$city_type_short $city_title, ";
+            $city = "$city_type $city_title, ";
         }
 
-        if ($c->address && $c->address_type && $c->address_type->short && $c->building) {
+        if ($c->address && $c->address_type && $c->address_type->title_n && $c->building) {
             $address_title = trim($c->address);
-            $address_type_short = trim($c->address_type->short);
-            $address = "$address_type_short $address_title, ";
+            $address_type = trim($c->address_type->short);
+            $address = "$address_type $address_title, ";
 
-            $building_type_short = trim(KeyWord::where('key', 'building')->value('short'));
+            $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
 
             $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
 
-            $building = "$building_type_short $building_num" . "$apartment_full";
+            $building = "$building_type $building_num" . "$apartment_full";
         }
 
         $full_address = "$region $district $city $address $building";
