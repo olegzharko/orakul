@@ -60,6 +60,7 @@ class DocumentController extends GeneratorController
         $this->bank_account_generate_file = null;
         $this->bank_taxes_generate_file = null;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_red = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"red\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
@@ -1428,12 +1429,12 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
             $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
         } elseif ($this->contract->immovable->security_payment) {
-            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', "#######");
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', "#######");
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', "#######");
+            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->set_style_color_warning("#######"));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->set_style_color_warning("#######"));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->set_style_color_warning("#######"));
 
-            $word->setValue('Н-ЗАБ-ПЛ-НОМ', "####");
-            $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', "########");
+            $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color_warning("####"));
+            $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("########"));
         } else {
             $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
         }
@@ -1629,6 +1630,13 @@ class DocumentController extends GeneratorController
     public function set_style_color($text)
     {
         $str = $this->style_color . $text . $this->style_end;
+
+        return $str;
+    }
+
+    public function set_style_color_warning($text)
+    {
+        $str = $this->style_color_red . $text . $this->style_end;
 
         return $str;
     }
