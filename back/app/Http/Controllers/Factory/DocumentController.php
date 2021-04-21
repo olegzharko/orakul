@@ -721,7 +721,6 @@ class DocumentController extends GeneratorController
          * */
         if ($this->contract->final_sign_date) {
             $word->setValue('con-final-date-qd-m', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
-            dd($this->contract->final_sign_date->sign_date);
             if ($this->contract->final_sign_date->sign_date)
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
             else
