@@ -47,10 +47,6 @@ class BuildingRepresentativeProxy extends Resource
      */
     public function fields(Request $request)
     {
-            $table->integer('building_id')->nullable();
-            $table->integer('dev_representative_id')->nullable();
-            $table->integer('proxy_id')->nullable();
-
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Будівля', 'building', 'App\Nova\DeveloperBuilding'),
