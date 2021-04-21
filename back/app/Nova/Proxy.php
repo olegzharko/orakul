@@ -57,7 +57,7 @@ class Proxy extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
-            BelongsTo::make('Представник', 'dev_representative', 'App\Nova\Client')->nullable(),
+//            BelongsTo::make('Представник', 'dev_representative', 'App\Nova\Client')->nullable(),
             Text::make('Заголовок', 'title'),
             Text::make('Номер', 'number'),
             DateTime::make('Доручення від', 'date'),
