@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class City extends Resource
@@ -75,6 +76,8 @@ class City extends Resource
             BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable(),
             BelongsTo::make('Тип населеного пункту', 'city_type', 'App\Nova\CityType')->nullable(),
             Text::make('Назва у називному відмінку', 'title')->creationRules('unique:cities,title')->updateRules('unique:cities,title,{{resourceId}}'),
+            Toggle::make('Місто областного значення', 'region'),
+            Toggle::make('Місто районного значення', 'district'),
         ];
     }
 
