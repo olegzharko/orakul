@@ -76,8 +76,8 @@ class City extends Resource
             BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable(),
             BelongsTo::make('Тип населеного пункту', 'city_type', 'App\Nova\CityType')->nullable(),
             Text::make('Назва у називному відмінку', 'title')->creationRules('unique:cities,title')->updateRules('unique:cities,title,{{resourceId}}'),
-            Toggle::make('Місто областного значення', 'region'),
-            Toggle::make('Місто районного значення', 'district'),
+            Toggle::make('Місто областного значення', 'region_root'),
+            Toggle::make('Місто районного значення', 'district_root'),
         ];
     }
 

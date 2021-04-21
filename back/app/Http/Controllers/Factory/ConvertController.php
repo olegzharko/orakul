@@ -548,19 +548,17 @@ class ConvertController extends GeneratorController
         $building_num = null;
         $building = null;
 
-        if ($c->city && $c->city->region) {
+        if ($c->city && $c->city->region_root == false && $c->city->region) {
             $region_type_short = trim(KeyWord::where('key', 'region')->value('title_n'));
             $region_title = trim($c->city->region->title_n);
             $region = "$region_title $region_type_short, ";
         }
 
-        if ($c->city && $c->city->district) {
+        if ($c->city && $c->city->district_root == false && $c->city->district) {
             $district_type_short = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
             $district = "$district_title $district_type_short, ";
         }
-
-
 
         if ($c->city && $c->city->city_type) {
             $city_type_short = trim($c->city->city_type->short);
@@ -581,12 +579,7 @@ class ConvertController extends GeneratorController
             $building = "$building_type_short $building_num" . "$apartment_full";
         }
 
-        $full_address = ""
-            . "$region"
-            . "$district"
-            . "$city"
-            . "$address"
-            . "$building";
+        $full_address = "$region $district $city $address $building";
         $full_address = trim($full_address);
 
         return $full_address;
