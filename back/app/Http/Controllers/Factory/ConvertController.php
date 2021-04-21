@@ -569,7 +569,7 @@ class ConvertController extends GeneratorController
 
         if ($c->address && $c->address_type && $c->address_type->title_n && $c->building) {
             $address_title = trim($c->address);
-            $address_type = trim($c->address_type->short);
+            $address_type = trim($c->address_type->title_n);
             $address = "$address_type $address_title, ";
 
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
