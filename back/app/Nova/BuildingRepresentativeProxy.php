@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Nova;
+
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Http\Requests\NovaRequest;
+
+class BuildingRepresentativeProxy extends Resource
+{
+    /**
+     * The model the resource corresponds to.
+     *
+     * @var string
+     */
+    public static $model = \App\Models\BuildingRepresentativeProxy::class;
+
+    /**
+     * The single value that should be used to represent the resource when being displayed.
+     *
+     * @var string
+     */
+    public static $title = 'id';
+
+    /**
+     * The columns that should be searched.
+     *
+     * @var array
+     */
+    public static $search = [
+        'id',
+    ];
+
+    public static $group = "Забудовник";
+
+    public static function label()
+    {
+        return "Будинов, представник, довіреність";
+    }
+
+    /**
+     * Get the fields displayed by the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function fields(Request $request)
+    {
+            $table->integer('building_id')->nullable();
+            $table->integer('dev_representative_id')->nullable();
+            $table->integer('proxy_id')->nullable();
+
+        return [
+            ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Будівля', 'building', 'App\Nova\DeveloperBuilding'),
+            BelongsTo::make('Представник', 'representative', 'App\Nova\Client'),
+            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy'),
+        ];
+    }
+
+    /**
+     * Get the cards available for the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function cards(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the filters available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function filters(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the lenses available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function lenses(Request $request)
+    {
+        return [];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function actions(Request $request)
+    {
+        return [];
+    }
+}
