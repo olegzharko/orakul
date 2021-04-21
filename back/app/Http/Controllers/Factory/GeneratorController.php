@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Models\BuildingRepresentativeProxy;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use Illuminate\Http\Request;
@@ -222,10 +223,16 @@ class GeneratorController extends BaseController
 
     public function get_proxy($immovable)
     {
-        $dev_company_id = $immovable->developer_building->dev_company_id;
+//        $dev_company_id = $immovable->developer_building->dev_company_id;
+//        $dev_representative_id = Card::find($this->card_id)->value('dev_representative_id');
+//
+//        $proxy = Proxy::where('dev_company_id', $dev_company_id)->where('dev_representative_id', $dev_representative_id)->first();
+
+        $building_id = $immovable->developer_building->id;
         $dev_representative_id = Card::find($this->card_id)->value('dev_representative_id');
 
-        $proxy = Proxy::where('dev_company_id', $dev_company_id)->where('dev_representative_id', $dev_representative_id)->first();
+        $proxy_id = BuildingRepresentativeProxy::where('building_id', $building_id)->where('dev_representative_id', $dev_representative_id)->value('proxy_id');
+        $proxy = Proxy::find($proxy_id);
 
         return $proxy;
     }
