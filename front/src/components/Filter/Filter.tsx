@@ -12,17 +12,17 @@ const Filter = (props: Props) => {
 
   return (
     <div className={`filter ${props.horizontal ? 'horizontal' : ''}`}>
-      <div className="filter__header">
-        <span style={{ whiteSpace: 'nowrap' }} className={`${props.horizontal ? '' : 'title'}`}>{props.horizontal ? 'Сортувати по:' : 'Фільтр'}</span>
-        {!props.horizontal && (
+      {!props.horizontal && (
+        <div className="filter__header">
+          <span className="title">Фільтр</span>
           <img
             src="/icons/clear-form.svg"
             alt="clear form"
             onClick={meta.clearAll}
             className="filter__clear"
           />
-        )}
-      </div>
+        </div>
+      )}
       <div className="filter__select" style={{ width: props.horizontal ? '115px' : '100%' }}>
         <CustomSelect
           data={meta.notaries}
