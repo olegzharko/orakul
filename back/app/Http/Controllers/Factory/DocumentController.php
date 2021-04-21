@@ -721,7 +721,10 @@ class DocumentController extends GeneratorController
          * */
         if ($this->contract->final_sign_date) {
             $word->setValue('con-final-date-qd-m', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
-            $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
+            if ($this->contract->final_sign_date->sign_date)
+                $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
+            else
+                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("####"));
         }
         // Допоміжні данні
         $word->setValue('alias-dis-sh', CityType::where('alias', 'district')->value('short'));
@@ -1496,6 +1499,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->display_date($this->contract->immovable->proxy->date));
+            $word->setValue('ДД-ДАТА-МС', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
             $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($this->contract->immovable->proxy->notary));
             $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
             $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
