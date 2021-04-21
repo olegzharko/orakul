@@ -175,9 +175,9 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
-Route::get('clear_table', [\App\Http\Controllers\Test\ClearController::class, 'clear_table']); // postman
+//Route::get('clear_table', [\App\Http\Controllers\Test\ClearController::class, 'clear_table']); // postman
 //Route::get('dev_start_data', [\App\Http\Controllers\Test\DeveloperController::class, 'dev_start_data']);
-Route::get('test', [\App\Http\Controllers\Test\ContractController::class, 'test']); // postman
+//Route::get('test', [\App\Http\Controllers\Test\ContractController::class, 'test']); // postman
 Route::get('single_test', [\App\Http\Controllers\Test\ContractController::class, 'single_test']); // postman
 
 Route::get('check_sql', [\App\Http\Controllers\Test\SqlController::class, 'check_sql']);
