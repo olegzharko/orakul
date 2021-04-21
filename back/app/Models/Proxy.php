@@ -13,6 +13,7 @@ class Proxy extends Model
     protected $casts = [
         'date' => 'datetime',
         'reg_date' => 'datetime',
+        'final_date' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 
