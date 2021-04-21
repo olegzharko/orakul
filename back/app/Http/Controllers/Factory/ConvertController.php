@@ -566,7 +566,7 @@ class ConvertController extends GeneratorController
             $city = "$city_type_short $city_title, ";
         }
 
-        if ($c->address && $c->address_type && $c->address_type->short && $c->building ) {
+        if ($c->address && $c->address_type && $c->address_type->short && $c->building) {
             $address_title = trim($c->address);
             $address_type_short = trim($c->address_type->short);
             $address = "$address_type_short $address_title, ";
