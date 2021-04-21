@@ -29,7 +29,8 @@ class Proxy extends Resource
 
     public function title()
     {
-        return $this->dev_company->title . " " . $this->title . " " . $this->number;
+//        return $this->dev_company->title . " " . $this->title . " " . $this->number;
+        return $this->reg_num;
     }
 
     public static function label()
