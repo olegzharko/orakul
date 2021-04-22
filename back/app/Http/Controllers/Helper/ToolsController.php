@@ -160,7 +160,7 @@ class ToolsController extends Controller
             if ($name_type == 'full_name')
                 $convert_data[$key]['title'] = $this->convert->get_full_name($value);
             elseif($name_type == 'surname_initial')
-                $convert_data[$key]['title'] = $this->convert->get_surname_and_initials($value);
+                $convert_data[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
             elseif($name_type == 'title')
                 $convert_data[$key]['title'] = $value->title;
         }

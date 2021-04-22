@@ -504,7 +504,7 @@ class ConvertController extends GeneratorController
         return trim($str);
     }
 
-    public function get_surname_and_initials($person)
+    public function get_surname_and_initials_n($person)
     {
         $str = null;
 

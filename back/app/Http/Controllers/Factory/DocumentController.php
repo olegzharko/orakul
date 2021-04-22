@@ -655,7 +655,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ntr-sh-name', $notary->short_name);
             $word->setValue('ntr-sh-patr', $notary->short_patronymic);
 
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials_n($notary));
 
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
             $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
@@ -1501,7 +1501,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->display_date($this->contract->immovable->proxy->date));
             $word->setValue('ДД-ДАТА-МС', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
-            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
             $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
             $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
         } else {
