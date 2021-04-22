@@ -1451,8 +1451,10 @@ class DocumentController extends GeneratorController
                 $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color_warning("####"));
 
 
-            if ($this->contract->immovable->security_payment->sign_date)
-                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color($this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date)));
+            if ($this->contract->immovable->security_payment->sign_date) {
+                $security_sing_date = $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date);
+                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color($security_sing_date));
+            }
             else
                 $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("######"));
         }
