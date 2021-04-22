@@ -966,6 +966,7 @@ class DocumentController extends GeneratorController
 
             $cl_gender_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
             $word->setValue('cl-gender-reg', $cl_gender_registration);
+            $word->setValue('КЛ-ЗАРЕЄСТР', $cl_gender_registration);
 
             $cl_gender_which = GenderWord::where('alias', "which")->value($this->client->gender);
             $word->setValue('cl-gender-which', $this->set_style_color($cl_gender_which));
