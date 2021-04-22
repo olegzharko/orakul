@@ -611,7 +611,7 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
 
-            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
+            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n')) . " " . trim($c->apartment_num) : null;
 
             $building = "$building_type $building_num" . "$apartment_full";
         }

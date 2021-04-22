@@ -591,6 +591,10 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-pssprt-full-o-up', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
             $word->setValue('cs-pssprt-id-short', $this->client->married->spouse->passport_type->short_info);
             $word->setValue('ПОД-ПАСПОРТ-Н', $this->client->married->spouse->passport_type->description_n);
+            $word->setValue('ПОД-ПАСПОРТ-О', $this->client->married->spouse->passport_type->description_o);
+            $word->setValue('ПОД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_n));
+            $word->setValue('ПОД-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
+            $word->setValue('ПОД-ПАСПОРТ-ID-КОРОТКО', $this->client->married->spouse->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
