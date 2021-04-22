@@ -545,6 +545,7 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПАСПОРТ-H-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
             $word->setValue('КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->passport_type->description_o));
             $word->setValue('КЛ-ПАСПОРТ-ID-КОД', $this->set_style_color($this->client->passport_type->short_info));
+            $word->setValue('КЛ-ДН', $this->display_date($this->client->birth_date));
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
