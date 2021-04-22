@@ -973,7 +973,8 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-tax-code', $this->set_style_color($this->client->tax_code));
             $word->setValue('cl-tax-code-b', $this->set_style_color_and_bold($this->client->tax_code));
 
-            $word->setValue('КЛ-ІПН', $this->set_style_color($this->client->tax_code));
+//            $word->setValue('КЛ-ІПН', $this->set_style_color($this->client->tax_code));
+            $word->setValue('КЛ-ІПН', $this->client->tax_code);
             $word->setValue('КЛ-ІПН-Ж', $this->set_style_color_and_bold($this->client->tax_code));
 
             /*
