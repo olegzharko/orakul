@@ -655,7 +655,10 @@ class DocumentController extends GeneratorController
             $word->setValue('ntr-sh-name', $notary->short_name);
             $word->setValue('ntr-sh-patr', $notary->short_patronymic);
 
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials_n($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($this->contract->immovable->proxy->notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($this->contract->immovable->proxy->notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
 
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
             $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
