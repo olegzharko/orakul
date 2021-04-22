@@ -269,6 +269,10 @@ class ImmovableController extends BaseController
         $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
         $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
 
+        while (($first_part_dollar + $last_part_dollar) > $immovable->reserve_dollar) {
+            $first_part_dollar--;
+        }
+
         SecurityPayment::where('immovable_id', $immovable_id)->update([
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
             'reg_num' => $r['reg_num'],

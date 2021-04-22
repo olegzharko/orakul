@@ -777,7 +777,7 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - місце проживання
              * */
-            $word->setValue('dev-f-addr', $this->convert->get_client_full_address($this->contract->dev_company->owner));
+            $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
         } else {
             $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
@@ -827,7 +827,7 @@ class DocumentController extends GeneratorController
                 $citizen_o = KeyWord::where('key', "citizen_female")->value('title_o');
             }
             $word->setValue('inv-citizen-o', $citizen_o);
-            $word->setValue('inv-full-addr', $this->convert->get_client_full_address($investment_agreement->investor));
+            $word->setValue('inv-full-addr', $this->convert->get_client_full_address_n($investment_agreement->investor));
 
             $word->setValue('ІНВ-НОМЕР', $investment_agreement->number);
             $word->setValue('ІНВ-ДАТА', $this->display_date($investment_agreement->date));
@@ -839,7 +839,8 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-ПІБ-Р', $this->get_full_name_r($investment_agreement->investor));
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
 //            $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
-            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address($investment_agreement->investor));
+            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_n($investment_agreement->investor));
+            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_r($investment_agreement->investor));
 //            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
         } else {
             $this->notification("Warning", "Інвестеційний договір: відсутній");
@@ -990,10 +991,10 @@ class DocumentController extends GeneratorController
             /*
              * Клієнт - місце проживання
              * */
-            $word->setValue('cl-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client)));
+            $word->setValue('cl-f-addr', $this->set_style_color($this->convert->get_client_full_address_n($this->client)));
 
 //            $word->setValue('КЛ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($this->client)));
-            $word->setValue('КЛ-П-АДР', $this->convert->get_client_full_address($this->client));
+            $word->setValue('КЛ-П-АДР', $this->convert->get_client_full_address_n($this->client));
             $word->setValue('КЛ-П-АДР-СК', $this->convert->get_client_full_address_short($this->client));
 
             /*
@@ -1062,7 +1063,7 @@ class DocumentController extends GeneratorController
             /*
              * Представник - місце проживання
              * */
-            $word->setValue('cr-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client->representative->confidant)));
+            $word->setValue('cr-f-addr', $this->set_style_color($this->convert->get_client_full_address_n($this->client->representative->confidant)));
 
             $cr_gender_registration = GenderWord::where('alias', "registration")->value($this->client->representative->confidant->gender);
             $word->setValue('cr-gender-reg', $cr_gender_registration);
@@ -1132,8 +1133,8 @@ class DocumentController extends GeneratorController
              * Подружжя клієнта - адреса проживання
              * */
 //            dd($this->client->married->spouse->city->city_type);
-            $word->setValue('cs-f-addr', $this->convert->get_client_full_address($this->client->married->spouse));
-            $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address($this->client->married->spouse));
+            $word->setValue('cs-f-addr', $this->convert->get_client_full_address_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->married->spouse->city->title);
@@ -1443,7 +1444,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('secur-final-date', $this->contract->immovable->security_payment->grn_cent_str);
 
-            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price_and_round_by_reserve($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
