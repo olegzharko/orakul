@@ -982,7 +982,8 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('cl-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client)));
 
-            $word->setValue('КЛ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($this->client)));
+//            $word->setValue('КЛ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($this->client)));
+            $word->setValue('КЛ-П-АДР', $this->convert->get_client_full_address($this->client));
 
             /*
              * Контактні данні
