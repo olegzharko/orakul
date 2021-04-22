@@ -830,7 +830,8 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-ПІБ-О', $this->get_full_name_o($investment_agreement->investor));
             $word->setValue('ІНВ-ПІБ-Р', $this->get_full_name_r($investment_agreement->investor));
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
-            $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
+//            $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
+            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address($investment_agreement->investor));
 //            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
         } else {
             $this->notification("Warning", "Інвестеційний договір: відсутній");
@@ -1436,10 +1437,13 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
+
             if ($this->contract->immovable->security_payment->reg_num)
-                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
+                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color($this->contract->immovable->security_payment->reg_num));
             else
-                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color("####"));
+                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color_warning("####"));
+
+
             $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
         }
 //        elseif ($this->contract->immovable->security_payment) {
