@@ -632,7 +632,7 @@ class ConvertController extends GeneratorController
         $imm_build_num = $immovable->developer_building->number;
         $imm_build_num_str = $this->building_num_str($immovable->developer_building->number);
 
-        $result = "$imm_addr_type_r $imm_addr_title $imm_build_num ($imm_build_num_str)";
+        $result = "$imm_addr_type_r $imm_addr_title, $imm_build_num ($imm_build_num_str)";
 
         return $result;
     }
