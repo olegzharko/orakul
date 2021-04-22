@@ -438,14 +438,14 @@ class ClientController extends BaseController
         $rakul_notary = Notary::where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
-            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $other_notary = [];
         $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
         foreach ($separate_by_card as $key => $value) {
             $other_notary[$key]['id'] = $value->id;
-            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $consent_spouse_words = SpouseWord::select('id', 'title')->get();
@@ -543,14 +543,14 @@ class ClientController extends BaseController
         $rakul_notary = Notary::where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
-            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $other_notary = [];
         $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
         foreach ($separate_by_card as $key => $value) {
             $other_notary[$key]['id'] = $value->id;
-            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
@@ -604,7 +604,7 @@ class ClientController extends BaseController
 
         foreach ($notary as $key => $value) {
             $separate_notary[$key]['id'] = $value->id;
-            $separate_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $separate_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
             $separate_notary[$key]['list'] = $this->get_notary_list_info($value);
         }
 

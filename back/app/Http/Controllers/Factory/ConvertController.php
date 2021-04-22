@@ -504,13 +504,49 @@ class ConvertController extends GeneratorController
         return trim($str);
     }
 
-    public function get_surname_and_initials($person)
+    public function get_surname_and_initials_n($person)
     {
         $str = null;
 
         if ($person) {
             if (isset($person->surname_n))
                 $str = $person->surname_n . " " . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_surname_and_initials_r($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_r))
+                $str = $person->surname_r . " " . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_surname_and_initials_d($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_d))
+                $str = $person->surname_d . " " . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_surname_and_initials_o($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_o))
+                $str = $person->surname_o . " " . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
