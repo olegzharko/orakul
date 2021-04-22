@@ -1501,7 +1501,10 @@ class DocumentController extends GeneratorController
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->display_date($this->contract->immovable->proxy->date));
             $word->setValue('ДД-ДАТА-МС', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
-            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
             $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
             $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
         } else {
