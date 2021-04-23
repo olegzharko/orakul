@@ -415,15 +415,36 @@ class ImmovableController extends BaseController
         $result['reg_number'] = null;
         $result['discharge_date'] = null;
         $result['discharge_number'] = null;
+        $result['notary'] = null;
 
         if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->first()) {
             return $this->sendResponse($result, 'Дані по перевірці на власність відсутні.');
         }
 
+        $convert_notary = [];
+        $other_notary = [];
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        if ($card_id) {
+            $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+            foreach ($separate_by_card as $key => $value) {
+                $other_notary[$key]['id'] = $value->id;
+                $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+            }
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+
         $result['reg_date'] = $imm_own->gov_reg_date ? $imm_own->gov_reg_date->format('d.m.Y') : null;
         $result['reg_number'] = $imm_own->gov_reg_number;
         $result['discharge_date'] = $imm_own->discharge_date ? $imm_own->discharge_date->format('d.m.Y') : null;
         $result['discharge_number'] = $imm_own->discharge_number;
+        $result['notary_id'] = $imm_own->notary_id;
 
         return $this->sendResponse($result, 'Дані по перевірці на власність нерухомості ID:' . $immovable_id);
     }
@@ -444,6 +465,7 @@ class ImmovableController extends BaseController
             'gov_reg_date' => $r['reg_date'],
             'discharge_number' => $r['discharge_number'],
             'discharge_date' => $r['discharge_date'],
+            'notary_id' => $r['notary_id'],
         ]);
 
         return $this->sendResponse('', 'Дані оновлено перевірок для ннерухомості ID:' . $immovable_id . ' оноволено.');
