@@ -1377,7 +1377,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
-            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
+            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->get_full_name_o($this->contract->immovable_ownership->notary));
             $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable_ownership->activity_o));
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
