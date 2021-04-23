@@ -526,7 +526,11 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
+        $contract = Contract::where('immovable_id', $immovable_id)->first();
+        $contract_id = $contract->id;
+        $card_id = $contract->card_id;
+        $card = Card::find($card_id);
+        $notary_id = $card->notary_id;
 
         Contract::where('immovable_id', $immovable_id)->update([
            'template_id' => $r['contract_template_id'],
@@ -551,6 +555,7 @@ class ImmovableController extends BaseController
             [
                 'template_id' => $r['questionnaire_template_id'],
                 'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
             ]);
 
         DeveloperStatement::updateOrCreate(
