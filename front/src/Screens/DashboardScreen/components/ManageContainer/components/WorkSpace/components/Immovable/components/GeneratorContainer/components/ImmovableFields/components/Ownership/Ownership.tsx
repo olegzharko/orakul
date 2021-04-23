@@ -2,6 +2,7 @@ import { data } from 'jquery';
 import * as React from 'react';
 import CustomDatePicker from '../../../../../../../../../../../../../../components/CustomDatePicker';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
+import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
 import { useOwnership, Props } from './useOwnership';
@@ -12,6 +13,14 @@ const Ownership = (props: Props) => {
   return (
     <div className="ownership">
       <SectionWithTitle title="Право власності" onClear={meta.onClear}>
+        <div className="flex-center mb20" style={{ width: '330px' }}>
+          <CustomSelect
+            label="Нотаріус"
+            data={meta.notary}
+            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
+            selectedValue={meta.data.notary_id}
+          />
+        </div>
         <div className="grid-center-duet">
           <CustomDatePicker
             label="Дата запису про право власності"
