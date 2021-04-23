@@ -981,6 +981,7 @@ class DocumentController extends GeneratorController
 
             $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->gender);
             $word->setValue('cl-gender-acq', $this->set_style_color($cl_gender_acquainted));
+            $word->setValue('КЛ-ОЗНАЙ', $this->set_style_color($cl_gender_acquainted));
 
             /*
              * Клієнт - IПН
@@ -1172,6 +1173,7 @@ class DocumentController extends GeneratorController
 
             $cs_gender_registration = GenderWord::where('alias', "registration")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-reg', $cs_gender_registration);
+            $word->setValue('ПОД-ЗАРЕЄСТР', $cs_gender_registration);
 
             $cs_gender_which = GenderWord::where('alias', "which")->value($this->client->married->spouse->gender);
             $word->setValue('cs-gender-which', $this->set_style_color($cs_gender_which));
@@ -1301,6 +1303,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
             $word->setValue('Н-ПОВНА-АДРЕСА', $this->contract->immovable->address);
+            $word->setValue('Н-ПОВНА-АДРЕСА-СПД', $this->convert->full_address_by_type($this->contract->immovable, 'desc'));
             $word->setValue('Н-БУДИНОК', $this->convert->building_address($this->contract->immovable)); // building
             $word->setValue('Н-НОМЕР', $this->convert->number_with_string($this->contract->immovable->immovable_number));
 
