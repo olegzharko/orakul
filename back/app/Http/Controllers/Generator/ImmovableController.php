@@ -29,6 +29,7 @@ use App\Models\PropertyValuation;
 use App\Models\PropertyValuationPrice;
 use App\Models\QuestionnaireTemplate;
 use App\Models\Room;
+use App\Models\Notary;
 use App\Models\RoominessType;
 use App\Models\SecurityPayment;
 use App\Models\StatementTemplate;
