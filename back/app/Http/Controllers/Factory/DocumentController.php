@@ -1360,15 +1360,17 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-own-gov-reg-date', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('imm-own-dis-date', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('imm-own-dis-num', $this->contract->immovable_ownership->discharge_number);
-            $word->setValue('imm-own-res-surname-o', $this->contract->notary->surname_o);
-            $word->setValue('imm-own-res-sh-name', $this->contract->notary->short_name);
-            $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
-            $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
+//            $word->setValue('imm-own-res-surname-o', $this->contract->notary->surname_o);
+//            $word->setValue('imm-own-res-sh-name', $this->contract->notary->short_name);
+//            $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
+//            $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
 
             $word->setValue('ПР-ВЛ-РСТР-НОМ', $this->contract->immovable_ownership->gov_reg_number);
             $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
+            $word->setValue('ПР-ВЛ-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_о($this->contract->immovable_ownership->notary));
+            $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable_ownership->activity_o));
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
