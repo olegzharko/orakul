@@ -660,10 +660,10 @@ class DocumentController extends GeneratorController
             $word->setValue('ntr-sh-name', $notary->short_name);
             $word->setValue('ntr-sh-patr', $notary->short_patronymic);
 
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($this->contract->immovable->proxy->notary));
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($this->contract->immovable->proxy->notary));
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($notary));
 
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
             $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
@@ -1377,7 +1377,8 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
-            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
+            dd($this->contract->immovable_ownership);
+            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->get_full_name_o($this->contract->immovable_ownership->notary));
             $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable_ownership->activity_o));
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
