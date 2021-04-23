@@ -60,4 +60,9 @@ class ImmovableOwnership extends Model implements Sortable
             return null;
         }
     }
+
+    public function notary()
+    {
+        return $this->belongsTo(Notary::class, 'notary_id');
+    }
 }

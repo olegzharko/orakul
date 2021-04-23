@@ -622,65 +622,6 @@ class ConvertController extends GeneratorController
         return $full_address;
     }
 
-    public function get_client_full_address_r($c)
-    {
-        $region = null;
-        $region_type = null;
-        $region_title = null;
-
-        $district = null;
-        $district_type = null;
-        $district_title = null;
-
-        $city = null;
-        $city_type = null;
-        $city_title = null;
-
-        $address = null;
-        $address_type = null;
-        $address_title = null;
-
-        $building_type = null;
-        $building_num = null;
-        $building = null;
-
-        if ($c->city && $c->city->region_root == false && $c->city->region) {
-            $region_type = trim(KeyWord::where('key', 'region')->value('title_r'));
-            $region_title = trim($c->city->region->title_r);
-            $region = "$region_title $region_type, ";
-        }
-
-        if ($c->city && $c->city->district_root == false && $c->city->district) {
-            $district_type = trim(KeyWord::where('key', 'district')->value('title_r'));
-            $district_title = trim($c->city->district->title_r);
-            $district = "$district_title $district_type, ";
-        }
-
-        if ($c->city && $c->city->city_type) {
-            $city_type = trim($c->city->city_type->title_r);
-            $city_title = trim($c->city->title);
-            $city = "$city_type $city_title, ";
-        }
-
-        if ($c->address && $c->address_type && $c->address_type->title_r && $c->building) {
-            $address_title = trim($c->address);
-            $address_type = trim($c->address_type->title_r);
-            $address = "$address_type $address_title, ";
-
-            $building_type = trim(KeyWord::where('key', 'building')->value('title_r'));
-            $building_num = trim($c->building);
-
-            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_r')) . " " . trim($c->apartment_num) : null;
-
-            $building = "$building_type $building_num" . "$apartment_full";
-        }
-
-        $full_address = "$region $district $city $address $building";
-        $full_address = trim($full_address);
-
-        return $full_address;
-    }
-
     public function get_client_full_address_short($c)
     {
         $region = null;

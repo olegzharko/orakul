@@ -1307,6 +1307,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
             $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
+            $word->setValue('Н-ПЛ-Ж', $this->convert->get_convert_space($this->contract->immovable->living_space));
             $word->setValue('Н-ПОВЕРХУ', $this->convert->get_immovable_floor($this->contract->immovable->floor));
             $word->setValue('Н-CЕКЦІЯ', $this->convert->number_with_string($this->contract->immovable->section));
             /*
@@ -1338,6 +1339,7 @@ class DocumentController extends GeneratorController
              * Об'єкт - реєстраційний номер
              * */
             $word->setValue('imm-reg-num', $this->contract->immovable->registration_number);
+            $word->setValue('Н-РЕЄСТР-НОМ', $this->contract->immovable->registration_number);
         } else {
             $this->notification("Warning", "Відсутня інформація про об'єкт нерухомості");
         }
@@ -1362,6 +1364,11 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-own-res-sh-name', $this->contract->notary->short_name);
             $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
             $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
+
+            $word->setValue('ПР-ВЛ-РСТР-НОМ', $this->contract->immovable_ownership->gov_reg_number);
+            $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
+            $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
+            $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
@@ -1372,6 +1379,9 @@ class DocumentController extends GeneratorController
         if ($this->contract->immovable->fence && $this->contract->immovable->fence->number && $this->contract->immovable->fence->date) {
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
+
+            $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($this->contract->immovable->fence->date));
+            $word->setValue('ЗБРН-Н-НОМ', $this->contract->immovable->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по забороні на нерухомість");
         }
@@ -1382,6 +1392,9 @@ class DocumentController extends GeneratorController
         if ($this->contract->dev_company && $this->contract->dev_company->fence && $this->contract->dev_company->fence->number && $this->contract->dev_company->fence->date) {
             $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->fence->date));
             $word->setValue('dev-fence-num', $this->contract->dev_company->fence->number);
+
+            $word->setValue('ЗБРН-ЗАБ-ДАТА', $this->display_date($this->contract->dev_company->fence->date));
+            $word->setValue('ЗБРН-ЗАБ-НОМ', $this->contract->dev_company->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по заборонам на власника");
         }
@@ -1400,6 +1413,12 @@ class DocumentController extends GeneratorController
             $word->setValue('pv-certificate', $this->contract->immovable->pvprice->property_valuation->certificate);
             $word->setValue('pv-date', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
             $word->setValue('pv-price-grn', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
+
+            $word->setValue('ОК-НАЗВА', $this->contract->immovable->pvprice->property_valuation->title);
+            $word->setValue('ОК-СРТФКТ-НОМ', $this->contract->immovable->pvprice->property_valuation->certificate);
+            $word->setValue('ОК-СРТФКТ-ДАТА', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
+            $word->setValue('ОК-ОЦ-ДАТА', $this->display_date($this->contract->immovable->pvprice->date));
+            $word->setValue('ОК-ОЦ-ЦІНА', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
         } else {
             $this->notification("Warning", "Оцінка: відсутня інформація від оціночної компанії");
         }

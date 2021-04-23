@@ -223,11 +223,6 @@ class GeneratorController extends BaseController
 
     public function get_proxy($immovable)
     {
-//        $dev_company_id = $immovable->developer_building->dev_company_id;
-//        $dev_representative_id = Card::find($this->card_id)->value('dev_representative_id');
-//
-//        $proxy = Proxy::where('dev_company_id', $dev_company_id)->where('dev_representative_id', $dev_representative_id)->first();
-
         $building_id = $immovable->developer_building->id;
         $dev_representative_id = Card::find($this->card_id)->value('dev_representative_id');
 
@@ -236,33 +231,5 @@ class GeneratorController extends BaseController
 
         return $proxy;
     }
-
-//    public function building_num_str($num)
-//    {
-//        $resutl = [];
-//
-//        $num_arr = explode('/', $num);
-//
-//        if (count($num_arr) == 2) {
-//            $resutl[] = $this->convert->number_to_string($num_arr[0]);
-//            $resutl[] = 'дріб';
-//            $resutl[] = $this->convert->number_to_string($num_arr[1]);
-//
-//            return implode(' ', $resutl);
-//        }
-//
-//        $num_arr = explode('-', $num);
-//
-//        if (count($num_arr) == 2) {
-//            $resutl[] = $this->convert->number_to_string($num_arr[0]);
-//            $resutl[] = $num_arr[1];
-//
-//            return implode(' ', $resutl);
-//        }
-//
-//        $result = $this->convert->number_to_string($num);
-//
-//        return $result;
-//    }
 }
 
