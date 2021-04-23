@@ -18,6 +18,7 @@ class ImmovableOwnership extends Model implements Sortable
         'gov_reg_date',
         'discharge_number',
         'discharge_date',
+        'notary_id',
     ];
 
     public $sortable = [
@@ -50,6 +51,7 @@ class ImmovableOwnership extends Model implements Sortable
                'gov_reg_date',
                'discharge_number',
                'discharge_date',
+               'notary_id',
                'sort_order',
                'active',
             )->where('immovable_id', $immovable_id)->first()) {
@@ -63,6 +65,6 @@ class ImmovableOwnership extends Model implements Sortable
 
     public function notary()
     {
-        return $this->belongsTo(Notary::class, 'notary_id');
+        return $this->belongsTo(Notary::class);
     }
 }

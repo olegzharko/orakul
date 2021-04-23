@@ -1302,7 +1302,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-complex', $this->contract->immovable->developer_building->complex); // building
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
-            $word->setValue('Н-ПОВНА-АДРЕСА', $this->contract->immovable->address);
+            $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
             $word->setValue('Н-ПОВНА-АДРЕСА-СПД', $this->convert->full_address_by_type($this->contract->immovable, 'desc'));
             $word->setValue('Н-БУДИНОК', $this->convert->building_address($this->contract->immovable)); // building
             $word->setValue('Н-НОМЕР', $this->convert->number_with_string($this->contract->immovable->immovable_number));
@@ -1377,13 +1377,14 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
-            dd($this->contract->immovable_ownership);
+
             $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->get_full_name_o($this->contract->immovable_ownership->notary));
             $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable_ownership->activity_o));
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
 
+        /*
         /*
          * Перевірка заборон на майно
          * */
@@ -1474,7 +1475,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('secur-final-date', $this->contract->immovable->security_payment->grn_cent_str);
 
-            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price_and_round_by_reserve($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
