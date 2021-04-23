@@ -396,7 +396,7 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        PropertyValuationPrice::where('immovable_id', $immovable_id)->update([
+        PropertyValuationPrice::update(['immovable_id' => $immovable_id], [
             'property_valuation_id' => $r['property_valuation_id'],
             'date' => $r['date'],
             'grn' => $r['price'] * 100,
