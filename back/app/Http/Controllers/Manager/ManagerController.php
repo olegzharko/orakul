@@ -191,7 +191,7 @@ class ManagerController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->generator->full_ascending_address($immovable);
+            $result[$key]['title'] = $this->convert->full_address_by_type($immovable);
             $result[$key]['list'] = ['Тест M інформація 1', 'Тест M інформація 2', 'Тест M інформація 3'];
         }
 
@@ -244,7 +244,7 @@ class ManagerController extends BaseController
 
             $contract = Contract::get_contract_by_immovable($immovable_id);
 
-            $result['title'] = $this->generator->full_ascending_address($immovable);
+            $result['title'] = $this->convert->full_address_by_type($immovable);
             $result['building'] = $building;
             $result['building_id'] = $immovable->developer_building_id;
             $result['immovable_type_id'] = $immovable->immovable_type_id;

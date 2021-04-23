@@ -902,6 +902,10 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-name-n', $this->client->name_n);
             $word->setValue('cl-patr-n', $this->client->patronymic_n);
 
+            $word->setValue('КЛ-ПРІЗВ-Н', $this->client->surname_n);
+            $word->setValue('КЛ-ІМЯ-Н', $this->client->name_n);
+            $word->setValue('КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
+
             $word->setValue('cl-surname-n-b', $this->set_style_color_and_bold($this->client->surname_n));
             $word->setValue('cl-name-n-b', $this->set_style_color_and_bold($this->client->name_n));
             $word->setValue('cl-patr-n-b', $this->set_style_color_and_bold($this->client->patronymic_n));
@@ -1256,6 +1260,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-type-r', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('imm-type-o', $this->contract->immovable->immovable_type->title_r);
 
+            $word->setValue('Н-ТИП-Н', $this->contract->immovable->immovable_type->title_n);
             $word->setValue('Н-ТИП-Р', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('Н-ТИП-Р-UP',  $this->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
 

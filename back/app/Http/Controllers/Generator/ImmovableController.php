@@ -314,7 +314,7 @@ class ImmovableController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->generator->full_ascending_address($immovable);
+            $result[$key]['title'] = $this->convert->full_address_by_type($immovable);
             $result[$key]['list'] = ['Тест G інформація 1', 'Тест G інформація 2', 'Тест G інформація 3'];
         }
 
