@@ -700,11 +700,10 @@ class ConvertController extends GeneratorController
     {
         $address = null;
 
-        $building_num_str = $this->convert->building_num_str($immovable->developer_building->number);
-
+        $building_num_str = $this->building_num_str($immovable->developer_building->number);
 
         $imm_num = $immovable->immovable_number;
-        $imm_num_str = $this->convert->number_to_string($immovable->immovable_number);
+        $imm_num_str = $this->number_to_string($immovable->immovable_number);
         $imm_build_num = $immovable->developer_building->number;
 //        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
         $imm_build_num_str = $building_num_str;
