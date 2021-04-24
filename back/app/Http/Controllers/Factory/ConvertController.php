@@ -588,25 +588,25 @@ class ConvertController extends GeneratorController
         if ($c->city && $c->city->region_root == false && $c->city->region) {
             $region_type = trim(KeyWord::where('key', 'region')->value('title_n'));
             $region_title = trim($c->city->region->title_n);
-            $region = "$region_title $region_type, ";
+            $region = "$region_title $region_type,";
         }
 
         if ($c->city && $c->city->district_root == false && $c->city->district) {
             $district_type = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
-            $district = "$district_title $district_type, ";
+            $district = "$district_title $district_type,";
         }
 
         if ($c->city && $c->city->city_type) {
             $city_type = trim($c->city->city_type->title_n);
             $city_title = trim($c->city->title);
-            $city = "$city_type $city_title, ";
+            $city = "$city_type $city_title,";
         }
 
         if ($c->address && $c->address_type && $c->address_type->title_n && $c->building) {
             $address_title = trim($c->address);
             $address_type = trim($c->address_type->title_n);
-            $address = "$address_type $address_title, ";
+            $address = "$address_type $address_title,";
 
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
@@ -647,19 +647,19 @@ class ConvertController extends GeneratorController
         if ($c->city && $c->city->region_root == false && $c->city->region) {
             $region_type = trim(KeyWord::where('key', 'region')->value('short'));
             $region_title = trim($c->city->region->title_n);
-            $region = "$region_title $region_type, ";
+            $region = "$region_title $region_type,";
         }
 
         if ($c->city && $c->city->district_root == false && $c->city->district) {
             $district_type = trim(KeyWord::where('key', 'district')->value('short'));
             $district_title = trim($c->city->district->title_n);
-            $district = "$district_title $district_type, ";
+            $district = "$district_title $district_type,";
         }
 
         if ($c->city && $c->city->city_type) {
             $city_type = trim($c->city->city_type->short);
             $city_title = trim($c->city->title);
-            $city = "$city_type $city_title, ";
+            $city = "$city_type $city_title,";
         }
 
         if ($c->address && $c->address_type && $c->address_type->short && $c->building) {
