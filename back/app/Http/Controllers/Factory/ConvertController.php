@@ -227,7 +227,7 @@ class ConvertController extends GeneratorController
     public function get_number_format_thousand($price)
     {
         $price_thousand = null;
-        $price_thousand = number_format(floor($price / 100), 0, ".",  " " );
+        $price_thousand = number_format(floor($price / 100), 0, ".",  "$this->non_break_space" );
 
         return $price_thousand;
     }
