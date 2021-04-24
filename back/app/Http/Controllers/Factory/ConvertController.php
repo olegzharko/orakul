@@ -745,13 +745,13 @@ class ConvertController extends GeneratorController
         $imm_district_type_n = trim(KeyWord::where('key', 'district')->value('title_n'));
         $imm_city_type_n = $immovable->developer_building->city->city_type->title_n;
         $imm_city_title_n = $immovable->developer_building->city->title;
-        $imm_addr_type_n = $immovable->developer_building->address_type->title_n;
+        $imm_addr_short = $immovable->developer_building->address_type->short;
         $imm_addr_title = $immovable->developer_building->title;
         $imm_build_num = $immovable->developer_building->number;
         $imm_type_short = $immovable->immovable_type->short;
         $imm_num = $immovable->immovable_number;
 
-        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_type_n $imm_addr_title $imm_build_num, $imm_type_short $imm_num";
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short $imm_addr_title $imm_build_num, $imm_type_short $imm_num";
 
         return $address;
     }
