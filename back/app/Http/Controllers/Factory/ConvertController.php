@@ -15,7 +15,7 @@ class ConvertController extends GeneratorController
 
     public function __construct()
     {
-        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t></w:t></w:r><w:t xml:space=\"preserve\">";
+        $this->non_break_space = "</w:t></w:r><w:r w:rsidRPr=\"005E1D7F\"><w:rPr><w:b/><w:lang w:val=\"uk-UA\"/></w:rPr><w:t> </w:t></w:r><w:r w:rsidR=\"00AC2370\"><w:rPr><w:bCs/><w:lang w:val=\"en-US\"/></w:rPr><w:t>";
     }
 
     public function test_price_convert($number)
