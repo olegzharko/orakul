@@ -65,9 +65,7 @@ class DocumentController extends GeneratorController
         $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
-
         $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
-
         $this->style_space_line = "                                    ";
         $this->style_space_full_name = "                                                                              ";
         $this->card = Card::find($card_id);

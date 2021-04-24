@@ -561,7 +561,7 @@ class ConvertController extends GeneratorController
         $str = null;
 
         if ($building) {
-            $str = $building->address_type->short . $this->non_break_space . $building->title . " " . $building->number;
+            $str = $building->address_type->short . $this->non_break_space . $building->title . $this->non_break_space . $building->number;
         }
 
         return $str;
@@ -649,34 +649,34 @@ class ConvertController extends GeneratorController
         $building = null;
 
         if ($c->city && $c->city->region_root == false && $c->city->region) {
-            $region_type = trim(KeyWord::where('key', 'region')->value('short'));
             $region_title = trim($c->city->region->title_n);
+            $region_type = trim(KeyWord::where('key', 'region')->value('short'));
             $region = "$region_title $region_type,";
         }
 
         if ($c->city && $c->city->district_root == false && $c->city->district) {
-            $district_type = trim(KeyWord::where('key', 'district')->value('short'));
             $district_title = trim($c->city->district->title_n);
+            $district_type = trim(KeyWord::where('key', 'district')->value('short'));
             $district = "$district_title $district_type,";
         }
 
         if ($c->city && $c->city->city_type) {
             $city_type = trim($c->city->city_type->short);
             $city_title = trim($c->city->title);
-            $city = "$city_type $city_title,";
+            $city = $city_type . $this->non_break_space . "$city_title,";
         }
 
         if ($c->address && $c->address_type && $c->address_type->short && $c->building) {
-            $address_title = trim($c->address);
             $address_type = trim($c->address_type->short);
-            $address = "$address_type $address_title, ";
+            $address_title = trim($c->address);
+            $address = $address_type . $this->non_break_space . "$address_title, ";
 
             $building_type = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
 
             $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
 
-            $building = "$building_type $building_num" . "$apartment_full";
+            $building = $building_type . $this->non_break_space . $building_num . "$apartment_full";
         }
 
         $full_address = "$region $district $city $address $building";
@@ -751,11 +751,12 @@ class ConvertController extends GeneratorController
         $imm_city_title_n = $immovable->developer_building->city->title;
         $imm_addr_short = $immovable->developer_building->address_type->short;
         $imm_addr_title = $immovable->developer_building->title;
+        $imm_building_type = trim(KeyWord::where('key', 'building')->value('short'));
         $imm_build_num = $immovable->developer_building->number;
         $imm_type_short = $immovable->immovable_type->short;
         $imm_num = $immovable->immovable_number;
 
-        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title $imm_build_num, $imm_type_short\xc2\xa0$imm_num";
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title $imm_building_type $imm_build_num, $imm_type_short\xc2\xa0$imm_num";
 
         return $address;
     }
