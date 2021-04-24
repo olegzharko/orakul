@@ -11,9 +11,11 @@ use App\Models\YearConvert;
 
 class ConvertController extends GeneratorController
 {
+    public $non_break_space;
+
     public function __construct()
     {
-
+        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:bCs w:val=\"true\"/></w:rPr><w:t xml:space=\"preserve\">";
     }
 
     public function test_price_convert($number)
@@ -510,7 +512,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_n))
-                $str = $person->surname_n . " " . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_n . $this->non_break_space . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
@@ -522,7 +524,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_r))
-                $str = $person->surname_r . " " . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_r . $this->non_break_space . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
@@ -534,7 +536,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_d))
-                $str = $person->surname_d . " " . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_d . $this->non_break_space . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
@@ -546,7 +548,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_o))
-                $str = $person->surname_o . " " . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_o . $this->non_break_space . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
@@ -557,7 +559,7 @@ class ConvertController extends GeneratorController
         $str = null;
 
         if ($building) {
-            $str = $building->address_type->short . " " .  $building->title . " " . $building->number;
+            $str = $building->address_type->short . $this->non_break_space . $building->title . " " . $building->number;
         }
 
         return $str;
