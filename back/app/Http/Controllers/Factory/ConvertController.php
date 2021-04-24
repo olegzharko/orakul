@@ -15,8 +15,6 @@ class ConvertController extends GeneratorController
 
     public function __construct()
     {
-//        $this->non_break_space = "</w:t></w:r><w:r w:rsidRPr=\"005E1D7F\"><w:rPr><w:b/><w:lang w:val=\"uk-UA\"/></w:rPr><w:t> </w:t></w:r><w:r w:rsidR=\"00AC2370\"><w:rPr><w:bCs/><w:lang w:val=\"en-US\"/></w:rPr><w:t>";
-//        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t> </w:t></w:r><w:r><w:rPr><w:bCs/></w:rPr><w:t>";
         $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
     }
 
@@ -674,7 +672,8 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
 
-            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
+            $apartment_type = trim(ApartmentType::where('id', $c->apartment_type_id)->value('short'));
+            $apartment_full = $c->apartment_num ? ", " . $apartment_type . $this->non_break_space . trim($c->apartment_num) : null;
 
             $building = $building_type . $this->non_break_space . $building_num . "$apartment_full";
         }
@@ -756,7 +755,7 @@ class ConvertController extends GeneratorController
         $imm_type_short = $immovable->immovable_type->short;
         $imm_num = $immovable->immovable_number;
 
-        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title $imm_building_type $imm_build_num, $imm_type_short\xc2\xa0$imm_num";
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title, $imm_building_type\xc2\xa0$imm_build_num, $imm_type_short\xc2\xa0$imm_num";
 
         return $address;
     }
