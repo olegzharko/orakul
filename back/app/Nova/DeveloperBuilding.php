@@ -40,7 +40,7 @@ class DeveloperBuilding extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'dev_company_id', 'title'
     ];
 
     public static $group = "Забудовник";
