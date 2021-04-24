@@ -552,7 +552,7 @@ class ConvertController extends GeneratorController
         return $str;
     }
 
-    public function get_full_address($building)
+    public function building_address_type_title_number($building)
     {
         $str = null;
 
@@ -622,7 +622,7 @@ class ConvertController extends GeneratorController
         return $full_address;
     }
 
-    public function get_client_full_address_short($c)
+    public function client_full_address_short($c)
     {
         $region = null;
         $region_type = null;
@@ -681,7 +681,7 @@ class ConvertController extends GeneratorController
         return $full_address;
     }
 
-    public function building_address($immovable)
+    public function building_street_and_num($immovable)
     {
         $result = '';
 
@@ -689,18 +689,18 @@ class ConvertController extends GeneratorController
         $imm_addr_title = $immovable->developer_building->title;
 
         $imm_build_num = $immovable->developer_building->number;
-        $imm_build_num_str = $this->building_num_str($immovable->developer_building->number);
+        $imm_build_num_str = $this->building_num_to_str($immovable->developer_building->number);
 
         $result = "$imm_addr_type_r $imm_addr_title, $imm_build_num ($imm_build_num_str)";
 
         return $result;
     }
 
-    public function full_address_by_type($immovable, $type = null)
+    public function building_full_address_by_type($immovable, $type = null)
     {
         $address = null;
 
-        $building_num_str = $this->building_num_str($immovable->developer_building->number);
+        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
 
         $imm_num = $immovable->immovable_number;
         $imm_num_str = $this->number_to_string($immovable->immovable_number);
@@ -735,7 +735,28 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
-    public function building_num_str($num)
+    public function building_full_address_with_imm_for_taxes($immovable)
+    {
+        $address = null;
+
+        $imm_reg_title_n = $immovable->developer_building->city->region->title_n;
+        $imm_region_type_n = trim(KeyWord::where('key', 'region')->value('title_n'));
+        $imm_dis_title_n = $immovable->developer_building->city->district->title_n;
+        $imm_district_type_n = trim(KeyWord::where('key', 'district')->value('title_n'));
+        $imm_city_type_n = $immovable->developer_building->city->city_type->title_n;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_addr_type_n = $immovable->developer_building->address_type->title_n;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_type_short = $immovable->immovable_type->short;
+        $imm_num = $immovable->immovable_number;
+
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_type_n $imm_addr_title $imm_build_num, $imm_type_short $imm_num";
+
+        return $address;
+    }
+
+    public function building_num_to_str($num)
     {
         $resutl = [];
 

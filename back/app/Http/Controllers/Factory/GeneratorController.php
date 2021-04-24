@@ -186,7 +186,7 @@ class GeneratorController extends BaseController
     public function get_immovable($immovable)
     {
         $immovable->fence = ImmFence::where('immovable_id', $immovable->id)->first();
-        $immovable->address = $this->convert->full_address_by_type($immovable);
+        $immovable->address = $this->convert->building_full_address_by_type($immovable);
         $immovable->proxy = $this->get_proxy($immovable);
 
         return $immovable;

@@ -82,7 +82,7 @@ class AssistantController extends BaseController
         $imm_res = [];
         foreach ($immovables as $key => $immovable) {
             $imm_res[$key]['immovable_id'] = $immovable->id;
-            $imm_res[$key]['address'] = $this->convert->full_address_by_type($immovable);
+            $imm_res[$key]['address'] = $this->convert->building_full_address_by_type($immovable);
             $imm_res[$key]['reader_id'] = $immovable->reader_id;
             $imm_res[$key]['accompanying_id'] = $immovable->accompanying_id;
         }

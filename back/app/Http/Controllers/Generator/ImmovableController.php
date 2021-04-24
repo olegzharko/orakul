@@ -84,7 +84,7 @@ class ImmovableController extends BaseController
         $building = [];
         foreach ($developer_building as $key => $dev_building) {
             $building[$key]['id'] = $dev_building->id;
-            $building[$key]['title'] = $this->convert->get_full_address($dev_building);
+            $building[$key]['title'] = $this->convert->building_address_type_title_number($dev_building);
         }
 
         $roominess = RoominessType::select('id', 'title')->where('active', true)->orderBy('sort_order')->get();
@@ -314,7 +314,7 @@ class ImmovableController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->convert->full_address_by_type($immovable);
+            $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
             $result[$key]['list'] = ['Тест G інформація 1', 'Тест G інформація 2', 'Тест G інформація 3'];
         }
 

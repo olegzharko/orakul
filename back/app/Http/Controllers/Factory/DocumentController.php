@@ -441,7 +441,8 @@ class DocumentController extends GeneratorController
         }
 
         $word->setValue('full-name-tax-code-id-card-address', $this->set_style_color($full_description));
-        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $this->set_style_color($full_description));
+//        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $this->set_style_color($full_description));
+        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
 
         /*
          * Лінія для області підпису
@@ -1000,7 +1001,7 @@ class DocumentController extends GeneratorController
 
 //            $word->setValue('КЛ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($this->client)));
             $word->setValue('КЛ-П-АДР', $this->convert->get_client_full_address_n($this->client));
-            $word->setValue('КЛ-П-АДР-СК', $this->convert->get_client_full_address_short($this->client));
+            $word->setValue('КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
 
             /*
              * Контактні данні
@@ -1140,7 +1141,7 @@ class DocumentController extends GeneratorController
 //            dd($this->client->married->spouse->city->city_type);
             $word->setValue('cs-f-addr', $this->convert->get_client_full_address_n($this->client->married->spouse));
             $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->client->married->spouse));
-            $word->setValue('ПОД-ПОВНА-АДРЕСА-СК', $this->convert->get_client_full_address_short($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->married->spouse->city->title);
@@ -1285,7 +1286,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-num', $this->contract->immovable->immovable_number);
             $word->setValue('imm-num-str', $this->convert->number_to_string($this->contract->immovable->immovable_number));
             $word->setValue('imm-build-num', $this->contract->immovable->developer_building->number); // исправить на number_dig
-            $word->setValue('imm-build-num-str', $this->convert->building_num_str($this->contract->immovable->developer_building->number)); // привязать к developer_building(address) как number_str
+            $word->setValue('imm-build-num-str', $this->convert->building_num_to_str($this->contract->immovable->developer_building->number)); // привязать к developer_building(address) как number_str
             $word->setValue('imm-addr-type-n', $this->contract->immovable->developer_building->address_type->title_n); // building
             $word->setValue('imm-addr-type-r', $this->contract->immovable->developer_building->address_type->title_r); // building
             $word->setValue('imm-addr-title', $this->contract->immovable->developer_building->title); // building
@@ -1304,8 +1305,9 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
             $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
-            $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->full_address_by_type($this->contract->immovable, 'desc'));
-            $word->setValue('Н-БУДИНОК', $this->convert->building_address($this->contract->immovable)); // building
+            $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->building_full_address_by_type($this->contract->immovable, 'desc'));
+            $word->setValue('H-ПОВНА-АДРЕСА-СПД-СК', $this->convert->client_full_address_short($this->contract->immovable));
+            $word->setValue('Н-БУДИНОК', $this->convert->building_street_and_num($this->contract->immovable)); // building
             $word->setValue('Н-НОМЕР', $this->convert->number_with_string($this->contract->immovable->immovable_number));
 
 
@@ -1602,7 +1604,7 @@ class DocumentController extends GeneratorController
             if ($contract = $this->pack_contract->whereIn('id', $sp_con->id)->first()) {
                 $imm_type_r = $contract->immovable->immovable_type->title_r;
                 $imm_num_dig = $contract->immovable->immovable_number;
-                $imm_num_str = $this->convert->building_num_str($contract->immovable->immovable_number);
+                $imm_num_str = $this->convert->building_num_to_str($contract->immovable->immovable_number);
                 $imm_full_address = $contract->immovable->address;
                 $imm[$imm_full_address][$imm_num_dig] = "$imm_type_r $imm_num_dig ($imm_num_str)";
             }
@@ -1809,7 +1811,7 @@ class DocumentController extends GeneratorController
         $sheet->setCellValue("B9", "продавець");
         $sheet->setCellValue("B9", $this->get_full_name_n($this->contract->dev_company->owner));
         $sheet->setCellValue("C9", $this->contract->dev_company->owner->tax_code);
-        $sheet->setCellValue("B10", $this->contract->immovable->address);
+        $sheet->setCellValue("B10", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
         $sheet->setCellValue("B11", $price);
         $sheet->setCellValue("B13", $this->client->phone);
 
