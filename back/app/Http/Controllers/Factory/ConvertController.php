@@ -751,7 +751,7 @@ class ConvertController extends GeneratorController
         $imm_type_short = $immovable->immovable_type->short;
         $imm_num = $immovable->immovable_number;
 
-        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short $imm_addr_title $imm_build_num, $imm_type_short $imm_num";
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title $imm_build_num, $imm_type_short\xc2\xa0$imm_num";
 
         return $address;
     }
