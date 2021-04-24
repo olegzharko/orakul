@@ -1661,14 +1661,14 @@ class DocumentController extends GeneratorController
 
     public function day_quotes_month_year($date)
     {
-        $title = "«  »          2021";
+        $title = "«##» ###### ####";
 
         if ($date) {
             $day = $date->format('d');
             $month = MonthConvert::where('original', $date->format('m'))->orWhere('original', strval(intval($date->format('m'))))->value('title_r');
             $year = $date->format('Y');
 
-            $title = "«{$day}» {$month} {$year}";
+            $title = "«" . $day . "»" . $this->non_break_space . $month . $this->non_break_space . $year;
         }
 
 
