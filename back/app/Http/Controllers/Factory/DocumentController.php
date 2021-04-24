@@ -542,7 +542,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('КЛ-ПАСПОРТ-Н', $this->client->passport_type->description_n);
             $word->setValue('КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
-            $word->setValue('КЛ-ПАСПОРТ-H-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
+            $word->setValue('КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
             $word->setValue('КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->passport_type->description_o));
             $word->setValue('КЛ-ПАСПОРТ-ID-КОД', $this->set_style_color($this->client->passport_type->short_info));
             $word->setValue('КЛ-ДН', $this->display_date($this->client->birth_date));
@@ -840,7 +840,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
 //            $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
             $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_n($investment_agreement->investor));
-            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_r($investment_agreement->investor));
+//            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_r($investment_agreement->investor));
 //            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
         } else {
             $this->notification("Warning", "Інвестеційний договір: відсутній");
@@ -1140,6 +1140,7 @@ class DocumentController extends GeneratorController
 //            dd($this->client->married->spouse->city->city_type);
             $word->setValue('cs-f-addr', $this->convert->get_client_full_address_n($this->client->married->spouse));
             $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА-СК', $this->convert->get_client_full_address_short($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->married->spouse->city->title);
@@ -1303,7 +1304,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
             $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
-            $word->setValue('Н-ПОВНА-АДРЕСА-СПД', $this->convert->full_address_by_type($this->contract->immovable, 'desc'));
+            $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->full_address_by_type($this->contract->immovable, 'desc'));
             $word->setValue('Н-БУДИНОК', $this->convert->building_address($this->contract->immovable)); // building
             $word->setValue('Н-НОМЕР', $this->convert->number_with_string($this->contract->immovable->immovable_number));
 
@@ -1379,7 +1380,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
 
             $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->get_full_name_o($this->contract->immovable_ownership->notary));
-            $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable_ownership->activity_o));
+            $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color_and_italic($this->contract->immovable_ownership->notary->activity_o));
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
@@ -1388,9 +1389,11 @@ class DocumentController extends GeneratorController
         /*
          * Перевірка заборон на майно
          * */
+
         if ($this->contract->immovable->fence && $this->contract->immovable->fence->number && $this->contract->immovable->fence->date) {
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
+
 
             $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('ЗБРН-Н-НОМ', $this->contract->immovable->fence->number);
