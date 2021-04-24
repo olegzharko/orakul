@@ -59,7 +59,7 @@ class Proxy extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             Text::make('Заголовок', 'title'),
-            Text::make('Номер', 'number'),
+            Text::make('Номер доручення', 'number'),
             DateTime::make('Доручення від', 'date'),
 //            HasMany::make('Люди', 'member', 'App\Nova\Client'),
 //            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),

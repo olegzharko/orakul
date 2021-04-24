@@ -64,7 +64,7 @@ class ClearController  extends TestController
         ClientCheckList::truncate();
         ClientContract::truncate();
         Card::truncate();
-        Client::where('id' , '>', 30)->delete();
+        Client::where('id' , '>', 100)->delete();
         ClientSpouseConsent::truncate();
         ClientSpouseConsentContract::truncate();
         ClientContract::truncate();
