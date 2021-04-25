@@ -78,7 +78,7 @@ const ImmovableContainer = (props: Props) => {
             <CustomInput
               required
               key="test"
-              label="Номер приміщення"
+              label="Номер нерухомості"
               onChange={(val) => meta.onImmNumChange(index, val)}
               value={item.imm_number}
               disabled={props.disabled}

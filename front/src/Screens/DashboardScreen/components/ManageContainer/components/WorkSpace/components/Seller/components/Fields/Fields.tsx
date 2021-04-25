@@ -23,11 +23,6 @@ const Fields = () => {
         </div>
       </SectionWithTitle>
 
-      <div className="seller__ban">
-        <CheckBanFields data={meta.banData} setData={meta.setBanData} title="Заборони на продавця" />
-        <PrimaryButton label="Зберегти" onClick={meta.onBanDataSave} disabled={meta.banDataSaveDisabled} className="seller__ban-button" />
-      </div>
-
       <SectionWithTitle title="Подружжя">
         <div className="grid">
           {meta.spouse.map(({ title, value }) => (

@@ -13,7 +13,7 @@ const Passport = (props: Props) => {
   return (
     <div className="clients__passport">
       <SectionWithTitle title="Код та Паспортні данні" onClear={onClear}>
-        <div className="grid">
+        <div className="grid mb20">
           <div className="sex">
             <p className="sex__title">Стать</p>
             <RadioButtonsGroup
@@ -50,11 +50,17 @@ const Passport = (props: Props) => {
             onSelect={(e) => setData({ ...data, passport_date: e })}
             selectedDate={data.passport_date}
           />
+        </div>
+
+        <div className="mb20">
           <CustomInput
             label="Орган що видав паспорт"
             onChange={(e) => setData({ ...data, passport_department: e })}
             value={data.passport_department}
           />
+        </div>
+
+        <div className="grid">
           <CustomInput
             label="Запису в ЄДДР (для ID карток)"
             onChange={(e) => setData({ ...data, passport_demographic_code: e })}
