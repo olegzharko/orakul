@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import { useMemo, useState, useEffect } from 'react';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqImmovableGeneral from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableGeneral';
-import reqImmovableExchange from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableExchange';
-import reqImmovableSellerBan from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableSellerBan';
 import reqImmovableOwnership from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableOwnership';
 import reqImmovablePayment from '../../../../../../../../../../../../services/generator/Immovable/reqImmovablePayment';
 import reqImmovableRating from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableRating';
@@ -16,7 +14,6 @@ export const useFields = () => {
 
   // Fields Data
   const [general, setGeneral] = useState();
-  const [sellerBan, setSellerBan] = useState();
   const [ownerShip, setOwnerShip] = useState();
   const [securityPayment, setSecurityPayment] = useState();
   const [retting, setRetting] = useState();
@@ -32,15 +29,6 @@ export const useFields = () => {
 
         if (res?.success) {
           setGeneral(res.data);
-        }
-      })();
-
-      // get SELLER_BAN
-      (async () => {
-        const res = await reqImmovableSellerBan(token, immovableId);
-
-        if (res?.success) {
-          setSellerBan(res.data);
         }
       })();
 
@@ -85,7 +73,6 @@ export const useFields = () => {
   return {
     general,
     immovableId,
-    sellerBan,
     ownerShip,
     securityPayment,
     retting,

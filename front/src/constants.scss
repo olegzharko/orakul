@@ -23,7 +23,7 @@ $border_primary: 1px solid $primary;
 $border_hard: 2px solid black;
 $border_radius: 4px;
 // Transitions
-$transition_default: all .4s ease-in;
+$transition_default: all .2s ease-in;
 
 @mixin primary_title {
   font-family: 'Playfair Display', serif;
