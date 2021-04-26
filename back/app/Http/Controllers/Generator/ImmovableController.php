@@ -418,7 +418,7 @@ class ImmovableController extends BaseController
         $result['discharge_number'] = null;
         $result['notary'] = null;
 
-        if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->first()) {
+        if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->firstOrCreate()) {
             return $this->sendResponse($result, 'Дані по перевірці на власність відсутні.');
         }
 
