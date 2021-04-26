@@ -497,6 +497,7 @@ class ClientController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+//        dd($r['mar_date'], $r['sign_date']);
 //        $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 
