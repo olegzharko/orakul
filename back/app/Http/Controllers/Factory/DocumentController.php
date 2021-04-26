@@ -770,6 +770,8 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-name-d', $this->contract->dev_company->owner->name_d);
             $word->setValue('dev-patr-d', $this->contract->dev_company->owner->patronymic_d);
 
+            $word->setValue('ПРОД-ПІБ-Н-Ж', $this->get_full_name_n($this->contract->dev_company->owner));
+
             $word->setValue('dev-birth_date', $this->display_date($this->contract->dev_company->owner->birth_date));
 
             /*
