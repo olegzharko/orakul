@@ -50,7 +50,8 @@ class DocumentController extends GeneratorController
         // $this->client = $client;
         $this->client = null;
         $this->total_clients = null;
-        $this->convert = new ConvertController();
+        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
+        $this->convert = new ConvertController($this->non_break_space);
         $this->consent = null;
         $this->consents_id = $consents_id;
         $this->contract_generate_file = null;

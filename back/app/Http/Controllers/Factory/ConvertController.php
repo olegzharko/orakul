@@ -13,9 +13,10 @@ class ConvertController extends GeneratorController
 {
     public $non_break_space;
 
-    public function __construct()
+    public function __construct($space = ' ')
     {
-        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
+//        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
+        $this->non_break_space = $space;
     }
 
     public function test_price_convert($number)

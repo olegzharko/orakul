@@ -8,7 +8,6 @@ use App\Models\BuildingRepresentativeProxy;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use Illuminate\Http\Request;
-
 use App\Models\ApartmentType;
 use App\Models\Card;
 use App\Models\Client;
