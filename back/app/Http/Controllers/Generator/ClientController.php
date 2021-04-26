@@ -501,7 +501,7 @@ class ClientController extends BaseController
 //        $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 
-        ClientSpouseConsent::where('client_id', $client_id)->update([
+        ClientSpouseConsent::updateOrCreate(['client_id' => $client_id],[
             'notary_id' => $r['notary_id'],
             'template_id' => $r['consent_template_id'],
             'contract_spouse_word_id' => $r['consent_spouse_word_id'],
