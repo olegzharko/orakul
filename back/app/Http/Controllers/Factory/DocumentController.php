@@ -476,7 +476,7 @@ class DocumentController extends GeneratorController
         }
 
         $word->setValue('sign-area', $sign_area);
-        $word->setValue('МІСЦЕ-ПІДПИСУ', $sign_area);
+        $word->setValue('MІСЦЕ-ПІДПИСУ', $sign_area);
 
         /*
          * Предаставник покупця - підставити шаблон нотаріальних данних довіреності
