@@ -48,20 +48,20 @@ const Statement = (props: Props) => {
           />
         </div>
 
-        <div className="grid mb20">
+        <div className="mb20">
           <CustomInput
             label="Орган, що видав"
             onChange={(e) => meta.setData({ ...meta.data, mar_depart: e })}
             value={meta.data.mar_depart}
           />
+        </div>
+
+        <div className="grid mb20">
           <CustomInput
             label="Реєстраційний номер свідоцтва"
             onChange={(e) => meta.setData({ ...meta.data, mar_reg_num: e })}
             value={meta.data.mar_reg_num}
           />
-        </div>
-
-        <div className="grid mb20">
           <CustomSelect
             label="Нотаріус"
             data={meta.rakulNotary}
