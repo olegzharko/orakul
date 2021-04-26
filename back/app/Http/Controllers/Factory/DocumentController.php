@@ -914,6 +914,8 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-name-n-b', $this->set_style_color_and_bold($this->client->name_n));
             $word->setValue('cl-patr-n-b', $this->set_style_color_and_bold($this->client->patronymic_n));
 
+            $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_color_and_bold($this->get_full_name_n($this->client)));
+
             $word->setValue('cl-surname-r', $this->client->surname_r);
             $word->setValue('cl-name-r', $this->client->name_r);
             $word->setValue('cl-patr-r', $this->client->patronymic_r);
