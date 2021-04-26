@@ -509,10 +509,10 @@ class ClientController extends BaseController
                 'marriage_type_id' => $r['married_type_id'],
                 'mar_series' => $r['mar_series'],
                 'mar_series_num' => $r['mar_series_num'],
-                'mar_date' => $r['mar_date'] ? $r['mar_date']->format('Y.m.d.') : null,
+                'mar_date' => $r['mar_date'] ? $r['mar_date']->format('Y-m-d') : null,
                 'mar_depart' => $r['mar_depart'],
                 'mar_reg_num' => $r['mar_reg_num'],
-                'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
+                'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
                 'reg_num' => $r['reg_num'],
             ]
         );

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Factory;
 
+use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
@@ -423,6 +424,21 @@ class DocumentController extends GeneratorController
     {
 
         $word = new TemplateProcessor($template_generate_file);
+
+
+        /*
+         * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
+         * */
+        if ($this->card->dev_representative) {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
+        }
+        else {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
+        }
+
+        $word->setValue('ЗБД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $dev_full_description);
+
+
         /*
          * Додати шаблон для даних представника так покупця або чисто шаблон покупця
          * */
@@ -470,9 +486,11 @@ class DocumentController extends GeneratorController
          * додати наступний шаблон для підпису
          * */
         if ($this->total_clients > 1) {
-            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name . "<w:br/><w:br/>" . $this->style_space_line . "\${sign-area}";
+//            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name . "<w:br/><w:br/>" . $this->style_space_line . "\${sign-area}";
+            $sign_area = $sign_area_line . "</w:t></w:r></w:p><w:p><w:r><w:t>" . $sign_area_full_name . "</w:t></w:r></w:p><w:p><w:r><w:t></w:t></w:r></w:p><w:p><w:r><w:t>" . "\${sign-area}";
         } else {
-            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name;
+//            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name;
+            $sign_area = $sign_area_line . "</w:t></w:r></w:p><w:p><w:r><w:t>" . $sign_area_full_name;
         }
 
         $word->setValue('sign-area', $sign_area);
@@ -510,6 +528,27 @@ class DocumentController extends GeneratorController
         } else {
             $this->notification("Warning", "Паспортний шаблон: данні забудовника відсутні");
         }
+
+        /*
+         * Внесення текстового шаблону паспортних данних ПІДПИСАНТА для поспортных даннх в генеруэмий документ
+         * */
+        if ($this->contract->dev_representative) {
+            $word = new TemplateProcessor($template_generate_file);
+            $word->setValue('ПІДПИС-ПАСПОРТ-ID-КОД', $this->set_style_color($this->contract->dev_representative->passport_type->short_info));
+            $word->setValue('ПІДПИС-ПАСПОРТ-О', $this->set_style_color($this->contract->dev_company->owner->passport_type->description_o));
+            $word->saveAs($template_generate_file);
+
+            $word = new TemplateProcessor($template_generate_file);
+            $word->setValue('pssprt-code', $this->contract->dev_representative->passport_code);
+            $word->setValue('pssprt-date', $this->display_date($this->contract->dev_representative->passport_date));
+            $word->setValue('pssprt-depart', $this->contract->dev_representative->passport_department);
+            $word->setValue('pssprt-demogr', $this->contract->dev_representative->passport_demographic_code);
+            $word->saveAs($template_generate_file);
+        } else {
+            $this->notification("Warning", "Паспортний шаблон: данні підписанта відсутні");
+        }
+
+
 
         /*
          * Внесення текстового шаблону паспортних данних ІНВЕСТОРА для поспортных даннх в генеруэмий документ
@@ -770,8 +809,6 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-name-d', $this->contract->dev_company->owner->name_d);
             $word->setValue('dev-patr-d', $this->contract->dev_company->owner->patronymic_d);
 
-            $word->setValue('ПРОД-ПІБ-Н-Ж', $this->get_full_name_n($this->contract->dev_company->owner));
-
             $word->setValue('dev-birth_date', $this->display_date($this->contract->dev_company->owner->birth_date));
 
             /*
@@ -784,6 +821,20 @@ class DocumentController extends GeneratorController
              * Забудовник - місце проживання
              * */
             $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
+
+            $word->setValue('ЗБД-ПІБ-Н-Ж', $this->set_style_color_and_bold($this->get_full_name_n($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ПІБ-Р', $this->set_style_color($this->get_full_name_r($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ПІБ-Р-I', $this->set_style_color_and_italic($this->get_full_name_r($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ІПН-Ж', $this->set_style_color_and_bold($this->contract->dev_company->owner->tax_code));
+            $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->set_style_color($this->contract->dev_company->owner->passport_type->short_info));
+
+            $dev_gender_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_company->owner->gender);
+            $word->setValue('ЗБД-ЗАРЕЄСТР', $this->set_style_color($dev_gender_registration));
+
+            $word->setValue('ЗБД-П-АДР-СК', $this->set_style_color($this->convert->client_full_address_short($this->contract->dev_company->owner)));
+
+            $dev_gender_which_adjective = GenderWord::where('alias', "which")->value($this->contract->dev_company->owner->gender);
+            $word->setValue('ЗБД-ЯК', $this->set_style_color($dev_gender_which_adjective));
         } else {
             $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
@@ -881,6 +932,41 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-rep-patr-o', $this->contract->dev_representative->patronymic_o);
 
             $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
+
+            $word->setValue('ПІДПИС-ПІБ-Н-Ж', $this->set_style_color_and_bold($this->get_full_name_n($this->contract->dev_representative)));
+            $word->setValue('ПІДПИС-ПІБ-Р', $this->get_full_name_r($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ІПН-Ж', $this->set_style_color_and_bold($this->contract->dev_representative->tax_code));
+            $word->setValue('ПІДПИС-ДН', $this->display_date($this->contract->dev_representative->birth_date));
+
+            $word->setValue('ПІДПИС-П-АДР-СК', $this->convert->client_full_address_short($this->contract->dev_representative));
+
+            $dev_gender_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЗАРЕЄСТР', $this->set_style_color($dev_gender_registration));
+
+            $dev_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЯК', $this->set_style_color($dev_gender_which_adjective));
+
+            $dev_rep_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЇХ', $dev_rep_gender_whose);
+
+            $dev_rep_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ОЗНАЙ', $this->set_style_color($dev_rep_gender_acquainted));
+
+            $building_id = $this->contract->immovable->developer_building_id;
+            $dev_representative_id = $this->contract->dev_representative->id;
+            $proxy_id = $this->contract->immovable->proxy->id;
+
+            $proxy = BuildingRepresentativeProxy::get_proxy($building_id, $dev_representative_id, $proxy_id);
+
+            /*
+             * PROXY - довіреність тільки якщо є Представник
+             * */
+            $word->setValue('ЗБД-ДОВ-НОТ-ПІБ-О', $this->set_style_color($this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary)));
+            $word->setValue('ЗБД-ДОВ-НОТ-АКТИВНІСТЬ-О', $this->set_style_color($this->contract->immovable->proxy->notary->activity_o));
+
+            $word->setValue('ЗБД-ДОВ-НОТ-ДАТА', $this->set_style_color($this->display_date($this->contract->immovable->proxy->reg_date)));
+            $word->setValue('ЗБД-ДОВ-НОТ-НОМЕР', $this->set_style_color($this->contract->immovable->proxy->reg_num));
+
         } else {
             $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
         }
