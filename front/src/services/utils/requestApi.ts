@@ -27,7 +27,7 @@ const requestApi = async (options: RequestOptions) => {
   const res: any = await fetch(url, params);
   const json: any = await res.json();
 
-  return json;
+  return json || {};
 };
 
 export default requestApi;
