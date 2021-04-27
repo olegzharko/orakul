@@ -563,6 +563,7 @@ class ImmovableController extends BaseController
             [
                 'template_id' => $r['statement_template_id'],
                 'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
             ]);
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');

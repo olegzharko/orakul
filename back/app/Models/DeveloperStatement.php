@@ -14,6 +14,7 @@ class DeveloperStatement extends Model
         'contract_id',
         'template_id',
         'sign_date',
+        'notary_id',
     ];
 
     protected $casts = [
