@@ -33,7 +33,7 @@ class ClientSpouseConsent extends Resource
         $title = '';
 
         if ($this->notary) {
-            $title = $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic
+            $title = $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic;
         }
         return $title . " " . $this->reg_num;
     }
