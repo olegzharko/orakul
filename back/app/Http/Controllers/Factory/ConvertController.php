@@ -7,6 +7,7 @@ use App\Models\DayConvert;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
+use App\Models\Text;
 use App\Models\YearConvert;
 
 class ConvertController extends GeneratorController
@@ -717,6 +718,7 @@ class ConvertController extends GeneratorController
         $imm_city_title_n = $immovable->developer_building->city->title;
         $imm_dis_title_r = $immovable->developer_building->city->district->title_n;
         $imm_reg_title_r = $immovable->developer_building->city->region->title_n;
+        $building_type = Text::where('alias', 'building')->value('value');
 
         if ($type == null || $type == 'asc') {
             $address = "$imm_addr_type_r $imm_addr_title "
@@ -732,7 +734,7 @@ class ConvertController extends GeneratorController
                 . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_n')) . ", "
                 . "$imm_city_type_m $imm_city_title_n, "
                 . "$imm_addr_type_r $imm_addr_title, "
-                . "$imm_build_num ($imm_build_num_str)"
+                . "$building_type $imm_build_num ($imm_build_num_str)"
                 . "";
         }
 

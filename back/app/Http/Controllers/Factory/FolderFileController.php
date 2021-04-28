@@ -189,7 +189,7 @@ class FolderFileController extends Controller
         $title = null;
 
         if ($consent && $consent->template) {
-            $this->consent_template_title = $consent->template->title;
+            $this->consent_template_title = $consent->template->title . " " . $consent->client->surname_n . " " . $consent->client->tax_code;
         }
 
         $title = "{$this->generate_path}/"
@@ -211,6 +211,19 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($this->contract->developer_statement->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function communal_title($client, $template)
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "$template->title $this->subscriber $client->surname_n $client->tax_code"
+            . "$this->file_type_docx"
+            . "";
+
+        $template = $this->file_path($template);
         $this->create_file_for_contract($template, $title);
         return $title;
     }

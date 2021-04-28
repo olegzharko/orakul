@@ -497,7 +497,6 @@ class ClientController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-//        dd($r['mar_date'], $r['sign_date']);
 //        $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 
@@ -522,10 +521,16 @@ class ClientController extends BaseController
 
         $contracts_id = ClientContract::where('client_id', $client_id)->pluck('contract_id');
 
+
         if (count($contracts_id)) {
             foreach ($contracts_id as $contr_id) {
                 if ($contr_id) {
-                    ClientSpouseConsentContract::updateOrCreate(['contract_id' => $contr_id], ['client_spouse_consent_id' => $client_spouse_consent_id]);
+                    if (!$clc = ClientSpouseConsentContract::where(['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id])->first()) {
+                        $clc = new ClientSpouseConsentContract();
+                        $clc->contract_id = $contr_id;
+                        $clc->client_spouse_consent_id = $client_spouse_consent_id;
+                        $clc->save();
+                    }
                 }
             }
         }
