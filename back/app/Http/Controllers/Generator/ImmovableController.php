@@ -487,7 +487,8 @@ class ImmovableController extends BaseController
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
         $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
-        $communal_templates = CommunalTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+
+        $communal_templates = CommunalTemplate::select('id', 'title')->where('dev_company_id', $immovable->developer_building->dev_company->id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
