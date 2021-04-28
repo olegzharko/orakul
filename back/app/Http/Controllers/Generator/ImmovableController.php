@@ -12,6 +12,8 @@ use App\Models\BankAccountPayment;
 use App\Models\BankAccountTemplate;
 use App\Models\BankTaxesPayment;
 use App\Models\BankTaxesTemplate;
+use App\Models\Communal;
+use App\Models\CommunalTemplate;
 use App\Models\ConsentTemplate;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
@@ -485,6 +487,7 @@ class ImmovableController extends BaseController
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
         $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+        $communal_templates = CommunalTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
@@ -492,6 +495,7 @@ class ImmovableController extends BaseController
         $taxes = BankTaxesPayment::where('contract_id', $contract->id)->first();
         $questionnaire = Questionnaire::where('contract_id', $contract->id)->first();
         $statement = DeveloperStatement::where('contract_id', $contract->id)->first();
+        $communal = Communal::where('contract_id', $contract->id)->first();
         $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
 
         $result['contract_type'] = $contract_type;
@@ -500,6 +504,7 @@ class ImmovableController extends BaseController
         $result['taxes_templates'] = $taxes_templates;
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
+        $result['communal_templates'] = $communal_templates;
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date > $this->date ? $final_sing_date->sign_date->format('d.m.Y') : null;
@@ -510,6 +515,7 @@ class ImmovableController extends BaseController
         $result['taxes_template_id'] = $taxes->template_id ?? null;
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
         $result['statement_template_id'] = $statement->template_id ?? null;
+        $result['communal_template_id'] = $communal->template_id ?? null;
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
 
@@ -562,6 +568,14 @@ class ImmovableController extends BaseController
             ['contract_id' => $contract_id],
             [
                 'template_id' => $r['statement_template_id'],
+                'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
+            ]);
+
+        Communal::updateOrCreate(
+            ['contract_id' => $contract_id],
+            [
+                'template_id' => $r['communal_template_id'],
                 'sign_date' => $r['sign_date'],
                 'notary_id' => $notary_id,
             ]);
