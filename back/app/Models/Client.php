@@ -98,6 +98,11 @@ class Client extends Model implements Sortable
         return $this->hasOne(Representative::class, 'client_id');
     }
 
+    public function communal()
+    {
+        return $this->hasOne(Communal::class, 'client_id');
+    }
+
 //    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
 //    {
 //        return Client::where([
