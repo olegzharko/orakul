@@ -117,6 +117,16 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Коммунальні від забудовника відсутні");
 
+                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                    $this->termination_contract_template_set_data();
+                else
+                    $this->notification("Warning", "Договір розірвання відсутній");
+
+                if ($this->contract->termination_refund && $this->contract->termination_refund->template_id)
+                    $this->termination_refund_template_set_data();
+                else
+                    $this->notification("Warning", "Заява про повернення коштів");
+
                 if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id)
                     $this->bank_account_template_set_data();
                 else
@@ -128,12 +138,16 @@ class DocumentController extends GeneratorController
                     $this->notification("Warning", "Податки відсутні");
 
                 if ($this->client && $this->client->client_spouse_consent &&  $this->client->client_spouse_consent->template_id) {
-//                    $this->consent = $this->client->client_spouse_consent;
-                        // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
                     $this->consent_template_set_data();
                     if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
                         unset($this->consents_id[$del_consents_id]);
                     }
+                } else {
+                     $this->notification("Warning", "Згода подружжя відсутня");
+                }
+
+                if ($this->client && $this->client->termination_consent &&  $this->client->termination_consent->template_id) {
+                    $this->termination_consent_template_set_data();
                 } else {
                      $this->notification("Warning", "Згода подружжя відсутня");
                 }
@@ -258,6 +272,40 @@ class DocumentController extends GeneratorController
         unset($word);
     }
 
+    public function termination_contract_template_set_data()
+    {
+        $this->termination_contract_generate_file = $this->ff->termination_contract_title();
+
+        $this->convert->date_to_string($this->client->termination_contract, $this->client->termination_contract->sign_date);
+
+        $this->set_passport_template_part($this->termination_contract_generate_file);
+        $this->set_current_document_notary($this->termination_contract_generate_file, $this->client->termination_contract->notary);
+        $this->set_sign_date($this->termination_contract_generate_file, $this->client->termination_contract);
+
+        $word = new TemplateProcessor($this->termination_contract_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_contract_generate_file);
+
+        unset($word);
+    }
+
+    public function termination_refund_template_set_data()
+    {
+        $this->termination_refund_generate_file = $this->ff->termination_refund_title();
+
+        $this->convert->date_to_string($this->client->termination_refund, $this->client->termination_refund->sign_date);
+
+        $this->set_passport_template_part($this->termination_refund_generate_file);
+        $this->set_current_document_notary($this->termination_refund_generate_file, $this->client->termination_refund->notary);
+        $this->set_sign_date($this->termination_refund_generate_file, $this->client->termination_refund);
+
+        $word = new TemplateProcessor($this->termination_refund_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_refund_generate_file);
+
+        unset($word);
+    }
+
     public function consent_template_set_data()
     {
         $this->consent_generate_file = $this->ff->consent_title($this->consent);
@@ -273,7 +321,23 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->consent_generate_file);
 
         unset($word);
-        // echo "<br>";
+    }
+
+    public function termination_consent_template_set_data()
+    {
+        $this->termination_consent_generate_file = $this->ff->termination_consent_title($this->termination_consent, $this->client);
+
+        $this->convert->date_to_string($this->termination_consent, $this->termination_consent->sign_date);
+        $this->set_passport_template_part($this->termination_consent_generate_file);
+        $this->set_current_document_notary($this->termination_consent_generate_file, $this->termination_consent->notary);
+        $this->set_termination_consent_married_template_part();
+        $this->set_sign_date($this->termination_consent_generate_file, $this->termination_consent);
+
+        $word = new TemplateProcessor($this->termination_consent_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_consent_generate_file);
+
+        unset($word);
     }
 
     public function bank_account_template_set_data()

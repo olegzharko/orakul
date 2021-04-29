@@ -105,6 +105,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('ownership/{immovable_id}', [ImmovableController::class, 'get_ownership']); // postman
             Route::put('ownership/{immovable_id}', [ImmovableController::class, 'update_ownership']);
 
+            Route::get('termination/{immovable_id}', [ImmovableController::class, 'get_termination']); // postman
+            Route::put('termination/{immovable_id}', [ImmovableController::class, 'update_termination']);
+
             Route::get('template/{immovable_id}', [ImmovableController::class, 'get_template']); // postman
             Route::put('template/{immovable_id}', [ImmovableController::class, 'update_template']);
 
@@ -133,6 +136,9 @@ Route::middleware('auth:api')->group(function () {
 
             Route::get('consents/{card_id}/{client_id}', [ClientController::class, 'get_consents']); // postman
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
+
+            Route::get('termination/{card_id}/{client_id}', [ClientController::class, 'get_termination']); // postman
+            Route::put('termination/{client_id}', [ClientController::class, 'update_termination']);
 
             Route::get('representative/{card_id}/{client_id}', [ClientController::class, 'get_representative']);
             Route::put('representative/{client_id}', [ClientController::class, 'update_representative']);

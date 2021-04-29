@@ -26,6 +26,8 @@ use App\Models\Representative;
 use App\Models\SpouseWord;
 use App\Models\Spouse;
 use App\Models\Contract;
+use App\Models\TerminationConsent;
+use App\Models\TerminationConsentTemplate;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -534,6 +536,73 @@ class ClientController extends BaseController
                 }
             }
         }
+
+        return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
+    }
+
+    public function get_termination($card_id, $client_id)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $consent_templates = TerminationConsentTemplate::select('id', 'title')->get();
+
+        $convert_notary = [];
+        $other_notary = [];
+
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+        foreach ($separate_by_card as $key => $value) {
+            $other_notary[$key]['id'] = $value->id;
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+        $result['consent_templates'] = $consent_templates;
+        $result['notary_id'] = null;
+        $result['consent_template_id'] = null;
+        $result['reg_date'] = null;
+        $result['reg_num'] = null;
+
+        if ($client->termination_consent) {
+            $result['notary_id'] = $client->termination_consent->notary_id;
+            $result['consent_template_id'] = $client->termination_consent->template_id;
+            $result['reg_date'] = $client->termination_consent->reg_date ? $client->termination_consent->reg_date->format('d.m.Y') : null;
+            $result['reg_num'] = $client->termination_consent->reg_num;
+        }
+
+        return $this->sendResponse($result, 'Дані по заяві-згоді на розірвання з боку клієнта з ID ' . $client_id);
+    }
+
+    public function update_termination($client_id, Request $r)
+    {
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $validator = $this->validate_client_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        TerminationConsent::updateOrCreate(
+            ['client_id' => $client_id],
+            [
+                'notary_id' => $r['notary_id'],
+                'template_id' => $r['consent_template_id'],
+                'reg_date' => $r['reg_date'] ? $r['reg_date']->format('Y-m-d') : null,
+                'reg_num' => $r['reg_num'],
+            ]
+        );
 
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
     }

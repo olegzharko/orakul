@@ -202,6 +202,20 @@ class FolderFileController extends Controller
         return $title;
     }
 
+    public function termination_consent_title($termination_consent, $client)
+    {
+        $title = null;
+
+        $title = "{$this->generate_path}/"
+            . $termination_consent->template->title . " " . $client->surname_n
+            . "$this->file_type_docx"
+            . "";
+
+        $template = $this->file_path($consent->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
     public function developer_statement_title()
     {
         $title = null;
@@ -224,6 +238,19 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function termination_contract_title()
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "{$this->termination_contract->template->title}"
+            . "{$this->file_type_docx}"
+            . "";
+
+        $template = $this->file_path($this->contract->developer_statement->template);
         $this->create_file_for_contract($template, $title);
         return $title;
     }
