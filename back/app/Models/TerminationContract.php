@@ -36,6 +36,6 @@ class TerminationContract extends Model
 
     public function template()
     {
-        return $this->belongsTo(TerminationRefundTemplate::class, 'template_id');
+        return $this->belongsTo(TerminationContractTemplate::class, 'template_id');
     }
 }
