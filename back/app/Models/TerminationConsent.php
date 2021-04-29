@@ -41,6 +41,6 @@ class TerminationConsent extends Model
 
     public function template()
     {
-        return $this->belongsTo(TerminationRefundTemplate::class, 'template_id');
+        return $this->belongsTo(TerminationConsentTemplate::class, 'template_id');
     }
 }
