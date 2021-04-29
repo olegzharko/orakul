@@ -43,4 +43,9 @@ class TerminationConsent extends Model
     {
         return $this->belongsTo(TerminationConsentTemplate::class, 'template_id');
     }
+
+    public function termination_spouse_word()
+    {
+        return $this->belongsTo(SpouseWord::class, 'termination_spouse_word_id');
+    }
 }
