@@ -487,8 +487,11 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        $contract_id = Contract::where('immovabel_id', $immovable_id)->value('id');
+
         $termnation_info = TerminationInfo::firstOrCreate(
-            ['immovable_id' => $immovable_id],
+            ['contract_id' => $contract_id],
         );
 
         $convert_notary = [];

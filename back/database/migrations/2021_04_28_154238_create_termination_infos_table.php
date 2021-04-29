@@ -15,7 +15,8 @@ class CreateTerminationInfosTable extends Migration
     {
         Schema::create('termination_infos', function (Blueprint $table) {
             $table->id();
-            $table->integer('immovable_id')->nullable();
+//            $table->integer('immovable_id')->nullable();
+            $table->integer('contract_id')->nullable();
             $table->integer('price')->nullable();
             $table->integer('notary_id')->nullable();
             $table->dateTime('reg_date')->nullable();

@@ -11,7 +11,7 @@ class TerminationInfo extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'immovable_id',
+        'contract_id',
         'price',
         'notary_id',
         'reg_date',
@@ -22,6 +22,11 @@ class TerminationInfo extends Model
         'reg_date' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
 
     public function notary()
     {

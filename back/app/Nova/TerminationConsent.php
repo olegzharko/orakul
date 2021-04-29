@@ -53,7 +53,6 @@ class TerminationConsent extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-//            BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable'),
             BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
             BelongsTo::make('Шаблон', 'template', 'App\Nova\TerminationRefundTemplate'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),

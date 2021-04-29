@@ -53,6 +53,7 @@ class TerminationInfo extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Договір', 'contract', 'App\Nova\Contract'),
             Heading::make('<p class="text-success">Повна вартість в гривнях</p>')->asHtml(),
             Money::make('price', 'UAH')->storedInMinorUnits(),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
