@@ -30,7 +30,7 @@ class TerminationRefundTemplate extends Resource
 
     public static function label()
     {
-        return "Розірвання Заява";
+        return "Розірвання Заява про повернення";
     }
 
     /**
