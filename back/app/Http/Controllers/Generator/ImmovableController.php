@@ -587,11 +587,11 @@ class ImmovableController extends BaseController
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
         $result['statement_template_id'] = $statement->template_id ?? null;
         $result['communal_template_id'] = $communal->template_id ?? null;
-        $result['termination_contract_template_id'] = $termination_contract->template_id ?? null;
-        $result['termination_refund_template_id'] = $termination_refund->template_id ?? null;
-        $result['termination_refund_notary_id'] = $termination_refund->notary_id ?? null;
-        $result['termination_refund_reg_date'] = $termination_refund->reg_date ? $termination_refund->reg_date->format('d.m.Y') : null;
-        $result['termination_refund_reg_num'] = $termination_refund->reg_num ?? null;
+        $result['termination_contract_template_id'] = $termination_contract ? $termination_contract->template_id : null;
+        $result['termination_refund_template_id'] = $termination_refund ? $termination_refund->template_id : null;
+        $result['termination_refund_notary_id'] = $termination_refund ? $termination_refund->notary_id : null;
+        $result['termination_refund_reg_date'] = $termination_refund ? $termination_refund->reg_date->format('d.m.Y') : null;
+        $result['termination_refund_reg_num'] = $termination_refund ? $termination_refund->reg_num : null;
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
 
