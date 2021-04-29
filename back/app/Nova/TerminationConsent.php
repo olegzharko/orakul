@@ -56,7 +56,7 @@ class TerminationConsent extends Resource
             BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
             BelongsTo::make('Шаблон', 'template', 'App\Nova\TerminationRefundTemplate'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
-            BelongsTo::make('Нотариус', 'termination_spouse_word', 'App\Nova\SpouseWord'),
+            BelongsTo::make('Пункт згоди у договорі', 'termination_spouse_word', 'App\Nova\SpouseWord'),
             DateTime::make('Дата реєстрації', 'sign_date'),
             Text::make('Зареєстровано в реєстрі за №', 'reg_num'),
         ];
