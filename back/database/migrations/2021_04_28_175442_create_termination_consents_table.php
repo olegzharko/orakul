@@ -19,7 +19,7 @@ class CreateTerminationConsentsTable extends Migration
             $table->integer('client_id')->nullable();
             $table->integer('template_id')->nullable();
             $table->integer('notary_id')->nullable();
-            $table->dateTime('reg_date')->nullable();
+            $table->dateTime('sign_date')->nullable();
             $table->string('reg_num')->nullable();
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);

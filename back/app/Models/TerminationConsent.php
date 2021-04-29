@@ -15,12 +15,12 @@ class TerminationConsent extends Model
         'client_id',
         'template_id',
         'notary_id',
-        'reg_date',
+        'sign_date',
         'reg_num'
     ];
 
     protected $casts = [
-        'reg_date' => 'datetime',
+        'sign_date' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 
