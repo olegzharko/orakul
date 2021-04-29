@@ -97,6 +97,11 @@ class Contract extends Model implements Sortable
         return $this->hasOne(FinalSignDate::class, 'contract_id');
     }
 
+    public function termination_info()
+    {
+        return $this->hasOne(TerminationInfo::class, 'contract_id');
+    }
+
     public function termination_contract()
     {
         return $this->hasOne(TerminationContract::class, 'contract_id');
