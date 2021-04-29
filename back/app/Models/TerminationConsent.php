@@ -11,7 +11,7 @@ class TerminationConsent extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'immovable_id',
+//        'immovable_id',
         'client_id',
         'template_id',
         'notary_id',
@@ -29,10 +29,10 @@ class TerminationConsent extends Model
         return $this->belongsTo(Notary::class, 'notary_id');
     }
 
-    public function immovable()
-    {
-        return $this->belongsTo(Immovable::class, 'immovable_id');
-    }
+//    public function immovable()
+//    {
+//        return $this->belongsTo(Immovable::class, 'immovable_id');
+//    }
 
     public function client()
     {

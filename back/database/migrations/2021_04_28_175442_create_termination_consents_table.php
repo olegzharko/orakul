@@ -15,7 +15,7 @@ class CreateTerminationConsentsTable extends Migration
     {
         Schema::create('termination_consents', function (Blueprint $table) {
             $table->id();
-            $table->integer('immovable_id')->nullable();
+//            $table->integer('immovable_id')->nullable();
             $table->integer('client_id')->nullable();
             $table->integer('template_id')->nullable();
             $table->integer('notary_id')->nullable();
