@@ -917,7 +917,7 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - ПІБ
              * */
-            $word->setValue('dev-full-name-n', $this->get_full_name_n($this->contract->dev_company->owner));
+            $word->setValue('dev-full-name-n', $this->convert->get_full_name_n($this->contract->dev_company->owner));
 
             $word->setValue('dev-surname-n', $this->contract->dev_company->owner->surname_n);
             $word->setValue('dev-name-n', $this->contract->dev_company->owner->name_n);
@@ -944,17 +944,19 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
 
+            dd(1);
+            $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
             $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
             $word->setValue('ЗБД-ПОБАТЬК-Н', $this->contract->dev_company->owner->patronymic_n);
             $word->setValue('ЗБД-ДН', $this->display_date($this->contract->dev_company->owner->birth_date));
 
-            $word->setValue('ЗБД-ПІБ-Н', $this->get_full_name_n($this->contract->dev_company->owner));
-            $word->setValue('ЗБД-ПІБ-Н-Ж', $this->set_style_bold($this->get_full_name_n($this->contract->dev_company->owner)));
-            $word->setValue('ЗБД-ПІБ-Р', $this->get_full_name_r($this->contract->dev_company->owner));
-            $word->setValue('ЗБД-ПІБ-Д', $this->get_full_name_d($this->contract->dev_company->owner));
-            $word->setValue('ЗБД-ПІБ-О', $this->get_full_name_o($this->contract->dev_company->owner));
-            $word->setValue('ЗБД-ПІБ-Р-I', $this->get_full_name_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Н', $this->convert->get_full_name_n($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ПІБ-Р', $this->convert->get_full_name_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Д', $this->convert->get_full_name_d($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Р-I', $this->convert->get_full_name_r($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ІПН', $this->contract->dev_company->owner->tax_code);
             $word->setValue('ЗБД-ІПН-Ж', $this->set_style_bold($this->contract->dev_company->owner->tax_code));
             $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->contract->dev_company->owner->passport_type->short_info);
@@ -985,7 +987,7 @@ class DocumentController extends GeneratorController
 
                 $dev_spouse_type_by_gender = KeyWord::where('key', $this->contract->dev_company->owner->married->spouse->gender)->value('title_o');
                 $word->setValue('ЗГ-ПОДР-ЗБД-РОЛЬ-О-UP', $this->mb_ucfirst($dev_spouse_type_by_gender));
-                $word->setValue('ЗГ-ПОДР-ЗБД-ПІБ-О', $this->get_full_name_o($this->contract->dev_company->owner->married->spouse));
+                $word->setValue('ЗГ-ПОДР-ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner->married->spouse));
 
                 $dev_spouse_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_company->owner->married->spouse->gender);
                 $word->setValue('ЗГ-ПОДР-ЗБД-ЇХ', $dev_spouse_gender_whose);
@@ -1024,6 +1026,7 @@ class DocumentController extends GeneratorController
                 $citizen_o = KeyWord::where('key', "citizen_female")->value('title_o');
             }
             $word->setValue('inv-citizen-o', $citizen_o);
+
             $word->setValue('inv-full-addr', $this->convert->get_client_full_address_n($investment_agreement->investor));
 
             $word->setValue('ІНВ-НОМЕР', $investment_agreement->number);
@@ -1031,9 +1034,9 @@ class DocumentController extends GeneratorController
             $word->setValue('ІНВ-ГРОМАД', $citizen_o);
             $word->setValue('ІНВ-ЗАРЕЄСТР', GenderWord::where('alias', "registration")->value($investment_agreement->investor->gender));
             $word->setValue('ІНВ-ЯК', GenderWord::where('alias', "which-adjective")->value($investment_agreement->investor->gender));
-            $word->setValue('ІНВ-ПІБ', $this->get_full_name_n($investment_agreement->investor));
-            $word->setValue('ІНВ-ПІБ-О', $this->get_full_name_o($investment_agreement->investor));
-            $word->setValue('ІНВ-ПІБ-Р', $this->get_full_name_r($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ', $this->convert->get_full_name_n($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-О', $this->convert->get_full_name_o($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-Р', $this->convert->get_full_name_r($investment_agreement->investor));
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
             $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_n($investment_agreement->investor));
         } else {
@@ -1050,7 +1053,7 @@ class DocumentController extends GeneratorController
     {
         if ($this->contract && $this->contract->dev_representative) {
 
-            $word->setValue('dev-rep-full-name-n', $this->get_full_name_n($this->contract->dev_representative));
+            $word->setValue('dev-rep-full-name-n', $this->convert->get_full_name_n($this->contract->dev_representative));
 
             $word->setValue('dev-rep-surname-n', $this->contract->dev_representative->surname_n);
             $word->setValue('dev-rep-name-n', $this->contract->dev_representative->name_n);
@@ -1074,9 +1077,9 @@ class DocumentController extends GeneratorController
             $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
             $word->setValue('ПІДПИС-ПОБАТЬК-Н', $this->contract->dev_representative->patronymic_n);
 
-            $word->setValue('ПІДПИС-ПІБ-Н', $this->get_full_name_n($this->contract->dev_representative));
-            $word->setValue('ПІДПИС-ПІБ-Н-Ж', $this->set_style_bold($this->get_full_name_n($this->contract->dev_representative)));
-            $word->setValue('ПІДПИС-ПІБ-Р', $this->get_full_name_r($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПІБ-Н', $this->convert->get_full_name_n($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->contract->dev_representative)));
+            $word->setValue('ПІДПИС-ПІБ-Р', $this->convert->get_full_name_r($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ІПН', $this->contract->dev_representative->tax_code);
             $word->setValue('ПІДПИС-ІПН-Ж', $this->set_style_bold($this->contract->dev_representative->tax_code));
             $word->setValue('ПІДПИС-ДН', $this->display_date($this->contract->dev_representative->birth_date));
@@ -1126,14 +1129,14 @@ class DocumentController extends GeneratorController
             /*
              * Клієнт - ПІБ
              * */
-            $word->setValue('cl-full-name-n', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
-            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ-О', $this->get_full_name_o($this->client));
-            $word->setValue('КЛ-ПІБ-Р', $this->get_full_name_r($this->client));
-            $word->setValue('КЛ-ПІБ-Д', $this->get_full_name_d($this->client));
-            $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->get_full_name_n_upper($this->client));
+            $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-О', $this->convert->get_full_name_o($this->client));
+            $word->setValue('КЛ-ПІБ-Р', $this->convert->get_full_name_r($this->client));
+            $word->setValue('КЛ-ПІБ-Д', $this->convert->get_full_name_d($this->client));
+            $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->convert->get_full_name_n_upper($this->client));
 
             $word->setValue('cl-surname-n', $this->client->surname_n);
             $word->setValue('cl-name-n', $this->client->name_n);
@@ -1147,7 +1150,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-name-n-b', $this->set_style_bold($this->client->name_n));
             $word->setValue('cl-patr-n-b', $this->set_style_bold($this->client->patronymic_n));
 
-            $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_bold($this->get_full_name_n($this->client)));
+            $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->client)));
 
             $word->setValue('cl-surname-r', $this->client->surname_r);
             $word->setValue('cl-name-r', $this->client->name_r);
@@ -1260,7 +1263,7 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-ПРІЗВ-Н', $this->client->surname_n);
             $word->setValue($this->total_clients . '-КЛ-ІМЯ-Н', $this->client->name_n);
             $word->setValue($this->total_clients . '-КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
-            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue($this->total_clients . '-КЛ-ЇХ', $cl_gender_whose);
 
         } else {
@@ -1279,7 +1282,7 @@ class DocumentController extends GeneratorController
             /*
              * Представник - ПІБ
              * */
-            $word->setValue('cr-full-name-n', $this->get_full_name_n($this->client->representative->confidant));
+            $word->setValue('cr-full-name-n', $this->convert->get_full_name_n($this->client->representative->confidant));
             $word->setValue('cr-surname-n', $this->client->representative->confidant->surname_n);
             $word->setValue('cr-name-n', $this->client->representative->confidant->name_n);
             $word->setValue('cr-patr-n', $this->client->representative->confidant->patronymic_n);
@@ -1361,7 +1364,7 @@ class DocumentController extends GeneratorController
             /*
              * Подружжя клієнта - ПІБ
              * */
-            $word->setValue('cs-full-name-n', $this->get_full_name_n($this->client->married->spouse));
+            $word->setValue('cs-full-name-n', $this->convert->get_full_name_n($this->client->married->spouse));
 
             $word->setValue('cs-surname-n', $this->client->married->spouse->surname_n);
             $word->setValue('cs-name-n', $this->client->married->spouse->name_n);
@@ -1371,8 +1374,8 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-name-r', $this->client->married->spouse->name_r);
             $word->setValue('cs-patr-r', $this->client->married->spouse->patronymic_r);
 
-            $word->setValue('ПОД-ПІБ-Н', $this->get_full_name_n($this->client->married->spouse));
-            $word->setValue('ПОД-ПІБ-Р', $this->get_full_name_r($this->client->married->spouse));
+            $word->setValue('ПОД-ПІБ-Н', $this->convert->get_full_name_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПІБ-Р', $this->convert->get_full_name_r($this->client->married->spouse));
 
             $word->setValue('cs-surname-o', $this->client->married->spouse->surname_o);
             $word->setValue('cs-name-o', $this->client->married->spouse->name_o);
@@ -1632,7 +1635,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
 
-            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->get_full_name_o($this->contract->immovable_ownership->notary));
+            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
             $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable_ownership->notary->activity_o);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
@@ -1999,55 +2002,71 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    public function get_full_name_n($client)
-    {
-        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+//    public function get_full_name_n($client)
+//    {
+//        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+//
+//        if (!$client->patronymic_n)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
 
-        return $full_name;
-    }
-
-    public function get_full_name_r($client)
-    {
-        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
-
-        return $full_name;
-    }
-
-    public function get_full_name_d($client)
-    {
-        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
-
-        return $full_name;
-    }
-
-    public function get_full_name_o($client)
-    {
-        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
-
-        return $full_name;
-    }
-
-    public function get_full_name_n_upper($client)
-    {
-        $surname = mb_strtoupper($client->surname_n);
-        $name = mb_strtoupper($client->name_n);
-        $patronymic = mb_strtoupper($client->patronymic_n);
-
-        $full_name = "$surname $name $patronymic";
-
-        return $full_name;
-    }
-
-    public function get_full_name_r_upper($client)
-    {
-        $surname = mb_strtoupper($client->surname_r);
-        $name = mb_strtoupper($client->name_r);
-        $patronymic = mb_strtoupper($client->patronymic_r);
-
-        $full_name = "$surname $name $patronymic";
-
-        return $full_name;
-    }
+//    public function convert->get_full_name_r($client)
+//    {
+//        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+//
+//        if (!$client->patronymic_r)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function get_full_name_d($client)
+//    {
+//        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
+//
+//        if (!$client->patronymic_d)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function convert->get_full_name_o($client)
+//    {
+//        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
+//
+//        if (!$client->patronymic_o)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function get_full_name_n_upper($client)
+//    {
+////        $surname = mb_strtoupper($client->surname_n);
+////        $name = mb_strtoupper($client->name_n);
+////        $patronymic = mb_strtoupper($client->patronymic_n);
+//
+//        $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
+//        $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function convert->get_full_name_r_upper($client)
+//    {
+////        $surname = mb_strtoupper($client->surname_r);
+////        $name = mb_strtoupper($client->name_r);
+////        $patronymic = mb_strtoupper($client->patronymic_r);
+////
+////        $full_name = "$surname $name $patronymic";
+//
+//        $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
+//        $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
 
     public function set_taxes_data($sheet)
     {
@@ -2068,9 +2087,9 @@ class DocumentController extends GeneratorController
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
             $this->notification('Warning', $price * $percent . " " . $i);
             $sheet->setCellValue("A{$i}", $price * $percent);
-            $sheet->setCellValue("B{$i}", $this->get_full_name_n($pay_buy_client));
+            $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($pay_buy_client));
             $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
-            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->get_full_name_n($pay_buy_client);
+            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($pay_buy_client);
             $sheet->setCellValue("E{$i}", $full_tax_info);
 
             $sheet->setCellValue("F{$i}", $tax->mfo);
@@ -2081,10 +2100,10 @@ class DocumentController extends GeneratorController
         }
 
         $sheet->setCellValue("A8", "покупець");
-        $sheet->setCellValue("B8", $this->get_full_name_n($this->client));
+        $sheet->setCellValue("B8", $this->convert->get_full_name_n($this->client));
         $sheet->setCellValue("C8", $this->client->tax_code);
         $sheet->setCellValue("B9", "продавець");
-        $sheet->setCellValue("B9", $this->get_full_name_n($this->contract->dev_company->owner));
+        $sheet->setCellValue("B9", $this->convert->get_full_name_n($this->contract->dev_company->owner));
         $sheet->setCellValue("C9", $this->contract->dev_company->owner->tax_code);
         $sheet->setCellValue("B10", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
         $sheet->setCellValue("B11", $price);

@@ -28,6 +28,7 @@ use App\Models\Spouse;
 use App\Models\Contract;
 use App\Models\TerminationConsent;
 use App\Models\TerminationConsentTemplate;
+use App\Nova\ActualAddress;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -121,6 +122,9 @@ class ClientController extends BaseController
             'surname_r',
             'name_r',
             'patronymic_r',
+            'surname_d',
+            'name_d',
+            'patronymic_d',
             'surname_o',
             'name_o',
             'patronymic_o',
@@ -180,6 +184,9 @@ class ClientController extends BaseController
             'surname_r' => $r['surname_r'],
             'name_r' => $r['name_r'],
             'patronymic_r' => $r['patronymic_r'],
+            'surname_d' => $r['surname_d'],
+            'name_d' => $r['name_d'],
+            'patronymic_d' => $r['patronymic_d'],
             'surname_o' => $r['surname_o'],
             'name_o' => $r['name_o'],
             'patronymic_o' => $r['patronymic_o'],
@@ -321,6 +328,7 @@ class ClientController extends BaseController
         $result['address_type'] = $address_type;
         $result['building_type'] = $building_type;
         $result['apartment_type'] = $apartment_type;
+        $result['registration'] = $client->registration ? true : false;
         $result['region_id'] = $client->city ? $client->city->region_id : null;
         $result['city_id'] = $client->city_id;
         $result['address_type_id'] = $client->address_type_id;
@@ -330,6 +338,29 @@ class ClientController extends BaseController
         $result['apartment_type_id'] = $client->apartment_type_id;
         $result['apartment_num'] = $client->apartment_num;
 
+        $result['actual'] = null;
+        $result['actual_region_id'] = null;
+        $result['actual_city_id'] = null;
+        $result['actual_address_type_id'] = null;
+        $result['actual_address'] = null;
+        $result['actual_building_type_id'] = null;
+        $result['actual_building_num'] = null;
+        $result['actual_apartment_type_id'] = null;
+        $result['actual_apartment_num'] = null;
+
+        if ($client->actual_address) {
+            $result['actual'] = true;
+            $result['region_id'] = $client->actual_address->city ? $client->actual_address->city->region_id : null;
+            $result['city_id'] = $client->actual_address->city_id;
+            $result['address_type_id'] = $client->actual_address->address_type_id;
+            $result['address'] = $client->actual_address->address;
+            $result['building_type_id'] = $client->actual_address->building_type_id;
+            $result['building_num'] = $client->actual_address->building;
+            $result['apartment_type_id'] = $client->actual_address->apartment_type_id;
+            $result['apartment_num'] = $client->actual_address->apartment_num;
+        } else {
+            $result['actual'] = false;
+        }
 
         return $this->sendResponse($result, 'Дані адреси клієнта з ID ' . $client_id);
     }
@@ -385,6 +416,7 @@ class ClientController extends BaseController
         }
 
         Client::where('id', $client_id)->update([
+            'registration' => $r['registration'] ? 1 : 0,
             'city_id' => $r['city_id'],
             'address_type_id' => $r['address_type_id'],
             'address' => $r['address'],
@@ -393,6 +425,22 @@ class ClientController extends BaseController
             'apartment_type_id' => $r['apartment_type_id'],
             'apartment_num' => $r['apartment_num'],
         ]);
+
+        if ($r['actual']) {
+            ActualAddress::updateOrCreate(
+                ['client_id' => $client_id],
+                [
+                    'actual' => $r['actual'],
+                    'region_id' => $r['region_id'],
+                    'city_id' => $r['city_id'],
+                    'address_type_id' => $r['address_type_id'],
+                    'address' => $r['address'],
+                    'building_type_id' => $r['building_type_id'],
+                    'building_num' => $r['building_num'],
+                    'apartment_type_id' => $r['apartment_type_id'],
+                    'apartment_num' => $r['apartment_num'],
+                ]);
+        }
 
         return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
     }

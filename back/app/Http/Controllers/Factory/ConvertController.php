@@ -796,5 +796,90 @@ class ConvertController extends GeneratorController
     {
         return KeyWord::where('key', 'floor_' . $floor)->value('title_d');
     }
+
+    public function get_full_name_n($client)
+    {
+        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+
+        if (!$client->patronymic_n)
+            $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_full_name_r($client)
+    {
+        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+
+        if (!$client->patronymic_r)
+            $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_full_name_d($client)
+    {
+        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
+
+        if (!$client->patronymic_d)
+            $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_full_name_o($client)
+    {
+        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
+
+        if (!$client->patronymic_o)
+            $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_full_name_n_upper($client)
+    {
+//        $surname = mb_strtoupper($client->surname_n);
+//        $name = mb_strtoupper($client->name_n);
+//        $patronymic = mb_strtoupper($client->patronymic_n);
+
+        $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
+        $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_full_name_r_upper($client)
+    {
+//        $surname = mb_strtoupper($client->surname_r);
+//        $name = mb_strtoupper($client->name_r);
+//        $patronymic = mb_strtoupper($client->patronymic_r);
+//
+//        $full_name = "$surname $name $patronymic";
+
+        $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
+        $full_name = mb_strtoupper($full_name);
+
+        return $full_name;
+    }
+
+    public function get_client_citizenship($client)
+    {
+        $resutl = '';
+
+        if ($client->citizenship)
+        {
+            if ($client->gender == "male") {
+                $citizen_o = KeyWord::where('key', "citizen_male")->value('title_n');
+            } else {
+                $citizen_o = KeyWord::where('key', "citizen_female")->value('title_n');
+            }
+
+            $country = $client->citizenship->title_r;
+            $resutl = "$citizen_o $country";
+        }
+
+        return $resutl;
+    }
 }
 

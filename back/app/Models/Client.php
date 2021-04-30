@@ -15,6 +15,19 @@ class Client extends Model implements Sortable
     use HasFactory, SortableTrait, SoftDeletes;
 
     protected $fillable = [
+        'surname_n',
+        'name_n',
+        'patronymic_n',
+        'surname_r',
+        'name_r',
+        'patronymic_r',
+        'surname_d',
+        'name_d',
+        'patronymic_d',
+        'surname_o',
+        'name_o',
+        'patronymic_o',
+        'registration',
         'gender',
         'birth_date',
         'tax_code',
