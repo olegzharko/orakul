@@ -944,7 +944,6 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
 
-            dd(1);
             $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
             $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
