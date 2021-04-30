@@ -31,6 +31,9 @@ class DocumentController extends GeneratorController
     public $bank_account_generate_file;
     public $bank_taxes_generate_file;
     public $communal_generate_file;
+    public $termination_refund_file;
+    public $termination_consent_file;
+    public $termination_contract_file;
     public $style_bold;
     public $style_color;
     public $style_color_and_bold;
@@ -64,6 +67,9 @@ class DocumentController extends GeneratorController
         $this->bank_account_generate_file = null;
         $this->bank_taxes_generate_file = null;
         $this->communal_generate_file = null;
+        $this->termination_refund_file = null;
+        $this->termination_consent_file = null;
+        $this->termination_contract_file = null;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_red = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"red\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
@@ -203,7 +209,7 @@ class DocumentController extends GeneratorController
         // містить шаблон для паспорту
         $this->set_full_info_template($this->contract_generate_file);
 
-        $this->set_spouse_word_template_part();
+        $this->set_spouse_word_template_part($this->contract_generate_file);
         // метод для файлів де використовуються паспортні дані
         // передаєм необхідний шлях до необхідного шаблону
         $this->set_passport_template_part($this->contract_generate_file);
@@ -276,11 +282,13 @@ class DocumentController extends GeneratorController
     {
         $this->termination_contract_generate_file = $this->ff->termination_contract_title();
 
-        $this->convert->date_to_string($this->client->termination_contract, $this->client->termination_contract->sign_date);
+        $this->convert->date_to_string($this->contract->termination_contract, $this->contract->sign_date);
 
+        $this->set_full_info_template($this->termination_contract_generate_file);
+        $this->set_spouse_word_template_part($this->termination_contract_generate_file);
         $this->set_passport_template_part($this->termination_contract_generate_file);
-        $this->set_current_document_notary($this->termination_contract_generate_file, $this->client->termination_contract->notary);
-        $this->set_sign_date($this->termination_contract_generate_file, $this->client->termination_contract);
+        $this->set_current_document_notary($this->termination_contract_generate_file, $this->contract->notary);
+        $this->set_sign_date($this->termination_contract_generate_file, $this->contract->termination_contract);
 
         $word = new TemplateProcessor($this->termination_contract_generate_file);
         $word = $this->set_data_word($word);
@@ -293,11 +301,12 @@ class DocumentController extends GeneratorController
     {
         $this->termination_refund_generate_file = $this->ff->termination_refund_title();
 
-        $this->convert->date_to_string($this->client->termination_refund, $this->client->termination_refund->sign_date);
+        $this->convert->date_to_string($this->contract->termination_refund, $this->contract->termination_refund->reg_date);
 
+        $this->set_full_info_template($this->termination_refund_generate_file);
         $this->set_passport_template_part($this->termination_refund_generate_file);
-        $this->set_current_document_notary($this->termination_refund_generate_file, $this->client->termination_refund->notary);
-        $this->set_sign_date($this->termination_refund_generate_file, $this->client->termination_refund);
+        $this->set_current_document_notary($this->termination_refund_generate_file, $this->contract->termination_refund->notary);
+        $this->set_sign_date($this->termination_refund_generate_file, $this->contract->termination_refund);
 
         $word = new TemplateProcessor($this->termination_refund_generate_file);
         $word = $this->set_data_word($word);
@@ -325,13 +334,14 @@ class DocumentController extends GeneratorController
 
     public function termination_consent_template_set_data()
     {
-        $this->termination_consent_generate_file = $this->ff->termination_consent_title($this->termination_consent, $this->client);
+        $this->termination_consent_generate_file = $this->ff->termination_consent_title($this->client->termination_consent, $this->client);
 
-        $this->convert->date_to_string($this->termination_consent, $this->termination_consent->sign_date);
+        $this->convert->date_to_string($this->client->termination_consent, $this->client->termination_consent->sign_date);
         $this->set_passport_template_part($this->termination_consent_generate_file);
-        $this->set_current_document_notary($this->termination_consent_generate_file, $this->termination_consent->notary);
-        $this->set_termination_consent_married_template_part();
-        $this->set_sign_date($this->termination_consent_generate_file, $this->termination_consent);
+        $this->set_current_document_notary($this->termination_consent_generate_file, $this->client->termination_consent->notary);
+        $this->set_consent_married_template_part();
+
+        $this->set_sign_date($this->termination_consent_generate_file, $this->client->termination_consent);
 
         $word = new TemplateProcessor($this->termination_consent_generate_file);
         $word = $this->set_data_word($word);
@@ -476,6 +486,11 @@ class DocumentController extends GeneratorController
         $word = $this->set_secure_payment($word);
 
         /*
+         * Забезпечувальний платіж до попереднього договору
+         * */
+        $word = $this->set_termination_info($word);
+
+        /*
          * Курс долара та посилання на сайт
          * */
         $word = $this->set_exchange_rate($word);
@@ -486,13 +501,20 @@ class DocumentController extends GeneratorController
     /*
      * Додати до договору текс-шаблон в пункт згоди подружжя
      * */
-    public function set_spouse_word_template_part()
+    public function set_spouse_word_template_part($template_generate_file)
     {
-        $word = new TemplateProcessor($this->contract_generate_file);
+        $word = new TemplateProcessor($template_generate_file);
 
         if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->client_spouse_consent) {
             if ($this->contract->dev_company->owner->client_spouse_consent->contract_spouse_word) {
                 $word->setValue('ЗГ-ПОДР-ЗБД-ЗАЯВА-ЗГОДА', $this->contract->dev_company->owner->client_spouse_consent->contract_spouse_word->text);
+            }
+        }
+
+
+        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->termination_consent) {
+            if ($this->contract->dev_company->owner->termination_consent->termination_spouse_word) {
+                $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-ЗАЯВА-ЗГОДА', $this->contract->dev_company->owner->termination_consent->termination_spouse_word->text);
             }
         }
 
@@ -511,7 +533,19 @@ class DocumentController extends GeneratorController
             $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
         }
 
-        $word->saveAs($this->contract_generate_file);
+        if ($this->client->termination_consent && $this->client->termination_consent->termination_spouse_word)
+        {
+            $termination_sp_word = null;
+            if ($this->total_clients > 1) {
+                $termination_sp_word = $this->client->termination_consent->termination_spouse_word->text . $this->paragraph . $this->set_style_color("\${РОЗ-КЛ-ЗАЯВА-ЗГОДА}");
+            }
+            else {
+                $termination_sp_word = $this->client->termination_consent->termination_spouse_word->text;
+            }
+            $word->setValue('РОЗ-КЛ-ЗАЯВА-ЗГОДА', $termination_sp_word);
+        }
+
+        $word->saveAs($template_generate_file);
     }
 
     public function set_full_info_template($template_generate_file)
@@ -523,6 +557,7 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
          * */
+
         if ($this->card->dev_representative) {
             $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
         }
@@ -555,6 +590,7 @@ class DocumentController extends GeneratorController
         $word->setValue('full-name-tax-code-id-card-address', $this->set_style_color($full_description));
 //        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $this->set_style_color($full_description));
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
 
         /*
          * Лінія для області підпису
@@ -932,6 +968,8 @@ class DocumentController extends GeneratorController
             $word->setValue('ЗБД-ПІБ-Н', $this->set_style_color_and_bold($this->get_full_name_n($this->contract->dev_company->owner)));
             $word->setValue('ЗБД-ПІБ-Н-Ж', $this->set_style_color($this->get_full_name_n($this->contract->dev_company->owner)));
             $word->setValue('ЗБД-ПІБ-Р', $this->get_full_name_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Д', $this->get_full_name_d($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-О', $this->get_full_name_o($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПІБ-Р-I', $this->set_style_color_and_italic($this->get_full_name_r($this->contract->dev_company->owner)));
             $word->setValue('ЗБД-ІПН', $this->set_style_color($this->contract->dev_company->owner->tax_code));
             $word->setValue('ЗБД-ІПН-Ж', $this->set_style_color_and_bold($this->contract->dev_company->owner->tax_code));
@@ -1116,6 +1154,7 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-О', $this->get_full_name_o($this->client));
             $word->setValue('КЛ-ПІБ-Р', $this->get_full_name_r($this->client));
+            $word->setValue('КЛ-ПІБ-Д', $this->get_full_name_d($this->client));
             $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->get_full_name_n_upper($this->client));
 
             $word->setValue('cl-surname-n', $this->client->surname_n);
@@ -1188,6 +1227,11 @@ class DocumentController extends GeneratorController
             $cl_gender_proved = GenderWord::where('alias', "proved")->value($this->client->gender);
             $word->setValue('КЛ-ДОВІВ', $cl_gender_proved);
             $word->setValue('КЛ-ДОВІВ-UP', $this->mb_ucfirst($cl_gender_proved));
+
+            $cl_gender_received = GenderWord::where('alias', "received")->value($this->client->gender);
+            $word->setValue('КЛ-ОТРИМАТИ', $cl_gender_received);
+            $word->setValue('КЛ-ОТРИМАТИ', $this->mb_ucfirst($cl_gender_received));
+
 
             $word->setValue('cl-widowhood', GenderWord::where('alias', "widowhood")->value($this->client->gender));
 
@@ -1752,11 +1796,38 @@ class DocumentController extends GeneratorController
     }
 
     /*
+     * Розірвання або повернення коштів
+     * */
+    public function set_termination_info($word)
+    {
+        if ($this->contract->termination_info) {
+            $word->setValue('РОЗ-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->termination_info->notary));
+            $word->setValue('РОЗ-НОТ-АКТ-О', $this->contract->termination_info->notary->activity_o);
+            $word->setValue('РОЗ-НОТ-ДАТА', $this->display_date($this->contract->termination_info->reg_date));
+            $word->setValue('РОЗ-НОТ-НОМЕР', $this->contract->termination_info->reg_num);
+            $word->setValue('РОЗ-Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->termination_info->price, 'grn'));
+        } else {
+            $this->notification("Warning", "Інформація про розірвання відсутне");
+        }
+
+        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->termination_consent) {
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->dev_company->owner->termination_consent->notary));
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-АКТИВНІСТЬ-О', $this->contract->dev_company->owner->termination_consent->notary->activity_o);
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-ДАТА',  $this->display_date($this->contract->dev_company->owner->termination_consent->reg_date));
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-НОМЕР', $this->contract->dev_company->owner->termination_consent->reg_num);
+        } else {
+            $this->notification("Warning", "Інформація про розірвання відсутне");
+        }
+
+        return $word;
+    }
+
+    /*
      * Курс долара та посилання на сайт
      * */
     public function set_exchange_rate($word)
     {
-        if ($this->contract->immovable && $this->card->exchange_rate) {
+        if ($this->contract->immovable  && $this->card->exchange_rate) {
             $word->setValue('imm-exch-link', $this->card->exchange_rate->web_site_link);
             $word->setValue('imm-exch-root', $this->card->exchange_rate->web_site_root);
             $word->setValue('imm-exch', $this->convert->exchange_price($this->card->exchange_rate->rate));
@@ -1980,6 +2051,13 @@ class DocumentController extends GeneratorController
     public function get_full_name_r($client)
     {
         $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+
+        return $full_name;
+    }
+
+    public function get_full_name_d($client)
+    {
+        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
 
         return $full_name;
     }
