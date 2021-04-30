@@ -18,6 +18,8 @@ class ConvertController extends GeneratorController
     {
 //        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
         $this->non_break_space = $space;
+        $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
     }
 
     public function test_price_convert($number)
@@ -514,7 +516,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_n))
-                $str = $person->surname_n . $this->non_break_space . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_n . $this->non_break_space . $this->set_style_color($person->short_name . $person->short_patronymic);
         }
 
         return $str;
@@ -526,7 +528,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_r))
-                $str = $person->surname_r . $this->non_break_space . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_r . $this->non_break_space . $this->set_style_color($person->short_name . $person->short_patronymic);
         }
 
         return $str;
@@ -538,7 +540,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_d))
-                $str = $person->surname_d . $this->non_break_space . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_d . $this->non_break_space . $this->set_style_color($person->short_name . $person->short_patronymic);
         }
 
         return $str;
@@ -550,7 +552,7 @@ class ConvertController extends GeneratorController
 
         if ($person) {
             if (isset($person->surname_o))
-                $str = $person->surname_o . $this->non_break_space . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_o . $this->non_break_space . $this->set_style_color($person->short_name . $person->short_patronymic);
         }
 
         return $str;
@@ -803,6 +805,13 @@ class ConvertController extends GeneratorController
     public function get_immovable_floor($floor)
     {
         return KeyWord::where('key', 'floor_' . $floor)->value('title_d');
+    }
+
+    public function set_style_color($text)
+    {
+        $str = $this->style_color . $text . $this->style_end;
+
+        return $str;
     }
 }
 
