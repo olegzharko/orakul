@@ -16,7 +16,6 @@ class ConvertController extends GeneratorController
 
     public function __construct($space = ' ')
     {
-//        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
         $this->non_break_space = $space;
     }
 
@@ -27,7 +26,6 @@ class ConvertController extends GeneratorController
 
     public function convert_price_int_part_to_string($start_value, $currency)
     {
-
         $gender = null;
         $result  = null;
         $str = null;
@@ -63,7 +61,6 @@ class ConvertController extends GeneratorController
 
             $result = $str . " " . $result;
         }
-
 
         $currency_title = $this->get_currency_title($number, $currency);
 
@@ -158,8 +155,6 @@ class ConvertController extends GeneratorController
         $result = trim($result);
         $result = "($result) $currency_title";
 
-        // echo $start_value . "  " . $result . "<br>";
-
         return $result;
     }
 
@@ -201,8 +196,6 @@ class ConvertController extends GeneratorController
             $str = \App\Models\NumericConvert::where('original', $number)->value('title');
             $result = $str . " " . $result;
         }
-
-        // echo $start_value . "    " . $result . "<br>";
 
         $result = trim($result);
         if ($result)
@@ -710,7 +703,6 @@ class ConvertController extends GeneratorController
         $imm_num = $immovable->immovable_number;
         $imm_num_str = $this->number_to_string($immovable->immovable_number);
         $imm_build_num = $immovable->developer_building->number;
-//        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
         $imm_build_num_str = $building_num_str;
         $imm_addr_type_r = $immovable->developer_building->address_type->title_n;
         $imm_addr_title = $immovable->developer_building->title;
