@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import AddFormButton from '../../../../../../../../../../../../../../components/AddFormButton';
-import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
-import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
+import React from 'react';
+import CustomSwitch from '../../../../../../../../../../../../../../components/CustomSwitch';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
-import AddCityModal from './AddCityModal';
+import AddCityModal from './components/AddCityModal';
+import Fields from './components/Fields';
 import { useAddress, Props } from './useAddress';
 
 const Address = (props: Props) => {
@@ -13,79 +12,44 @@ const Address = (props: Props) => {
   return (
     <div className="clients__address">
       <SectionWithTitle title="Адреса" onClear={meta.onClear}>
-        <div className="clients__address-container">
-          <CustomSelect
-            label="Область"
-            data={meta.regions}
-            onChange={(e) => meta.setData({ ...meta.data, region_id: e })}
-            selectedValue={meta.data.region_id}
+        <div className="grid-center-duet mb20">
+          <CustomSwitch
+            label="Зареєстрований"
+            onChange={(e) => meta.setRegistration(e)}
+            selected={meta.registration}
+          />
+
+          <CustomSwitch
+            label="Актуальне місце проживання"
+            onChange={(e) => meta.setActual(e)}
+            selected={meta.actual}
           />
         </div>
-
-        <div className="clients__address-container df">
-          <CustomSelect
-            label="Населений пункт"
-            data={meta.cities}
-            onChange={(e) => meta.setData({ ...meta.data, city_id: e })}
-            selectedValue={meta.data.city_id}
+        <div className="clients__address-fields">
+          <Fields
+            regions={meta.regions}
+            cities={meta.cities}
+            addressType={meta.addressType}
+            buildingType={meta.buildingType}
+            apartmentType={meta.addressType}
+            data={meta.data}
+            setData={meta.setData}
+            setShowModal={meta.setShowModal}
           />
-          <div className="add-button">
-            <AddFormButton onClick={() => meta.setShowModal(true)} />
-          </div>
-        </div>
 
-        <div className="clients__address-container df duet">
-          <div className="short-width">
-            <CustomSelect
-              label="Тип вулиці"
-              data={meta.addressType}
-              onChange={(e) => meta.setData({ ...meta.data, address_type_id: e })}
-              selectedValue={meta.data.address_type_id}
+          {meta.actual && (
+            <Fields
+              actual
+              regions={meta.actualRegions}
+              cities={meta.actualCities}
+              addressType={meta.addressType}
+              buildingType={meta.buildingType}
+              apartmentType={meta.addressType}
+              data={meta.actualData}
+              setData={meta.setActualData}
+              setShowModal={meta.setShowModal}
             />
-          </div>
-          <div className="long-width">
-            <CustomInput
-              label="Назва вулиці"
-              onChange={(e) => meta.setData({ ...meta.data, address: e })}
-              value={meta.data.address}
-            />
-          </div>
-        </div>
-
-        <div className="clients__address-container df duet">
-          <div className="long-width">
-            <CustomSelect
-              label="Тип будинку"
-              data={meta.buildingType}
-              onChange={(e) => meta.setData({ ...meta.data, building_type_id: e })}
-              selectedValue={meta.data.building_type_id}
-            />
-          </div>
-          <div className="short-width">
-            <CustomInput
-              label="Номер будинку"
-              onChange={(e) => meta.setData({ ...meta.data, building_num: e })}
-              value={meta.data.building_num}
-            />
-          </div>
-        </div>
-
-        <div className="clients__address-container df duet">
-          <div className="long-width">
-            <CustomSelect
-              label="Тип приміщення"
-              data={meta.apartmentType}
-              onChange={(e) => meta.setData({ ...meta.data, apartment_type_id: e })}
-              selectedValue={meta.data.apartment_type_id}
-            />
-          </div>
-          <div className="short-width">
-            <CustomInput
-              label="Номер приміщення"
-              onChange={(e) => meta.setData({ ...meta.data, apartment_num: e })}
-              value={meta.data.apartment_num}
-            />
-          </div>
+          )}
         </div>
       </SectionWithTitle>
 

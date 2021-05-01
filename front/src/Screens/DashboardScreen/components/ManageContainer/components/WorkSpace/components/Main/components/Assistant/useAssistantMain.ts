@@ -52,7 +52,6 @@ export const useAssistantMain = () => {
   const [immovables, setImmovables] = useState<Immovable[]>([]);
 
   const onImmovableChange = useCallback((index: number, key: string, value: any) => {
-    console.log(immovables, index, key, value);
     immovables[index][key] = value;
     setImmovables([...immovables]);
   }, [immovables]);

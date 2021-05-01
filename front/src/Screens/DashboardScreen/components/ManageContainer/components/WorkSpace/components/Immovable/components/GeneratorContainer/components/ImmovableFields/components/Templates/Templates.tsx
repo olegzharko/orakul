@@ -1,5 +1,6 @@
 import * as React from 'react';
 import CustomDatePicker from '../../../../../../../../../../../../../../components/CustomDatePicker';
+import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
 import CustomSwitch from '../../../../../../../../../../../../../../components/CustomSwitch';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
@@ -8,7 +9,7 @@ import { useTemplates, Props } from './useTemplates';
 
 const Templates = (props: Props) => {
   const meta = useTemplates(props);
-  console.log(meta.data);
+
   return (
     <div className="templates">
       <SectionWithTitle title="Договір">
@@ -88,6 +89,60 @@ const Templates = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, questionnaire_template_id: +e })}
             selectedValue={meta.data.questionnaire_template_id}
             className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
+      <SectionWithTitle title="Коммунальні">
+        <div className="flex-center">
+          <CustomSelect
+            label="Шаблон по коммунальним"
+            data={meta.communalTemplates}
+            onChange={(e) => meta.setData({ ...meta.data, communal_template_id: +e })}
+            selectedValue={meta.data.communal_template_id}
+            className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
+      <SectionWithTitle title="Договір розірвання ПД">
+        <div className="flex-center">
+          <CustomSelect
+            label="Шаблон договору розірвання ПД"
+            data={meta.terminationContracts}
+            onChange={(e) => meta.setData({ ...meta.data, termination_contract_id: +e })}
+            selectedValue={meta.data.termination_contract_id}
+            className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
+      <SectionWithTitle title="Заява про отримання коштів">
+        <div className="grid-center-duet">
+          <CustomSelect
+            label="Шаблон договору розірвання ПД"
+            data={meta.terminationRefunds}
+            onChange={(e) => meta.setData({ ...meta.data, termination_refund_id: +e })}
+            selectedValue={meta.data.termination_refund_id}
+          />
+
+          <CustomSelect
+            label="Нотаріус"
+            data={meta.terminationRefunds}
+            onChange={(e) => meta.setData({ ...meta.data, termination_refund_id: +e })}
+            selectedValue={meta.data.termination_refund_id}
+          />
+
+          <CustomDatePicker
+            label="Дата посвідчення"
+            onSelect={(e) => meta.setData({ ...meta.data, termination_refund_reg_date: e })}
+            selectedDate={meta.data.termination_refund_reg_date}
+          />
+
+          <CustomInput
+            label="Реєстраційний номер"
+            onChange={(e) => meta.setData({ ...meta.data, termination_refund_reg_number: e })}
+            value={meta.data.termination_refund_reg_number}
           />
         </div>
       </SectionWithTitle>
