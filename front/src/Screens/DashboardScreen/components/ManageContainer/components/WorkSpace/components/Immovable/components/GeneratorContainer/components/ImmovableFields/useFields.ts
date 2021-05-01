@@ -7,6 +7,7 @@ import reqImmovableOwnership from '../../../../../../../../../../../../services/
 import reqImmovablePayment from '../../../../../../../../../../../../services/generator/Immovable/reqImmovablePayment';
 import reqImmovableRating from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableRating';
 import reqImmovableTemplate from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTemplate';
+import reqImmovableTermination from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTermination';
 
 export const useFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
@@ -17,6 +18,7 @@ export const useFields = () => {
   const [ownerShip, setOwnerShip] = useState();
   const [securityPayment, setSecurityPayment] = useState();
   const [retting, setRetting] = useState();
+  const [termination, setTermination] = useState();
   const [templates, setTemplates] = useState();
 
   const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(immovableId)), [immovableId]);
@@ -59,6 +61,15 @@ export const useFields = () => {
         }
       })();
 
+      // get TERMINATION
+      (async () => {
+        const res = await reqImmovableTermination(token, immovableId);
+
+        if (res?.success) {
+          setTermination(res.data);
+        }
+      })();
+
       // get TEMPLATES
       (async () => {
         const res = await reqImmovableTemplate(token, immovableId);
@@ -76,6 +87,7 @@ export const useFields = () => {
     ownerShip,
     securityPayment,
     retting,
+    termination,
     templates,
   };
 };

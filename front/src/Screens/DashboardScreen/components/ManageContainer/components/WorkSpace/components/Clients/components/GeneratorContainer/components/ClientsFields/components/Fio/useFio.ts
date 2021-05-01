@@ -14,6 +14,9 @@ type InitialData = {
   surname_o: string;
   name_o: string;
   patronymic_o: string;
+  surname_d: string;
+  name_d: string;
+  patronymic_d: string;
 }
 
 export type Props = {
@@ -35,6 +38,9 @@ export const useFio = ({ initialData, id }: Props) => {
     surname_o: '',
     name_o: '',
     patronymic_o: '',
+    surname_d: '',
+    name_d: '',
+    patronymic_d: '',
   });
 
   useEffect(() => {
@@ -48,6 +54,9 @@ export const useFio = ({ initialData, id }: Props) => {
       surname_o: initialData?.surname_o || '',
       name_o: initialData?.name_o || '',
       patronymic_o: initialData?.patronymic_o || '',
+      surname_d: initialData?.surname_d || '',
+      name_d: initialData?.name_d || '',
+      patronymic_d: initialData?.patronymic_d || '',
     });
   }, [initialData]);
 
@@ -62,6 +71,9 @@ export const useFio = ({ initialData, id }: Props) => {
       surname_o: '',
       name_o: '',
       patronymic_o: '',
+      surname_d: '',
+      name_d: '',
+      patronymic_d: '',
     });
   }, []);
 

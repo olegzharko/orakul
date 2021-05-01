@@ -8,6 +8,7 @@ import Passport from './components/Passport';
 import Statement from './components/Statement';
 import PowerOfAttorney from './components/PowerOfAttorney';
 import { useClientsFields } from './useClientsFields';
+import Termination from './components/Termination';
 
 const ClientsFields = () => {
   const meta = useClientsFields();
@@ -34,6 +35,12 @@ const ClientsFields = () => {
           />
         </>
       )}
+
+      <Termination
+        initialData={meta.termination}
+        clientId={meta.clientId}
+        personId={meta.personId}
+      />
     </main>
   );
 };

@@ -62,5 +62,10 @@
         width: 65%;
       }
     }
+
+    &-fields {
+      display: flex;
+      justify-content: space-evenly;
+    }
   }
 }
