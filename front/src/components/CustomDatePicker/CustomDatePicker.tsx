@@ -7,6 +7,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { formatDate } from '../../utils/formatDates';
 
 type Props = {
   label: string;
@@ -23,8 +24,14 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) =>
   }, [selectedDate]);
 
   const handleChange = (data: any) => {
+    const parseDate = Date.parse(data);
+    if (Number.isNaN(parseDate) === true) {
+      onSelect(null);
+    } else {
+      onSelect(data);
+    }
+
     setValue(data);
-    onSelect(data);
   };
 
   return (
