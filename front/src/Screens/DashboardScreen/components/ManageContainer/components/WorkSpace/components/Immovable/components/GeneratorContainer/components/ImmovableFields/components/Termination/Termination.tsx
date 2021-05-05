@@ -23,6 +23,7 @@ const Termination = (props: Props) => {
             label="Нотаріус"
             data={meta.notaries}
             onChange={(e) => meta.setData({ ...meta.data, notary_id: +e })}
+            selectedValue={meta.data.notary_id}
           />
 
           <CustomDatePicker
