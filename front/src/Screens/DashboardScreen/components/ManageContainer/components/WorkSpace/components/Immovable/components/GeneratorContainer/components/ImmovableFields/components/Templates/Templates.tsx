@@ -129,8 +129,8 @@ const Templates = (props: Props) => {
           <CustomSelect
             label="Нотаріус"
             data={meta.notaries}
-            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
-            selectedValue={meta.data.notary_id}
+            onChange={(e) => meta.setData({ ...meta.data, termination_refund_notary_id: e })}
+            selectedValue={meta.data.termination_refund_notary_id}
           />
 
           <CustomDatePicker
