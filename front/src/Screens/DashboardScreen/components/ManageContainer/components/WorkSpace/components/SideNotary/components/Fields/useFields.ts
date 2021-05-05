@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useCallback, useState, useEffect, useMemo } from 'react';
 import { State } from '../../../../../../../../../../store/types';
@@ -23,6 +23,7 @@ type SideNotaryFblativeData = {
 
 export const useFields = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { token } = useSelector((state: State) => state.main.user);
   const { notaryId, clientId } = useParams<{ notaryId: string, clientId: string }>();
 
@@ -104,6 +105,10 @@ export const useFields = () => {
           message: res?.message,
         })
       );
+
+      if (res?.success && notaryId === 'create' && !Number.isNaN(parseFloat(res?.data.notary_id))) {
+        history.push(`/side-notaries/${clientId}/${res?.data.notary_id}`);
+      }
     }
   }, [denominative, ablative, token]);
 
