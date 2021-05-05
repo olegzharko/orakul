@@ -86,6 +86,28 @@ const Fio = (props: Props) => {
         </div>
       </SectionWithTitle>
 
+      <SectionWithTitle title="Давальний відмінок Кому? Чому?">
+        <div className="grid">
+          <CustomInput
+            label="Прізвище"
+            onChange={(e) => setData({ ...data, surname_d: e })}
+            value={data.surname_d}
+          />
+
+          <CustomInput
+            label="Ім'я"
+            onChange={(e) => setData({ ...data, name_d: e })}
+            value={data.name_d}
+          />
+
+          <CustomInput
+            label="По батькові"
+            onChange={(e) => setData({ ...data, patronymic_d: e })}
+            value={data.patronymic_d}
+          />
+        </div>
+      </SectionWithTitle>
+
       <div className="middle-button">
         <PrimaryButton label="Зберегти" onClick={onSave} disabled={false} />
       </div>

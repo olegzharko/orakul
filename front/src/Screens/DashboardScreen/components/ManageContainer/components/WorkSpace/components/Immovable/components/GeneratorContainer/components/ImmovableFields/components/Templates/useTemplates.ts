@@ -13,14 +13,22 @@ type InitialData = {
   questionnaire_template_id: number | null,
   statement_template_id: number | null,
   type_id: number | null,
+  communal_template_id: number | null,
+  termination_contract_id: number | null,
+  termination_refund_id: number | null,
+  termination_refund_reg_number: string | null,
   ready: boolean,
   sign_date: any,
   final_sign_date: any,
+  termination_refund_reg_date: any,
   contract_type?: SelectItem[],
   statement_templates?: SelectItem[],
   questionnaire_templates?: SelectItem[],
   bank_templates?: SelectItem[],
   taxes_templates?: SelectItem[],
+  communal_templates?: SelectItem[],
+  termination_contracts?: SelectItem[],
+  termination_refunds?: SelectItem[],
   contract_templates?: any,
 }
 
@@ -40,6 +48,10 @@ export const useTemplates = ({ initialData, id }: Props) => {
   const [bankTemplates, setBankTemplates] = useState<SelectItem[]>([]);
   const [taxesTemplates, setTaxesTemplates] = useState<SelectItem[]>([]);
   const [contractTemplates, setContractTemplates] = useState<SelectItem[]>([]);
+  const [communalTemplates, setCommunalTemplates] = useState<SelectItem[]>([]);
+  const [terminationContracts, setTerminationContracts] = useState<SelectItem[]>([]);
+  const [terminationRefunds, setTerminationRefunds] = useState<SelectItem[]>([]);
+
   const [data, setData] = useState<InitialData>({
     type_id: null,
     contract_template_id: null,
@@ -50,6 +62,11 @@ export const useTemplates = ({ initialData, id }: Props) => {
     ready: false,
     sign_date: null,
     final_sign_date: null,
+    communal_template_id: null,
+    termination_contract_id: null,
+    termination_refund_id: null,
+    termination_refund_reg_date: null,
+    termination_refund_reg_number: null,
   });
 
   const onClear = useCallback(() => {
@@ -63,6 +80,11 @@ export const useTemplates = ({ initialData, id }: Props) => {
       ready: false,
       sign_date: null,
       final_sign_date: null,
+      communal_template_id: null,
+      termination_contract_id: null,
+      termination_refund_id: null,
+      termination_refund_reg_date: null,
+      termination_refund_reg_number: null,
     });
   }, []);
 
@@ -72,6 +94,8 @@ export const useTemplates = ({ initialData, id }: Props) => {
         ...data,
         sign_date: data.sign_date && formatDate(new Date(data.sign_date)),
         final_sign_date: data.final_sign_date && formatDate(new Date(data.final_sign_date)),
+        termination_refund_reg_date: data.termination_refund_reg_date
+          && formatDate(new Date(data.termination_refund_reg_date))
       };
 
       const { success, message } = await reqImmovableTemplate(token, id, 'PUT', reqData);
@@ -92,6 +116,9 @@ export const useTemplates = ({ initialData, id }: Props) => {
     setBankTemplates(initialData?.bank_templates || []);
     setTaxesTemplates(initialData?.taxes_templates || []);
     setContractTemplates(initialData?.contract_templates || []);
+    setCommunalTemplates(initialData?.communal_templates || []);
+    setTerminationContracts(initialData?.termination_contracts || []);
+    setTerminationRefunds(initialData?.termination_refunds || []);
     setData({
       type_id: initialData?.type_id || null,
       contract_template_id: initialData?.contract_template_id || null,
@@ -99,11 +126,17 @@ export const useTemplates = ({ initialData, id }: Props) => {
       bank_template_id: initialData?.bank_template_id || null,
       questionnaire_template_id: initialData?.questionnaire_template_id || null,
       statement_template_id: initialData?.statement_template_id || null,
+      communal_template_id: initialData?.communal_template_id || null,
+      termination_contract_id: initialData?.termination_contract_id || null,
+      termination_refund_id: initialData?.termination_refund_id || null,
+      termination_refund_reg_number: initialData?.termination_refund_reg_number || null,
       ready: initialData?.ready || false,
       sign_date: initialData?.sign_date
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
       final_sign_date: initialData?.final_sign_date
         ? new Date(changeMonthWitDate(initialData?.final_sign_date)) : null,
+      termination_refund_reg_date: initialData?.termination_refund_reg_date
+        ? new Date(changeMonthWitDate(initialData?.termination_refund_reg_date)) : null,
     });
   }, [initialData]);
 
@@ -122,6 +155,9 @@ export const useTemplates = ({ initialData, id }: Props) => {
     bankTemplates,
     taxesTemplates,
     contractTemplates,
+    communalTemplates,
+    terminationContracts,
+    terminationRefunds,
     setData,
     onClear,
     onSave,

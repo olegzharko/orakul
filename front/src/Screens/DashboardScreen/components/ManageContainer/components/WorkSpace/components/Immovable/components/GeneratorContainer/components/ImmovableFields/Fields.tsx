@@ -4,8 +4,8 @@ import General from './components/General';
 import Ownership from './components/Ownership';
 import Rating from './components/Rating';
 import SecurityPayment from './components/SecurityPayment';
-import SellerBan from './components/SellerBan';
 import { useFields } from './useFields';
+import Termination from './components/Termination';
 
 const Fields = () => {
   const meta = useFields();
@@ -16,6 +16,7 @@ const Fields = () => {
       <Ownership initialData={meta.ownerShip} id={meta.immovableId} />
       <SecurityPayment initialData={meta.securityPayment} id={meta.immovableId} />
       <Rating initialData={meta.retting} id={meta.immovableId} />
+      <Termination initialData={meta.termination} id={meta.immovableId} />
       <Templates initialData={meta.templates} id={meta.immovableId} />
     </div>
   );

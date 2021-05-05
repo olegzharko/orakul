@@ -9,6 +9,7 @@ import reqClientPassport from '../../../../../../../../../../../../services/gene
 import reqClientAddress from '../../../../../../../../../../../../services/generator/Client/reqClientAddress';
 import reqClientConsents from '../../../../../../../../../../../../services/generator/Client/reqClientConsents';
 import reqClientRepresentative from '../../../../../../../../../../../../services/generator/Client/reqClientRepresentative';
+import reqTermination from '../../../../../../../../../../../../services/generator/Client/reqTermination';
 
 export const useClientsFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
@@ -23,6 +24,7 @@ export const useClientsFields = () => {
   const [address, setAddress] = useState();
   const [consents, setConsents] = useState();
   const [representative, setRepresentative] = useState();
+  const [termination, setTermination] = useState();
 
   const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(personId)), [personId]);
 
@@ -91,6 +93,15 @@ export const useClientsFields = () => {
           setRepresentative(data);
         }
       })();
+
+      // get TERMINATION
+      (async () => {
+        const { success, data } = await reqTermination(token, clientId, personId);
+
+        if (success) {
+          setTermination(data);
+        }
+      })();
     }
   }, [token, clientId, personId, isCorrectId]);
 
@@ -105,5 +116,6 @@ export const useClientsFields = () => {
     address,
     consents,
     representative,
+    termination,
   };
 };
