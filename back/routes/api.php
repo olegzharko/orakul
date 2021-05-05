@@ -138,7 +138,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);
 
             Route::get('termination/{card_id}/{client_id}', [ClientController::class, 'get_termination']); // postman
-            Route::put('termination/{client_id}', [ClientController::class, 'update_termination']);
+            Route::put('termination/{card_id}/{client_id?}', [ClientController::class, 'update_termination']);
 
             Route::get('representative/{card_id}/{client_id}', [ClientController::class, 'get_representative']);
             Route::put('representative/{client_id}', [ClientController::class, 'update_representative']);

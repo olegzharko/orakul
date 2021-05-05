@@ -701,7 +701,16 @@ class ConvertController extends GeneratorController
         $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
 
         $imm_num = $immovable->immovable_number;
-        $imm_num_str = $this->number_to_string($immovable->immovable_number);
+
+        if ($immovable->immovable_number && is_string($immovable->immovable_number)) {
+            $imm_num_str = $this->number_to_string(intval($immovable->immovable_number));
+            $letter = str_replace(intval($immovable->immovable_number), '', $immovable->immovable_number);
+            $letter = str_replace('-', '', $letter);
+            $imm_num_str = $imm_num_str . " літера «" . $letter . "»";
+        } else {
+            $imm_num_str = $this->number_to_string($immovable->immovable_number);
+        }
+
         $imm_build_num = $immovable->developer_building->number;
         $imm_build_num_str = $building_num_str;
         $imm_addr_type_r = $immovable->developer_building->address_type->title_n;

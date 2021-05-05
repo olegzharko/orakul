@@ -28,7 +28,8 @@ use App\Models\Spouse;
 use App\Models\Contract;
 use App\Models\TerminationConsent;
 use App\Models\TerminationConsentTemplate;
-use App\Nova\ActualAddress;
+use App\Models\ActualAddress;
+use App\Nova\DevCompany;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -154,6 +155,15 @@ class ClientController extends BaseController
             }
             if ($client['patronymic_o'] == null) {
                 $client['patronymic_o'] = $client['patronymic_n'];
+            }
+            if ($client['surname_d'] == null) {
+                $client['surname_d'] = $client['surname_n'];
+            }
+            if ($client['name_d'] == null) {
+                $client['name_d'] = $client['name_n'];
+            }
+            if ($client['patronymic_d'] == null) {
+                $client['patronymic_d'] = $client['patronymic_n'];
             }
         }
 
@@ -350,14 +360,14 @@ class ClientController extends BaseController
 
         if ($client->actual_address) {
             $result['actual'] = true;
-            $result['region_id'] = $client->actual_address->city ? $client->actual_address->city->region_id : null;
-            $result['city_id'] = $client->actual_address->city_id;
-            $result['address_type_id'] = $client->actual_address->address_type_id;
-            $result['address'] = $client->actual_address->address;
-            $result['building_type_id'] = $client->actual_address->building_type_id;
-            $result['building_num'] = $client->actual_address->building;
-            $result['apartment_type_id'] = $client->actual_address->apartment_type_id;
-            $result['apartment_num'] = $client->actual_address->apartment_num;
+            $result['actual_region_id'] = $client->actual_address->city ? $client->actual_address->city->region_id : null;
+            $result['actual_city_id'] = $client->actual_address->city_id;
+            $result['actual_address_type_id'] = $client->actual_address->address_type_id;
+            $result['actual_address'] = $client->actual_address->address;
+            $result['actual_building_type_id'] = $client->actual_address->building_type_id;
+            $result['actual_building_num'] = $client->actual_address->building;
+            $result['actual_apartment_type_id'] = $client->actual_address->apartment_type_id;
+            $result['actual_apartment_num'] = $client->actual_address->apartment_num;
         } else {
             $result['actual'] = false;
         }
@@ -431,14 +441,13 @@ class ClientController extends BaseController
                 ['client_id' => $client_id],
                 [
                     'actual' => $r['actual'],
-                    'region_id' => $r['region_id'],
-                    'city_id' => $r['city_id'],
-                    'address_type_id' => $r['address_type_id'],
-                    'address' => $r['address'],
-                    'building_type_id' => $r['building_type_id'],
-                    'building_num' => $r['building_num'],
-                    'apartment_type_id' => $r['apartment_type_id'],
-                    'apartment_num' => $r['apartment_num'],
+                    'city_id' => $r['actual_city_id'],
+                    'address_type_id' => $r['actual_address_type_id'],
+                    'address' => $r['actual_address'],
+                    'building_type_id' => $r['actual_building_type_id'],
+                    'building_num' => $r['actual_building_num'],
+                    'apartment_type_id' => $r['actual_apartment_type_id'],
+                    'apartment_num' => $r['actual_apartment_num'],
                 ]);
         }
 
@@ -480,7 +489,16 @@ class ClientController extends BaseController
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $consent_templates = ConsentTemplate::select('id', 'title')->get();
+        $dev_group_id = Card::find($card_id)->value('dev_group_id');
+
+        $dev_companies_id = Contract::where('card_id', $card_id)
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+            ->pluck('dev_companies.id');
+
+        $consent_templates = ConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_companies_id)->get();
+        dd($consent_templates);
         $married_types = MarriageType::select('id', 'title')->get();
         $rakul_notary = Notary::where('rakul_company', true)->get();
 
@@ -617,24 +635,30 @@ class ClientController extends BaseController
         $result['consent_templates'] = $consent_templates;
         $result['notary_id'] = null;
         $result['consent_template_id'] = null;
+        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->get();
+        $result['spouse_word_id'] = null;
         $result['reg_date'] = null;
         $result['reg_num'] = null;
 
         if ($client->termination_consent) {
             $result['notary_id'] = $client->termination_consent->notary_id;
             $result['consent_template_id'] = $client->termination_consent->template_id;
-            $result['reg_date'] = $client->termination_consent->reg_date ? $client->termination_consent->reg_date->format('d.m.Y') : null;
-            $result['reg_num'] = $client->termination_consent->reg_num;
+            $result['reg_date'] = $client->termination_consent->sign_date ? $client->termination_consent->sign_date->format('d.m.Y') : null;
+            $result['reg_number'] = $client->termination_consent->reg_num;
+            $result['spouse_word_id'] = $client->termination_consent->spouse_word_id;
         }
 
         return $this->sendResponse($result, 'Дані по заяві-згоді на розірвання з боку клієнта з ID ' . $client_id);
     }
 
-    public function update_termination($client_id, Request $r)
+    public function update_termination($card_id, $client_id = null, Request $r)
     {
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
+
+        $r['termination_consent_template_id'] = $r['consent_template_id'];
+        unset($r['consent_template_id']);
 
         $validator = $this->validate_client_data($r);
 
@@ -646,9 +670,10 @@ class ClientController extends BaseController
             ['client_id' => $client_id],
             [
                 'notary_id' => $r['notary_id'],
-                'template_id' => $r['consent_template_id'],
-                'reg_date' => $r['reg_date'] ? $r['reg_date']->format('Y-m-d') : null,
-                'reg_num' => $r['reg_num'],
+                'template_id' => $r['termination_consent_template_id'],
+                'spouse_word_id' => $r['spouse_word_id'],
+                'sign_date' => $r['reg_date'] ? $r['reg_date']->format('Y-m-d') : null,
+                'reg_num' => $r['reg_number'],
             ]
         );
 
@@ -1037,6 +1062,12 @@ class ClientController extends BaseController
         if (!isset($errors['consent_template_id']) && isset($r['consent_template_id']) && !empty($r['consent_template_id'])) {
             if (!ConsentTemplate::find($r['consent_template_id'])) {
                 $validator->getMessageBag()->add('consent_template_id', 'Шаблон заяви-згоди по ID:' . $r['consent_template_id'] . " відсутній");
+            }
+        }
+
+        if (!isset($errors['termination_consent_template_id']) && isset($r['termination_consent_template_id']) && !empty($r['termination_consent_template_id'])) {
+            if (!TerminationConsent::find($r['termination_consent_template_id'])) {
+                $validator->getMessageBag()->add('termination_consent_template_id', 'Шаблон заяви-згоди розірвання по ID:' . $r['termination_consent_template_id'] . " відсутній");
             }
         }
 

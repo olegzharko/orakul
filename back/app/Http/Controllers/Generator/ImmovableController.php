@@ -488,7 +488,7 @@ class ImmovableController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
-        $contract_id = Contract::where('immovabel_id', $immovable_id)->value('id');
+        $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
 
         $termnation_info = TerminationInfo::firstOrCreate(
             ['contract_id' => $contract_id],
@@ -514,10 +514,10 @@ class ImmovableController extends BaseController
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['price'] = $termnation_info->price;
         $result['notary_id'] = $termnation_info->notary_id;
-        $result['reg_date'] = $termnation_info->reg_date;
-        $result['reg_num'] = $termnation_info->reg_num;
+        $result['reg_date'] = $termnation_info->reg_date ? $termnation_info->reg_date->format('d.m.Y') : null;
+        $result['reg_number'] = $termnation_info->reg_num;
 
-        return $this->sendResponse($result, 'Дані по перевірці на власність нерухомості ID:' . $immovable_id);
+        return $this->sendResponse($result, 'Дані для розірвання попереднього договру');
     }
 
     public function update_termination($immovable_id, Request $r)
@@ -531,12 +531,14 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        TerminationInfo::updateOrCreate(['immovable_id' => $immovable_id],[
-            'price' => $r['price'],
-            'notary_id' => $r['notary_id'],
-            'reg_date' => $r['reg_date'],
-            'reg_num' => $r['reg_num'],
-        ]);
+        if ($immovable->contract) {
+            TerminationInfo::updateOrCreate(['contract_id' => $immovable->contract->id],[
+                'price' => $r['price'],
+                'notary_id' => $r['notary_id'],
+                'reg_date' => $r['reg_date'],
+                'reg_num' => $r['reg_number'],
+            ]);
+        }
 
         return $this->sendResponse('', 'Дані розірвання для ннерухомості по ID:' . $immovable_id . ' оноволено.');
     }
@@ -577,8 +579,8 @@ class ImmovableController extends BaseController
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
         $result['communal_templates'] = $communal_templates;
-        $result['termination_contract'] = $termination_contract_templates;
-        $result['termination_refund'] = $termination_refund_templates;
+        $result['termination_contracts'] = $termination_contract_templates;
+        $result['termination_refunds'] = $termination_refund_templates;
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date > $this->date ? $final_sing_date->sign_date->format('d.m.Y') : null;
@@ -590,11 +592,38 @@ class ImmovableController extends BaseController
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
         $result['statement_template_id'] = $statement->template_id ?? null;
         $result['communal_template_id'] = $communal->template_id ?? null;
-        $result['termination_contract_template_id'] = $termination_contract ? $termination_contract->template_id : null;
-        $result['termination_refund_template_id'] = $termination_refund ? $termination_refund->template_id : null;
-        $result['termination_refund_notary_id'] = $termination_refund ? $termination_refund->notary_id : null;
-        $result['termination_refund_reg_date'] = $termination_refund ? $termination_refund->reg_date->format('d.m.Y') : null;
-        $result['termination_refund_reg_num'] = $termination_refund ? $termination_refund->reg_num : null;
+        $result['termination_contract_id'] = null;
+        $result['termination_refund_id'] = null;
+        $result['termination_refund_notary_id'] = null;
+        $result['termination_refund_reg_date'] = null;
+        $result['termination_refund_reg_num'] = null;
+
+        $convert_notary = [];
+        $other_notary = [];
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        if ($card_id) {
+            $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+            foreach ($separate_by_card as $key => $value) {
+                $other_notary[$key]['id'] = $value->id;
+                $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+            }
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+
+        if ($termination_refund) {
+            $result['termination_contract_id'] = $termination_contract->template_id;
+            $result['termination_refund_id'] = $termination_refund->template_id;
+            $result['termination_refund_notary_id'] = $termination_refund->notary_id;
+            $result['termination_refund_reg_date'] = $termination_refund->reg_date ? $termination_refund->reg_date->format('d.m.Y') : null;
+            $result['termination_refund_reg_number'] = $termination_refund->reg_num;
+        }
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
 
@@ -662,16 +691,16 @@ class ImmovableController extends BaseController
         TerminationContract::updateOrCreate(
             ['contract_id' => $contract_id],
             [
-                'template_id' => $r['termination_contract_template_id'],
+                'template_id' => $r['termination_contract_id'],
             ]);
 
         TerminationRefund::updateOrCreate(
             ['contract_id' => $contract_id],
             [
-                'template_id' => $r['termination_refund_template_id'],
+                'template_id' => $r['termination_refund_id'],
                 'notary_id' => $r['termination_refund_notary_id'],
                 'reg_date' => $r['termination_refund_reg_date'],
-                'reg_num' => $r['termination_refund_reg_num'],
+                'reg_num' => $r['termination_refund_reg_number'],
             ]);
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');

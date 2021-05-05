@@ -42,6 +42,7 @@ class DeveloperController extends BaseController
                 'dev_companies.*'
             )
             ->where('contracts.card_id', $card_id)
+            ->where('contracts.deleted_at', null)
             ->join('developer_buildings', 'developer_buildings.dev_company_id', 'dev_companies.id')
             ->join('immovables', 'immovables.developer_building_id', 'developer_buildings.id')
             ->join('contracts', 'contracts.immovable_id', 'immovables.id')

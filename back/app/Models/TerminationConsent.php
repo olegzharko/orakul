@@ -29,11 +29,6 @@ class TerminationConsent extends Model
         return $this->belongsTo(Notary::class, 'notary_id');
     }
 
-//    public function immovable()
-//    {
-//        return $this->belongsTo(Immovable::class, 'immovable_id');
-//    }
-
     public function client()
     {
         return $this->belongsTo(Client::class, 'client_id');
