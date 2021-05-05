@@ -16,4 +16,9 @@ class ConsentTemplate extends Model implements HasMedia
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
+
+    public function dev_company()
+    {
+        return $this->belongsTo(DevCompany::class);
+    }
 }
