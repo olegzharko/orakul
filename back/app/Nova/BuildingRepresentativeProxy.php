@@ -36,7 +36,7 @@ class BuildingRepresentativeProxy extends Resource
 
     public static function label()
     {
-        return "Будинов, представник, довіреність";
+        return "Будинок, представник, довіреність";
     }
 
     /**
