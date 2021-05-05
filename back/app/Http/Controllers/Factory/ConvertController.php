@@ -837,6 +837,26 @@ class ConvertController extends GeneratorController
         return $full_name;
     }
 
+
+    public function get_full_name_n_for_sing_area($client)
+    {
+        if ($client->representative && $client->representative->confidant) {
+            $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+        } else {
+            $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+        }
+
+        if (!$client->patronymic_n)
+            $full_name = mb_strtoupper($full_name);
+
+        if ($client->representative && $client->representative->confidant) {
+            $sign_title = Text::where('alias', 'representative_sign')->value('value');
+            $full_name = "$sign_title $full_name";
+        }
+
+        return $full_name;
+    }
+
     public function get_full_name_n_upper($client)
     {
 //        $surname = mb_strtoupper($client->surname_n);
@@ -876,7 +896,7 @@ class ConvertController extends GeneratorController
             }
 
             $country = $client->citizenship->title_r;
-            $resutl = "$citizen_o $country";
+            $resutl = "$citizen_o $country" . " ";
         }
 
         return $resutl;

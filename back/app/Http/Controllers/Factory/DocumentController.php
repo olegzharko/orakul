@@ -574,7 +574,7 @@ class DocumentController extends GeneratorController
          * якщо він є
          * */
         if ($this->total_clients > 1) {
-            $full_description = $full_description . ", \${full-name-tax-code-id-card-address}";
+            $full_description = $full_description . ", \${ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
         }
 
         $word->setValue('full-name-tax-code-id-card-address', $full_description);
@@ -1072,6 +1072,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
 
+            $word->setValue('ПІДПИС-ГРОМАДЯН', $this->convert->get_client_citizenship($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ПРІЗВ-Н', $this->contract->dev_representative->surname_n);
             $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
             $word->setValue('ПІДПИС-ПОБАТЬК-Н', $this->contract->dev_representative->patronymic_n);
@@ -1131,6 +1132,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-О', $this->convert->get_full_name_o($this->client));
             $word->setValue('КЛ-ПІБ-Р', $this->convert->get_full_name_r($this->client));
