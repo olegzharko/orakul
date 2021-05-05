@@ -26,7 +26,7 @@ const Dashboard = () => {
             onClick={() => meta.onModalShow(person.id.toString())}
             link={`/clients/${meta.id}/${person.id}`}
           >
-            {person.list.map((item: any) => (
+            {(person.list || []).map((item: any) => (
               <span>{item}</span>
             ))}
           </CardWithClose>

@@ -9,13 +9,13 @@
     "main.css": "/static/css/main.cd083366.chunk.css",
     "main.js": "/static/js/main.c68d8f35.chunk.js",
     "main.js.map": "/static/js/main.c68d8f35.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.cf2046fc.js",
-    "runtime-main.js.map": "/static/js/runtime-main.cf2046fc.js.map",
+    "runtime-main.js": "/static/js/runtime-main.0fed81b3.js",
+    "runtime-main.js.map": "/static/js/runtime-main.0fed81b3.js.map",
     "static/js/5.a9cee847.chunk.js": "/static/js/5.a9cee847.chunk.js",
     "static/js/5.a9cee847.chunk.js.map": "/static/js/5.a9cee847.chunk.js.map",
     "static/css/6.39b0b0e8.chunk.css": "/static/css/6.39b0b0e8.chunk.css",
-    "static/js/6.aa889f26.chunk.js": "/static/js/6.aa889f26.chunk.js",
-    "static/js/6.aa889f26.chunk.js.map": "/static/js/6.aa889f26.chunk.js.map",
+    "static/js/6.5a4fb39e.chunk.js": "/static/js/6.5a4fb39e.chunk.js",
+    "static/js/6.5a4fb39e.chunk.js.map": "/static/js/6.5a4fb39e.chunk.js.map",
     "static/css/7.499e6722.chunk.css": "/static/css/7.499e6722.chunk.css",
     "static/js/7.f0fcebdd.chunk.js": "/static/js/7.f0fcebdd.chunk.js",
     "static/js/7.f0fcebdd.chunk.js.map": "/static/js/7.f0fcebdd.chunk.js.map",
@@ -43,7 +43,7 @@
     "static/media/index.scss": "/static/media/carousel-arrow-right.f51966e8.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.cf2046fc.js",
+    "static/js/runtime-main.0fed81b3.js",
     "static/js/5.a9cee847.chunk.js",
     "static/css/main.cd083366.chunk.css",
     "static/js/main.c68d8f35.chunk.js"
