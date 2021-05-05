@@ -11,9 +11,9 @@ class TerminationConsent extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-//        'immovable_id',
         'client_id',
         'template_id',
+        'spouse_word_id',
         'notary_id',
         'sign_date',
         'reg_num'
