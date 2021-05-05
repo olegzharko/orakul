@@ -71,6 +71,11 @@ class Immovable extends Model implements Sortable
         return $this->hasOne(ExchangeRate::class, 'immovable_id');
     }
 
+    public function contract()
+    {
+        return $this->hasOne(Contract::class, 'immovable_id');
+    }
+
     public function pvprice()
     {
         return $this->hasOne(PropertyValuationPrice::class, 'immovable_id');
