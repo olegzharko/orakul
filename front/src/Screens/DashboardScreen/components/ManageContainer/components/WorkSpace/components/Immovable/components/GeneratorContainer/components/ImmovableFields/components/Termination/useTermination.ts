@@ -44,7 +44,7 @@ export const useTermination = ({ id, initialData }: Props) => {
     if (token) {
       const reqData = {
         ...data,
-        reg_date: data.reg_date && formatDate(new Date(data.reg_date)),
+        reg_date: formatDate(data.reg_date),
       };
 
       const { success, message } = await reqImmovableTermination(token, id, 'PUT', reqData);
@@ -64,7 +64,7 @@ export const useTermination = ({ id, initialData }: Props) => {
       notary_id: initialData?.notary_id || null,
       reg_number: initialData?.reg_number || null,
       price: initialData?.price || null,
-      reg_date: initialData?.reg_date ? new Date(changeMonthWitDate(initialData?.reg_date)) : null,
+      reg_date: initialData?.reg_date ? changeMonthWitDate(initialData?.reg_date) : null,
     });
   }, [initialData]);
 

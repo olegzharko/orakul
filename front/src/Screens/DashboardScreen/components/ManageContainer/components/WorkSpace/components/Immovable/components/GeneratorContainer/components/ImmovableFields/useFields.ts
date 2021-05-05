@@ -8,6 +8,7 @@ import reqImmovablePayment from '../../../../../../../../../../../../services/ge
 import reqImmovableRating from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableRating';
 import reqImmovableTemplate from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTemplate';
 import reqImmovableTermination from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTermination';
+import { isNumber } from '../../../../../../../../../../../../utils/numbers';
 
 export const useFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
@@ -21,7 +22,7 @@ export const useFields = () => {
   const [termination, setTermination] = useState();
   const [templates, setTemplates] = useState();
 
-  const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(immovableId)), [immovableId]);
+  const isCorrectId = useMemo(() => isNumber(immovableId), [immovableId]);
 
   useEffect(() => {
     if (token && isCorrectId) {

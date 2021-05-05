@@ -67,7 +67,7 @@ export const useTermination = ({ initialData, clientId, personId }: Props) => {
     if (token) {
       const bodyData = {
         ...data,
-        reg_date: data.reg_date && formatDate(new Date(data.reg_date)),
+        reg_date: formatDate(data.reg_date),
       };
 
       const { success, message } = await reqTermination(token, clientId, personId, 'PUT', bodyData);

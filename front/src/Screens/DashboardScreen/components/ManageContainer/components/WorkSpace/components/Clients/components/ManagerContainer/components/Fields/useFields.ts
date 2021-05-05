@@ -5,6 +5,7 @@ import { SelectItem } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerClient from '../../../../../../../../../../../../services/manager/Clients/reqManagerClient';
 import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
+import { isNumber } from '../../../../../../../../../../../../utils/numbers';
 
 export const useFields = () => {
   const history = useHistory();
@@ -122,7 +123,7 @@ export const useFields = () => {
         })
       );
 
-      if (res?.success && personId === 'create' && !Number.isNaN(parseFloat(res?.data.client_id))) {
+      if (res?.success && personId === 'create' && isNumber(res?.data.client_id)) {
         history.push(`/clients/${clientId}/${res?.data.client_id}`);
       }
     }

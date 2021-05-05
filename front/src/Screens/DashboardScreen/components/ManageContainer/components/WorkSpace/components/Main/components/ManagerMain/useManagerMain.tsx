@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import getMain from '../../../../../../../../../../services/manager/Main/getMain';
 import { State } from '../../../../../../../../../../store/types';
 import { SelectItem } from '../../../../../../../../../../types';
+import { isNumber } from '../../../../../../../../../../utils/numbers';
 
 export type ContactPersonInfo = {
   person_type: string;
@@ -61,7 +62,7 @@ export const useManagerMain = () => {
   const mainTitle = useMemo(() => `${data?.date_info.day} ${data?.date_info.date} ${data?.date_info.time} ${data?.date_info.room}`, [data]);
 
   useEffect(() => {
-    if (Number.isNaN(parseFloat(id))) {
+    if (!isNumber(id)) {
       history.push('/');
     }
 

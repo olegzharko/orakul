@@ -93,8 +93,8 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
     if (token) {
       const reqData = {
         ...data,
-        mar_date: data.mar_date ? formatDate(data.mar_date) : null,
-        sign_date: data.sign_date ? formatDate(data.sign_date) : null,
+        mar_date: formatDate(data.mar_date),
+        sign_date: formatDate(data.sign_date),
       };
 
       const { success, message } = await reqClientConsents(token, clientId, personId, 'PUT', reqData);

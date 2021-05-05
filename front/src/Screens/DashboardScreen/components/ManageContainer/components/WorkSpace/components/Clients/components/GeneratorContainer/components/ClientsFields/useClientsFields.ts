@@ -10,6 +10,7 @@ import reqClientAddress from '../../../../../../../../../../../../services/gener
 import reqClientConsents from '../../../../../../../../../../../../services/generator/Client/reqClientConsents';
 import reqClientRepresentative from '../../../../../../../../../../../../services/generator/Client/reqClientRepresentative';
 import reqTermination from '../../../../../../../../../../../../services/generator/Client/reqTermination';
+import { isNumber } from '../../../../../../../../../../../../utils/numbers';
 
 export const useClientsFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
@@ -26,7 +27,7 @@ export const useClientsFields = () => {
   const [representative, setRepresentative] = useState();
   const [termination, setTermination] = useState();
 
-  const isCorrectId = useMemo(() => !Number.isNaN(parseFloat(personId)), [personId]);
+  const isCorrectId = useMemo(() => isNumber(personId), [personId]);
 
   useEffect(() => {
     if (token && isCorrectId) {

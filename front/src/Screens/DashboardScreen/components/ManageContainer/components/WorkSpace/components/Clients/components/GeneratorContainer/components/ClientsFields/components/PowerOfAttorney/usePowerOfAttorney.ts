@@ -9,7 +9,7 @@ import { formatDate } from '../../../../../../../../../../../../../../utils/form
 type InitialData = {
   notary_id: string,
   reg_num: string,
-  reg_date: Date | null,
+  reg_date: any,
   notary?: SelectItem[],
   other_notary?: SelectItem[],
 }
@@ -54,7 +54,7 @@ export const usePowerOfAttorney = ({ initialData, clientId, personId }: Props) =
     if (token) {
       const reqData = {
         ...data,
-        reg_date: data.reg_date ? formatDate(data.reg_date) : null,
+        reg_date: formatDate(data.reg_date),
       };
 
       const { success, message } = await reqClientRepresentative(token, clientId, personId, 'PUT', reqData);
