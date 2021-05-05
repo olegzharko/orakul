@@ -43,7 +43,8 @@
     align-items: center;
 
     &-container {
-      width: 550px;
+      width: 100%;
+      max-width: 550px;
       margin: 0 auto 25px;
 
       .add-button {
@@ -64,8 +65,14 @@
     }
 
     &-fields {
-      display: flex;
-      justify-content: space-evenly;
+      display: grid;
+
+      &.double {
+        padding: 0 15%;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 25px;
+        align-items: flex-end;
+      }
     }
   }
 }

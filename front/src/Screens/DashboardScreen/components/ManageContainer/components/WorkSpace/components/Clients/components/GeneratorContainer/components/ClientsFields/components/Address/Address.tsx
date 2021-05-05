@@ -13,25 +13,29 @@ const Address = (props: Props) => {
     <div className="clients__address">
       <SectionWithTitle title="Адреса" onClear={meta.onClear}>
         <div className="grid-center-duet mb20">
-          <CustomSwitch
-            label="Зареєстрований"
-            onChange={(e) => meta.setRegistration(e)}
-            selected={meta.registration}
-          />
+          <div className="clients__address-container">
+            <CustomSwitch
+              label="Зареєстрований"
+              onChange={(e) => meta.setRegistration(e)}
+              selected={meta.registration}
+            />
+          </div>
 
-          <CustomSwitch
-            label="Актуальне місце проживання"
-            onChange={(e) => meta.setActual(e)}
-            selected={meta.actual}
-          />
+          <div className="clients__address-container">
+            <CustomSwitch
+              label="Актуальне місце проживання"
+              onChange={(e) => meta.setActual(e)}
+              selected={meta.actual}
+            />
+          </div>
         </div>
-        <div className="clients__address-fields">
+        <div className={`clients__address-fields ${meta.actual ? 'double' : ''}`}>
           <Fields
             regions={meta.regions}
             cities={meta.cities}
             addressType={meta.addressType}
             buildingType={meta.buildingType}
-            apartmentType={meta.addressType}
+            apartmentType={meta.apartmentType}
             data={meta.data}
             setData={meta.setData}
             setShowModal={meta.setShowModal}
@@ -44,7 +48,7 @@ const Address = (props: Props) => {
               cities={meta.actualCities}
               addressType={meta.addressType}
               buildingType={meta.buildingType}
-              apartmentType={meta.addressType}
+              apartmentType={meta.apartmentType}
               data={meta.actualData}
               setData={meta.setActualData}
               setShowModal={meta.setShowModal}
