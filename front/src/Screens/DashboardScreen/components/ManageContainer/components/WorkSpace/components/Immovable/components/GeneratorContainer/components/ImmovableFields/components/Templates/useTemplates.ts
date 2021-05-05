@@ -17,7 +17,7 @@ type InitialData = {
   termination_contract_id: number | null,
   termination_refund_id: number | null,
   termination_refund_reg_number: string | null,
-  notary_id: string | null,
+  termination_refund_notary_id: string | null,
   ready: boolean,
   sign_date: any,
   final_sign_date: any,
@@ -70,7 +70,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     termination_refund_id: null,
     termination_refund_reg_date: null,
     termination_refund_reg_number: null,
-    notary_id: null,
+    termination_refund_notary_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -89,7 +89,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_refund_id: null,
       termination_refund_reg_date: null,
       termination_refund_reg_number: null,
-      notary_id: null,
+      termination_refund_notary_id: null,
     });
   }, []);
 
@@ -136,7 +136,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_contract_id: initialData?.termination_contract_id || null,
       termination_refund_id: initialData?.termination_refund_id || null,
       termination_refund_reg_number: initialData?.termination_refund_reg_number || null,
-      notary_id: initialData?.notary_id || null,
+      termination_refund_notary_id: initialData?.termination_refund_notary_id || null,
       ready: initialData?.ready || false,
       sign_date: initialData?.sign_date
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
