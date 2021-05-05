@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { State } from '../../../../../../../../../../store/types';
 import reqDeveloper from '../../../../../../../../../../services/generator/Developer/reqDeveloper';
+import { isNumber } from '../../../../../../../../../../utils/numbers';
 
 type Developer = {
   title: string;
@@ -21,7 +22,7 @@ export const useFields = () => {
   const [spouse, setSpouse] = useState([]);
 
   useEffect(() => {
-    const developerIsId = !Number.isNaN(parseFloat(developerId));
+    const developerIsId = isNumber(developerId);
     if (token && developerIsId) {
       (async () => {
         const res = await reqDeveloper(token, developerId, clientId);

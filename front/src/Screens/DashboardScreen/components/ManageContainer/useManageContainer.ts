@@ -1,6 +1,7 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { DashboardContractNavigation } from '../../useDashboardScreen';
+import { isNumber } from '../../../../utils/numbers';
 
 export const useManageContainer = () => {
   const history = useHistory();
@@ -32,7 +33,7 @@ export const useManageContainer = () => {
   }, [section]);
 
   useEffect(() => {
-    if (Number.isNaN(parseFloat(id))) {
+    if (!isNumber(id)) {
       history.push('/');
     }
   }, [id]);

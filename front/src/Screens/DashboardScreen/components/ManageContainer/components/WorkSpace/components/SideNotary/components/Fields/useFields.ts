@@ -4,6 +4,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react';
 import { State } from '../../../../../../../../../../store/types';
 import reqNotaryData from '../../../../../../../../../../services/generator/SideNotary/reqNotaryData';
 import { setModalInfo } from '../../../../../../../../../../store/main/actions';
+import { isNumber } from '../../../../../../../../../../utils/numbers';
 
 type SideNotaryDenominativeData = {
   surname_n: string,
@@ -42,7 +43,7 @@ export const useFields = () => {
     activity_o: '',
   });
 
-  const shouldLoadData = useMemo(() => notaryId !== 'create' && !Number.isNaN(parseFloat(notaryId)), [notaryId]);
+  const shouldLoadData = useMemo(() => notaryId !== 'create' && isNumber(notaryId), [notaryId]);
 
   useEffect(() => {
     // get NOTARY_DATA
@@ -106,7 +107,7 @@ export const useFields = () => {
         })
       );
 
-      if (res?.success && notaryId === 'create' && !Number.isNaN(parseFloat(res?.data.notary_id))) {
+      if (res?.success && notaryId === 'create' && isNumber(res?.data.notary_id)) {
         history.push(`/side-notaries/${clientId}/${res?.data.notary_id}`);
       }
     }

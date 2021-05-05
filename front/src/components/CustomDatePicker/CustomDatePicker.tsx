@@ -7,7 +7,6 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { formatDate } from '../../utils/formatDates';
 
 type Props = {
   label: string;
