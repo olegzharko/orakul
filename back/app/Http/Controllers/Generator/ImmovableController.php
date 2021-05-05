@@ -787,7 +787,7 @@ class ImmovableController extends BaseController
             'imm_type_id' => ['numeric', 'nullable'],
             'building_id' => ['numeric', 'nullable'],
             'roominess_id' => ['numeric', 'nullable'],
-            'imm_number' => ['numeric', 'nullable'],
+            'imm_number' => ['string', 'nullable'],
             'registration_number' => ['numeric', 'nullable'],
             'price_dollar' => ['numeric', 'nullable'],
             'price_grn' => ['numeric', 'nullable'],
