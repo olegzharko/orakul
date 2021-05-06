@@ -231,6 +231,21 @@ class FolderFileController extends Controller
         return $title;
     }
 
+    public function developer_consent_title()
+    {
+        $template_title = $this->contract->dev_company->owner->developer_consent->template->title;
+        $surname = $this->contract->dev_company->owner->surname_n;
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "$template_title $surname"
+            . "{$this->file_type_docx}"
+            . "";
+
+        $template = $this->file_path($this->contract->dev_company->owner->developer_consent->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
     public function communal_title($client, $template)
     {
         $title = null;

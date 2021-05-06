@@ -614,7 +614,7 @@ class ConvertController extends GeneratorController
         }
 
         $full_address = "$region $district $city $address $building";
-        $full_address = trim($full_address);
+        $full_address = trim(str_replace("  ", " ", $full_address));
 
         return $full_address;
     }
@@ -674,7 +674,7 @@ class ConvertController extends GeneratorController
         }
 
         $full_address = "$region $district $city $address $building";
-        $full_address = trim($full_address);
+        $full_address = trim(str_replace("  ", " ", $full_address));
 
         return $full_address;
     }
@@ -742,6 +742,54 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
+    public function building_full_address_by_type_short($immovable, $type = null)
+    {
+        $address = null;
+
+        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
+
+        $imm_num = $immovable->immovable_number;
+
+        if ($immovable->immovable_number && is_string($immovable->immovable_number)) {
+            $imm_num_str = $this->number_to_string(intval($immovable->immovable_number));
+            $letter = str_replace(intval($immovable->immovable_number), '', $immovable->immovable_number);
+            $letter = str_replace('-', '', $letter);
+            $imm_num_str = $imm_num_str . " літера «" . $letter . "»";
+        } else {
+            $imm_num_str = $this->number_to_string($immovable->immovable_number);
+        }
+
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $building_num_str;
+        $imm_addr_type_short = $immovable->developer_building->address_type->short;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_city_type_short = $immovable->developer_building->city->city_type->short;
+        $imm_city_title = $immovable->developer_building->city->title;
+        $imm_dis_title_n = $immovable->developer_building->city->district->title_n;
+        $imm_reg_title_n = $immovable->developer_building->city->region->title_n;
+        $building_type = Text::where('alias', 'building')->value('value');
+
+        if ($type == null || $type == 'asc') {
+            $address = "$imm_addr_type_short $imm_addr_title "
+                . "$imm_build_num ($imm_build_num_str), "
+                . "$imm_city_type_short $imm_city_title, "
+                . "$imm_dis_title_n " . trim(KeyWord::where('key', 'district')->value('short')) . ", "
+                . "$imm_reg_title_n " . trim(KeyWord::where('key', 'region')->value('short')) . " "
+                . "";
+        } elseif ($type == 'desc') {
+            $address =
+                ""
+                . "$imm_reg_title_n " . trim(KeyWord::where('key', 'region')->value('short')) . ", "
+                . "$imm_dis_title_n " . trim(KeyWord::where('key', 'district')->value('short')) . ", "
+                . "$imm_city_type_short $imm_city_title, "
+                . "$imm_addr_type_short $imm_addr_title, "
+                . "$building_type $imm_build_num ($imm_build_num_str)"
+                . "";
+        }
+
+        return $address;
+    }
+
     public function building_full_address_with_imm_for_taxes($immovable)
     {
         $address = null;
@@ -766,25 +814,27 @@ class ConvertController extends GeneratorController
 
     public function building_num_to_str($num)
     {
-        $resutl = [];
+        $result = [];
 
         $num_arr = explode('/', $num);
 
         if (count($num_arr) == 2) {
-            $resutl[] = $this->number_to_string(intval($num_arr[0]));
-            $resutl[] = str_replace(intval($num_arr[0]), '', $num_arr[0]) . ' дріб ';
-            $resutl[] = $this->number_to_string($num_arr[1]);
+            $result[] = $this->number_to_string(intval($num_arr[0]));
+//            $result[] = str_replace(intval($num_arr[0]), '', $num_arr[0]) . ' дріб';
+            $result[] = 'дріб';
+            $result[] = $this->number_to_string($num_arr[1]);
 
-            return implode(' ', $resutl);
+            return implode(' ', $result);
         }
 
         $num_arr = explode('-', $num);
 
         if (count($num_arr) == 2) {
-            $resutl[] = $this->number_to_string($num_arr[0]);
-            $resutl[] = $num_arr[1];
 
-            return implode(' ', $resutl);
+            $result[] = $this->number_to_string($num_arr[0]);
+            $result[] = "літера «" . $num_arr[1] . "»";
+
+            return implode(' ', $result);
         }
 
         $result = $this->number_to_string($num);
@@ -796,9 +846,18 @@ class ConvertController extends GeneratorController
     {
         $number_str = $this->number_to_string($number);
 
-        $resutl = "$number ($number_str)";
+        $result = "$number ($number_str)";
 
-        return $resutl;
+        return $result;
+    }
+
+    public function immovable_number_with_string($number)
+    {
+        $number_str = $this->building_num_to_str($number);
+
+        $result = "$number ($number_str)";
+
+        return $result;
     }
 
     public function get_immovable_floor($floor)
@@ -894,7 +953,7 @@ class ConvertController extends GeneratorController
 
     public function get_client_citizenship_n($client)
     {
-        $resutl = '';
+        $result = '';
 
         if ($client->citizenship)
         {
@@ -905,15 +964,15 @@ class ConvertController extends GeneratorController
             }
 
             $country = $client->citizenship->title_r;
-            $resutl = "$citizen $country" . " ";
+            $result = "$citizen $country" . " ";
         }
 
-        return $resutl;
+        return $result;
     }
 
     public function get_client_citizenship_r($client)
     {
-        $resutl = '';
+        $result = '';
 
         if ($client->citizenship)
         {
@@ -924,10 +983,10 @@ class ConvertController extends GeneratorController
             }
 
             $country = $client->citizenship->title_r;
-            $resutl = "$citizen $country" . " ";
+            $result = "$citizen $country" . " ";
         }
 
-        return $resutl;
+        return $result;
     }
 }
 

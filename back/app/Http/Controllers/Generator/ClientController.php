@@ -445,7 +445,7 @@ class ClientController extends BaseController
                     'address_type_id' => $r['actual_address_type_id'],
                     'address' => $r['actual_address'],
                     'building_type_id' => $r['actual_building_type_id'],
-                    'building_num' => $r['actual_building_num'],
+                    'building' => $r['actual_building_num'],
                     'apartment_type_id' => $r['actual_apartment_type_id'],
                     'apartment_num' => $r['actual_apartment_num'],
                 ]);

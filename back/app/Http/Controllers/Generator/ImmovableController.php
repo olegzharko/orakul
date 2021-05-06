@@ -12,6 +12,7 @@ use App\Models\BankAccountPayment;
 use App\Models\BankAccountTemplate;
 use App\Models\BankTaxesPayment;
 use App\Models\BankTaxesTemplate;
+use App\Models\Client;
 use App\Models\Communal;
 use App\Models\CommunalTemplate;
 use App\Models\ConsentTemplate;
@@ -37,7 +38,9 @@ use App\Models\QuestionnaireTemplate;
 use App\Models\Room;
 use App\Models\Notary;
 use App\Models\RoominessType;
+use App\Models\ClientSpouseConsent;
 use App\Models\SecurityPayment;
+use App\Models\SpouseWord;
 use App\Models\StatementTemplate;
 use App\Models\Questionnaire;
 use App\Models\TerminationConsent;
@@ -558,7 +561,7 @@ class ImmovableController extends BaseController
         
         $contract_type = ContractType::select('id', 'title')->get();
         $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $dev_company_id)->get();
-        $bank_templates = BankAccountTemplate::select('id', 'title')->get();
+        $bank_templates = BankAccountTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
         $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
@@ -712,17 +715,28 @@ class ImmovableController extends BaseController
         if ($immovable->developer_building->dev_company) {
             $developer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
             $dev_company_id = $immovable->developer_building->dev_company->id;
-            $owner = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $developer_type_id);
+            $owner_id = DevCompanyEmployer::where(['dev_company_id' => $dev_company_id, 'type_id' => $developer_type_id])->value('employer_id');
+            $owner = Client::find($owner_id);
 
             if (!$owner->married) {
-                DevConsent::updateOrCreate(
-                    ['contract_id' => $contract_id],
+//                DevConsent::updateOrCreate(
+//                    ['contract_id' => $contract_id],
+//                    [
+//                        'template_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
+//                        'contract_spouse_word_id' => SpouseWord::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+//                        'notary_id' => $notary_id,
+//                        'reg_date' => $r['sign_date'],
+//                    ]);
+
+                ClientSpouseConsent::updateOrCreate(
+                    ['client_id' => $owner_id],
                     [
-                        'template_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
-                        'contract_spouse_word_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
                         'notary_id' => $notary_id,
-                        'reg_date' => $r['sign_date'],
-                    ]);
+                        'template_id' => ConsentTemplate::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+                        'contract_spouse_word_id' => SpouseWord::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+                        'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
+                    ]
+                );
             }
         }
 
