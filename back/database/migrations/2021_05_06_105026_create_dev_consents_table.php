@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTerminationRefundsTable extends Migration
+class CreateDevConsentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateTerminationRefundsTable extends Migration
      */
     public function up()
     {
-        Schema::create('termination_refunds', function (Blueprint $table) {
+        Schema::create('dev_consents', function (Blueprint $table) {
             $table->id();
-//            $table->integer('immovable_id')->nullable();
-            $table->integer('contract_id')->nullable();
-//            $table->integer('client_id')->nullable();
+            $table->integer('developer_id')->nullable();
             $table->integer('template_id')->nullable();
+            $table->integer('contract_spouse_word_id')->nullable();
             $table->integer('notary_id')->nullable();
             $table->dateTime('reg_date')->nullable();
             $table->string('reg_num')->nullable();
@@ -34,6 +33,6 @@ class CreateTerminationRefundsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('termination_refunds');
+        Schema::dropIfExists('dev_consents');
     }
 }

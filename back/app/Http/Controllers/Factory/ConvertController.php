@@ -892,20 +892,39 @@ class ConvertController extends GeneratorController
         return $full_name;
     }
 
-    public function get_client_citizenship($client)
+    public function get_client_citizenship_n($client)
     {
         $resutl = '';
 
         if ($client->citizenship)
         {
             if ($client->gender == "male") {
-                $citizen_o = KeyWord::where('key', "citizen_male")->value('title_n');
+                $citizen = KeyWord::where('key', "citizen_male")->value('title_n');
             } else {
-                $citizen_o = KeyWord::where('key', "citizen_female")->value('title_n');
+                $citizen = KeyWord::where('key', "citizen_female")->value('title_n');
             }
 
             $country = $client->citizenship->title_r;
-            $resutl = "$citizen_o $country" . " ";
+            $resutl = "$citizen $country" . " ";
+        }
+
+        return $resutl;
+    }
+
+    public function get_client_citizenship_r($client)
+    {
+        $resutl = '';
+
+        if ($client->citizenship)
+        {
+            if ($client->gender == "male") {
+                $citizen = KeyWord::where('key', "citizen_male")->value('title_r');
+            } else {
+                $citizen = KeyWord::where('key', "citizen_female")->value('title_r');
+            }
+
+            $country = $client->citizenship->title_r;
+            $resutl = "$citizen $country" . " ";
         }
 
         return $resutl;

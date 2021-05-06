@@ -60,5 +60,4 @@ class ClientSpouseConsent extends Model
     {
         return $this->belongsTo(SpouseWord::class, 'contract_spouse_word_id');
     }
-
 }
