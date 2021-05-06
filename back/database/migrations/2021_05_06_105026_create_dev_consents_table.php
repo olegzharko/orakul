@@ -15,7 +15,7 @@ class CreateDevConsentsTable extends Migration
     {
         Schema::create('dev_consents', function (Blueprint $table) {
             $table->id();
-            $table->integer('developer_id')->nullable();
+            $table->integer('contract_id')->nullable();
             $table->integer('template_id')->nullable();
             $table->integer('contract_spouse_word_id')->nullable();
             $table->integer('notary_id')->nullable();

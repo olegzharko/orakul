@@ -498,7 +498,7 @@ class ClientController extends BaseController
             ->pluck('dev_companies.id');
 
         $consent_templates = ConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_companies_id)->get();
-        dd($consent_templates);
+
         $married_types = MarriageType::select('id', 'title')->get();
         $rakul_notary = Notary::where('rakul_company', true)->get();
 
@@ -516,11 +516,8 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
-        $consent_spouse_words = SpouseWord::select('id', 'title')->get();
+        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->get();
 
-
-//        $result['rakul_notary'] = $convert_notary;
-//        $result['other_notary'] = $other_notary;
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['consent_spouse_words'] = $consent_spouse_words;

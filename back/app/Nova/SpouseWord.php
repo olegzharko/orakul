@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -52,6 +53,7 @@ class SpouseWord extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
             Text::make('Заголовок', 'title'),
             Heading::make('<p class="text-success">Перелік необхідних ключевих слів</p>')->asHtml(),
             Textarea::make('Текст з ключами', 'text'),

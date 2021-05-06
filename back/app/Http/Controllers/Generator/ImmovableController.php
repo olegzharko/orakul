@@ -18,8 +18,12 @@ use App\Models\ConsentTemplate;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
 use App\Models\ContractType;
+use App\Models\DevCompanyEmployer;
+use App\Models\DevConsent;
+use App\Models\DevConsentTemplate;
 use App\Models\DeveloperBuilding;
 use App\Models\DeveloperStatement;
+use App\Models\DevEmployerType;
 use App\Models\Exchange;
 use App\Models\ExchangeRate;
 use App\Models\FinalSignDate;
@@ -550,16 +554,18 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        $dev_company_id = $immovable->developer_building->dev_company->id;
+        
         $contract_type = ContractType::select('id', 'title')->get();
-        $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+        $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $dev_company_id)->get();
         $bank_templates = BankAccountTemplate::select('id', 'title')->get();
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
-        $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
-        $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+        $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
+        $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
 
-        $communal_templates = CommunalTemplate::select('id', 'title')->where('dev_company_id', $immovable->developer_building->dev_company->id)->get();
-        $termination_contract_templates = TerminationContractTemplate::select('id', 'title')->where('dev_company_id', $immovable->developer_building->dev_company->id)->get();
-        $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $immovable->developer_building->dev_company->id)->get();
+        $communal_templates = CommunalTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $termination_contract_templates = TerminationContractTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
@@ -702,6 +708,23 @@ class ImmovableController extends BaseController
                 'reg_date' => $r['termination_refund_reg_date'],
                 'reg_num' => $r['termination_refund_reg_number'],
             ]);
+
+        if ($immovable->developer_building->dev_company) {
+            $developer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
+            $dev_company_id = $immovable->developer_building->dev_company->id;
+            $owner = DevCompanyEmployer::get_dev_employers_by_type($dev_company_id, $developer_type_id);
+
+            if (!$owner->married) {
+                DevConsent::updateOrCreate(
+                    ['contract_id' => $contract_id],
+                    [
+                        'template_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
+                        'contract_spouse_word_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
+                        'notary_id' => $notary_id,
+                        'reg_date' => $r['sign_date'],
+                    ]);
+            }
+        }
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');
     }

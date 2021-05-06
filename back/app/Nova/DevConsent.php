@@ -53,7 +53,7 @@ class DevConsent extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\Client'),
+            BelongsTo::make('Договір', 'contract', 'App\Nova\Contract'),
             BelongsTo::make('Шаблон', 'template', 'App\Nova\DevConsentTemplate'),
             BelongsTo::make('Пункт згоди у договорі', 'contract_spouse_word', 'App\Nova\SpouseWord'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),

@@ -15,9 +15,9 @@ class DevConsent extends Model
         'deleted_at' => 'datetime',
     ];
 
-    public function developer()
+    public function contract()
     {
-        return $this->belongsTo(Client::class, 'developer_id');
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 
     public function template()

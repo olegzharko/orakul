@@ -56,11 +56,6 @@ class Immovable extends Model implements Sortable
         return $this->belongsTo(RoominessType::class, 'roominess_id');
     }
 
-//    public function proxy()
-//    {
-//        return $this->belongsTo(Proxy::class, 'proxy_id');
-//    }
-
     public function security_payment()
     {
         return $this->hasOne(SecurityPayment::class, 'immovable_id');
