@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useCallback, useState, useEffect, useMemo } from 'react';
 import { State } from '../../../../../../../../../../store/types';
 import reqNotaryData from '../../../../../../../../../../services/generator/SideNotary/reqNotaryData';
 import { setModalInfo } from '../../../../../../../../../../store/main/actions';
+import { isNumber } from '../../../../../../../../../../utils/numbers';
 
 type SideNotaryDenominativeData = {
   surname_n: string,
@@ -23,6 +24,7 @@ type SideNotaryFblativeData = {
 
 export const useFields = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { token } = useSelector((state: State) => state.main.user);
   const { notaryId, clientId } = useParams<{ notaryId: string, clientId: string }>();
 
@@ -41,7 +43,7 @@ export const useFields = () => {
     activity_o: '',
   });
 
-  const shouldLoadData = useMemo(() => notaryId !== 'create' && !Number.isNaN(parseFloat(notaryId)), [notaryId]);
+  const shouldLoadData = useMemo(() => notaryId !== 'create' && isNumber(notaryId), [notaryId]);
 
   useEffect(() => {
     // get NOTARY_DATA
@@ -104,6 +106,10 @@ export const useFields = () => {
           message: res?.message,
         })
       );
+
+      if (res?.success && notaryId === 'create' && isNumber(res?.data.notary_id)) {
+        history.push(`/side-notaries/${clientId}/${res?.data.notary_id}`);
+      }
     }
   }, [denominative, ablative, token]);
 

@@ -77,7 +77,6 @@ const ImmovableContainer = (props: Props) => {
           <div className="mv12 df-jc-sb">
             <CustomInput
               required
-              key="test"
               label="Номер нерухомості"
               onChange={(val) => meta.onImmNumChange(index, val)}
               value={item.imm_number}

@@ -829,7 +829,7 @@ class ImmovableController extends BaseController
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'roominess_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'imm_number.numeric' => 'Необхідно передати номер в числовому форматі',
+            'imm_number.string' => 'Необхідно передати номер в строковому форматі',
             'registration_number.numeric' => 'Необхідно передати номер в числовому форматі',
             'price_dollar.numeric' => 'Необхідно передати ціну в числовому форматі',
             'price_grn.numeric' => 'Необхідно передати ціну в числовому форматі',

@@ -84,7 +84,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
     (index: number, val: string) => {
       onChange(index, {
         ...immovables[index],
-        imm_number: +val,
+        imm_number: val,
       });
     },
     [immovables]

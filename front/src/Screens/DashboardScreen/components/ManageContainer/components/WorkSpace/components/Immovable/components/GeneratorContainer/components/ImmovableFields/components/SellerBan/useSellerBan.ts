@@ -21,7 +21,7 @@ export const useSellerBan = ({ initialData, id }: Props) => {
   const { token } = useSelector((state: State) => state.main.user);
 
   const [data, setData] = useState<InitialData>({
-    date: new Date(),
+    date: null,
     number: '',
     pass: false,
   });
@@ -50,7 +50,7 @@ export const useSellerBan = ({ initialData, id }: Props) => {
 
   useEffect(() => {
     setData({
-      date: initialData?.date ? new Date(changeMonthWitDate(initialData?.date)) : new Date(),
+      date: initialData?.date ? new Date(changeMonthWitDate(initialData?.date)) : null,
       number: initialData?.number || '',
       pass: initialData?.pass || false,
     });
