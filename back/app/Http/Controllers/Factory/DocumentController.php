@@ -945,6 +945,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
 
             $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
             $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
             $word->setValue('ЗБД-ПОБАТЬК-Н', $this->contract->dev_company->owner->patronymic_n);
@@ -1073,6 +1074,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
 
             $word->setValue('ПІДПИС-ГРОМАДЯН', $this->convert->get_client_citizenship($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ГРОМАДЯН-Н', $this->convert->get_client_citizenship($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ПРІЗВ-Н', $this->contract->dev_representative->surname_n);
             $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
             $word->setValue('ПІДПИС-ПОБАТЬК-Н', $this->contract->dev_representative->patronymic_n);

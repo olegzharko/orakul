@@ -789,6 +789,7 @@ class ClientController extends BaseController
 
     public function update_notary($card_id, $notary_id = null, Request $r)
     {
+        $result = [];
         $validator = $this->validate_client_data($r);
 
         if (count($validator->errors()->getMessages())) {
@@ -810,7 +811,9 @@ class ClientController extends BaseController
                     'activity_o' => $r['activity_o'],
                     'separate_by_card' => $card_id,
                 ]);
-            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
+
+            $result['notary_id'] = $notary_id;
+            return $this->sendResponse($result, 'Нотаріус з ID: ' . $notary_id . ' оноволено');
         } else {
             $notary = new Notary();
             $notary->surname_n = $r['surname_n'];
@@ -826,7 +829,8 @@ class ClientController extends BaseController
             $notary->separate_by_card = $card_id;
             $notary->save();
 
-            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary->id . ' створено');
+            $result['notary_id'] = $notary->id;
+            return $this->sendResponse($result, 'Нотаріус з ID: ' . $notary->id . ' створено');
         }
     }
 
