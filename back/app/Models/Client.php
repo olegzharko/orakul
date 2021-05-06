@@ -101,6 +101,11 @@ class Client extends Model implements Sortable
         return $this->hasOne(ClientSpouseConsent::class);
     }
 
+    public function developer_consent()
+    {
+        return $this->hasOne(ClientSpouseConsent::class, 'client_id');
+    }
+
     public function termination_consent()
     {
         return $this->hasOne(TerminationConsent::class, 'client_id');
