@@ -55,8 +55,8 @@ class ImmovableOwnership extends Model implements Sortable
                'sort_order',
                'active',
             )->where('immovable_id', $immovable_id)->first()) {
-                $immovable_ownership->gov_reg_date_format = $immovable_ownership ? $immovable_ownership->gov_reg_date->format('d.m.Y') : null;
-                $immovable_ownership->discharge_date_format = $immovable_ownership ? $immovable_ownership->discharge_date->format('d.m.Y') : null;
+                $immovable_ownership->gov_reg_date_format = $immovable_ownership->gov_reg_date ? $immovable_ownership->gov_reg_date->format('d.m.Y') : null;
+                $immovable_ownership->discharge_date_format = $immovable_ownership->discharge_date ? $immovable_ownership->discharge_date->format('d.m.Y') : null;
                 return $immovable_ownership;
         } else {
             return null;
