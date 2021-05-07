@@ -549,6 +549,18 @@ class ConvertController extends GeneratorController
         return $str;
     }
 
+    public function get_initials_and_surname_o($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_o))
+                $str = $person->short_name . $person->short_patronymic . $this->non_break_space . $person->surname_o;
+        }
+
+        return $str;
+    }
+
     public function building_address_type_title_number($building)
     {
         $str = null;
@@ -872,7 +884,7 @@ class ConvertController extends GeneratorController
         if (!$client->patronymic_n)
             $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_full_name_r($client)
@@ -882,7 +894,7 @@ class ConvertController extends GeneratorController
         if (!$client->patronymic_r)
             $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_full_name_d($client)
@@ -892,7 +904,7 @@ class ConvertController extends GeneratorController
         if (!$client->patronymic_d)
             $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_full_name_o($client)
@@ -902,7 +914,7 @@ class ConvertController extends GeneratorController
         if (!$client->patronymic_o)
             $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
 
@@ -922,33 +934,23 @@ class ConvertController extends GeneratorController
             $full_name = "$sign_title $full_name";
         }
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_full_name_n_upper($client)
     {
-//        $surname = mb_strtoupper($client->surname_n);
-//        $name = mb_strtoupper($client->name_n);
-//        $patronymic = mb_strtoupper($client->patronymic_n);
-
         $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
         $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_full_name_r_upper($client)
     {
-//        $surname = mb_strtoupper($client->surname_r);
-//        $name = mb_strtoupper($client->name_r);
-//        $patronymic = mb_strtoupper($client->patronymic_r);
-//
-//        $full_name = "$surname $name $patronymic";
-
         $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
         $full_name = mb_strtoupper($full_name);
 
-        return $full_name;
+        return trim($full_name);
     }
 
     public function get_client_citizenship_n($client)
