@@ -851,6 +851,8 @@ class DocumentController extends GeneratorController
             $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($notary));
             $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($notary));
 
+            $word->setValue('НОТ-ІНІЦІАЛИ-ПІБ-О', $this->convert->get_initials_and_surname_o($notary));
+
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
             $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
             $word->setValue('НОТ-АКТ-Д', $notary->activity_d);
@@ -1630,8 +1632,14 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-total-space',  $this->convert->get_convert_space($this->contract->immovable->total_space));
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
-            $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
-            $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->convert->get_convert_space($this->contract->immovable->living_space)));
+            if ($this->contract->type == 'main') {
+                $word->setValue('Н-ПЛ-З', $this->contract->immovable->total_space);
+                $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->contract->immovable->living_space));
+            } else {
+                $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
+                $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->convert->get_convert_space($this->contract->immovable->living_space)));
+            }
+
             $word->setValue('Н-ПОВЕРХУ', $this->convert->get_immovable_floor($this->contract->immovable->floor));
             $word->setValue('Н-CЕКЦІЯ', $this->convert->number_with_string($this->contract->immovable->section));
             /*
@@ -2167,6 +2175,9 @@ class DocumentController extends GeneratorController
         $sheet->setCellValue("B10", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
         $sheet->setCellValue("B11", $price);
         $sheet->setCellValue("B13", $this->client->phone);
+        if ($this->contract->dev_representative) {
+            $sheet->setCellValue("E9", "через " . $this->contract->dev_representative->surname_n);
+        }
 
         return $sheet;
     }
