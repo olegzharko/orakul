@@ -142,8 +142,6 @@ class ImmovableController extends BaseController
         $reserve_grn = round($r['reserve_grn'] / $currency_rate, 2);
         $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
 
-        echo "Курс: $currency_rate, Цена: $price_dollar, Резерв: $reserve_grn, М2: $m2_dollar<br>";
-
         if ($imm = Immovable::find($immovable_id)) {
             Immovable::where('id', $immovable_id)->update([
                 'immovable_type_id' => $r['imm_type_id'],
@@ -558,7 +556,7 @@ class ImmovableController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         $dev_company_id = $immovable->developer_building->dev_company->id;
-        
+
         $contract_type = ContractType::select('id', 'title')->get();
         $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $dev_company_id)->get();
         $bank_templates = BankAccountTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();

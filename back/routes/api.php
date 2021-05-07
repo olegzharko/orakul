@@ -161,7 +161,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('clients/{card_id}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_card_client']); // postman
         Route::get('client/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'get_client']); // postman
         Route::put('client/{card_id}/{client_id?}', [\App\Http\Controllers\Manager\ManagerController::class, 'update_client']);
-
         Route::delete('immovable/delete/{immovable_id}/{card_id}', [ImmovableController::class, 'destroy']); // postman
         Route::delete('client/delete/{client_id}/{card_id}', [ClientController::class, 'destroy']); // DELETE REQUEST
 
