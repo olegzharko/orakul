@@ -1633,8 +1633,8 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
             if ($this->contract->type == 'main') {
-                $word->setValue('Н-ПЛ-З', $this->contract->immovable->total_space);
-                $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->contract->immovable->living_space));
+                $word->setValue('Н-ПЛ-З-ЦФР', $this->contract->immovable->total_space);
+                $word->setValue('Н-ПЛ-Ж-ЦФР', $this->set_style_bold($this->contract->immovable->living_space));
             } else {
                 $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
                 $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->convert->get_convert_space($this->contract->immovable->living_space)));
