@@ -16,7 +16,7 @@ const LoginScreen = () => {
         <Route path="/forgot" exact>
           <ForgotPassword />
         </Route>
-        <Route path="/update-password/:token">
+        <Route path="/password/reset/:token" exact>
           <UpdatePassword />
         </Route>
         <Authorization />
