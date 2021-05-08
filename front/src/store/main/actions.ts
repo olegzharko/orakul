@@ -63,7 +63,9 @@ export const forgotPassword = ({ email }: { email: string }) => async (
 ) => {
   const { success, message } = await forgotPasswordService({ email });
 
-  if (success) dispatch(setModalInfo({ success, message, open: true }));
+  if (success) {
+    dispatch(setModalInfo({ success, message, open: true }));
+  }
 };
 
 export const resetPassword = (data: ResetPasswordType) => async (
