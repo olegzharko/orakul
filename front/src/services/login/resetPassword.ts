@@ -3,6 +3,7 @@ import requestApi from '../utils/requestApi';
 
 export type ResetPasswordType = {
   token: string;
+  email: string;
   password: string;
   c_password: string;
 };
