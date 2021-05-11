@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
+import CustomInput from '../../../../components/CustomInput';
 import CustomPasswordInput from '../../../../components/CustomPasswordInput';
 import Modal from '../../../../components/Modal';
 import { useModal } from '../../../../components/Modal/useModal';
@@ -14,6 +15,14 @@ const UpdatePassword = () => {
       <form className="login__update" onSubmit={meta.handleUpdate}>
         <img src="/icons/logo-full.svg" alt="Rakul" />
         <h1 className="login__forgot-title mv12">Новий пароль</h1>
+
+        <div className="mv12">
+          <CustomInput
+            label="Email"
+            value={meta.email}
+            onChange={meta.setEmail}
+          />
+        </div>
 
         <div className="mv12">
           <CustomPasswordInput

@@ -9,6 +9,8 @@ import resetPassword, {
 export const useUpdatePassword = () => {
   const { token } = useParams<{ token: string }>();
   const dispatch = useDispatch();
+
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
@@ -16,6 +18,7 @@ export const useUpdatePassword = () => {
     (e: any) => {
       e.preventDefault();
       const data: ResetPasswordType = {
+        email,
         password,
         token,
         c_password: repeatPassword,
@@ -23,18 +26,20 @@ export const useUpdatePassword = () => {
 
       dispatch(resetPassword(data));
     },
-    [password, repeatPassword]
+    [password, repeatPassword, email]
   );
 
   const disabledButton = useMemo(
-    () => !password || !repeatPassword || password !== repeatPassword,
-    [password, repeatPassword]
+    () => !password || !repeatPassword || password !== repeatPassword || !email,
+    [password, repeatPassword, email]
   );
 
   return {
+    email,
     password,
     repeatPassword,
     disabledButton,
+    setEmail,
     setPassword,
     setRepeatPassword,
     handleUpdate,
