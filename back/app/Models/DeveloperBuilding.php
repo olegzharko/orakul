@@ -58,7 +58,7 @@ class DeveloperBuilding extends Model implements Sortable
     {
 
 
-        return DeveloperBuilding::whereIn('id', $buildings_id)->orderBy('address_type_id')->orderBy('title')->orderByRaw("CAST(number as VARCHAR) ASC")->get();
+        return DeveloperBuilding::whereIn('id', $buildings_id)->orderBy('address_type_id')->orderBy('title')->orderByRaw("CAST(number as UNSIGNED) ASC")->get();
     }
 
     public static function get_developer_building($dev_company_id)
