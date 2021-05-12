@@ -139,7 +139,7 @@ class ImmovableController extends BaseController
 
         $currency_rate = $this->get_currency_rate($immovable_id);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
-        $reserve_grn = round($r['reserve_grn'] / $currency_rate, 2);
+        $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
         $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
 
         if ($imm = Immovable::find($immovable_id)) {
@@ -152,7 +152,7 @@ class ImmovableController extends BaseController
                 'grn' => $r['price_grn'] * 100,
                 'dollar' => $price_dollar * 100,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $reserve_grn * 100,
+                'reserve_dollar' => $reserve_dollar * 100,
                 'm2_grn' => $r['m2_grn'] * 100,
                 'm2_dollar' => $m2_dollar * 100,
                 'total_space' => $r['total_space'],
