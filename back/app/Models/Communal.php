@@ -16,12 +16,14 @@ class Communal extends Model
         'client_id',
         'notary_id',
         'sign_date',
+        'final_date',
         'reg_num',
         'active',
     ];
 
     protected $casts = [
         'sign_date' => 'datetime',
+        'final_date' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 

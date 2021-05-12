@@ -124,7 +124,7 @@ class DocumentController extends GeneratorController
                 } else
                     $this->notification("Warning", "Забудовник в шлюбі");
 
-                if ($this->client && $this->client->communal && $this->client->communal->template_id)
+                if ($this->contract && $this->contract->communal && $this->contract->communal->template_id)
                     $this->communal_template_set_data();
                 else
                     $this->notification("Warning", "Коммунальні від забудовника відсутні");
@@ -280,13 +280,13 @@ class DocumentController extends GeneratorController
 
     public function communal_template_set_data()
     {
-        $this->communal_generate_file = $this->ff->communal_title($this->client, $this->client->communal->template);
+        $this->communal_generate_file = $this->ff->communal_title($this->client, $this->contract->communal->template);
 
-        $this->convert->date_to_string($this->client->communal, $this->client->communal->sign_date);
+        $this->convert->date_to_string($this->contract->communal, $this->contract->communal->sign_date);
 
         $this->set_passport_template_part($this->communal_generate_file);
-        $this->set_current_document_notary($this->communal_generate_file, $this->client->communal->notary);
-        $this->set_sign_date($this->communal_generate_file, $this->client->communal);
+        $this->set_current_document_notary($this->communal_generate_file, $this->contract->communal->notary);
+        $this->set_sign_date($this->communal_generate_file, $this->contract->communal);
 
         $word = new TemplateProcessor($this->communal_generate_file);
         $word = $this->set_data_word($word);
@@ -450,6 +450,7 @@ class DocumentController extends GeneratorController
          * Покупець
          * */
         $word = $this->set_client($word);
+
         /*
          * Представник покупця - задати основні данні
          * */
@@ -502,6 +503,11 @@ class DocumentController extends GeneratorController
          * Забезпечувальний платіж до попереднього договору
          * */
         $word = $this->set_termination_info($word);
+
+        /*
+         * Забезпечувальний платіж до попереднього договору
+         * */
+        $word = $this->set_communal_info($word);
 
         /*
          * Курс долара та посилання на сайт
@@ -921,8 +927,13 @@ class DocumentController extends GeneratorController
             if ($this->contract->final_sign_date->sign_date > $this->contract->sign_date) {
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
             }
-            else
-                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
+            else {
+//                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
+                if ($this->contract->immovable->developer_building && $this->contract->immovable->developer_building->communal_date)
+                    $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->developer_building->communal_date));
+                else
+                    $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
+            }
         }
         // Допоміжні данні
         $word->setValue('alias-dis-sh', CityType::where('alias', 'district')->value('short'));
@@ -1141,6 +1152,7 @@ class DocumentController extends GeneratorController
 
             $building_id = $this->contract->immovable->developer_building_id;
             $dev_representative_id = $this->contract->dev_representative->id;
+
             $proxy_id = $this->contract->immovable->proxy->id;
 
             $proxy = BuildingRepresentativeProxy::get_proxy($building_id, $dev_representative_id, $proxy_id);
@@ -1244,6 +1256,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-gender-pronoun-up', $this->mb_ucfirst($cl_gender_pronoun));
 
             $cl_gender_whose = GenderWord::where('alias', "whose")->value($this->client->gender);
+
             $word->setValue('КЛ-ЇХ', $cl_gender_whose);
             $word->setValue('КЛ-ЇХ-UP', $this->mb_ucfirst($cl_gender_whose));
 
@@ -1632,12 +1645,12 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-total-space',  $this->convert->get_convert_space($this->contract->immovable->total_space));
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
-            if ($this->contract->type == 'main') {
-                $word->setValue('Н-ПЛ-З-ЦФР', $this->contract->immovable->total_space);
-                $word->setValue('Н-ПЛ-Ж-ЦФР', $this->set_style_bold($this->contract->immovable->living_space));
+            if ($this->contract->type->alias == 'main') {
+                $word->setValue('Н-ПЛ-З-ЦФР', str_replace('.', ',', $this->contract->immovable->total_space));
+                $word->setValue('Н-ПЛ-Ж-ЦФР', str_replace('.', ',', $this->contract->immovable->living_space));
             } else {
                 $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
-                $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->convert->get_convert_space($this->contract->immovable->living_space)));
+                $word->setValue('Н-ПЛ-Ж', $this->convert->get_convert_space($this->contract->immovable->living_space));
             }
 
             $word->setValue('Н-ПОВЕРХУ', $this->convert->get_immovable_floor($this->contract->immovable->floor));
@@ -1687,6 +1700,7 @@ class DocumentController extends GeneratorController
         /*
          * Об'єкт - перевірка на право власності та данні нотаріуса, що здійснив цю перевірку
          * */
+
         if ($this->contract->immovable_ownership) {
             $word->setValue('imm-own-gov-reg-num', $this->contract->immovable_ownership->gov_reg_number);
             $word->setValue('imm-own-gov-reg-date', $this->contract->immovable_ownership->gov_reg_date_format);
@@ -1702,8 +1716,10 @@ class DocumentController extends GeneratorController
             $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
 
-            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
-            $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable_ownership->notary->activity_o);
+            if ($this->contract->immovable_ownership->notary) {
+                $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
+                $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable_ownership->notary->activity_o);
+            }
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
@@ -1783,6 +1799,8 @@ class DocumentController extends GeneratorController
         $word->setValue('Н-ЦІНА-М2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->m2_dollar, 'dollar'));
         $word->setValue('Н-ЦІНА-РЕЗ-ГРН', $this->convert->get_convert_price($this->contract->immovable->reserve_grn, 'grn'));
         $word->setValue('Н-ЦІНА-РЕЗ-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->reserve_dollar, 'dollar'));
+        $word->setValue('Н-ЦІНА-РЕЗ-1/2-ГРН', $this->convert->get_convert_price($this->contract->immovable->reserve_grn / 2, 'grn'));
+        $word->setValue('Н-ЦІНА-РЕЗ-1/2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->reserve_dollar / 2, 'dollar'));
         return $word;
     }
 
@@ -1846,6 +1864,16 @@ class DocumentController extends GeneratorController
             $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-НОМЕР', $this->contract->dev_company->owner->termination_consent->reg_num);
         } else {
             $this->notification("Warning", "Інформація про розірвання відсутне");
+        }
+
+        return $word;
+    }
+
+    public function set_communal_info($word)
+    {
+        if ($this->contract->communal && $this->contract->communal->final_date) {
+            $this->convert->date_to_string($this->contract->communal, $this->contract->communal->final_date);
+            $word->setValue('ДОВ-КОММ-ДАТА-СЛОВАМИ-ДО', $this->contract->communal->str_day->title . " " . $this->contract->communal->str_month->title_r . " " . $this->contract->communal->str_year->title_r);
         }
 
         return $word;

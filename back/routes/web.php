@@ -19,6 +19,7 @@ use App\Http\Controllers\PassportAuthController;
 */
 
 
+// Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);
 Route::get('test_price_convert/{number}', [ConvertController::class, 'test_price_convert']);

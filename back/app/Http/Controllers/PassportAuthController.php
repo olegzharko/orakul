@@ -77,7 +77,8 @@ class PassportAuthController extends BaseController
 
          \Mail::send('auth.password.verify',['user_email' => $request->email, 'token' => $token], function($message) use ($request) {
             $message->from($request->email);
-            $message->to('olegzharko@gmail.com');
+            // $message->to('olegzharko@gmail.com');
+            $message->to($request['email']);
             $message->subject('Запит на відновлення пароля');
         });
 
@@ -119,8 +120,8 @@ class PassportAuthController extends BaseController
     {
         $request->validate([
             'email' => 'required|email|exists:users',
-            'password' => 'required|string|min:6|confirmed',
-            'password_confirmation' => 'required',
+            'password' => 'required|string|min:6',
+            'c_password' => 'required',
 
         ]);
 
@@ -130,6 +131,9 @@ class PassportAuthController extends BaseController
 
         if(!$updatePassword)
             return $this->sendError("Данний токен не є активним");
+
+        if($request->password != $request->c_password)
+            return $this->sendError("Різні паролі");
 
         User::where('email', $request->email)
             ->update(['password' => \Hash::make($request->password)]);

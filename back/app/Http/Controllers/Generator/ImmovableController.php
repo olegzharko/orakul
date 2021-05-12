@@ -139,7 +139,16 @@ class ImmovableController extends BaseController
 
         $currency_rate = $this->get_currency_rate($immovable_id);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
-        $reserve_grn = round($r['reserve_grn'] / $currency_rate, 2);
+
+        if (Immovable::find($immovable_id)->contract->clients->count()) {
+            $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
+            if (($reserve_dollar * 100) % 2) {
+                $reserve_dollar = $reserve_dollar + 0.01;
+            }
+        } else {
+            $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
+        }
+
         $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
 
         if ($imm = Immovable::find($immovable_id)) {
@@ -152,7 +161,7 @@ class ImmovableController extends BaseController
                 'grn' => $r['price_grn'] * 100,
                 'dollar' => $price_dollar * 100,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $reserve_grn * 100,
+                'reserve_dollar' => $reserve_dollar * 100,
                 'm2_grn' => $r['m2_grn'] * 100,
                 'm2_dollar' => $m2_dollar * 100,
                 'total_space' => $r['total_space'],
@@ -437,7 +446,7 @@ class ImmovableController extends BaseController
 
         $convert_notary = [];
         $other_notary = [];
-        $rakul_notary = Notary::where('rakul_company', true)->get();
+        $rakul_notary = Notary::where('active', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
             $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
@@ -501,7 +510,7 @@ class ImmovableController extends BaseController
 
         $convert_notary = [];
         $other_notary = [];
-        $rakul_notary = Notary::where('rakul_company', true)->get();
+        $rakul_notary = Notary::where('active', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
             $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
@@ -687,11 +696,15 @@ class ImmovableController extends BaseController
                 'notary_id' => $notary_id,
             ]);
 
+
+        $r['final_date'] = clone $r['sign_date'];
+        $r['final_date']->modify('+3 year');
         Communal::updateOrCreate(
             ['contract_id' => $contract_id],
             [
                 'template_id' => $r['communal_template_id'],
                 'sign_date' => $r['sign_date'],
+                'final_date' => $r['final_date'],
                 'notary_id' => $notary_id,
             ]);
 
@@ -716,7 +729,7 @@ class ImmovableController extends BaseController
             $owner_id = DevCompanyEmployer::where(['dev_company_id' => $dev_company_id, 'type_id' => $developer_type_id])->value('employer_id');
             $owner = Client::find($owner_id);
 
-            if (!$owner->married) {
+            if ($owner && !$owner->married) {
 //                DevConsent::updateOrCreate(
 //                    ['contract_id' => $contract_id],
 //                    [

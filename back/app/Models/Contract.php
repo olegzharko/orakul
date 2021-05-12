@@ -152,6 +152,11 @@ class Contract extends Model implements Sortable
         return $this->belongsTo(ContractType::class, 'type_id');
     }
 
+    public function communal()
+    {
+        return $this->hasOne(Communal::class, 'contract_id');
+    }
+
     public static function get_contract_by_immovable($immovable_id)
     {
         return Contract::where('immovable_id', $immovable_id)->first();

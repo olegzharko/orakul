@@ -257,6 +257,8 @@ class ConvertController extends GeneratorController
 
         $result = $main_part . " " . $second_part;
 
+        $result = str_replace("  ", " ", $result);
+
         return $result;
     }
 

@@ -5,7 +5,7 @@
                 <div class="card-header">Відновлення пароля</div>
                 <div class="card-body">
                     <div class="alert alert-success" role="alert">{{ __('Користувач '.$user_email.' відправив запит на відновлення пароля.') }}</div>
-                    <a href="{{ url('api/password/reset/'.$token) }}">Click Here</a>.
+                    <a href="{{ url('password/reset/'.$token) }}">Click Here</a>.
                 </div>
             </div>
         </div>

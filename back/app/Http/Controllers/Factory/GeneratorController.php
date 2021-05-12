@@ -116,6 +116,7 @@ class GeneratorController extends BaseController
                 'contracts.id',
                 'contracts.template_id',
                 'contracts.immovable_id',
+                'contracts.type_id',
                 'contracts.sign_date',
                 'cards.date_time as event_datetime',
                 'cards.city_id as event_city_id',
@@ -167,6 +168,7 @@ class GeneratorController extends BaseController
         $owner = Client::select('clients.*')
             ->where('dev_company_employers.dev_company_id', $this->contract->dev_company->id)
             ->where('dev_employer_types.alias', 'developer')
+            ->where('dev_company_employers.deleted_at', null)
             ->join('dev_company_employers', 'dev_company_employers.employer_id', '=', 'clients.id')
             ->join('dev_employer_types', 'dev_employer_types.id', '=', 'dev_company_employers.type_id')
             ->first();

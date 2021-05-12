@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
@@ -77,6 +78,7 @@ class DeveloperBuilding extends Resource
             Markdown::make('Комплекс', 'complex'),
             DateTime::make('Введення в експлуатацію', 'exploitation_date'),
             DateTime::make('Підключення будинку до основних систем комунікацій', 'communal_date'),
+            Toggle::make('Активувати', 'active'),
         ];
     }
 
