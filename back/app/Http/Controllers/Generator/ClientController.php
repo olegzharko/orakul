@@ -408,7 +408,7 @@ class ClientController extends BaseController
             return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
         }
 
-        $result['district'] = District::select('id', 'title_n as title')->where('region_id', $region_id)->get();
+        $result['district'] = District::select('id', 'title_n as title')->where('region_id', $region_id)->orderBy('title')->get();
 
         return $this->sendResponse($result, 'Райони та територіальні громади ' . $region->title_r . ' обл.' );
     }
