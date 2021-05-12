@@ -394,8 +394,8 @@ class ClientController extends BaseController
     {
         $result = [];
 
-        $result['regions'] = Region::select('id', 'title_n as title')->get();
-        $result['city_type'] = CityType::select('id', 'title_n as title')->get();
+        $result['regions'] = Region::select('id', 'title_n as title')->orderBy('title')->get();
+        $result['city_type'] = CityType::select('id', 'title_n as title')->orderBy('title')->get();
 
         return $this->sendResponse($result, 'Дані для створення населеного пункту');
     }
