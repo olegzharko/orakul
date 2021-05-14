@@ -37,7 +37,7 @@ export default function GridLayout({
     <ReactGridLayout
       className="scheduler__dragAndDrop"
       cols={cols}
-      rowHeight={75}
+      rowHeight={80}
       width={dragAndDropWidth}
       margin={[0, 0]}
       containerPadding={[0, 0]}
