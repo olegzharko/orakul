@@ -53,8 +53,8 @@ class QuestionnaireTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Назва', 'title')->rules('required'),
-            BelongsTo::make('Забудовник', 'develoepr', 'App\Nova\DevCompany'),
+            Text::make('Назва', 'title')->rules('required')->sortable(),
+            BelongsTo::make('Забудовник', 'develoepr', 'App\Nova\DevCompany')->sortable(),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),
