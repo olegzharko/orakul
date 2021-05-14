@@ -26,6 +26,10 @@ use App\Models\Representative;
 use App\Models\SpouseWord;
 use App\Models\Spouse;
 use App\Models\Contract;
+use App\Models\TerminationConsent;
+use App\Models\TerminationConsentTemplate;
+use App\Models\ActualAddress;
+use App\Nova\DevCompany;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -119,6 +123,9 @@ class ClientController extends BaseController
             'surname_r',
             'name_r',
             'patronymic_r',
+            'surname_d',
+            'name_d',
+            'patronymic_d',
             'surname_o',
             'name_o',
             'patronymic_o',
@@ -149,6 +156,15 @@ class ClientController extends BaseController
             if ($client['patronymic_o'] == null) {
                 $client['patronymic_o'] = $client['patronymic_n'];
             }
+            if ($client['surname_d'] == null) {
+                $client['surname_d'] = $client['surname_n'];
+            }
+            if ($client['name_d'] == null) {
+                $client['name_d'] = $client['name_n'];
+            }
+            if ($client['patronymic_d'] == null) {
+                $client['patronymic_d'] = $client['patronymic_n'];
+            }
         }
 
         if (ClientContract::where('client_id', $client_id)->first()) {
@@ -178,6 +194,9 @@ class ClientController extends BaseController
             'surname_r' => $r['surname_r'],
             'name_r' => $r['name_r'],
             'patronymic_r' => $r['patronymic_r'],
+            'surname_d' => $r['surname_d'],
+            'name_d' => $r['name_d'],
+            'patronymic_d' => $r['patronymic_d'],
             'surname_o' => $r['surname_o'],
             'name_o' => $r['name_o'],
             'patronymic_o' => $r['patronymic_o'],
@@ -319,6 +338,7 @@ class ClientController extends BaseController
         $result['address_type'] = $address_type;
         $result['building_type'] = $building_type;
         $result['apartment_type'] = $apartment_type;
+        $result['registration'] = $client->registration ? true : false;
         $result['region_id'] = $client->city ? $client->city->region_id : null;
         $result['city_id'] = $client->city_id;
         $result['address_type_id'] = $client->address_type_id;
@@ -328,6 +348,29 @@ class ClientController extends BaseController
         $result['apartment_type_id'] = $client->apartment_type_id;
         $result['apartment_num'] = $client->apartment_num;
 
+        $result['actual'] = null;
+        $result['actual_region_id'] = null;
+        $result['actual_city_id'] = null;
+        $result['actual_address_type_id'] = null;
+        $result['actual_address'] = null;
+        $result['actual_building_type_id'] = null;
+        $result['actual_building_num'] = null;
+        $result['actual_apartment_type_id'] = null;
+        $result['actual_apartment_num'] = null;
+
+        if ($client->actual_address) {
+            $result['actual'] = true;
+            $result['actual_region_id'] = $client->actual_address->city ? $client->actual_address->city->region_id : null;
+            $result['actual_city_id'] = $client->actual_address->city_id;
+            $result['actual_address_type_id'] = $client->actual_address->address_type_id;
+            $result['actual_address'] = $client->actual_address->address;
+            $result['actual_building_type_id'] = $client->actual_address->building_type_id;
+            $result['actual_building_num'] = $client->actual_address->building;
+            $result['actual_apartment_type_id'] = $client->actual_address->apartment_type_id;
+            $result['actual_apartment_num'] = $client->actual_address->apartment_num;
+        } else {
+            $result['actual'] = false;
+        }
 
         return $this->sendResponse($result, 'Дані адреси клієнта з ID ' . $client_id);
     }
@@ -351,8 +394,8 @@ class ClientController extends BaseController
     {
         $result = [];
 
-        $result['regions'] = Region::select('id', 'title_n as title')->get();
-        $result['city_type'] = CityType::select('id', 'title_n as title')->get();
+        $result['regions'] = Region::select('id', 'title_n as title')->orderBy('title')->get();
+        $result['city_type'] = CityType::select('id', 'title_n as title')->orderBy('title')->get();
 
         return $this->sendResponse($result, 'Дані для створення населеного пункту');
     }
@@ -365,7 +408,7 @@ class ClientController extends BaseController
             return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
         }
 
-        $result['district'] = District::select('id', 'title_n as title')->where('region_id', $region_id)->get();
+        $result['district'] = District::select('id', 'title_n as title')->where('region_id', $region_id)->orderBy('title')->get();
 
         return $this->sendResponse($result, 'Райони та територіальні громади ' . $region->title_r . ' обл.' );
     }
@@ -383,6 +426,7 @@ class ClientController extends BaseController
         }
 
         Client::where('id', $client_id)->update([
+            'registration' => $r['registration'] ? 1 : 0,
             'city_id' => $r['city_id'],
             'address_type_id' => $r['address_type_id'],
             'address' => $r['address'],
@@ -391,6 +435,21 @@ class ClientController extends BaseController
             'apartment_type_id' => $r['apartment_type_id'],
             'apartment_num' => $r['apartment_num'],
         ]);
+
+        if ($r['actual']) {
+            ActualAddress::updateOrCreate(
+                ['client_id' => $client_id],
+                [
+                    'actual' => $r['actual'],
+                    'city_id' => $r['actual_city_id'],
+                    'address_type_id' => $r['actual_address_type_id'],
+                    'address' => $r['actual_address'],
+                    'building_type_id' => $r['actual_building_type_id'],
+                    'building' => $r['actual_building_num'],
+                    'apartment_type_id' => $r['actual_apartment_type_id'],
+                    'apartment_num' => $r['actual_apartment_num'],
+                ]);
+        }
 
         return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
     }
@@ -430,7 +489,16 @@ class ClientController extends BaseController
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $consent_templates = ConsentTemplate::select('id', 'title')->get();
+        $dev_group_id = Card::find($card_id)->value('dev_group_id');
+
+        $dev_companies_id = Contract::where('card_id', $card_id)
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+            ->pluck('dev_companies.id');
+
+        $consent_templates = ConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_companies_id)->get();
+
         $married_types = MarriageType::select('id', 'title')->get();
         $rakul_notary = Notary::where('rakul_company', true)->get();
 
@@ -438,21 +506,18 @@ class ClientController extends BaseController
         $rakul_notary = Notary::where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
-            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $other_notary = [];
         $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
         foreach ($separate_by_card as $key => $value) {
             $other_notary[$key]['id'] = $value->id;
-            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
-        $consent_spouse_words = SpouseWord::select('id', 'title')->get();
+        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->get();
 
-
-//        $result['rakul_notary'] = $convert_notary;
-//        $result['other_notary'] = $other_notary;
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['consent_spouse_words'] = $consent_spouse_words;
@@ -497,35 +562,117 @@ class ClientController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-//        dd($r['mar_date'], $r['sign_date']);
 //        $r['mar_date'] = \DateTime::createFromFormat('d.m.Y', $r['mar_date']);
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 
-        ClientSpouseConsent::where('client_id', $client_id)->update([
-            'notary_id' => $r['notary_id'],
-            'template_id' => $r['consent_template_id'],
-            'contract_spouse_word_id' => $r['consent_spouse_word_id'],
-            'marriage_type_id' => $r['married_type_id'],
-            'mar_series' => $r['mar_series'],
-            'mar_series_num' => $r['mar_series_num'],
-            'mar_date' => $r['mar_date'] ? $r['mar_date']->format('Y.m.d.') : null,
-            'mar_depart' => $r['mar_depart'],
-            'mar_reg_num' => $r['mar_reg_num'],
-            'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
-            'reg_num' => $r['reg_num'],
-        ]);
+        ClientSpouseConsent::updateOrCreate(
+            ['client_id' => $client_id],
+            [
+                'notary_id' => $r['notary_id'],
+                'template_id' => $r['consent_template_id'],
+                'contract_spouse_word_id' => $r['consent_spouse_word_id'],
+                'marriage_type_id' => $r['married_type_id'],
+                'mar_series' => $r['mar_series'],
+                'mar_series_num' => $r['mar_series_num'],
+                'mar_date' => $r['mar_date'] ? $r['mar_date']->format('Y-m-d') : null,
+                'mar_depart' => $r['mar_depart'],
+                'mar_reg_num' => $r['mar_reg_num'],
+                'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
+                'reg_num' => $r['reg_num'],
+            ]
+        );
 
         $client_spouse_consent_id = ClientSpouseConsent::where('client_id', $client_id)->value('id');
 
         $contracts_id = ClientContract::where('client_id', $client_id)->pluck('contract_id');
 
+
         if (count($contracts_id)) {
             foreach ($contracts_id as $contr_id) {
                 if ($contr_id) {
-                    ClientSpouseConsentContract::updateOrCreate(['contract_id' => $contr_id], ['client_spouse_consent_id' => $client_spouse_consent_id]);
+                    if (!$clc = ClientSpouseConsentContract::where(['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id])->first()) {
+                        $clc = new ClientSpouseConsentContract();
+                        $clc->contract_id = $contr_id;
+                        $clc->client_spouse_consent_id = $client_spouse_consent_id;
+                        $clc->save();
+                    }
                 }
             }
         }
+
+        return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
+    }
+
+    public function get_termination($card_id, $client_id)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $consent_templates = TerminationConsentTemplate::select('id', 'title')->get();
+
+        $convert_notary = [];
+        $other_notary = [];
+
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+        foreach ($separate_by_card as $key => $value) {
+            $other_notary[$key]['id'] = $value->id;
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+        $result['consent_templates'] = $consent_templates;
+        $result['notary_id'] = null;
+        $result['consent_template_id'] = null;
+        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->get();
+        $result['spouse_word_id'] = null;
+        $result['reg_date'] = null;
+        $result['reg_num'] = null;
+
+        if ($client->termination_consent) {
+            $result['notary_id'] = $client->termination_consent->notary_id;
+            $result['consent_template_id'] = $client->termination_consent->template_id;
+            $result['reg_date'] = $client->termination_consent->sign_date ? $client->termination_consent->sign_date->format('d.m.Y') : null;
+            $result['reg_number'] = $client->termination_consent->reg_num;
+            $result['spouse_word_id'] = $client->termination_consent->spouse_word_id;
+        }
+
+        return $this->sendResponse($result, 'Дані по заяві-згоді на розірвання з боку клієнта з ID ' . $client_id);
+    }
+
+    public function update_termination($card_id, $client_id = null, Request $r)
+    {
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $r['termination_consent_template_id'] = $r['consent_template_id'];
+        unset($r['consent_template_id']);
+
+        $validator = $this->validate_client_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        TerminationConsent::updateOrCreate(
+            ['client_id' => $client_id],
+            [
+                'notary_id' => $r['notary_id'],
+                'template_id' => $r['termination_consent_template_id'],
+                'spouse_word_id' => $r['spouse_word_id'],
+                'sign_date' => $r['reg_date'] ? $r['reg_date']->format('Y-m-d') : null,
+                'reg_num' => $r['reg_number'],
+            ]
+        );
 
         return $this->sendResponse('', 'Дані для Заяви-згоди оновлено успішно.');
     }
@@ -543,14 +690,14 @@ class ClientController extends BaseController
         $rakul_notary = Notary::where('rakul_company', true)->get();
         foreach ($rakul_notary as $key => $value) {
             $convert_notary[$key]['id'] = $value->id;
-            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $other_notary = [];
         $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
         foreach ($separate_by_card as $key => $value) {
             $other_notary[$key]['id'] = $value->id;
-            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
@@ -604,7 +751,7 @@ class ClientController extends BaseController
 
         foreach ($notary as $key => $value) {
             $separate_notary[$key]['id'] = $value->id;
-            $separate_notary[$key]['title'] = $this->convert->get_surname_and_initials($value);
+            $separate_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
             $separate_notary[$key]['list'] = $this->get_notary_list_info($value);
         }
 
@@ -639,6 +786,7 @@ class ClientController extends BaseController
 
     public function update_notary($card_id, $notary_id = null, Request $r)
     {
+        $result = [];
         $validator = $this->validate_client_data($r);
 
         if (count($validator->errors()->getMessages())) {
@@ -660,7 +808,9 @@ class ClientController extends BaseController
                     'activity_o' => $r['activity_o'],
                     'separate_by_card' => $card_id,
                 ]);
-            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary_id . ' оноволено');
+
+            $result['notary_id'] = $notary_id;
+            return $this->sendResponse($result, 'Нотаріус з ID: ' . $notary_id . ' оноволено');
         } else {
             $notary = new Notary();
             $notary->surname_n = $r['surname_n'];
@@ -676,7 +826,8 @@ class ClientController extends BaseController
             $notary->separate_by_card = $card_id;
             $notary->save();
 
-            return $this->sendResponse('', 'Нотаріус з ID: ' . $notary->id . ' створено');
+            $result['notary_id'] = $notary->id;
+            return $this->sendResponse($result, 'Нотаріус з ID: ' . $notary->id . ' створено');
         }
     }
 
@@ -912,6 +1063,12 @@ class ClientController extends BaseController
         if (!isset($errors['consent_template_id']) && isset($r['consent_template_id']) && !empty($r['consent_template_id'])) {
             if (!ConsentTemplate::find($r['consent_template_id'])) {
                 $validator->getMessageBag()->add('consent_template_id', 'Шаблон заяви-згоди по ID:' . $r['consent_template_id'] . " відсутній");
+            }
+        }
+
+        if (!isset($errors['termination_consent_template_id']) && isset($r['termination_consent_template_id']) && !empty($r['termination_consent_template_id'])) {
+            if (!TerminationConsent::find($r['termination_consent_template_id'])) {
+                $validator->getMessageBag()->add('termination_consent_template_id', 'Шаблон заяви-згоди розірвання по ID:' . $r['termination_consent_template_id'] . " відсутній");
             }
         }
 

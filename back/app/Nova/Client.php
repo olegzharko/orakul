@@ -98,10 +98,10 @@ class Client extends Resource
             Text::make('Ім\'я', 'name_r')->rules('required')->hideFromIndex(),
             Text::make('По батькові', 'patronymic_r')->hideFromIndex(),
 
-//            Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
-//            Text::make('Прізвище', 'surname_d')->rules('required')->hideFromIndex(),
-//            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
-//            Text::make('По батькові', 'patronymic_d')->hideFromIndex(),
+            Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
+            Text::make('Прізвище', 'surname_d')->rules('required')->hideFromIndex(),
+            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
+            Text::make('По батькові', 'patronymic_d')->hideFromIndex(),
 
             Heading::make('<p class="text-success">Орудний відмінок: ким?чим? - ластівк-ою</p>')->asHtml(),
             Text::make('Прізвище', 'surname_o')->rules('required')->hideFromIndex(),

@@ -148,7 +148,7 @@ class RegistratorController extends BaseController
             $color = $this->get_status_color($imm->pass);
 
             $imm_res[$key]['id'] = $imm->id;
-            $imm_res[$key]['title'] = $this->convert->get_full_address(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
+            $imm_res[$key]['title'] = $this->convert->building_address_type_title_number(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
             $imm_res[$key]['immovable_code'] = $imm->immovable_code;
             $imm_res[$key]['date'] = $imm->date ? $imm->date->format('d.m.Y H:i') : '';
             $imm_res[$key]['number'] = $imm->number ?? '';

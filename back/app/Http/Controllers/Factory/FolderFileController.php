@@ -27,6 +27,7 @@ class FolderFileController extends Controller
     public $consent;
     public $consent_template_title;
     public $developer_statement;
+    public $termination_contract;
     public $questionnaires;
     public $bank_account_payment;
     public $bank_taxes_payment;
@@ -57,6 +58,7 @@ class FolderFileController extends Controller
         $this->questionnaires = null;
         $this->bank_account_payment = null;
         $this->bank_taxes_payment = null;
+        $this->termination_contract = null;
         $this->spouses_male = null;
         $this->file_type_docx = ".docx";
         $this->file_type_excel = ".xlsx";
@@ -189,7 +191,7 @@ class FolderFileController extends Controller
         $title = null;
 
         if ($consent && $consent->template) {
-            $this->consent_template_title = $consent->template->title;
+            $this->consent_template_title = $consent->template->title . " " . $consent->client->surname_n . " " . $consent->client->tax_code;
         }
 
         $title = "{$this->generate_path}/"
@@ -198,6 +200,20 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($consent->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function termination_consent_title($termination_consent, $client)
+    {
+        $title = null;
+
+        $title = "{$this->generate_path}/"
+            . $termination_consent->template->title . " " . $client->surname_n
+            . "$this->file_type_docx"
+            . "";
+
+        $template = $this->file_path($termination_consent->template);
         $this->create_file_for_contract($template, $title);
         return $title;
     }
@@ -212,6 +228,62 @@ class FolderFileController extends Controller
 
         $template = $this->file_path($this->contract->developer_statement->template);
         $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function developer_consent_title()
+    {
+        $template_title = $this->contract->dev_company->owner->developer_consent->template->title;
+        $surname = $this->contract->dev_company->owner->surname_n;
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "$template_title $surname"
+            . "{$this->file_type_docx}"
+            . "";
+
+        $template = $this->file_path($this->contract->dev_company->owner->developer_consent->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function communal_title($client, $template)
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "$template->title $this->subscriber $client->surname_n $client->tax_code"
+            . "$this->file_type_docx"
+            . "";
+
+        $template = $this->file_path($template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function termination_contract_title()
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . $this->contract->termination_contract->template->title
+            . $this->file_type_docx
+            . "";
+
+        $template = $this->file_path($this->contract->termination_contract->template);
+        $this->create_file_for_contract($template, $title);
+
+        return $title;
+    }
+
+    public function termination_refund_title()
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . $this->contract->termination_refund->template->title
+            . $this->file_type_docx
+            . "";
+
+        $template = $this->file_path($this->contract->termination_refund->template);
+        $this->create_file_for_contract($template, $title);
+
         return $title;
     }
 

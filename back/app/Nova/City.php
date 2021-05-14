@@ -45,7 +45,7 @@ class City extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
     ];
 
     public static $group = "Локації";

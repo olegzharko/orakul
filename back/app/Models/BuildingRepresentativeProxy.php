@@ -24,4 +24,15 @@ class BuildingRepresentativeProxy extends Model
     {
         return $this->belongsTo(Proxy::class, 'proxy_id');
     }
+
+    public static function get_proxy($building_id, $dev_representative_id, $proxy_id)
+    {
+        $proxy = BuildingRepresentativeProxy::where([
+            'building_id' => $building_id,
+            'dev_representative_id' => $dev_representative_id,
+            'proxy_id' => $proxy_id,
+        ])->first();
+
+        return $proxy;
+    }
 }

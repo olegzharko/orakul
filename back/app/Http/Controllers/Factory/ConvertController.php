@@ -7,13 +7,16 @@ use App\Models\DayConvert;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
+use App\Models\Text;
 use App\Models\YearConvert;
 
 class ConvertController extends GeneratorController
 {
-    public function __construct()
-    {
+    public $non_break_space;
 
+    public function __construct($space = ' ')
+    {
+        $this->non_break_space = $space;
     }
 
     public function test_price_convert($number)
@@ -23,7 +26,6 @@ class ConvertController extends GeneratorController
 
     public function convert_price_int_part_to_string($start_value, $currency)
     {
-
         $gender = null;
         $result  = null;
         $str = null;
@@ -59,7 +61,6 @@ class ConvertController extends GeneratorController
 
             $result = $str . " " . $result;
         }
-
 
         $currency_title = $this->get_currency_title($number, $currency);
 
@@ -154,8 +155,6 @@ class ConvertController extends GeneratorController
         $result = trim($result);
         $result = "($result) $currency_title";
 
-        // echo $start_value . "  " . $result . "<br>";
-
         return $result;
     }
 
@@ -198,8 +197,6 @@ class ConvertController extends GeneratorController
             $result = $str . " " . $result;
         }
 
-        // echo $start_value . "    " . $result . "<br>";
-
         $result = trim($result);
         if ($result)
             $result = "($result) $currency_title";
@@ -225,7 +222,7 @@ class ConvertController extends GeneratorController
     public function get_number_format_thousand($price)
     {
         $price_thousand = null;
-        $price_thousand = number_format(floor($price / 100), 0, ".",  " " );
+        $price_thousand = number_format(floor($price / 100), 0, ".",  "$this->non_break_space" );
 
         return $price_thousand;
     }
@@ -504,30 +501,78 @@ class ConvertController extends GeneratorController
         return trim($str);
     }
 
-    public function get_surname_and_initials($person)
+    public function get_surname_and_initials_n($person)
     {
         $str = null;
 
         if ($person) {
             if (isset($person->surname_n))
-                $str = $person->surname_n . " " . $person->short_name . $person->short_patronymic;
+                $str = $person->surname_n . $this->non_break_space . $person->short_name . $person->short_patronymic;
         }
 
         return $str;
     }
 
-    public function get_full_address($building)
+    public function get_surname_and_initials_r($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_r))
+                $str = $person->surname_r . $this->non_break_space . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_surname_and_initials_d($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_d))
+                $str = $person->surname_d . $this->non_break_space . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_surname_and_initials_o($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_o))
+                $str = $person->surname_o . $this->non_break_space . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_initials_and_surname_o($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_o))
+                $str = $person->short_name . $person->short_patronymic . $this->non_break_space . $person->surname_o;
+        }
+
+        return $str;
+    }
+
+    public function building_address_type_title_number($building)
     {
         $str = null;
 
         if ($building) {
-            $str = $building->address_type->short . " " .  $building->title . " " . $building->number;
+            $str = $building->address_type->short . $this->non_break_space . $building->title . $this->non_break_space . $building->number;
         }
 
         return $str;
     }
 
-    public function get_client_full_address($c)
+    public function get_client_full_address_n($c)
     {
         $region = null;
         $region_type = null;
@@ -552,41 +597,101 @@ class ConvertController extends GeneratorController
         if ($c->city && $c->city->region_root == false && $c->city->region) {
             $region_type = trim(KeyWord::where('key', 'region')->value('title_n'));
             $region_title = trim($c->city->region->title_n);
-            $region = "$region_title $region_type, ";
+            $region = "$region_title $region_type,";
         }
 
         if ($c->city && $c->city->district_root == false && $c->city->district) {
             $district_type = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
-            $district = "$district_title $district_type, ";
+            $district = "$district_title $district_type,";
         }
 
         if ($c->city && $c->city->city_type) {
             $city_type = trim($c->city->city_type->title_n);
             $city_title = trim($c->city->title);
-            $city = "$city_type $city_title, ";
+            $city = "$city_type $city_title,";
         }
 
         if ($c->address && $c->address_type && $c->address_type->title_n && $c->building) {
             $address_title = trim($c->address);
             $address_type = trim($c->address_type->title_n);
-            $address = "$address_type $address_title, ";
+            $address = "$address_type $address_title,";
 
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
 
-            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . " " . trim($c->apartment_num) : null;
+            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n')) . " " . trim($c->apartment_num) : null;
 
             $building = "$building_type $building_num" . "$apartment_full";
         }
 
         $full_address = "$region $district $city $address $building";
-        $full_address = trim($full_address);
+        $full_address = trim(str_replace("  ", " ", $full_address));
 
         return $full_address;
     }
 
-    public function building_address($immovable)
+    public function client_full_address_short($c)
+    {
+        $region = null;
+        $region_type = null;
+        $region_title = null;
+
+        $district = null;
+        $district_type = null;
+        $district_title = null;
+
+        $city = null;
+        $city_type = null;
+        $city_title = null;
+
+        $address = null;
+        $address_type = null;
+        $address_title = null;
+
+        $building_type = null;
+        $building_num = null;
+        $building = null;
+
+        if ($c->city && $c->city->region_root == false && $c->city->region) {
+            $region_title = trim($c->city->region->title_n);
+            $region_type = trim(KeyWord::where('key', 'region')->value('short'));
+            $region = "$region_title $region_type,";
+        }
+
+        if ($c->city && $c->city->district_root == false && $c->city->district) {
+            $district_title = trim($c->city->district->title_n);
+            $district_type = trim(KeyWord::where('key', 'district')->value('short'));
+            $district = "$district_title $district_type,";
+        }
+
+        if ($c->city && $c->city->city_type) {
+            $city_type = trim($c->city->city_type->short);
+            $city_title = trim($c->city->title);
+            $city = $city_type . $this->non_break_space . "$city_title,";
+        }
+
+        if ($c->address && $c->address_type && $c->address_type->short && $c->building) {
+            $address_type = trim($c->address_type->short);
+            $address_title = trim($c->address);
+            $address = $address_type . $this->non_break_space . "$address_title,";
+
+            $building_type = trim(KeyWord::where('key', 'building')->value('short'));
+            $building_num = trim($c->building);
+
+            $apartment_type = trim(ApartmentType::where('id', $c->apartment_type_id)->value('short'));
+            $apartment_full = $c->apartment_num ? ", " . $apartment_type . $this->non_break_space . trim($c->apartment_num) : null;
+
+            $building = $building_type . $this->non_break_space . $building_num . "$apartment_full";
+        }
+
+        $full_address = "$region $district $city $address $building";
+        $full_address = trim(str_replace("  ", " ", $full_address));
+
+        return $full_address;
+    }
+
+    public function building_street_and_num($immovable)
     {
         $result = '';
 
@@ -594,34 +699,154 @@ class ConvertController extends GeneratorController
         $imm_addr_title = $immovable->developer_building->title;
 
         $imm_build_num = $immovable->developer_building->number;
-        $imm_build_num_str = $this->building_num_str($immovable->developer_building->number);
+        $imm_build_num_str = $this->building_num_to_str($immovable->developer_building->number);
 
-        $result = "$imm_addr_type_r $imm_addr_title $imm_build_num ($imm_build_num_str)";
+        $result = "$imm_addr_type_r $imm_addr_title, $imm_build_num ($imm_build_num_str)";
 
         return $result;
     }
 
-    public function building_num_str($num)
+    public function building_full_address_by_type($immovable, $type = null)
     {
-        $resutl = [];
+        $address = null;
+
+        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
+
+        $imm_num = $immovable->immovable_number;
+
+        if ($immovable->immovable_number && is_string($immovable->immovable_number)) {
+            $imm_num_str = $this->number_to_string(intval($immovable->immovable_number));
+            $letter = str_replace(intval($immovable->immovable_number), '', $immovable->immovable_number);
+            $letter = str_replace('-', '', $letter);
+            $imm_num_str = $imm_num_str . " літера «" . $letter . "»";
+        } else {
+            $imm_num_str = $this->number_to_string($immovable->immovable_number);
+        }
+
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $building_num_str;
+        $imm_addr_type_r = $immovable->developer_building->address_type->title_n;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_city_type_m = $immovable->developer_building->city->city_type->title_n;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_dis_title_r = $immovable->developer_building->city->district->title_n;
+        $imm_reg_title_r = $immovable->developer_building->city->region->title_n;
+        $building_type = Text::where('alias', 'building')->value('value');
+
+        if ($type == null || $type == 'asc') {
+            $address = "$imm_addr_type_r $imm_addr_title "
+                . "$imm_build_num ($imm_build_num_str), "
+                . "$imm_city_type_m $imm_city_title_n, "
+                . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_n')) . ", "
+                . "$imm_reg_title_r " . trim(KeyWord::where('key', 'region')->value('title_n')) . " "
+                . "";
+        } elseif ($type == 'desc') {
+            $address =
+                ""
+                . "$imm_reg_title_r " . trim(KeyWord::where('key', 'region')->value('title_n')) . ", "
+                . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_n')) . ", "
+                . "$imm_city_type_m $imm_city_title_n, "
+                . "$imm_addr_type_r $imm_addr_title, "
+                . "$building_type $imm_build_num ($imm_build_num_str)"
+                . "";
+        }
+
+        return $address;
+    }
+
+    public function building_full_address_by_type_short($immovable, $type = null)
+    {
+        $address = null;
+
+        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
+
+        $imm_num = $immovable->immovable_number;
+
+        if ($immovable->immovable_number && is_string($immovable->immovable_number)) {
+            $imm_num_str = $this->number_to_string(intval($immovable->immovable_number));
+            $letter = str_replace(intval($immovable->immovable_number), '', $immovable->immovable_number);
+            $letter = str_replace('-', '', $letter);
+            $imm_num_str = $imm_num_str . " літера «" . $letter . "»";
+        } else {
+            $imm_num_str = $this->number_to_string($immovable->immovable_number);
+        }
+
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $building_num_str;
+        $imm_addr_type_short = $immovable->developer_building->address_type->short;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_city_type_short = $immovable->developer_building->city->city_type->short;
+        $imm_city_title = $immovable->developer_building->city->title;
+        $imm_dis_title_n = $immovable->developer_building->city->district->title_n;
+        $imm_reg_title_n = $immovable->developer_building->city->region->title_n;
+        $building_type = Text::where('alias', 'building')->value('value');
+
+        if ($type == null || $type == 'asc') {
+            $address = "$imm_addr_type_short $imm_addr_title "
+                . "$imm_build_num ($imm_build_num_str), "
+                . "$imm_city_type_short $imm_city_title, "
+                . "$imm_dis_title_n " . trim(KeyWord::where('key', 'district')->value('short')) . ", "
+                . "$imm_reg_title_n " . trim(KeyWord::where('key', 'region')->value('short')) . " "
+                . "";
+        } elseif ($type == 'desc') {
+            $address =
+                ""
+                . "$imm_reg_title_n " . trim(KeyWord::where('key', 'region')->value('short')) . ", "
+                . "$imm_dis_title_n " . trim(KeyWord::where('key', 'district')->value('short')) . ", "
+                . "$imm_city_type_short $imm_city_title, "
+                . "$imm_addr_type_short $imm_addr_title, "
+                . "$building_type $imm_build_num ($imm_build_num_str)"
+                . "";
+        }
+
+        return $address;
+    }
+
+    public function building_full_address_with_imm_for_taxes($immovable)
+    {
+        $address = null;
+
+        $imm_reg_title_n = $immovable->developer_building->city->region->title_n;
+        $imm_region_type_n = trim(KeyWord::where('key', 'region')->value('title_n'));
+        $imm_dis_title_n = $immovable->developer_building->city->district->title_n;
+        $imm_district_type_n = trim(KeyWord::where('key', 'district')->value('title_n'));
+        $imm_city_type_n = $immovable->developer_building->city->city_type->title_n;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_addr_short = $immovable->developer_building->address_type->short;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_building_type = trim(KeyWord::where('key', 'building')->value('short'));
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_type_short = $immovable->immovable_type->short;
+        $imm_num = $immovable->immovable_number;
+
+        $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title, $imm_building_type\xc2\xa0$imm_build_num, $imm_type_short\xc2\xa0$imm_num";
+
+        return $address;
+    }
+
+    public function building_num_to_str($num)
+    {
+        $result = [];
 
         $num_arr = explode('/', $num);
 
         if (count($num_arr) == 2) {
-            $resutl[] = $this->number_to_string(intval($num_arr[0]));
-            $resutl[] = str_replace(intval($num_arr[0]), '', $num_arr[0]) . ' дріб ';
-            $resutl[] = $this->number_to_string($num_arr[1]);
+            $result[] = $this->number_to_string(intval($num_arr[0]));
+//            $result[] = str_replace(intval($num_arr[0]), '', $num_arr[0]) . ' дріб';
+            $result[] = 'дріб';
+            $result[] = $this->number_to_string($num_arr[1]);
 
-            return implode(' ', $resutl);
+            return implode(' ', $result);
         }
 
         $num_arr = explode('-', $num);
 
         if (count($num_arr) == 2) {
-            $resutl[] = $this->number_to_string($num_arr[0]);
-            $resutl[] = $num_arr[1];
 
-            return implode(' ', $resutl);
+            $result[] = $this->number_to_string($num_arr[0]);
+            $result[] = "літера «" . $num_arr[1] . "»";
+
+            return implode(' ', $result);
         }
 
         $result = $this->number_to_string($num);
@@ -633,14 +858,137 @@ class ConvertController extends GeneratorController
     {
         $number_str = $this->number_to_string($number);
 
-        $resutl = "$number ($number_str)";
+        $result = "$number ($number_str)";
 
-        return $resutl;
+        return $result;
+    }
+
+    public function immovable_number_with_string($number)
+    {
+        $number_str = $this->building_num_to_str($number);
+
+        $result = "$number ($number_str)";
+
+        return $result;
     }
 
     public function get_immovable_floor($floor)
     {
         return KeyWord::where('key', 'floor_' . $floor)->value('title_d');
+    }
+
+    public function get_full_name_n($client)
+    {
+        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+
+        if (!$client->patronymic_n)
+            $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_full_name_r($client)
+    {
+        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+
+        if (!$client->patronymic_r)
+            $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_full_name_d($client)
+    {
+        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
+
+        if (!$client->patronymic_d)
+            $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_full_name_o($client)
+    {
+        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
+
+        if (!$client->patronymic_o)
+            $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+
+    public function get_full_name_n_for_sing_area($client)
+    {
+        if ($client->representative && $client->representative->confidant) {
+            $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+        } else {
+            $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+        }
+
+        if (!$client->patronymic_n)
+            $full_name = mb_strtoupper($full_name);
+
+        if ($client->representative && $client->representative->confidant) {
+            $sign_title = Text::where('alias', 'representative_sign')->value('value');
+            $full_name = "$sign_title $full_name";
+        }
+
+        return trim($full_name);
+    }
+
+    public function get_full_name_n_upper($client)
+    {
+        $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
+        $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_full_name_r_upper($client)
+    {
+        $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
+        $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_client_citizenship_n($client)
+    {
+        $result = '';
+
+        if ($client->citizenship)
+        {
+            if ($client->gender == "male") {
+                $citizen = KeyWord::where('key', "citizen_male")->value('title_n');
+            } else {
+                $citizen = KeyWord::where('key', "citizen_female")->value('title_n');
+            }
+
+            $country = $client->citizenship->title_r;
+            $result = "$citizen $country" . " ";
+        }
+
+        return $result;
+    }
+
+    public function get_client_citizenship_r($client)
+    {
+        $result = '';
+
+        if ($client->citizenship)
+        {
+            if ($client->gender == "male") {
+                $citizen = KeyWord::where('key', "citizen_male")->value('title_r');
+            } else {
+                $citizen = KeyWord::where('key', "citizen_female")->value('title_r');
+            }
+
+            $country = $client->citizenship->title_r;
+            $result = "$citizen $country" . " ";
+        }
+
+        return $result;
     }
 }
 

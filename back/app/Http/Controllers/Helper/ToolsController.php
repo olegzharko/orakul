@@ -87,7 +87,7 @@ class ToolsController extends Controller
         $dev_building = DeveloperBuilding::get_developer_company_building($dev_company);
         foreach ($dev_building as $key => $building) {
             $result_building[$key]['id'] = $building->id;
-            $result_building[$key]['title'] = $this->convert->get_full_address($building);
+            $result_building[$key]['title'] = $this->convert->building_address_type_title_number($building);
         }
 
         return $result_building;
@@ -110,7 +110,7 @@ class ToolsController extends Controller
 
         foreach ($dev_building as $key => $building) {
             $result_building[$key]['id'] = $building->id;
-            $result_building[$key]['title'] = $this->convert->get_full_address($building);
+            $result_building[$key]['title'] = $this->convert->building_address_type_title_number($building);
         }
 
         return $result_building;
@@ -160,7 +160,7 @@ class ToolsController extends Controller
             if ($name_type == 'full_name')
                 $convert_data[$key]['title'] = $this->convert->get_full_name($value);
             elseif($name_type == 'surname_initial')
-                $convert_data[$key]['title'] = $this->convert->get_surname_and_initials($value);
+                $convert_data[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
             elseif($name_type == 'title')
                 $convert_data[$key]['title'] = $value->title;
         }

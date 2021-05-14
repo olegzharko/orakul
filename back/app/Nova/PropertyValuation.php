@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Naif\Toggle\Toggle;
 
 class PropertyValuation extends Resource
 {
@@ -61,6 +62,7 @@ class PropertyValuation extends Resource
             Text::make('Назва компанії', 'title'),
             Text::make('Номер сертифікату', 'certificate'),
             DateTime::make('Дата сетрифікату', 'date')->format('DD.MM.YYYY')->required()->locale('uk'),
+            Toggle::make('Ативувати', 'active')->color('#165153'),
         ];
     }
 

@@ -12,7 +12,17 @@ class ClientSpouseConsent extends Model
 
     protected $fillable = [
         'client_id',
+        'notary_id',
+        'template_id',
+        'contract_spouse_word_id',
         'marriage_type_id',
+        'mar_series',
+        'mar_series_num',
+        'mar_date',
+        'mar_depart',
+        'mar_reg_num',
+        'sign_date',
+        'reg_num',
     ];
 
     protected $casts = [
@@ -50,5 +60,4 @@ class ClientSpouseConsent extends Model
     {
         return $this->belongsTo(SpouseWord::class, 'contract_spouse_word_id');
     }
-
 }

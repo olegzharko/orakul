@@ -30,9 +30,12 @@ class ClientSpouseConsent extends Resource
 
     public function title()
     {
-        return  $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic
-//            . " " . $this->spouse->surname_n . " " . $this->spouse->name_n . " " . $this->spouse->patronymic_n
-            . " " . $this->reg_num;
+        $title = '';
+
+        if ($this->notary) {
+            $title = $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic;
+        }
+        return $title . " " . $this->reg_num;
     }
 
     /**

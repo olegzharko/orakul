@@ -652,9 +652,8 @@ class CardController extends BaseController
     {
         $group = [];
         $result = [];
-        $week = WorkDay::pluck('title');
+        $week = WorkDay::where('active', true)->orderBy('num')->pluck('title', 'num')->toArray();
         $i = 0;
-
 
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
