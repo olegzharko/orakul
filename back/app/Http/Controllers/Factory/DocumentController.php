@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Factory;
 
+use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
@@ -29,6 +30,10 @@ class DocumentController extends GeneratorController
     public $questionnaire_generate_file;
     public $bank_account_generate_file;
     public $bank_taxes_generate_file;
+    public $communal_generate_file;
+    public $termination_refund_file;
+    public $termination_consent_file;
+    public $termination_contract_file;
     public $style_bold;
     public $style_color;
     public $style_color_and_bold;
@@ -38,6 +43,7 @@ class DocumentController extends GeneratorController
     public $style_space_full_name;
     public $card;
     public $card_id;
+    public $paragraph;
 
     public function __construct($client, $pack_contract, $consents_id, $card_id)
     {
@@ -50,7 +56,9 @@ class DocumentController extends GeneratorController
         // $this->client = $client;
         $this->client = null;
         $this->total_clients = null;
-        $this->convert = new ConvertController();
+//        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
+        $this->non_break_space = " ";
+        $this->convert = new ConvertController($this->non_break_space);
         $this->consent = null;
         $this->consents_id = $consents_id;
         $this->contract_generate_file = null;
@@ -59,12 +67,18 @@ class DocumentController extends GeneratorController
         $this->questionnaire_generate_file = null;
         $this->bank_account_generate_file = null;
         $this->bank_taxes_generate_file = null;
+        $this->communal_generate_file = null;
+        $this->termination_refund_file = null;
+        $this->termination_consent_file = null;
+        $this->termination_contract_file = null;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_red = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"red\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
+//        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:t xml:space=\"preserve\> </w:t></w:rPr></w:r><w:r><w:t xml:space=\"preserve\">";
+        $this->paragraph = "</w:t></w:r></w:p><w:p><w:r><w:t>";
         $this->style_space_line = "                                    ";
         $this->style_space_full_name = "                                                                              ";
         $this->card = Card::find($card_id);
@@ -86,9 +100,9 @@ class DocumentController extends GeneratorController
 
                 if (count($this->contract->client_spouse_consent) && count($this->contract->client_spouse_consent->where('client_id', $this->client->id)))
                     $this->consent = $this->contract->client_spouse_consent->where('client_id', $this->client->id)->first();
-                else
+                else {
                     $this->consent = null;
-
+                }
 
                 if ($this->contract && $this->contract->template_id)
                     $this->contract_template_set_data();
@@ -105,6 +119,26 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Заява від забудовника відсутня");
 
+                if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_company->owner->married == false) {
+                    $this->developer_consent();
+                } else
+                    $this->notification("Warning", "Забудовник в шлюбі");
+
+                if ($this->client && $this->client->communal && $this->client->communal->template_id)
+                    $this->communal_template_set_data();
+                else
+                    $this->notification("Warning", "Коммунальні від забудовника відсутні");
+
+                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                    $this->termination_contract_template_set_data();
+                else
+                    $this->notification("Warning", "Договір розірвання відсутній");
+
+                if ($this->contract->termination_refund && $this->contract->termination_refund->template_id)
+                    $this->termination_refund_template_set_data();
+                else
+                    $this->notification("Warning", "Заява про повернення коштів");
+
                 if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id)
                     $this->bank_account_template_set_data();
                 else
@@ -114,58 +148,62 @@ class DocumentController extends GeneratorController
                     $this->bank_taxes_template_set_data();
                 else
                     $this->notification("Warning", "Податки відсутні");
-/*
-                if ($this->client && $this->client->client_spouse_consent &&  $this->client->client_spouse_consent->template_id) {
-                    $this->consent = $this->client->client_spouse_consent;
-                        // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
+
+                if ($this->client && $this->client->client_spouse_consent && $this->client->client_spouse_consent->template_id) {
                     $this->consent_template_set_data();
                     if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
                         unset($this->consents_id[$del_consents_id]);
                     }
                 } else {
-                     $this->notification("Warning", "Згода подружжя відсутня");
+                    $this->notification("Warning", "Згода подружжя відсутня");
                 }
-*/
+
+                if ($this->client && $this->client->termination_consent && $this->client->termination_consent->template_id) {
+                    $this->termination_consent_template_set_data();
+                } else {
+                    $this->notification("Warning", "Згода подружжя відсутня");
+                }
+
 
                 $this->total_clients--;
             }
 
 
+            /*
+                        if ($this->client && $this->client->client_spouse_consent) {
+            //                dd($this->consents_id);
 
-            if ($this->client && $this->client->client_spouse_consent) {
-//                dd($this->consents_id);
-
-                $this->consent = $this->client->client_spouse_consent;
-//                foreach ($this->client->client_spouse_consent as $this->consent) {
-                    // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
-//                    dd(isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) );
-                    if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
-                        $this->consent_template_set_data();
-                        if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
-                            unset($this->consents_id[$del_consents_id]);
+                            $this->consent = $this->client->client_spouse_consent;
+            //                foreach ($this->client->client_spouse_consent as $this->consent) {
+                                // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
+            //                    dd(isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) );
+                                if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
+                                    $this->consent_template_set_data();
+                                    if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
+                                        unset($this->consents_id[$del_consents_id]);
+                                    }
+                                }
+                                else
+                                    $this->notification("Warning", "Згода подружжя відсутня");
+            //                }
                         }
-                    }
-                    else
-                        $this->notification("Warning", "Згода подружжя відсутня");
-//                }
-            }
+            */
+            /*
+                        if ($this->client && $this->client->client_spouse_consent) {
 
-/*
-            if ($this->client && $this->client->client_spouse_consent) {
-
-                foreach ($this->client->client_spouse_consent as $this->consent) {
-                    // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
-                    if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
-                        $this->consent_template_set_data();
-                        if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
-                            unset($this->consents_id[$del_consents_id]);
+                            foreach ($this->client->client_spouse_consent as $this->consent) {
+                                // УМОВА ДЛЯ УНИКАННЯ ДУБЛЮВАННЯ ОДНАКОВИХ ЗАЯВ-ЗГОД
+                                if (isset($this->consent) && !empty($this->consent) && in_array($this->consent->id, $this->consents_id) && $this->client->id == $this->consent->client_id) {
+                                    $this->consent_template_set_data();
+                                    if (($del_consents_id = array_search($this->consent->id, $this->consents_id)) !== false) {
+                                        unset($this->consents_id[$del_consents_id]);
+                                    }
+                                }
+                                else
+                                    $this->notification("Warning", "Згода подружжя відсутня");
+                            }
                         }
-                    }
-                    else
-                        $this->notification("Warning", "Згода подружжя відсутня");
-                }
-            }
-*/
+            */
         }
     }
 
@@ -177,20 +215,18 @@ class DocumentController extends GeneratorController
         // містить шаблон для паспорту
         $this->set_full_info_template($this->contract_generate_file);
 
-        $this->set_spouse_word_template_part();
+        $this->set_spouse_word_template_part($this->contract_generate_file);
         // метод для файлів де використовуються паспортні дані
         // передаєм необхідний шлях до необхідного шаблону
         $this->set_passport_template_part($this->contract_generate_file);
         // метод тільки для договорів, нема необхідності робити уточнення
         $this->set_current_document_notary($this->contract_generate_file, $this->contract->notary);
         $this->set_sign_date($this->contract_generate_file, $this->contract);
-
         $word = new TemplateProcessor($this->contract_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->contract_generate_file);
 
         unset($word);
-        // echo "<br>";
     }
 
     public function questionnaire_template_set_data()
@@ -208,8 +244,6 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->questionnaire_generate_file);
 
         unset($word);
-
-        // echo "<br>";
     }
 
     public function developer_statement_template_set_data()
@@ -221,14 +255,81 @@ class DocumentController extends GeneratorController
         $this->set_current_document_notary($this->developer_statement_generate_file, $this->contract->developer_statement->notary);
         $this->set_sign_date($this->developer_statement_generate_file, $this->contract->developer_statement);
 
-
         $word = new TemplateProcessor($this->developer_statement_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->developer_statement_generate_file);
 
         unset($word);
+    }
 
-        // echo "<br>";
+    public function developer_consent()
+    {
+        $this->developer_consent_generate_file = $this->ff->developer_consent_title();
+
+        $this->convert->date_to_string($this->contract->dev_company->owner->developer_consent, $this->contract->dev_company->owner->developer_consent->sign_date);
+        $this->set_passport_template_part($this->developer_consent_generate_file);
+        $this->set_current_document_notary($this->developer_consent_generate_file, $this->contract->dev_company->owner->developer_consent->notary);
+        $this->set_sign_date($this->developer_consent_generate_file, $this->contract->developer_statement);
+
+        $word = new TemplateProcessor($this->developer_consent_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->developer_consent_generate_file);
+
+        unset($word);
+    }
+
+    public function communal_template_set_data()
+    {
+        $this->communal_generate_file = $this->ff->communal_title($this->client, $this->client->communal->template);
+
+        $this->convert->date_to_string($this->client->communal, $this->client->communal->sign_date);
+
+        $this->set_passport_template_part($this->communal_generate_file);
+        $this->set_current_document_notary($this->communal_generate_file, $this->client->communal->notary);
+        $this->set_sign_date($this->communal_generate_file, $this->client->communal);
+
+        $word = new TemplateProcessor($this->communal_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->communal_generate_file);
+
+        unset($word);
+    }
+
+    public function termination_contract_template_set_data()
+    {
+        $this->termination_contract_generate_file = $this->ff->termination_contract_title();
+
+        $this->convert->date_to_string($this->contract->termination_contract, $this->contract->sign_date);
+
+        $this->set_full_info_template($this->termination_contract_generate_file);
+        $this->set_spouse_word_template_part($this->termination_contract_generate_file);
+        $this->set_passport_template_part($this->termination_contract_generate_file);
+        $this->set_current_document_notary($this->termination_contract_generate_file, $this->contract->notary);
+        $this->set_sign_date($this->termination_contract_generate_file, $this->contract->termination_contract);
+
+        $word = new TemplateProcessor($this->termination_contract_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_contract_generate_file);
+
+        unset($word);
+    }
+
+    public function termination_refund_template_set_data()
+    {
+        $this->termination_refund_generate_file = $this->ff->termination_refund_title();
+
+        $this->convert->date_to_string($this->contract->termination_refund, $this->contract->termination_refund->reg_date);
+
+        $this->set_full_info_template($this->termination_refund_generate_file);
+        $this->set_passport_template_part($this->termination_refund_generate_file);
+        $this->set_current_document_notary($this->termination_refund_generate_file, $this->contract->termination_refund->notary);
+        $this->set_sign_date($this->termination_refund_generate_file, $this->contract->termination_refund);
+
+        $word = new TemplateProcessor($this->termination_refund_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_refund_generate_file);
+
+        unset($word);
     }
 
     public function consent_template_set_data()
@@ -246,7 +347,24 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->consent_generate_file);
 
         unset($word);
-        // echo "<br>";
+    }
+
+    public function termination_consent_template_set_data()
+    {
+        $this->termination_consent_generate_file = $this->ff->termination_consent_title($this->client->termination_consent, $this->client);
+
+        $this->convert->date_to_string($this->client->termination_consent, $this->client->termination_consent->sign_date);
+        $this->set_passport_template_part($this->termination_consent_generate_file);
+        $this->set_current_document_notary($this->termination_consent_generate_file, $this->client->termination_consent->notary);
+        $this->set_consent_married_template_part();
+
+        $this->set_sign_date($this->termination_consent_generate_file, $this->client->termination_consent);
+
+        $word = new TemplateProcessor($this->termination_consent_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->termination_consent_generate_file);
+
+        unset($word);
     }
 
     public function bank_account_template_set_data()
@@ -265,8 +383,6 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->bank_account_generate_file);
 
         unset($word);
-
-        // echo "<br>";
     }
 
     public function bank_taxes_template_set_data()
@@ -288,8 +404,6 @@ class DocumentController extends GeneratorController
         $writer->save($file_name);
 
         unset($word);
-
-        // echo "<br>";
     }
 
 
@@ -385,6 +499,11 @@ class DocumentController extends GeneratorController
         $word = $this->set_secure_payment($word);
 
         /*
+         * Забезпечувальний платіж до попереднього договору
+         * */
+        $word = $this->set_termination_info($word);
+
+        /*
          * Курс долара та посилання на сайт
          * */
         $word = $this->set_exchange_rate($word);
@@ -395,32 +514,71 @@ class DocumentController extends GeneratorController
     /*
      * Додати до договору текс-шаблон в пункт згоди подружжя
      * */
-    public function set_spouse_word_template_part()
+    public function set_spouse_word_template_part($template_generate_file)
     {
-        $word = new TemplateProcessor($this->contract_generate_file);
+        $word = new TemplateProcessor($template_generate_file);
+
+        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->client_spouse_consent) {
+            if ($this->contract->dev_company->owner->client_spouse_consent->contract_spouse_word) {
+                $word->setValue('ЗГ-ПОДР-ЗБД-ЗАЯВА-ЗГОДА', $this->contract->dev_company->owner->client_spouse_consent->contract_spouse_word->text);
+            }
+        }
+
+
+        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->termination_consent) {
+            if ($this->contract->dev_company->owner->termination_consent->termination_spouse_word) {
+                $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-ЗАЯВА-ЗГОДА', $this->contract->dev_company->owner->termination_consent->termination_spouse_word->text);
+            }
+        }
 
         if ($this->consent && $this->consent->contract_spouse_word) {
-            // BUG ящко клієнтів більше ніж один і кожний має слово згоди то в кінці лишиться не використаний шаблон
-            $cl_sp_word = null;
-            if ($this->total_clients == 1) {
-                $cl_sp_word = $this->consent->contract_spouse_word->text;
-            }
-            else {
-                $cl_sp_word = $this->consent->contract_spouse_word->text . "<w:br/>\${cl-sp-word}";
-            }
+
+            $cl_sp_word = $this->consent->contract_spouse_word->text;
+//            $cl_sp_word = null;
+//            if ($this->total_clients > 1) {
+//                $cl_sp_word = $this->consent->contract_spouse_word->text . $this->paragraph . "\${ЗАЯВА-ЗГОДА}";
+//            }
+//            else {
+//                $cl_sp_word = $this->consent->contract_spouse_word->text;
+//            }
             $word->setValue('cl-sp-word', $cl_sp_word);
             $word->setValue('ЗАЯВА-ЗГОДА', $cl_sp_word);
+            $word->setValue($this->total_clients . '-ЗАЯВА-ЗГОДА', $cl_sp_word);
         } else {
             $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
         }
 
-        $word->saveAs($this->contract_generate_file);
+        if ($this->client->termination_consent && $this->client->termination_consent->termination_spouse_word)
+        {
+            $termination_sp_word = null;
+            if ($this->total_clients > 1) {
+                $termination_sp_word = $this->client->termination_consent->termination_spouse_word->text . $this->paragraph . "\${РОЗ-КЛ-ЗАЯВА-ЗГОДА}";
+            }
+            else {
+                $termination_sp_word = $this->client->termination_consent->termination_spouse_word->text;
+            }
+            $word->setValue('РОЗ-КЛ-ЗАЯВА-ЗГОДА', $termination_sp_word);
+        }
+
+        $word->saveAs($template_generate_file);
     }
 
     public function set_full_info_template($template_generate_file)
     {
-
         $word = new TemplateProcessor($template_generate_file);
+
+        /*
+         * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
+         * */
+        if ($this->card->dev_representative) {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
+        }
+        else {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
+        }
+
+        $word->setValue('ЗБД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $dev_full_description);
+
         /*
          * Додати шаблон для даних представника так покупця або чисто шаблон покупця
          * */
@@ -437,11 +595,12 @@ class DocumentController extends GeneratorController
          * якщо він є
          * */
         if ($this->total_clients > 1) {
-            $full_description = $full_description . ", \${full-name-tax-code-id-card-address}";
+            $full_description = $full_description . ", \${ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
         }
 
-        $word->setValue('full-name-tax-code-id-card-address', $this->set_style_color($full_description));
-        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $this->set_style_color($full_description));
+        $word->setValue('full-name-tax-code-id-card-address', $full_description);
+        $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
 
         /*
          * Лінія для області підпису
@@ -459,20 +618,21 @@ class DocumentController extends GeneratorController
             $sign_area_full_name = MainInfoType::where('alias', 'sign-area-full-name')->value('description');
         }
 
-        $sign_area_full_name = $this->set_style_color_and_italic($sign_area_full_name);
-
         /*
          * Додати абзац через стиль XML Word
          * та в залежності від кількості
          * додати наступний шаблон для підпису
          * */
         if ($this->total_clients > 1) {
-            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name . "<w:br/><w:br/>" . $this->style_space_line . "\${sign-area}";
+//            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name . "<w:br/><w:br/>" . $this->style_space_line . "\${sign-area}";
+            $sign_area = $sign_area_line . $this->paragraph . $sign_area_full_name . $this->paragraph . $this->paragraph . "\${sign-area}";
         } else {
-            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name;
+//            $sign_area = $sign_area_line . "<w:br/>" . $this->style_space_full_name . $sign_area_full_name;
+            $sign_area = $sign_area_line . $this->paragraph . $sign_area_full_name;
         }
 
         $word->setValue('sign-area', $sign_area);
+        $word->setValue('MІСЦЕ-ПІДПИСУ', $sign_area);
 
         /*
          * Предаставник покупця - підставити шаблон нотаріальних данних довіреності
@@ -495,6 +655,8 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-pssprt-full-o', $this->contract->dev_company->owner->passport_type->description_o);
             $word->setValue('dev-pssprt-full-n-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
             $word->setValue('dev-pssprt-full-o-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_o));
+            $word->setValue('ЗБД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
+
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -505,6 +667,26 @@ class DocumentController extends GeneratorController
             $word->saveAs($template_generate_file);
         } else {
             $this->notification("Warning", "Паспортний шаблон: данні забудовника відсутні");
+        }
+
+        /*
+         * Внесення текстового шаблону паспортних данних ПІДПИСАНТА для поспортных даннх в генеруэмий документ
+         * */
+        if ($this->contract->dev_representative) {
+            $word = new TemplateProcessor($template_generate_file);
+            $word->setValue('ПІДПИС-ПАСПОРТ-ID-КОД', $this->contract->dev_representative->passport_type->short_info);
+            $word->setValue('ПІДПИС-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_representative->passport_type->description_n));
+            $word->setValue('ПІДПИС-ПАСПОРТ-О', $this->contract->dev_representative->passport_type->description_o);
+            $word->saveAs($template_generate_file);
+
+            $word = new TemplateProcessor($template_generate_file);
+            $word->setValue('pssprt-code', $this->contract->dev_representative->passport_code);
+            $word->setValue('pssprt-date', $this->display_date($this->contract->dev_representative->passport_date));
+            $word->setValue('pssprt-depart', $this->contract->dev_representative->passport_department);
+            $word->setValue('pssprt-demogr', $this->contract->dev_representative->passport_demographic_code);
+            $word->saveAs($template_generate_file);
+        } else {
+            $this->notification("Warning", "Паспортний шаблон: данні підписанта відсутні");
         }
 
         /*
@@ -528,7 +710,6 @@ class DocumentController extends GeneratorController
             $this->notification("Warning", "Паспортний шаблон: данні інвестора відсутні");
         }
 
-
         /*
          * Внесення текстового шаблону паспортних данних КЛІЄНТА для поспортных даннх в генеруэмий документ
          * */
@@ -538,13 +719,19 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-pssprt-full-o', $this->client->passport_type->description_o);
             $word->setValue('cl-pssprt-full-n-up', $this->mb_ucfirst($this->client->passport_type->description_n));
             $word->setValue('cl-pssprt-full-o-up', $this->mb_ucfirst($this->client->passport_type->description_o));
-            $word->setValue('cl-pssprt-id-short', $this->set_style_color($this->client->passport_type->short_info));
+            $word->setValue('cl-pssprt-id-short', $this->client->passport_type->short_info);
 
             $word->setValue('КЛ-ПАСПОРТ-Н', $this->client->passport_type->description_n);
             $word->setValue('КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
-            $word->setValue('КЛ-ПАСПОРТ-H-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
+            $word->setValue('КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
             $word->setValue('КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->passport_type->description_o));
-            $word->setValue('КЛ-ПАСПОРТ-ID-КОД', $this->set_style_color($this->client->passport_type->short_info));
+            $word->setValue('КЛ-ПАСПОРТ-ID-КОД', $this->client->passport_type->short_info);
+            $word->setValue('КЛ-ДН', $this->display_date($this->client->birth_date));
+            // для анкет на двох
+            $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
+            $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
+            $word->setValue($this->total_clients . '-КЛ-ДН', $this->display_date($this->client->birth_date));
+
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -591,6 +778,10 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-pssprt-full-o-up', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
             $word->setValue('cs-pssprt-id-short', $this->client->married->spouse->passport_type->short_info);
             $word->setValue('ПОД-ПАСПОРТ-Н', $this->client->married->spouse->passport_type->description_n);
+            $word->setValue('ПОД-ПАСПОРТ-О', $this->client->married->spouse->passport_type->description_o);
+            $word->setValue('ПОД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_n));
+            $word->setValue('ПОД-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
+            $word->setValue('ПОД-ПАСПОРТ-ID-КОРОТКО', $this->client->married->spouse->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -655,7 +846,12 @@ class DocumentController extends GeneratorController
             $word->setValue('ntr-sh-name', $notary->short_name);
             $word->setValue('ntr-sh-patr', $notary->short_patronymic);
 
-            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($notary));
+            $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($notary));
+
+            $word->setValue('НОТ-ІНІЦІАЛИ-ПІБ-О', $this->convert->get_initials_and_surname_o($notary));
 
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
             $word->setValue('НОТ-АКТ-Р', $notary->activity_r);
@@ -722,10 +918,11 @@ class DocumentController extends GeneratorController
         if ($this->contract->final_sign_date) {
             $word->setValue('con-final-date-qd-m', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
 
-            if ($this->contract->final_sign_date->sign_date > $this->contract->sign_date)
+            if ($this->contract->final_sign_date->sign_date > $this->contract->sign_date) {
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
+            }
             else
-                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("####"));
+                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
         }
         // Допоміжні данні
         $word->setValue('alias-dis-sh', CityType::where('alias', 'district')->value('short'));
@@ -743,7 +940,7 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - ПІБ
              * */
-            $word->setValue('dev-full-name-n', $this->get_full_name_n($this->contract->dev_company->owner));
+            $word->setValue('dev-full-name-n', $this->convert->get_full_name_n($this->contract->dev_company->owner));
 
             $word->setValue('dev-surname-n', $this->contract->dev_company->owner->surname_n);
             $word->setValue('dev-name-n', $this->contract->dev_company->owner->name_n);
@@ -768,7 +965,38 @@ class DocumentController extends GeneratorController
             /*
              * Забудовник - місце проживання
              * */
-            $word->setValue('dev-f-addr', $this->convert->get_client_full_address($this->contract->dev_company->owner));
+            $word->setValue('dev-f-addr', $this->convert->get_client_full_address_n($this->contract->dev_company->owner));
+
+            $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
+            $word->setValue('ЗБД-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_company->owner->surname_n));
+            $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
+            $word->setValue('ЗБД-ІМЯ-Н-UP', mb_strtoupper($this->contract->dev_company->owner->name_n));
+            $word->setValue('ЗБД-ПОБАТЬК-Н', $this->contract->dev_company->owner->patronymic_n);
+            $word->setValue('ЗБД-ДН', $this->display_date($this->contract->dev_company->owner->birth_date));
+
+            $word->setValue('ЗБД-ПІБ-Н', $this->convert->get_full_name_n($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ПІБ-Р', $this->convert->get_full_name_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Д', $this->convert->get_full_name_d($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Р-I', $this->convert->get_full_name_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ІПН', $this->contract->dev_company->owner->tax_code);
+            $word->setValue('ЗБД-ІПН-Ж', $this->set_style_bold($this->contract->dev_company->owner->tax_code));
+            $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->contract->dev_company->owner->passport_type->short_info);
+
+            if ($this->contract->dev_company->owner->registration)
+                $dev_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_company->owner->gender);
+            else
+                $dev_registration = GenderWord::where('alias', "reside")->value($this->contract->dev_company->owner->gender);
+            $word->setValue('ЗБД-ЗАРЕЄСТР', $dev_registration);
+
+            $word->setValue('ЗБД-П-АДР-СК', $this->convert->client_full_address_short($this->contract->dev_company->owner));
+
+            $dev_gender_which_adjective = GenderWord::where('alias', "which")->value($this->contract->dev_company->owner->gender);
+            $word->setValue('ЗБД-ЯК', $dev_gender_which_adjective);
         } else {
             $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
@@ -781,12 +1009,21 @@ class DocumentController extends GeneratorController
      * */
     public function set_developer_spouse_consent($word)
     {
-        // BUG відсутня умова ->owner->married Через дану властивість не зайти в умову
-        // Використовується pivot table Spouse
         if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_company->owner->married) {
-            if ($this->contract->developer_spouse_consent) {
-                $word->setValue('dev-consent-sign-date', $this->display_date($this->contract->developer_spouse_consent->sign_date));
-                $word->setValue('dev-consent-reg-num', $this->contract->developer_spouse_consent->reg_num);
+            if ($this->contract->dev_company->owner->married->spouse) {
+//                $word->setValue('dev-consent-sign-date', $this->display_date($this->contract->developer_spouse_consent->sign_date));
+//                $word->setValue('dev-consent-reg-num', $this->contract->developer_spouse_consent->reg_num);
+
+                $dev_spouse_type_by_gender = KeyWord::where('key', $this->contract->dev_company->owner->married->spouse->gender)->value('title_o');
+                $word->setValue('ЗГ-ПОДР-ЗБД-РОЛЬ-О-UP', $this->mb_ucfirst($dev_spouse_type_by_gender));
+                $word->setValue('ЗГ-ПОДР-ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner->married->spouse));
+
+                $dev_spouse_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_company->owner->married->spouse->gender);
+                $word->setValue('ЗГ-ПОДР-ЗБД-ЇХ', $dev_spouse_gender_whose);
+                $word->setValue('ЗГ-ПОДР-ЗБД-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->dev_company->owner->client_spouse_consent->notary));
+                $word->setValue('ЗГ-ПОДР-ЗБД-НОТ-АКТИВНІСТЬ-О', $this->contract->dev_company->owner->client_spouse_consent->notary->activity_o);
+                $word->setValue('ЗГ-ПОДР-ЗБД-НОТ-ДАТА', $this->display_date($this->contract->dev_company->owner->client_spouse_consent->sign_date));
+                $word->setValue('ЗГ-ПОДР-ЗБД-НОТ-НОМЕР', $this->contract->dev_company->owner->client_spouse_consent->reg_num);
             } else {
                 $this->notification("Warning", "Відсутня інформація про згоду подружжя забудовника");
             }
@@ -818,19 +1055,23 @@ class DocumentController extends GeneratorController
                 $citizen_o = KeyWord::where('key', "citizen_female")->value('title_o');
             }
             $word->setValue('inv-citizen-o', $citizen_o);
-            $word->setValue('inv-full-addr', $this->convert->get_client_full_address($investment_agreement->investor));
+
+            $word->setValue('inv-full-addr', $this->convert->get_client_full_address_n($investment_agreement->investor));
 
             $word->setValue('ІНВ-НОМЕР', $investment_agreement->number);
             $word->setValue('ІНВ-ДАТА', $this->display_date($investment_agreement->date));
             $word->setValue('ІНВ-ГРОМАД', $citizen_o);
-            $word->setValue('ІНВ-ЗАРЕЄСТР', GenderWord::where('alias', "registration")->value($investment_agreement->investor->gender));
+            if ($investment_agreement->investor->gender)
+                $inv_registration = GenderWord::where('alias', "registration")->value($investment_agreement->investor->gender);
+            else
+                $inv_registration = GenderWord::where('alias', "reside")->value($investment_agreement->investor->gender);
+            $word->setValue('ІНВ-ЗАРЕЄСТР', $inv_registration);
             $word->setValue('ІНВ-ЯК', GenderWord::where('alias', "which-adjective")->value($investment_agreement->investor->gender));
-            $word->setValue('ІНВ-ПІБ', $this->get_full_name_n($investment_agreement->investor));
-            $word->setValue('ІНВ-ПІБ-О', $this->get_full_name_o($investment_agreement->investor));
-            $word->setValue('ІНВ-ПІБ-Р', $this->get_full_name_r($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ', $this->convert->get_full_name_n($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-О', $this->convert->get_full_name_o($investment_agreement->investor));
+            $word->setValue('ІНВ-ПІБ-Р', $this->convert->get_full_name_r($investment_agreement->investor));
             $word->setValue('ІНВ-ІПН', $investment_agreement->investor->tax_code);
-            $word->setValue('ІНВ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($investment_agreement->investor)));
-//            $word->setValue('ІНВ-ПАСПОРТ-Н', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
+            $word->setValue('ІНВ-П-АДР', $this->convert->get_client_full_address_n($investment_agreement->investor));
         } else {
             $this->notification("Warning", "Інвестеційний договір: відсутній");
         }
@@ -845,7 +1086,7 @@ class DocumentController extends GeneratorController
     {
         if ($this->contract && $this->contract->dev_representative) {
 
-            $word->setValue('dev-rep-full-name-n', $this->get_full_name_n($this->contract->dev_representative));
+            $word->setValue('dev-rep-full-name-n', $this->convert->get_full_name_n($this->contract->dev_representative));
 
             $word->setValue('dev-rep-surname-n', $this->contract->dev_representative->surname_n);
             $word->setValue('dev-rep-name-n', $this->contract->dev_representative->name_n);
@@ -864,6 +1105,55 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-rep-patr-o', $this->contract->dev_representative->patronymic_o);
 
             $word->setValue('dev-rep-birth_date', $this->display_date($this->contract->dev_representative->birth_date));
+
+            $word->setValue('ПІДПИС-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПРІЗВ-Н', $this->contract->dev_representative->surname_n);
+            $word->setValue('ПІДПИС-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_representative->surname_n));
+            $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
+            $word->setValue('ПІДПИС-ІМЯ-Н-UP', mb_strtoupper($this->contract->dev_representative->name_n));
+            $word->setValue('ПІДПИС-ПОБАТЬК-Н', $this->contract->dev_representative->patronymic_n);
+
+            $word->setValue('ПІДПИС-ПІБ-Н', $this->convert->get_full_name_n($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->contract->dev_representative)));
+            $word->setValue('ПІДПИС-ПІБ-Р', $this->convert->get_full_name_r($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ІПН', $this->contract->dev_representative->tax_code);
+            $word->setValue('ПІДПИС-ІПН-Ж', $this->set_style_bold($this->contract->dev_representative->tax_code));
+            $word->setValue('ПІДПИС-ДН', $this->display_date($this->contract->dev_representative->birth_date));
+
+            $word->setValue('ПІДПИС-П-АДР-СК', $this->convert->client_full_address_short($this->contract->dev_representative));
+
+            if ($this->contract->dev_representative->gender)
+                $dev_representative_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_representative->gender);
+            else
+                $dev_representative_registration = GenderWord::where('alias', "reside")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЗАРЕЄСТР', $dev_representative_registration);
+
+            $dev_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЯК', $dev_gender_which_adjective);
+
+            $dev_rep_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ЇХ', $dev_rep_gender_whose);
+
+            $dev_rep_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->contract->dev_representative->gender);
+            $word->setValue('ПІДПИС-ОЗНАЙ', $dev_rep_gender_acquainted);
+
+            $building_id = $this->contract->immovable->developer_building_id;
+            $dev_representative_id = $this->contract->dev_representative->id;
+            $proxy_id = $this->contract->immovable->proxy->id;
+
+            $proxy = BuildingRepresentativeProxy::get_proxy($building_id, $dev_representative_id, $proxy_id);
+
+            /*
+             * PROXY - довіреність тільки якщо є Представник
+             * */
+            $word->setValue('ЗБД-ДОВ-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
+            $word->setValue('ЗБД-ДОВ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable->proxy->notary->activity_o);
+
+            $word->setValue('ЗБД-ДОВ-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
+            $word->setValue('ЗБД-ДОВ-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
+
         } else {
             $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
         }
@@ -880,20 +1170,30 @@ class DocumentController extends GeneratorController
             /*
              * Клієнт - ПІБ
              * */
-            $word->setValue('cl-full-name-n', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ-Н', $this->get_full_name_n($this->client));
-            $word->setValue('КЛ-ПІБ-О', $this->get_full_name_o($this->client));
-            $word->setValue('КЛ-ПІБ-Р', $this->get_full_name_r($this->client));
-            $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->get_full_name_n_upper($this->client));
+            $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-Н-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-О', $this->convert->get_full_name_o($this->client));
+            $word->setValue('КЛ-ПІБ-Р', $this->convert->get_full_name_r($this->client));
+            $word->setValue('КЛ-ПІБ-Д', $this->convert->get_full_name_d($this->client));
+            $word->setValue('КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->convert->get_full_name_n_upper($this->client));
 
             $word->setValue('cl-surname-n', $this->client->surname_n);
             $word->setValue('cl-name-n', $this->client->name_n);
             $word->setValue('cl-patr-n', $this->client->patronymic_n);
 
-            $word->setValue('cl-surname-n-b', $this->set_style_color_and_bold($this->client->surname_n));
-            $word->setValue('cl-name-n-b', $this->set_style_color_and_bold($this->client->name_n));
-            $word->setValue('cl-patr-n-b', $this->set_style_color_and_bold($this->client->patronymic_n));
+            $word->setValue('КЛ-ПРІЗВ-Н', $this->client->surname_n);
+            $word->setValue('КЛ-ІМЯ-Н', $this->client->name_n);
+            $word->setValue('КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
+
+            $word->setValue('cl-surname-n-b', $this->set_style_bold($this->client->surname_n));
+            $word->setValue('cl-name-n-b', $this->set_style_bold($this->client->name_n));
+            $word->setValue('cl-patr-n-b', $this->set_style_bold($this->client->patronymic_n));
+
+            $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->client)));
 
             $word->setValue('cl-surname-r', $this->client->surname_r);
             $word->setValue('cl-name-r', $this->client->name_r);
@@ -935,7 +1235,6 @@ class DocumentController extends GeneratorController
                 $cs_agree = null;
             $word->setValue('ПОД-ЗГОД', $cs_agree);
 
-
             if ($this->client->married)
                 $cl_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
             else
@@ -944,49 +1243,86 @@ class DocumentController extends GeneratorController
             $word->setValue('cl-gender-pronoun', $cl_gender_pronoun);
             $word->setValue('cl-gender-pronoun-up', $this->mb_ucfirst($cl_gender_pronoun));
 
-            if ($this->client)
-                $cl_gender_whose = GenderWord::where('alias', "whose")->value($this->client->gender);
-            else
-                $cl_gender_whose = null;
-
+            $cl_gender_whose = GenderWord::where('alias', "whose")->value($this->client->gender);
             $word->setValue('КЛ-ЇХ', $cl_gender_whose);
             $word->setValue('КЛ-ЇХ-UP', $this->mb_ucfirst($cl_gender_whose));
 
+            $cl_gender_proved = GenderWord::where('alias', "proved")->value($this->client->gender);
+            $word->setValue('КЛ-ДОВІВ', $cl_gender_proved);
+            $word->setValue('КЛ-ДОВІВ-UP', $this->mb_ucfirst($cl_gender_proved));
+
+            $cl_gender_received = GenderWord::where('alias', "received")->value($this->client->gender);
+            $word->setValue('КЛ-ОТРИМАТИ', $cl_gender_received);
+            $word->setValue('КЛ-ОТРИМАТИ', $this->mb_ucfirst($cl_gender_received));
+
             $word->setValue('cl-widowhood', GenderWord::where('alias', "widowhood")->value($this->client->gender));
 
-            $cl_gender_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
-            $word->setValue('cl-gender-reg', $cl_gender_registration);
+            if ($this->client->gender)
+                $cl_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
+            else
+                $cl_registration = GenderWord::where('alias', "reside")->value($this->client->gender);
+
+            $word->setValue('cl-gender-reg', $cl_registration);
+            $word->setValue('КЛ-ЗАРЕЄСТР', $cl_registration);
 
             $cl_gender_which = GenderWord::where('alias', "which")->value($this->client->gender);
-            $word->setValue('cl-gender-which', $this->set_style_color($cl_gender_which));
+            $word->setValue('cl-gender-which', $cl_gender_which);
 
             $cl_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->gender);
-            $word->setValue('cl-gender-which-adj', $this->set_style_color($cl_gender_which_adjective));
+            $word->setValue('cl-gender-which-adj', $cl_gender_which_adjective);
 
             $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->gender);
-            $word->setValue('cl-gender-acq', $this->set_style_color($cl_gender_acquainted));
+            $word->setValue('cl-gender-acq', $cl_gender_acquainted);
+            $word->setValue('КЛ-ОЗНАЙ', $cl_gender_acquainted);
 
             /*
              * Клієнт - IПН
              * */
-            $word->setValue('cl-tax-code', $this->set_style_color($this->client->tax_code));
-            $word->setValue('cl-tax-code-b', $this->set_style_color_and_bold($this->client->tax_code));
+            $word->setValue('cl-tax-code', $this->client->tax_code);
+            $word->setValue('cl-tax-code-b', $this->set_style_bold($this->client->tax_code));
 
-            $word->setValue('КЛ-ІПН', $this->set_style_color($this->client->tax_code));
-            $word->setValue('КЛ-ІПН-Ж', $this->set_style_color_and_bold($this->client->tax_code));
+            $word->setValue('КЛ-ІПН', $this->client->tax_code);
+            $word->setValue('КЛ-ІПН-Ж', $this->set_style_bold($this->client->tax_code));
+
+            // для анкет на двох
+            $word->setValue($this->total_clients . '-КЛ-ІПН', $this->client->tax_code);
 
             /*
              * Клієнт - місце проживання
              * */
-            $word->setValue('cl-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client)));
+            $word->setValue('cl-f-addr', $this->convert->get_client_full_address_n($this->client));
 
-            $word->setValue('КЛ-П-АДР', $this->set_style_color($this->convert->get_client_full_address($this->client)));
+            $word->setValue('КЛ-П-АДР', $this->convert->get_client_full_address_n($this->client));
+            $word->setValue('КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
+            $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
 
+            // для анкет на двох
+            $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
+
+
+            if ($this->client->actual_address) {
+                $word->setValue('КЛ-П-АДР-АКТ', $this->convert->get_client_full_address_n($this->client->actual_address));
+                $word->setValue('КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+                $word->setValue('КЛ-ПОВНА-АДРЕСА-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+
+                // для анкет на двох
+                $word->setValue($this->total_clients . '-КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+            }
             /*
              * Контактні данні
              * */
             $word->setValue('cl-phone', $this->client->phone);
             $word->setValue('КЛ-ТЕЛЕФОН', $this->client->phone);
+
+            /*
+             * Для Анкета На двох
+             * */
+            $word->setValue($this->total_clients . '-КЛ-ПРІЗВ-Н', $this->client->surname_n);
+            $word->setValue($this->total_clients . '-КЛ-ІМЯ-Н', $this->client->name_n);
+            $word->setValue($this->total_clients . '-КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ЇХ', $cl_gender_whose);
+
         } else {
             $this->notification("Warning", "Відсутня інформація про клієнта");
         }
@@ -1003,14 +1339,14 @@ class DocumentController extends GeneratorController
             /*
              * Представник - ПІБ
              * */
-            $word->setValue('cr-full-name-n', $this->get_full_name_n($this->client->representative->confidant));
+            $word->setValue('cr-full-name-n', $this->convert->get_full_name_n($this->client->representative->confidant));
             $word->setValue('cr-surname-n', $this->client->representative->confidant->surname_n);
             $word->setValue('cr-name-n', $this->client->representative->confidant->name_n);
             $word->setValue('cr-patr-n', $this->client->representative->confidant->patronymic_n);
 
-            $word->setValue('cr-surname-n-b', $this->set_style_color_and_bold($this->client->representative->confidant->surname_n));
-            $word->setValue('cr-name-n-b', $this->set_style_color_and_bold($this->client->representative->confidant->name_n));
-            $word->setValue('cr-patr-n-b', $this->set_style_color_and_bold($this->client->representative->confidant->patronymic_n));
+            $word->setValue('cr-surname-n-b', $this->set_style_bold($this->client->representative->confidant->surname_n));
+            $word->setValue('cr-name-n-b', $this->set_style_bold($this->client->representative->confidant->name_n));
+            $word->setValue('cr-patr-n-b', $this->set_style_bold($this->client->representative->confidant->patronymic_n));
 
             $word->setValue('cr-surname-r', $this->client->representative->confidant->surname_r);
             $word->setValue('cr-name-r', $this->client->representative->confidant->name_r);
@@ -1043,24 +1379,24 @@ class DocumentController extends GeneratorController
              * Представник - IПН
              * */
             $word->setValue('cr-tax-code', $this->client->representative->confidant->tax_code);
-            $word->setValue('cr-tax-code-b', $this->set_style_color_and_bold($this->client->representative->confidant->tax_code));
+            $word->setValue('cr-tax-code-b', $this->set_style_bold($this->client->representative->confidant->tax_code));
 
             /*
              * Представник - місце проживання
              * */
-            $word->setValue('cr-f-addr', $this->set_style_color($this->convert->get_client_full_address($this->client->representative->confidant)));
+            $word->setValue('cr-f-addr', $this->convert->get_client_full_address_n($this->client->representative->confidant));
 
             $cr_gender_registration = GenderWord::where('alias', "registration")->value($this->client->representative->confidant->gender);
             $word->setValue('cr-gender-reg', $cr_gender_registration);
 
             $cr_gender_which = GenderWord::where('alias', "which")->value($this->client->representative->confidant->gender);
-            $word->setValue('cr-gender-which', $this->set_style_color($cr_gender_which));
+            $word->setValue('cr-gender-which', $cr_gender_which);
 
             $cr_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->representative->confidant->gender);
-            $word->setValue('cr-gender-which-adj', $this->set_style_color($cr_gender_which_adjective));
+            $word->setValue('cr-gender-which-adj', $cr_gender_which_adjective);
 
             $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->representative->confidant->gender);
-            $word->setValue('cr-gender-acq', $this->set_style_color($cl_gender_acquainted));
+            $word->setValue('cr-gender-acq', $cl_gender_acquainted);
 
             $word->setValue('cr-citizenship', $this->get_citizenship($this->client->representative->confidant));
             /*
@@ -1080,13 +1416,12 @@ class DocumentController extends GeneratorController
      * */
     public function set_client_spouse($word)
     {
-
-        if ($this->client->married) {
+        if ($this->client->married)
+        {
             /*
              * Подружжя клієнта - ПІБ
              * */
-
-            $word->setValue('cs-full-name-n', $this->get_full_name_n($this->client->married->spouse));
+            $word->setValue('cs-full-name-n', $this->convert->get_full_name_n($this->client->married->spouse));
 
             $word->setValue('cs-surname-n', $this->client->married->spouse->surname_n);
             $word->setValue('cs-name-n', $this->client->married->spouse->name_n);
@@ -1096,8 +1431,8 @@ class DocumentController extends GeneratorController
             $word->setValue('cs-name-r', $this->client->married->spouse->name_r);
             $word->setValue('cs-patr-r', $this->client->married->spouse->patronymic_r);
 
-            $word->setValue('ПОД-ПІБ-Н', $this->get_full_name_n($this->client->married->spouse));
-            $word->setValue('ПОД-ПІБ-Р', $this->get_full_name_r($this->client->married->spouse));
+            $word->setValue('ПОД-ПІБ-Н', $this->convert->get_full_name_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПІБ-Р', $this->convert->get_full_name_r($this->client->married->spouse));
 
             $word->setValue('cs-surname-o', $this->client->married->spouse->surname_o);
             $word->setValue('cs-name-o', $this->client->married->spouse->name_o);
@@ -1118,8 +1453,9 @@ class DocumentController extends GeneratorController
              * Подружжя клієнта - адреса проживання
              * */
 //            dd($this->client->married->spouse->city->city_type);
-            $word->setValue('cs-f-addr', $this->convert->get_client_full_address($this->client->married->spouse));
-            $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address($this->client->married->spouse));
+            $word->setValue('cs-f-addr', $this->convert->get_client_full_address_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->client->married->spouse));
+            $word->setValue('ПОД-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client->married->spouse));
             $word->setValue('cs-region', $this->client->married->spouse->city->region->title_n);
             $word->setValue('cs-city-type-s', $this->client->married->spouse->city->city_type->short);
             $word->setValue('cs-city', $this->client->married->spouse->city->title);
@@ -1151,21 +1487,25 @@ class DocumentController extends GeneratorController
             $word->setValue('ПОД-МОЄ', $cs_gender_mine);
             $word->setValue('ПОД-МОЄ-UP', $this->mb_ucfirst($cs_gender_mine));
 
-            $cs_gender_registration = GenderWord::where('alias', "registration")->value($this->client->married->spouse->gender);
-            $word->setValue('cs-gender-reg', $cs_gender_registration);
+            if ($this->client->married->spouse->gender)
+                $cs_registration = GenderWord::where('alias', "registration")->value($this->client->married->spouse->gender);
+            else
+                $cs_registration = GenderWord::where('alias', "reside")->value($this->client->married->spouse->gender);
+            $word->setValue('cs-gender-reg', $cs_registration);
+            $word->setValue('ПОД-ЗАРЕЄСТР', $cs_registration);
 
             $cs_gender_which = GenderWord::where('alias', "which")->value($this->client->married->spouse->gender);
-            $word->setValue('cs-gender-which', $this->set_style_color($cs_gender_which));
+            $word->setValue('cs-gender-which', $cs_gender_which);
 
             $cs_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->married->spouse->gender);
-            $word->setValue('cs-gender-which-adj', $this->set_style_color($cs_gender_which_adjective));
-            $word->setValue('ПОД-ЯК', $this->set_style_color($cs_gender_which_adjective));
+            $word->setValue('cs-gender-which-adj', $cs_gender_which_adjective);
+            $word->setValue('ПОД-ЯК', $cs_gender_which_adjective);
 
             $cs_gender_sign = GenderWord::where('alias', "sign")->value($this->client->married->spouse->gender);
-            $word->setValue('ПОД-ПІДПИС', $this->set_style_color($cs_gender_sign));
+            $word->setValue('ПОД-ПІДПИС', $cs_gender_sign);
 
             $cs_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->married->spouse->gender);
-            $word->setValue('cs-gender-acq', $this->set_style_color($cs_gender_acquainted));
+            $word->setValue('cs-gender-acq', $cs_gender_acquainted);
 
             $word->setValue('cs-citizenship', $this->get_citizenship($this->client->married->spouse));
         } else {
@@ -1216,7 +1556,10 @@ class DocumentController extends GeneratorController
              * Згода подружжя або заява від покупця про відсутність шлюбних відносин - реєстраційний номер
              * */
             $word->setValue('cs-consent-sign-date', $this->display_date($this->consent->sign_date));
-            $word->setValue('cs-consent-reg-num', $this->consent->reg_num);
+            if ($this->consent->reg_num)
+                $word->setValue('cs-consent-reg-num', $this->consent->reg_num);
+            else
+                $word->setValue('cs-consent-reg-num', $this->set_style_color_warning("####"));
         } else {
             $this->notification("Warning", "Відсутня інформація про згоду подружжя клієнта");
         }
@@ -1238,6 +1581,7 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-type-r', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('imm-type-o', $this->contract->immovable->immovable_type->title_r);
 
+            $word->setValue('Н-ТИП-Н', $this->contract->immovable->immovable_type->title_n);
             $word->setValue('Н-ТИП-Р', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('Н-ТИП-Р-UP',  $this->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
 
@@ -1254,12 +1598,11 @@ class DocumentController extends GeneratorController
              * Об'єкт - адреса
              * */
             $word->setValue('imm-full-addr', $this->contract->immovable->address);
-//            $word->setValue('imm-full-asc-addr-r', $this->full_ascending_address($this->contract->immovable));
 
             $word->setValue('imm-num', $this->contract->immovable->immovable_number);
-            $word->setValue('imm-num-str', $this->convert->number_to_string($this->contract->immovable->immovable_number));
+            $word->setValue('imm-num-str', $this->convert->building_num_to_str($this->contract->immovable->immovable_number));
             $word->setValue('imm-build-num', $this->contract->immovable->developer_building->number); // исправить на number_dig
-            $word->setValue('imm-build-num-str', $this->convert->building_num_str($this->contract->immovable->developer_building->number)); // привязать к developer_building(address) как number_str
+            $word->setValue('imm-build-num-str', $this->convert->building_num_to_str($this->contract->immovable->developer_building->number)); // привязать к developer_building(address) как number_str
             $word->setValue('imm-addr-type-n', $this->contract->immovable->developer_building->address_type->title_n); // building
             $word->setValue('imm-addr-type-r', $this->contract->immovable->developer_building->address_type->title_r); // building
             $word->setValue('imm-addr-title', $this->contract->immovable->developer_building->title); // building
@@ -1277,10 +1620,11 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-complex', $this->contract->immovable->developer_building->complex); // building
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
-            $word->setValue('Н-ПОВНА-АДРЕСА', $this->contract->immovable->address);
-            $word->setValue('Н-БУДИНОК', $this->convert->building_address($this->contract->immovable)); // building
-            $word->setValue('Н-НОМЕР', $this->convert->number_with_string($this->contract->immovable->immovable_number));
-
+            $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
+            $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->building_full_address_by_type($this->contract->immovable, 'desc'));
+            $word->setValue('H-ПОВНА-АДРЕСА-СПД-СК', $this->convert->building_full_address_by_type_short($this->contract->immovable, 'desc'));
+            $word->setValue('Н-БУДИНОК', $this->convert->building_street_and_num($this->contract->immovable)); // building
+            $word->setValue('Н-НОМЕР', $this->convert->immovable_number_with_string($this->contract->immovable->immovable_number));
 
             /*
              * Об'єкт - загальна та житлова проща
@@ -1288,7 +1632,14 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-total-space',  $this->convert->get_convert_space($this->contract->immovable->total_space));
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
-            $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
+            if ($this->contract->type == 'main') {
+                $word->setValue('Н-ПЛ-З-ЦФР', $this->contract->immovable->total_space);
+                $word->setValue('Н-ПЛ-Ж-ЦФР', $this->set_style_bold($this->contract->immovable->living_space));
+            } else {
+                $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
+                $word->setValue('Н-ПЛ-Ж', $this->set_style_bold($this->convert->get_convert_space($this->contract->immovable->living_space)));
+            }
+
             $word->setValue('Н-ПОВЕРХУ', $this->convert->get_immovable_floor($this->contract->immovable->floor));
             $word->setValue('Н-CЕКЦІЯ', $this->convert->number_with_string($this->contract->immovable->section));
             /*
@@ -1303,7 +1654,6 @@ class DocumentController extends GeneratorController
                 $word->setValue('Н-ДАТА-КОМ', $this->day_quotes_month_year($this->contract->immovable->developer_building->communal_date));
             }
 
-
             /*
              * Об'єкт - дозвіл на будівництво
              * */
@@ -1316,10 +1666,12 @@ class DocumentController extends GeneratorController
                 $word->setValue('Н-ДОЗВІЛ-ДАТА', $this->day_quotes_month_year($this->contract->immovable->developer_building->building_permit->sign_date));
                 $word->setValue('Н-ДОЗВІЛ-ВИДАНО', $this->contract->immovable->developer_building->building_permit->organization);
             }
+
             /*
              * Об'єкт - реєстраційний номер
              * */
             $word->setValue('imm-reg-num', $this->contract->immovable->registration_number);
+            $word->setValue('Н-РЕЄСТР-НОМ', $this->contract->immovable->registration_number);
         } else {
             $this->notification("Warning", "Відсутня інформація про об'єкт нерухомості");
         }
@@ -1340,20 +1692,33 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-own-gov-reg-date', $this->contract->immovable_ownership->gov_reg_date_format);
             $word->setValue('imm-own-dis-date', $this->contract->immovable_ownership->discharge_date_format);
             $word->setValue('imm-own-dis-num', $this->contract->immovable_ownership->discharge_number);
-            $word->setValue('imm-own-res-surname-o', $this->contract->notary->surname_o);
-            $word->setValue('imm-own-res-sh-name', $this->contract->notary->short_name);
-            $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
-            $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
+//            $word->setValue('imm-own-res-surname-o', $this->contract->notary->surname_o);
+//            $word->setValue('imm-own-res-sh-name', $this->contract->notary->short_name);
+//            $word->setValue('imm-own-res-actvt-o', $this->contract->notary->activity_o);
+//            $word->setValue('imm-own-res-sh-patr', $this->contract->notary->short_patronymic);
+
+            $word->setValue('ПР-ВЛ-РСТР-НОМ', $this->contract->immovable_ownership->gov_reg_number);
+            $word->setValue('ПР-ВЛ-РСТР-ДАТА', $this->contract->immovable_ownership->gov_reg_date_format);
+            $word->setValue('ПР-ВЛ-ВТГ-ДАТА', $this->contract->immovable_ownership->discharge_date_format);
+            $word->setValue('ПР-ВЛ-ВТГ-НОМ', $this->contract->immovable_ownership->discharge_number);
+
+            $word->setValue('ПР-ВЛ-НОТ-ПІБ-О', $this->convert->get_full_name_o($this->contract->immovable_ownership->notary));
+            $word->setValue('ПР-ВЛ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable_ownership->notary->activity_o);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація про власника майна");
         }
 
+        /*
         /*
          * Перевірка заборон на майно
          * */
         if ($this->contract->immovable->fence && $this->contract->immovable->fence->number && $this->contract->immovable->fence->date) {
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
+
+
+            $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($this->contract->immovable->fence->date));
+            $word->setValue('ЗБРН-Н-НОМ', $this->contract->immovable->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по забороні на нерухомість");
         }
@@ -1364,6 +1729,9 @@ class DocumentController extends GeneratorController
         if ($this->contract->dev_company && $this->contract->dev_company->fence && $this->contract->dev_company->fence->number && $this->contract->dev_company->fence->date) {
             $word->setValue('dev-fence-date', $this->display_date($this->contract->dev_company->fence->date));
             $word->setValue('dev-fence-num', $this->contract->dev_company->fence->number);
+
+            $word->setValue('ЗБРН-ЗАБ-ДАТА', $this->display_date($this->contract->dev_company->fence->date));
+            $word->setValue('ЗБРН-ЗАБ-НОМ', $this->contract->dev_company->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по заборонам на власника");
         }
@@ -1382,6 +1750,12 @@ class DocumentController extends GeneratorController
             $word->setValue('pv-certificate', $this->contract->immovable->pvprice->property_valuation->certificate);
             $word->setValue('pv-date', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
             $word->setValue('pv-price-grn', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
+
+            $word->setValue('ОК-НАЗВА', $this->contract->immovable->pvprice->property_valuation->title);
+            $word->setValue('ОК-СРТФКТ-НОМ', $this->contract->immovable->pvprice->property_valuation->certificate);
+            $word->setValue('ОК-СРТФКТ-ДАТА', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
+            $word->setValue('ОК-ОЦ-ДАТА', $this->display_date($this->contract->immovable->pvprice->date));
+            $word->setValue('ОК-ОЦ-ЦІНА', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
         } else {
             $this->notification("Warning", "Оцінка: відсутня інформація від оціночної компанії");
         }
@@ -1402,6 +1776,8 @@ class DocumentController extends GeneratorController
         $word->setValue('m2-dollar', $this->convert->get_convert_price($this->contract->immovable->m2_dollar, 'dollar'));
 
         $word->setValue('Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
+        $half_price = $this->contract->immovable->grn / 2;
+        $word->setValue('Н-ЦІНА-ЗАГ-ГРН-1/2', $this->convert->get_convert_price($half_price, 'grn'));
         $word->setValue('Н-ЦІНА-ЗАГ-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->dollar, 'dollar'));
         $word->setValue('Н-ЦІНА-М2-ГРН',  $this->convert->get_convert_price($this->contract->immovable->m2_grn, 'grn'));
         $word->setValue('Н-ЦІНА-М2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->m2_dollar, 'dollar'));
@@ -1415,7 +1791,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_secure_payment($word)
     {
-        if ($this->contract->immovable->security_payment && $this->contract->immovable->security_payment->sign_date) {
+        if ($this->contract->immovable->security_payment) {
             $word->setValue('secur-sign-date', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
             $word->setValue('secur-reg-num', $this->contract->immovable->security_payment->reg_num ?? "####");
 
@@ -1430,17 +1806,46 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
-            $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
-            $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
-        } elseif ($this->contract->immovable->security_payment) {
-            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->set_style_color_warning("#######"));
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->set_style_color_warning("#######"));
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->set_style_color_warning("#######"));
+            if ($this->contract->immovable->security_payment->reg_num)
+                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->contract->immovable->security_payment->reg_num);
+            else
+                $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color_warning("####"));
 
-            $word->setValue('Н-ЗАБ-ПЛ-НОМ', $this->set_style_color_warning("####"));
-            $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("########"));
+
+            if ($this->contract->immovable->security_payment->sign_date) {
+                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
+            }
+            else
+                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("######"));
         } else {
             $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
+        }
+
+        return $word;
+    }
+
+    /*
+     * Розірвання або повернення коштів
+     * */
+    public function set_termination_info($word)
+    {
+        if ($this->contract->termination_info && $this->contract->termination_info->notary) {
+            $word->setValue('РОЗ-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->termination_info->notary));
+            $word->setValue('РОЗ-НОТ-АКТ-О', $this->contract->termination_info->notary->activity_o);
+            $word->setValue('РОЗ-НОТ-ДАТА', $this->display_date($this->contract->termination_info->reg_date));
+            $word->setValue('РОЗ-НОТ-НОМЕР', $this->contract->termination_info->reg_num);
+            $word->setValue('РОЗ-Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->termination_info->price, 'grn'));
+        } else {
+            $this->notification("Warning", "Інформація про розірвання відсутне");
+        }
+
+        if ($this->contract->dev_company->owner && $this->contract->dev_company->owner->termination_consent && $this->contract->dev_company->owner->termination_consent->notary) {
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->dev_company->owner->termination_consent->notary));
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-АКТИВНІСТЬ-О', $this->contract->dev_company->owner->termination_consent->notary->activity_o);
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-ДАТА',  $this->display_date($this->contract->dev_company->owner->termination_consent->reg_date));
+            $word->setValue('РОЗ-ЗГ-ПОДР-ЗБД-НОТ-НОМЕР', $this->contract->dev_company->owner->termination_consent->reg_num);
+        } else {
+            $this->notification("Warning", "Інформація про розірвання відсутне");
         }
 
         return $word;
@@ -1451,7 +1856,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_exchange_rate($word)
     {
-        if ($this->contract->immovable && $this->card->exchange_rate) {
+        if ($this->contract->immovable  && $this->card->exchange_rate) {
             $word->setValue('imm-exch-link', $this->card->exchange_rate->web_site_link);
             $word->setValue('imm-exch-root', $this->card->exchange_rate->web_site_root);
             $word->setValue('imm-exch', $this->convert->exchange_price($this->card->exchange_rate->rate));
@@ -1470,12 +1875,12 @@ class DocumentController extends GeneratorController
     public function set_client_representative_data($word)
     {
         if ($this->client->representative) {
-            $word->setValue('cr-ntr-surname-o', $this->set_style_color($this->client->representative->notary->surname_o));
-            $word->setValue('cr-ntr-sh-name', $this->set_style_color($this->client->representative->notary->short_name));
-            $word->setValue('cr-ntr-sh-patr', $this->set_style_color($this->client->representative->notary->short_patronymic));
-            $word->setValue('cr-ntr-actvt-o', $this->set_style_color($this->client->representative->notary->activity_o));
-            $word->setValue('cr-reg-date', $this->set_style_color($this->display_date($this->client->representative->reg_date)));
-            $word->setValue('cr-reg-num', $this->set_style_color($this->client->representative->reg_num));
+            $word->setValue('cr-ntr-surname-o', $this->client->representative->notary->surname_o);
+            $word->setValue('cr-ntr-sh-name', $this->client->representative->notary->short_name);
+            $word->setValue('cr-ntr-sh-patr', $this->client->representative->notary->short_patronymic);
+            $word->setValue('cr-ntr-actvt-o', $this->client->representative->notary->activity_o);
+            $word->setValue('cr-reg-date', $this->display_date($this->client->representative->reg_date));
+            $word->setValue('cr-reg-num', $this->client->representative->reg_num);
         } else {
             $this->notification("Warning", "Ноторіальні данні по довіренності представника покупця: інформація відсутня");
         }
@@ -1501,7 +1906,12 @@ class DocumentController extends GeneratorController
             $word->setValue('ДД-НОМЕР', $this->contract->immovable->proxy->number);
             $word->setValue('ДД-ДАТА', $this->display_date($this->contract->immovable->proxy->date));
             $word->setValue('ДД-ДАТА-МС', $this->day_quotes_month_year($this->contract->immovable->proxy->date));
-            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ', $this->convert->get_surname_and_initials($this->contract->immovable->proxy->notary));
+
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_surname_and_initials_n($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($this->contract->immovable->proxy->notary));
+            $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
+
             $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
             $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
         } else {
@@ -1533,7 +1943,7 @@ class DocumentController extends GeneratorController
             if ($contract = $this->pack_contract->whereIn('id', $sp_con->id)->first()) {
                 $imm_type_r = $contract->immovable->immovable_type->title_r;
                 $imm_num_dig = $contract->immovable->immovable_number;
-                $imm_num_str = $this->convert->building_num_str($contract->immovable->immovable_number);
+                $imm_num_str = $this->convert->building_num_to_str($contract->immovable->immovable_number);
                 $imm_full_address = $contract->immovable->address;
                 $imm[$imm_full_address][$imm_num_dig] = "$imm_type_r $imm_num_dig ($imm_num_str)";
             }
@@ -1589,16 +1999,15 @@ class DocumentController extends GeneratorController
 
     public function day_quotes_month_year($date)
     {
-        $title = "«  »          2021";
+        $title = "«##» ###### ####";
 
         if ($date) {
             $day = $date->format('d');
             $month = MonthConvert::where('original', $date->format('m'))->orWhere('original', strval(intval($date->format('m'))))->value('title_r');
             $year = $date->format('Y');
 
-            $title = "«{$day}» {$month} {$year}";
+            $title = "«" . $day . "»" . $this->non_break_space . $month . $this->non_break_space . $year;
         }
-
 
         return $title;
     }
@@ -1660,48 +2069,71 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    public function get_full_name_n($client)
-    {
-        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+//    public function get_full_name_n($client)
+//    {
+//        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
+//
+//        if (!$client->patronymic_n)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
 
-        return $full_name;
-    }
-
-    public function get_full_name_r($client)
-    {
-        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
-
-        return $full_name;
-    }
-
-    public function get_full_name_o($client)
-    {
-        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
-
-        return $full_name;
-    }
-
-    public function get_full_name_n_upper($client)
-    {
-        $surname = mb_strtoupper($client->surname_n);
-        $name = mb_strtoupper($client->name_n);
-        $patronymic = mb_strtoupper($client->patronymic_n);
-
-        $full_name = "$surname $name $patronymic";
-
-        return $full_name;
-    }
-
-    public function get_full_name_r_upper($client)
-    {
-        $surname = mb_strtoupper($client->surname_r);
-        $name = mb_strtoupper($client->name_r);
-        $patronymic = mb_strtoupper($client->patronymic_r);
-
-        $full_name = "$surname $name $patronymic";
-
-        return $full_name;
-    }
+//    public function convert->get_full_name_r($client)
+//    {
+//        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
+//
+//        if (!$client->patronymic_r)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function get_full_name_d($client)
+//    {
+//        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
+//
+//        if (!$client->patronymic_d)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function convert->get_full_name_o($client)
+//    {
+//        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
+//
+//        if (!$client->patronymic_o)
+//            $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function get_full_name_n_upper($client)
+//    {
+////        $surname = mb_strtoupper($client->surname_n);
+////        $name = mb_strtoupper($client->name_n);
+////        $patronymic = mb_strtoupper($client->patronymic_n);
+//
+//        $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
+//        $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
+//
+//    public function convert->get_full_name_r_upper($client)
+//    {
+////        $surname = mb_strtoupper($client->surname_r);
+////        $name = mb_strtoupper($client->name_r);
+////        $patronymic = mb_strtoupper($client->patronymic_r);
+////
+////        $full_name = "$surname $name $patronymic";
+//
+//        $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
+//        $full_name = mb_strtoupper($full_name);
+//
+//        return $full_name;
+//    }
 
     public function set_taxes_data($sheet)
     {
@@ -1722,9 +2154,9 @@ class DocumentController extends GeneratorController
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
             $this->notification('Warning', $price * $percent . " " . $i);
             $sheet->setCellValue("A{$i}", $price * $percent);
-            $sheet->setCellValue("B{$i}", $this->get_full_name_n($pay_buy_client));
+            $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($pay_buy_client));
             $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
-            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->get_full_name_n($pay_buy_client);
+            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($pay_buy_client);
             $sheet->setCellValue("E{$i}", $full_tax_info);
 
             $sheet->setCellValue("F{$i}", $tax->mfo);
@@ -1735,14 +2167,17 @@ class DocumentController extends GeneratorController
         }
 
         $sheet->setCellValue("A8", "покупець");
-        $sheet->setCellValue("B8", $this->get_full_name_n($this->client));
+        $sheet->setCellValue("B8", $this->convert->get_full_name_n($this->client));
         $sheet->setCellValue("C8", $this->client->tax_code);
         $sheet->setCellValue("B9", "продавець");
-        $sheet->setCellValue("B9", $this->get_full_name_n($this->contract->dev_company->owner));
+        $sheet->setCellValue("B9", $this->convert->get_full_name_n($this->contract->dev_company->owner));
         $sheet->setCellValue("C9", $this->contract->dev_company->owner->tax_code);
-        $sheet->setCellValue("B10", $this->contract->immovable->address);
+        $sheet->setCellValue("B10", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
         $sheet->setCellValue("B11", $price);
         $sheet->setCellValue("B13", $this->client->phone);
+        if ($this->contract->dev_representative) {
+            $sheet->setCellValue("E9", "через " . $this->contract->dev_representative->surname_n);
+        }
 
         return $sheet;
     }

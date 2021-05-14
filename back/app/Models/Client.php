@@ -15,6 +15,19 @@ class Client extends Model implements Sortable
     use HasFactory, SortableTrait, SoftDeletes;
 
     protected $fillable = [
+        'surname_n',
+        'name_n',
+        'patronymic_n',
+        'surname_r',
+        'name_r',
+        'patronymic_r',
+        'surname_d',
+        'name_d',
+        'patronymic_d',
+        'surname_o',
+        'name_o',
+        'patronymic_o',
+        'registration',
         'gender',
         'birth_date',
         'tax_code',
@@ -88,6 +101,16 @@ class Client extends Model implements Sortable
         return $this->hasOne(ClientSpouseConsent::class);
     }
 
+    public function developer_consent()
+    {
+        return $this->hasOne(ClientSpouseConsent::class, 'client_id');
+    }
+
+    public function termination_consent()
+    {
+        return $this->hasOne(TerminationConsent::class, 'client_id');
+    }
+
     public function contracts()
     {
         return $this->belongsToMany(Contract::class);
@@ -96,6 +119,16 @@ class Client extends Model implements Sortable
     public function representative()
     {
         return $this->hasOne(Representative::class, 'client_id');
+    }
+
+    public function communal()
+    {
+        return $this->hasOne(Communal::class, 'client_id');
+    }
+
+    public function actual_address()
+    {
+        return $this->hasOne(ActualAddress::class, 'client_id');
     }
 
 //    public static function get_dev_employers_by_type($dev_company_id, $employer_type)

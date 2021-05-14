@@ -13,4 +13,9 @@ class SpouseWord extends Model
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
+
+    public function developer()
+    {
+        return $this->belongsTo(DevCompany::class, 'dev_company_id');
+    }
 }

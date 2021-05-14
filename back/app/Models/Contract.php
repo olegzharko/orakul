@@ -97,6 +97,21 @@ class Contract extends Model implements Sortable
         return $this->hasOne(FinalSignDate::class, 'contract_id');
     }
 
+    public function termination_info()
+    {
+        return $this->hasOne(TerminationInfo::class, 'contract_id');
+    }
+
+    public function termination_contract()
+    {
+        return $this->hasOne(TerminationContract::class, 'contract_id');
+    }
+
+    public function termination_refund()
+    {
+        return $this->hasOne(TerminationRefund::class, 'contract_id');
+    }
+
     public function event_city()
     {
         return $this->belongsTo(City::class, 'event_city_id');
@@ -145,5 +160,16 @@ class Contract extends Model implements Sortable
     public static function get_card_id_by_immovable_id($immovable_id)
     {
         return Contract::where('immovable_id', $immovable_id)->value('card_id');
+    }
+
+    public static function get_dev_company_by_card_id($card_id)
+    {
+        $dev_companies_id = Contract::where('card_id', $card_id)
+            ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
+            ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
+            ->pluck('dev_companies.id');
+
+        return $dev_companies_id;
     }
 }

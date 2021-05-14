@@ -27,7 +27,7 @@ class Spouse extends Resource
 
     public static function label()
     {
-        return "Покупець-подружжя";
+        return "Клієнт-подружжя";
     }
 
     /**

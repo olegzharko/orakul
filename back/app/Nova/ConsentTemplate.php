@@ -4,10 +4,12 @@ namespace App\Nova;
 
 use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 
 class ConsentTemplate extends Resource
 {
@@ -52,9 +54,11 @@ class ConsentTemplate extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Назва', 'title')->rules('required'),
+            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),
+            Toggle::make('Від забудовника', 'developer'),
         ];
     }
 

@@ -29,6 +29,7 @@ class Notary extends Model implements Sortable
             'activity_n',
             'activity_o',
             'separate_by_card',
+            'active',
     ];
 
     public $sortable = [

@@ -15,6 +15,7 @@ class PropertyValuationPrice extends Model implements Sortable
     protected $table = "property_valuation_prices";
 
     protected $fillable = [
+        'immovable_id',
         'property_valuation_id',
         'date',
         'grn',

@@ -12,12 +12,19 @@ use App\Models\BankAccountPayment;
 use App\Models\BankAccountTemplate;
 use App\Models\BankTaxesPayment;
 use App\Models\BankTaxesTemplate;
+use App\Models\Client;
+use App\Models\Communal;
+use App\Models\CommunalTemplate;
 use App\Models\ConsentTemplate;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
 use App\Models\ContractType;
+use App\Models\DevCompanyEmployer;
+use App\Models\DevConsent;
+use App\Models\DevConsentTemplate;
 use App\Models\DeveloperBuilding;
 use App\Models\DeveloperStatement;
+use App\Models\DevEmployerType;
 use App\Models\Exchange;
 use App\Models\ExchangeRate;
 use App\Models\FinalSignDate;
@@ -29,10 +36,19 @@ use App\Models\PropertyValuation;
 use App\Models\PropertyValuationPrice;
 use App\Models\QuestionnaireTemplate;
 use App\Models\Room;
+use App\Models\Notary;
 use App\Models\RoominessType;
+use App\Models\ClientSpouseConsent;
 use App\Models\SecurityPayment;
+use App\Models\SpouseWord;
 use App\Models\StatementTemplate;
 use App\Models\Questionnaire;
+use App\Models\TerminationConsent;
+use App\Models\TerminationContract;
+use App\Models\TerminationContractTemplate;
+use App\Models\TerminationInfo;
+use App\Models\TerminationRefund;
+use App\Models\TerminationRefundTemplate;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Laravel\Nova\Fields\DateTime;
@@ -83,7 +99,7 @@ class ImmovableController extends BaseController
         $building = [];
         foreach ($developer_building as $key => $dev_building) {
             $building[$key]['id'] = $dev_building->id;
-            $building[$key]['title'] = $this->convert->get_full_address($dev_building);
+            $building[$key]['title'] = $this->convert->building_address_type_title_number($dev_building);
         }
 
         $roominess = RoominessType::select('id', 'title')->where('active', true)->orderBy('sort_order')->get();
@@ -123,10 +139,8 @@ class ImmovableController extends BaseController
 
         $currency_rate = $this->get_currency_rate($immovable_id);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
-        $reserve_grn = round($r['reserve_grn'] / $currency_rate, 2);
+        $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
         $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
-
-        echo "Курс: $currency_rate, Цена: $price_dollar, Резерв: $reserve_grn, М2: $m2_dollar<br>";
 
         if ($imm = Immovable::find($immovable_id)) {
             Immovable::where('id', $immovable_id)->update([
@@ -138,7 +152,7 @@ class ImmovableController extends BaseController
                 'grn' => $r['price_grn'] * 100,
                 'dollar' => $price_dollar * 100,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $reserve_grn * 100,
+                'reserve_dollar' => $reserve_dollar * 100,
                 'm2_grn' => $r['m2_grn'] * 100,
                 'm2_dollar' => $m2_dollar * 100,
                 'total_space' => $r['total_space'],
@@ -269,6 +283,11 @@ class ImmovableController extends BaseController
         $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
         $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
 
+        // прибрати розбіжність в ціні по доларам через заокруглення до більшого
+        while (($first_part_dollar + $last_part_dollar) > $immovable->reserve_dollar / 100) {
+            $first_part_dollar = $first_part_dollar - 0.01;
+        }
+
         SecurityPayment::where('immovable_id', $immovable_id)->update([
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
             'reg_num' => $r['reg_num'],
@@ -308,7 +327,7 @@ class ImmovableController extends BaseController
 
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->generator->full_ascending_address($immovable);
+            $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
             $result[$key]['list'] = ['Тест G інформація 1', 'Тест G інформація 2', 'Тест G інформація 3'];
         }
 
@@ -390,7 +409,7 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        PropertyValuationPrice::where('immovable_id', $immovable_id)->update([
+        PropertyValuationPrice::updateOrCreate(['immovable_id' => $immovable_id], [
             'property_valuation_id' => $r['property_valuation_id'],
             'date' => $r['date'],
             'grn' => $r['price'] * 100,
@@ -410,15 +429,36 @@ class ImmovableController extends BaseController
         $result['reg_number'] = null;
         $result['discharge_date'] = null;
         $result['discharge_number'] = null;
+        $result['notary'] = null;
 
-        if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->first()) {
+        if (!$imm_own = ImmovableOwnership::where('immovable_id', $immovable_id)->firstOrCreate()) {
             return $this->sendResponse($result, 'Дані по перевірці на власність відсутні.');
         }
+
+        $convert_notary = [];
+        $other_notary = [];
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        if ($card_id) {
+            $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+            foreach ($separate_by_card as $key => $value) {
+                $other_notary[$key]['id'] = $value->id;
+                $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+            }
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
 
         $result['reg_date'] = $imm_own->gov_reg_date ? $imm_own->gov_reg_date->format('d.m.Y') : null;
         $result['reg_number'] = $imm_own->gov_reg_number;
         $result['discharge_date'] = $imm_own->discharge_date ? $imm_own->discharge_date->format('d.m.Y') : null;
         $result['discharge_number'] = $imm_own->discharge_number;
+        $result['notary_id'] = $imm_own->notary_id;
 
         return $this->sendResponse($result, 'Дані по перевірці на власність нерухомості ID:' . $immovable_id);
     }
@@ -439,9 +479,73 @@ class ImmovableController extends BaseController
             'gov_reg_date' => $r['reg_date'],
             'discharge_number' => $r['discharge_number'],
             'discharge_date' => $r['discharge_date'],
+            'notary_id' => $r['notary_id'],
         ]);
 
         return $this->sendResponse('', 'Дані оновлено перевірок для ннерухомості ID:' . $immovable_id . ' оноволено.');
+    }
+
+    public function get_termination($immovable_id)
+    {
+        $result = null;
+
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
+
+        $termnation_info = TerminationInfo::firstOrCreate(
+            ['contract_id' => $contract_id],
+        );
+
+        $convert_notary = [];
+        $other_notary = [];
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        if ($card_id) {
+            $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+            foreach ($separate_by_card as $key => $value) {
+                $other_notary[$key]['id'] = $value->id;
+                $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+            }
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+        $result['price'] = $termnation_info->price;
+        $result['notary_id'] = $termnation_info->notary_id;
+        $result['reg_date'] = $termnation_info->reg_date ? $termnation_info->reg_date->format('d.m.Y') : null;
+        $result['reg_number'] = $termnation_info->reg_num;
+
+        return $this->sendResponse($result, 'Дані для розірвання попереднього договру');
+    }
+
+    public function update_termination($immovable_id, Request $r)
+    {
+        if (!$immovable = Immovable::find($immovable_id))
+            return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        $validator = $this->validate_imm_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        if ($immovable->contract) {
+            TerminationInfo::updateOrCreate(['contract_id' => $immovable->contract->id],[
+                'price' => $r['price'],
+                'notary_id' => $r['notary_id'],
+                'reg_date' => $r['reg_date'],
+                'reg_num' => $r['reg_number'],
+            ]);
+        }
+
+        return $this->sendResponse('', 'Дані розірвання для ннерухомості по ID:' . $immovable_id . ' оноволено.');
     }
 
     public function get_template($immovable_id)
@@ -451,12 +555,18 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        $dev_company_id = $immovable->developer_building->dev_company->id;
+
         $contract_type = ContractType::select('id', 'title')->get();
-        $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
-        $bank_templates = BankAccountTemplate::select('id', 'title')->get();
+        $contract_templates = ContractTemplate::select('id', 'title', 'type_id')->where('developer_id', $dev_company_id)->get();
+        $bank_templates = BankAccountTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $taxes_templates = BankTaxesTemplate::select('id', 'title')->get();
-        $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
-        $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $immovable->developer_building->dev_company->id)->get();
+        $questionnaire_templates = QuestionnaireTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
+        $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
+
+        $communal_templates = CommunalTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $termination_contract_templates = TerminationContractTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
@@ -464,7 +574,10 @@ class ImmovableController extends BaseController
         $taxes = BankTaxesPayment::where('contract_id', $contract->id)->first();
         $questionnaire = Questionnaire::where('contract_id', $contract->id)->first();
         $statement = DeveloperStatement::where('contract_id', $contract->id)->first();
+        $communal = Communal::where('contract_id', $contract->id)->first();
         $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
+        $termination_contract = TerminationContract::where('contract_id', $contract->id)->first();
+        $termination_refund = TerminationRefund::where('contract_id', $contract->id)->first();
 
         $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
@@ -472,6 +585,9 @@ class ImmovableController extends BaseController
         $result['taxes_templates'] = $taxes_templates;
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
+        $result['communal_templates'] = $communal_templates;
+        $result['termination_contracts'] = $termination_contract_templates;
+        $result['termination_refunds'] = $termination_refund_templates;
 
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date > $this->date ? $final_sing_date->sign_date->format('d.m.Y') : null;
@@ -482,6 +598,39 @@ class ImmovableController extends BaseController
         $result['taxes_template_id'] = $taxes->template_id ?? null;
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
         $result['statement_template_id'] = $statement->template_id ?? null;
+        $result['communal_template_id'] = $communal->template_id ?? null;
+        $result['termination_contract_id'] = null;
+        $result['termination_refund_id'] = null;
+        $result['termination_refund_notary_id'] = null;
+        $result['termination_refund_reg_date'] = null;
+        $result['termination_refund_reg_num'] = null;
+
+        $convert_notary = [];
+        $other_notary = [];
+        $rakul_notary = Notary::where('rakul_company', true)->get();
+        foreach ($rakul_notary as $key => $value) {
+            $convert_notary[$key]['id'] = $value->id;
+            $convert_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+        }
+
+        $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
+        if ($card_id) {
+            $separate_by_card = Notary::where('separate_by_card', $card_id)->get();
+            foreach ($separate_by_card as $key => $value) {
+                $other_notary[$key]['id'] = $value->id;
+                $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
+            }
+        }
+
+        $result['notary'] = array_merge($convert_notary, $other_notary);
+
+        if ($termination_refund) {
+            $result['termination_contract_id'] = $termination_contract->template_id;
+            $result['termination_refund_id'] = $termination_refund->template_id;
+            $result['termination_refund_notary_id'] = $termination_refund->notary_id;
+            $result['termination_refund_reg_date'] = $termination_refund->reg_date ? $termination_refund->reg_date->format('d.m.Y') : null;
+            $result['termination_refund_reg_number'] = $termination_refund->reg_num;
+        }
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
 
@@ -498,7 +647,11 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
+        $contract = Contract::where('immovable_id', $immovable_id)->first();
+        $contract_id = $contract->id;
+        $card_id = $contract->card_id;
+        $card = Card::find($card_id);
+        $notary_id = $card->notary_id;
 
         Contract::where('immovable_id', $immovable_id)->update([
            'template_id' => $r['contract_template_id'],
@@ -523,6 +676,7 @@ class ImmovableController extends BaseController
             [
                 'template_id' => $r['questionnaire_template_id'],
                 'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
             ]);
 
         DeveloperStatement::updateOrCreate(
@@ -530,7 +684,59 @@ class ImmovableController extends BaseController
             [
                 'template_id' => $r['statement_template_id'],
                 'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
             ]);
+
+        Communal::updateOrCreate(
+            ['contract_id' => $contract_id],
+            [
+                'template_id' => $r['communal_template_id'],
+                'sign_date' => $r['sign_date'],
+                'notary_id' => $notary_id,
+            ]);
+
+        TerminationContract::updateOrCreate(
+            ['contract_id' => $contract_id],
+            [
+                'template_id' => $r['termination_contract_id'],
+            ]);
+
+        TerminationRefund::updateOrCreate(
+            ['contract_id' => $contract_id],
+            [
+                'template_id' => $r['termination_refund_id'],
+                'notary_id' => $r['termination_refund_notary_id'],
+                'reg_date' => $r['termination_refund_reg_date'],
+                'reg_num' => $r['termination_refund_reg_number'],
+            ]);
+
+        if ($immovable->developer_building->dev_company) {
+            $developer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
+            $dev_company_id = $immovable->developer_building->dev_company->id;
+            $owner_id = DevCompanyEmployer::where(['dev_company_id' => $dev_company_id, 'type_id' => $developer_type_id])->value('employer_id');
+            $owner = Client::find($owner_id);
+
+            if (!$owner->married) {
+//                DevConsent::updateOrCreate(
+//                    ['contract_id' => $contract_id],
+//                    [
+//                        'template_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
+//                        'contract_spouse_word_id' => SpouseWord::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+//                        'notary_id' => $notary_id,
+//                        'reg_date' => $r['sign_date'],
+//                    ]);
+
+                ClientSpouseConsent::updateOrCreate(
+                    ['client_id' => $owner_id],
+                    [
+                        'notary_id' => $notary_id,
+                        'template_id' => ConsentTemplate::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+                        'contract_spouse_word_id' => SpouseWord::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
+                        'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
+                    ]
+                );
+            }
+        }
 
         return $this->sendResponse('', 'Дані по шаблонам успішно оновлено');
     }
@@ -616,7 +822,7 @@ class ImmovableController extends BaseController
             'imm_type_id' => ['numeric', 'nullable'],
             'building_id' => ['numeric', 'nullable'],
             'roominess_id' => ['numeric', 'nullable'],
-            'imm_number' => ['numeric', 'nullable'],
+            'imm_number' => ['string', 'nullable'],
             'registration_number' => ['numeric', 'nullable'],
             'price_dollar' => ['numeric', 'nullable'],
             'price_grn' => ['numeric', 'nullable'],
@@ -658,7 +864,7 @@ class ImmovableController extends BaseController
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'roominess_id.numeric' => 'Необхідно передати ID в числовому форматі',
-            'imm_number.numeric' => 'Необхідно передати номер в числовому форматі',
+            'imm_number.string' => 'Необхідно передати номер в строковому форматі',
             'registration_number.numeric' => 'Необхідно передати номер в числовому форматі',
             'price_dollar.numeric' => 'Необхідно передати ціну в числовому форматі',
             'price_grn.numeric' => 'Необхідно передати ціну в числовому форматі',
