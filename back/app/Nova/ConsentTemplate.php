@@ -58,7 +58,7 @@ class ConsentTemplate extends Resource
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),
-            Toggle::make('Від забудовника', 'developer');
+            Toggle::make('Від забудовника', 'developer'),
         ];
     }
 
