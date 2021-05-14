@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
 
 class ConsentTemplate extends Resource
 {
@@ -57,6 +58,7 @@ class ConsentTemplate extends Resource
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),
+            Toggle::make('Від забудовника', 'developer');
         ];
     }
 
