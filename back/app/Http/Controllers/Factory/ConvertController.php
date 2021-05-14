@@ -310,7 +310,9 @@ class ConvertController extends GeneratorController
         $str = null;
 
         if ($decimal_space == '0') {
-            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+            // сказали убрать описание десятых при нуле
+//            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+            $str = null;
         } elseif ($decimal_space == '1') {
             $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_n');
         } elseif ($decimal_space == '2') {
@@ -323,6 +325,7 @@ class ConvertController extends GeneratorController
 
         $result = trim($str . " " . $result);
 
+
         /* старт сотень */
         $str = null;
         $number = $integer_space % 100;
@@ -330,18 +333,31 @@ class ConvertController extends GeneratorController
         if ($number < 11 || $number > 19) {
             $number = $integer_space % 10;
         }
-//        if ($number == '0') {
-//            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'point')->value('title_r');
-//        } elseif ($number == '1') {
-        if ($number == '1') {
-            $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'point')->value('title_n');
-        } elseif ($number == '2') {
-            $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'point')->value('title_r');
-        } elseif ($number >= '3' && $number <= '4') {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . KeyWord::where('key', 'point')->value('title_r');
+        if ($decimal_space) {
+    //        if ($number == '0') {
+    //            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'point')->value('title_r');
+    //        } elseif ($number == '1') {
+            if ($number == '1') {
+                $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'point')->value('title_n');
+            } elseif ($number == '2') {
+                $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'point')->value('title_r');
+            } elseif ($number >= '3' && $number <= '4') {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . KeyWord::where('key', 'point')->value('title_r');
+            } else {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " .  KeyWord::where('key', 'point')->value('title_r');
+            }
         } else {
-            $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " .  KeyWord::where('key', 'point')->value('title_r');
+            if ($number == '1') {
+                $str = GenderWord::where('alias', "number_one")->value('male');
+            } elseif ($number == '2') {
+                $str = GenderWord::where('alias', "number_two")->value('male');
+            } elseif ($number >= '3' && $number <= '4') {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+            } else {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+            }
         }
+
 
         $result = $str . " " . $result;
 
@@ -361,7 +377,7 @@ class ConvertController extends GeneratorController
         }
 
         $space = str_replace('.', ',', $space);
-        $result = "$space ($result)";
+        $result = "$space (" . trim($result) .")";
 
         return $result;
     }
@@ -622,7 +638,13 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
 
-            $apartment_full = $c->apartment_num ? ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n')) . " " . trim($c->apartment_num) : null;
+            $apartment_full = null;
+            if ($c->apartment_num) {
+                $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n')) . $this->non_break_space . trim($c->apartment_num);
+            }
+            elseif ($c->apartment_type_id) {
+                $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n'));
+            }
 
             $building = "$building_type $building_num" . "$apartment_full";
         }
@@ -681,8 +703,13 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
 
-            $apartment_type = trim(ApartmentType::where('id', $c->apartment_type_id)->value('short'));
-            $apartment_full = $c->apartment_num ? ", " . $apartment_type . $this->non_break_space . trim($c->apartment_num) : null;
+            $apartment_full = null;
+            if ($c->apartment_num) {
+                $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . $this->non_break_space . trim($c->apartment_num);
+            }
+            elseif ($c->apartment_type_id) {
+                $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short'));
+            }
 
             $building = $building_type . $this->non_break_space . $building_num . "$apartment_full";
         }

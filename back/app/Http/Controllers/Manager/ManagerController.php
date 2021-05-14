@@ -644,11 +644,12 @@ class ManagerController extends BaseController
 
     public function card_client($card_id, $client_id)
     {
+
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
         foreach ($contracts_id as $contr_id) {
             ClientContract::updateOrCreate(
-                ['client_id' => $client_id],
-                ['contract_id' => $contr_id]);
+                ['client_id' => $client_id, 'contract_id' => $contr_id],
+                ['client_id' => $client_id, 'contract_id' => $contr_id]);
         }
     }
 

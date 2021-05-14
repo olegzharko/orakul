@@ -590,12 +590,17 @@ class ClientController extends BaseController
         if (count($contracts_id)) {
             foreach ($contracts_id as $contr_id) {
                 if ($contr_id) {
-                    if (!$clc = ClientSpouseConsentContract::where(['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id])->first()) {
-                        $clc = new ClientSpouseConsentContract();
-                        $clc->contract_id = $contr_id;
-                        $clc->client_spouse_consent_id = $client_spouse_consent_id;
-                        $clc->save();
-                    }
+//                    if (!$clc = ClientSpouseConsentContract::where(['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id])->first()) {
+//                        $clc = new ClientSpouseConsentContract();
+//                        $clc->contract_id = $contr_id;
+//                        $clc->client_spouse_consent_id = $client_spouse_consent_id;
+//                        $clc->save();
+//                    }
+
+                    ClientSpouseConsentContract::updateOrCreate(
+                        ['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id],
+                        ['contract_id' => $contr_id, 'client_spouse_consent_id' => $client_spouse_consent_id]
+                    );
                 }
             }
         }
