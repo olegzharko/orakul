@@ -10,6 +10,12 @@ class Exchange extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'rate',
+        'contract_buy',
+        'contract_sell',
+    ];
+
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
