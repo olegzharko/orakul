@@ -190,7 +190,11 @@ class ImmovableController extends BaseController
 
                 ExchangeRate::updateOrCreate(
                     ['card_id' => $card_id],
-                    ['rate' => $minfin->rate]);
+                    [
+                        'rate' => $minfin->rate,
+                        'contract_buy' => $minfin->contract_buy,
+                        'contract_sell' => $minfin->contract_sell,
+                    ]);
 //                $new_exchange_rate = new ExchangeRate();
 //                $new_exchange_rate->card_id = $card_id;
 //                $new_exchange_rate->rate = $minfin->rate;
