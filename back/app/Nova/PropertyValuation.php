@@ -60,6 +60,7 @@ class PropertyValuation extends Resource
             ID::make(__('ID'), 'id')->sortable(),
 
             Text::make('Назва компанії', 'title'),
+            Text::make('Назва документу', 'type'),
             Text::make('Номер сертифікату', 'certificate'),
             DateTime::make('Дата сетрифікату', 'date')->format('DD.MM.YYYY')->required()->locale('uk'),
             Toggle::make('Ативувати', 'active')->color('#165153'),
