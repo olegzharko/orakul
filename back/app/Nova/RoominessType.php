@@ -58,6 +58,7 @@ class RoominessType extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Кількість словом', 'title'),
+            Text::make('Кількість словами', 'living_room'),
             Number::make('Кількість цифрою', 'number'),
         ];
     }
