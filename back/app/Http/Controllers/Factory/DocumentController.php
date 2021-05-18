@@ -883,6 +883,7 @@ class DocumentController extends GeneratorController
 
         $word->setValue('sign-dmy', $this->display_date($document->sign_date));
         $word->setValue('ДАТА-ЦИФРАМИ', $this->display_date($document->sign_date));
+        $word->setValue('ДАТА-СПЛАТИ+3', $document->sign_date);
 
         $word->setValue('sign-d-r', $document->str_day->title);
         $word->setValue('sign-m-r', $document->str_month->title_r);
@@ -1623,10 +1624,12 @@ class DocumentController extends GeneratorController
             if ($this->contract->immovable->roominess) {
                 $word->setValue('imm-app-type-title', $this->contract->immovable->roominess->title);
                 $word->setValue('H-КІМНАТНІСТЬ', $this->contract->immovable->roominess->title);
+                $word->setValue('H-ЖИТЛОВИХ-КІМНАТ', $this->contract->immovable->roominess->living_room);
             }
             else {
                 $word->setValue('imm-app-type-title', "");
                 $word->setValue('H-КІМНАТНІСТЬ', "");
+                $word->setValue('H-ЖИТЛОВИХ-КІМНАТ', "");
             }
 
             /*
