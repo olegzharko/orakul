@@ -267,7 +267,7 @@ class DocumentController extends GeneratorController
         $this->convert->date_to_string($this->contract->dev_company->owner->developer_consent, $this->contract->dev_company->owner->developer_consent->sign_date);
         $this->set_passport_template_part($this->developer_consent_generate_file);
         $this->set_current_document_notary($this->developer_consent_generate_file, $this->contract->dev_company->owner->developer_consent->notary);
-        $this->set_sign_date($this->developer_consent_generate_file, $this->contract->developer_statement);
+        $this->set_sign_date($this->developer_consent_generate_file, $this->contract->dev_company->owner->developer_consent);
 
         $word = new TemplateProcessor($this->developer_consent_generate_file);
         $word = $this->set_data_word($word);
