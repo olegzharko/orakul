@@ -56,8 +56,8 @@ class ExchangeRate extends Resource
 //            Text::make('Посилання сторінку з курсом долара', 'web_site_link'),
 //            Text::make('Назва сайту', 'web_site_root'),
             Money::make('rate', 'UAH')->storedInMinorUnits(),
-            Money::make('contract_buy', 'Купівля')->storedInMinorUnits(),
-            Money::make('contract_ sell	', 'Продаж')->storedInMinorUnits(),
+            Money::make('contract_buy', 'UAH')->storedInMinorUnits(),
+            Money::make('contract_ sell	', 'UAH')->storedInMinorUnits(),
 //            Text::make('Гривні словами', 'rate_str'),
 //            Text::make('Копійки словами', 'rate_cent_str'),
         ];
