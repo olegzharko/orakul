@@ -1031,7 +1031,6 @@ class ConvertController extends GeneratorController
             $days++;
         }
 
-        dd($days);
         return $days;
     }
 }
