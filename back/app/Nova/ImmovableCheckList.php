@@ -47,7 +47,7 @@ class ImmovableCheckList extends Resource
             Toggle::make('Правовстановлюючий', 'right_establishing'),
             Toggle::make('Технічний паспорт', 'technical_passport'),
             Toggle::make('Оцінка', 'pv_price'),
-            Toggle::make('Оцінка на фонді', 'evaluation_on_the_fund'),
+            Toggle::make('Оцінка на фонді', 'fund_evaluation'),
         ];
     }
 
