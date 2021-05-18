@@ -1024,7 +1024,7 @@ class ConvertController extends GeneratorController
     {
         $i = 0;
         $days = 0;
-        while($i < 3 && $days < 7) {
+        while($i < 2 && $days < 7) {
             if ($date->addDays($days)->isWeekday()) {
                 $i++;
             }
