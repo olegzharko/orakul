@@ -1019,5 +1019,20 @@ class ConvertController extends GeneratorController
 
         return $result;
     }
+
+    public function next_three_work_banking_days($date)
+    {
+        $i = 0;
+        $days = 0;
+        while($i < 3 && $days < 7) {
+            if ($date->addDays($days)->isWeekday()) {
+                $i++;
+            }
+            $days++;
+        }
+
+        dd($days);
+        return $days;
+    }
 }
 
