@@ -29,7 +29,7 @@ class BuildingRepresentativeProxy extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'proxy_id'
     ];
 
     public static $group = "Забудовник";

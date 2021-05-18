@@ -32,7 +32,23 @@ class DeveloperBuilding extends Resource
 
     public function title()
     {
-        return $this->city->city_type->short . " " . $this->city->title . ", " . $this->address_type->short . " " . $this->title . " " . $this->number;
+        $title = '';
+
+        if ($this->city) {
+            if ($this->city->city_type)
+                $title = " " . $this->city->city_type->short . " " . $this->city->title;
+        }
+
+        if ($this->address_type) {
+            $title .= " " . $this->address_type->short;
+        }
+
+        $title .= " " . $this->title;
+
+        $title .= " " . $this->number;
+
+//        return $this->city->city_type->short . " " . $this->city->title . ", " . $this->address_type->short . " " . $this->title . " " . $this->number;
+        return $title;
     }
 
     /**

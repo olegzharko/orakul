@@ -30,7 +30,7 @@ class Proxy extends Resource
     public function title()
     {
 //        return $this->dev_company->title . " " . $this->title . " " . $this->number;
-        return $this->reg_num;
+        return $this->title;
     }
 
     public static function label()
@@ -64,8 +64,8 @@ class Proxy extends Resource
 //            HasMany::make('Люди', 'member', 'App\Nova\Client'),
 //            HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),
 //            BelongsTo::make('Представник', 'dev_representative', 'App\Nova\Client')->nullable(),
-            Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
             BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary'),
+            Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
             DateTime::make('Дата реєстрації у нотаріуса', 'reg_date'),
             DateTime::make('Дійсно до', 'final_date'),
         ];
