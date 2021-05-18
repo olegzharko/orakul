@@ -18,6 +18,9 @@ class Contract extends Model implements Sortable
         'type_id',
         'printer_id',
         'immovable_id',
+        'template_id',
+        'ready',
+        'sign_date',
     ];
 
     public $sortable = [

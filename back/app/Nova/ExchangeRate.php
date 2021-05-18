@@ -52,10 +52,12 @@ class ExchangeRate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable')->nullable(),
-            Text::make('Посилання сторінку з курсом долара', 'web_site_link'),
-            Text::make('Назва сайту', 'web_site_root'),
+//            BelongsTo::make('Нерухомість', 'immovable', 'App\Nova\Immovable')->nullable(),
+//            Text::make('Посилання сторінку з курсом долара', 'web_site_link'),
+//            Text::make('Назва сайту', 'web_site_root'),
             Money::make('rate', 'UAH')->storedInMinorUnits(),
+            Money::make('contract_buy', 'Купівля')->storedInMinorUnits(),
+            Money::make('contract_ sell	', 'Продаж')->storedInMinorUnits(),
 //            Text::make('Гривні словами', 'rate_str'),
 //            Text::make('Копійки словами', 'rate_cent_str'),
         ];

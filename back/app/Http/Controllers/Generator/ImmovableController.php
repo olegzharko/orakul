@@ -682,60 +682,76 @@ class ImmovableController extends BaseController
            'sign_date' => $r['sign_date'],
         ]);
 
-        FinalSignDate::updateOrCreate(
-            ['contract_id' => $contract_id],
-            ['sign_date' => $r['final_sign_date']]);
+        if ($r['final_sign_date']) {
+            FinalSignDate::updateOrCreate(
+                ['contract_id' => $contract_id],
+                ['sign_date' => $r['final_sign_date']]);
+        }
 
-        BankAccountPayment::updateOrCreate(
-            ['contract_id' => $contract_id],
-            ['template_id' => $r['bank_template_id']]);
+        if ($r['bank_template_id']) {
+            BankAccountPayment::updateOrCreate(
+                ['contract_id' => $contract_id],
+                ['template_id' => $r['bank_template_id']]);
+        }
 
-        BankTaxesPayment::updateOrCreate(
-            ['contract_id' => $contract_id],
-            ['template_id' => $r['taxes_template_id']]);
+        if ($r['taxes_template_id']) {
+            BankTaxesPayment::updateOrCreate(
+                ['contract_id' => $contract_id],
+                ['template_id' => $r['taxes_template_id']]);
+        }
 
-        Questionnaire::updateOrCreate(
-            ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['questionnaire_template_id'],
-                'sign_date' => $r['sign_date'],
-                'notary_id' => $notary_id,
-            ]);
+        if ($r['questionnaire_template_id']) {
+            Questionnaire::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['questionnaire_template_id'],
+                    'sign_date' => $r['sign_date'],
+                    'notary_id' => $notary_id,
+                ]);
+        }
 
-        DeveloperStatement::updateOrCreate(
-            ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['statement_template_id'],
-                'sign_date' => $r['sign_date'],
-                'notary_id' => $notary_id,
-            ]);
+        if ($r['statement_template_id']) {
+            DeveloperStatement::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['statement_template_id'],
+                    'sign_date' => $r['sign_date'],
+                    'notary_id' => $notary_id,
+                ]);
+        }
 
 
-        $r['final_date'] = clone $r['sign_date'];
-        $r['final_date']->modify('+3 year');
-        Communal::updateOrCreate(
-            ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['communal_template_id'],
-                'sign_date' => $r['sign_date'],
-                'final_date' => $r['final_date'],
-                'notary_id' => $notary_id,
-            ]);
+        if ($r['communal_template_id']) {
+            $r['final_date'] = clone $r['sign_date'];
+            $r['final_date']->modify('+3 year');
+            Communal::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['communal_template_id'],
+                    'sign_date' => $r['sign_date'],
+                    'final_date' => $r['final_date'],
+                    'notary_id' => $notary_id,
+                ]);
+        }
 
-        TerminationContract::updateOrCreate(
-            ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['termination_contract_id'],
-            ]);
+        if ($r['termination_contract_id']) {
+            TerminationContract::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['termination_contract_id'],
+                ]);
+        }
 
-        TerminationRefund::updateOrCreate(
-            ['contract_id' => $contract_id],
-            [
-                'template_id' => $r['termination_refund_id'],
-                'notary_id' => $r['termination_refund_notary_id'],
-                'reg_date' => $r['termination_refund_reg_date'],
-                'reg_num' => $r['termination_refund_reg_number'],
-            ]);
+        if ($r['termination_refund_id']) {
+            TerminationRefund::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['termination_refund_id'],
+                    'notary_id' => $r['termination_refund_notary_id'],
+                    'reg_date' => $r['termination_refund_reg_date'],
+                    'reg_num' => $r['termination_refund_reg_number'],
+                ]);
+        }
 
         if ($immovable->developer_building->dev_company) {
             $developer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
@@ -744,15 +760,6 @@ class ImmovableController extends BaseController
             $owner = Client::find($owner_id);
 
             if ($owner && !$owner->married) {
-//                DevConsent::updateOrCreate(
-//                    ['contract_id' => $contract_id],
-//                    [
-//                        'template_id' => DevConsentTemplate::where('dev_company_id', $dev_company_id)->value('id'),
-//                        'contract_spouse_word_id' => SpouseWord::where(['dev_company_id' => $dev_company_id, 'developer' => true])->value('id'),
-//                        'notary_id' => $notary_id,
-//                        'reg_date' => $r['sign_date'],
-//                    ]);
-
                 ClientSpouseConsent::updateOrCreate(
                     ['client_id' => $owner_id],
                     [
@@ -776,7 +783,6 @@ class ImmovableController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
         Contract::where('immovable_id', $immovable_id)->delete();
-//        ExchangeRate::where('immovable_id', $immovable_id)->delete();
         ImmovableOwnership::where('immovable_id', $immovable_id)->delete();
         ImmFence::where('immovable_id', $immovable_id)->delete();
         PropertyValuationPrice::where('immovable_id', $immovable_id)->delete();
