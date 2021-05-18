@@ -24,6 +24,13 @@ class ImmovableCheckList extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Угода";
+
+    public static function label()
+    {
+        return "Перевірки нерухомості";
+    }
+
     /**
      * The columns that should be searched.
      *
