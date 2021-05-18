@@ -15,8 +15,10 @@ class ExchangeRate extends Model
     ];
 
     protected $fillable = [
-      'card_id',
-      'rate',
+        'card_id',
+        'rate',
+        'contract_buy',
+        'contract_sell',
     ];
 
     public function immovable()
