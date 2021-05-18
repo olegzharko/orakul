@@ -64,12 +64,6 @@ class ClientCheckList extends Resource
             Toggle::make('Санкції', 'sanctions'),
             Toggle::make('Фінмоніторинг', 'financial_monitoring'),
             Toggle::make('Єдиний реєстр боржників', 'unified_register_of_debtors'),
-            Heading::make("Називний: хто? що? - ластівк-а"),
-            Heading::make("Родовий: кого?чого? - ластівк-и"),
-            Heading::make("Давальний: кому?чому? - ластівц-і"),
-            Heading::make("Знахідний: кого?що? -	ластівк-у"),
-            Heading::make("Орудний: ким?чим? - ластівк-ою"),
-            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
         ];
     }
 
