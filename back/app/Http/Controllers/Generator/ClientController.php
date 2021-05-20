@@ -497,7 +497,7 @@ class ClientController extends BaseController
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
             ->pluck('dev_companies.id');
 
-        $consent_templates = ConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_companies_id)->get();
+        $consent_templates = ConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_companies_id)->where('developer', false)->get();
 
         $married_types = MarriageType::select('id', 'title')->get();
         $rakul_notary = Notary::where('rakul_company', true)->get();
