@@ -660,7 +660,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-pssprt-full-n-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
             $word->setValue('dev-pssprt-full-o-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_o));
             $word->setValue('ЗБД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
-
+            $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->contract->dev_company->owner->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -669,6 +669,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pssprt-depart', $this->contract->dev_company->owner->passport_department);
             $word->setValue('pssprt-demogr', $this->contract->dev_company->owner->passport_demographic_code);
             $word->saveAs($template_generate_file);
+
         } else {
             $this->notification("Warning", "Паспортний шаблон: данні забудовника відсутні");
         }
@@ -856,6 +857,7 @@ class DocumentController extends GeneratorController
             $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($notary));
             $word->setValue('НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($notary));
 
+            $word->setValue('НОТ-ІНІЦІАЛИ-ПІБ-Н', $this->convert->get_initials_and_surname_n($notary));
             $word->setValue('НОТ-ІНІЦІАЛИ-ПІБ-О', $this->convert->get_initials_and_surname_o($notary));
 
             $word->setValue('НОТ-АКТ-Н', $notary->activity_n);
@@ -883,7 +885,12 @@ class DocumentController extends GeneratorController
 
         $word->setValue('sign-dmy', $this->display_date($document->sign_date));
         $word->setValue('ДАТА-ЦИФРАМИ', $this->display_date($document->sign_date));
-        $word->setValue('ДАТА-СПЛАТИ+3', $document->sign_date);
+//        dd($document->sign_date->isWeekday(), $document->sign_date->addDays(3)->isWeekday());
+
+        if ($document->sign_date) {
+            $days = $this->convert->next_three_work_banking_days($document->sign_date);
+            $word->setValue('ДАТА-СПЛАТИ+3', $this->convert->day_double_vertical_quotes_month_year($document->sign_date->addDays($days)));
+        }
 
         $word->setValue('sign-d-r', $document->str_day->title);
         $word->setValue('sign-m-r', $document->str_month->title_r);
@@ -894,7 +901,8 @@ class DocumentController extends GeneratorController
         $word->setValue('sign-d-r-up', $this->mb_ucfirst($document->str_day->title));
         $word->setValue('sign-m-r-up', $this->mb_ucfirst($document->str_month->title_r));
         $word->setValue('sign-y-r-up', $this->mb_ucfirst($document->str_year->title_r));
-
+        $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($document->sign_date));
+        $word->setValue('ЗБРН-ЗАБ-ДАТА', $this->display_date($document->sign_date));
         $word->saveAs($template);
     }
 
@@ -1756,9 +1764,8 @@ class DocumentController extends GeneratorController
         if ($this->contract->immovable->fence && $this->contract->immovable->fence->number && $this->contract->immovable->fence->date) {
             $word->setValue('imm-fence-date', $this->display_date($this->contract->immovable->fence->date));
             $word->setValue('imm-fence-num', $this->contract->immovable->fence->number);
-
-
             $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($this->contract->immovable->fence->date));
+
             $word->setValue('ЗБРН-Н-НОМ', $this->contract->immovable->fence->number);
         } else {
             $this->notification("Warning", "Перевірка: відсутня інформація по забороні на нерухомість");
@@ -1793,6 +1800,7 @@ class DocumentController extends GeneratorController
             $word->setValue('pv-price-grn', $this->convert->get_convert_price($this->contract->immovable->pvprice->grn, 'grn'));
 
             $word->setValue('ОК-НАЗВА', $this->contract->immovable->pvprice->property_valuation->title);
+            $word->setValue('ОК-ЗАГОЛОВОК', $this->contract->immovable->pvprice->property_valuation->type);
             $word->setValue('ОК-СРТФКТ-НОМ', $this->contract->immovable->pvprice->property_valuation->certificate);
             $word->setValue('ОК-СРТФКТ-ДАТА', $this->display_date($this->contract->immovable->pvprice->property_valuation->date));
             $word->setValue('ОК-ОЦ-ДАТА', $this->display_date($this->contract->immovable->pvprice->date));
@@ -1919,6 +1927,8 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-exch', $this->convert->exchange_price($this->card->exchange_rate->rate));
 
             $word->setValue('КУРС-ДОЛАРА', $this->convert->exchange_price($this->card->exchange_rate->rate));
+            $word->setValue('КУРС-ДОЛАРА-КУПІВЛЯ', $this->convert->exchange_price($this->card->exchange_rate->contract_buy));
+            $word->setValue('КУРС-ДОЛАРА-ПРОДАЖ', $this->convert->exchange_price($this->card->exchange_rate->contract_sell));
         } else {
             $this->notification("Warning", "Курс долара: інформація відсутня");
         }
@@ -2140,72 +2150,6 @@ class DocumentController extends GeneratorController
 
         return $str;
     }
-
-//    public function get_full_name_n($client)
-//    {
-//        $full_name = $client->surname_n . " " . $client->name_n . " " . $client->patronymic_n;
-//
-//        if (!$client->patronymic_n)
-//            $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
-
-//    public function convert->get_full_name_r($client)
-//    {
-//        $full_name = $client->surname_r . " " . $client->name_r . " " . $client->patronymic_r;
-//
-//        if (!$client->patronymic_r)
-//            $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
-//
-//    public function get_full_name_d($client)
-//    {
-//        $full_name = $client->surname_d . " " . $client->name_d . " " . $client->patronymic_d;
-//
-//        if (!$client->patronymic_d)
-//            $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
-//
-//    public function convert->get_full_name_o($client)
-//    {
-//        $full_name = $client->surname_o . " " . $client->name_o . " " . $client->patronymic_o;
-//
-//        if (!$client->patronymic_o)
-//            $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
-//
-//    public function get_full_name_n_upper($client)
-//    {
-////        $surname = mb_strtoupper($client->surname_n);
-////        $name = mb_strtoupper($client->name_n);
-////        $patronymic = mb_strtoupper($client->patronymic_n);
-//
-//        $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
-//        $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
-//
-//    public function convert->get_full_name_r_upper($client)
-//    {
-////        $surname = mb_strtoupper($client->surname_r);
-////        $name = mb_strtoupper($client->name_r);
-////        $patronymic = mb_strtoupper($client->patronymic_r);
-////
-////        $full_name = "$surname $name $patronymic";
-//
-//        $full_name = "$client->surname_r $client->name_r $client->patronymic_r";
-//        $full_name = mb_strtoupper($full_name);
-//
-//        return $full_name;
-//    }
 
     public function set_taxes_data($sheet)
     {

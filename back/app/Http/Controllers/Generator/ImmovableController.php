@@ -195,10 +195,6 @@ class ImmovableController extends BaseController
                         'contract_buy' => $minfin->contract_buy,
                         'contract_sell' => $minfin->contract_sell,
                     ]);
-//                $new_exchange_rate = new ExchangeRate();
-//                $new_exchange_rate->card_id = $card_id;
-//                $new_exchange_rate->rate = $minfin->rate;
-//                $new_exchange_rate->save();
 
                 $exchange_rate = $minfin->rate;
             }
@@ -206,7 +202,6 @@ class ImmovableController extends BaseController
                 $exchange_rate = null;
         }
 
-//        $result['exchange_rate'] = round($exchange_rate / 100, 2);
         $result['exchange_rate'] = number_format($exchange_rate / 100, 2);;
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
@@ -296,7 +291,6 @@ class ImmovableController extends BaseController
         $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
         $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
 
-
         if (Immovable::find($immovable_id)->contract->clients->count() > 1) {
             $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
             if (($last_part_dollar * 100) % 2) {
@@ -332,7 +326,11 @@ class ImmovableController extends BaseController
 
         $minfin = Exchange::orderBy('created_at', 'desc')->first();
 
-        ExchangeRate::updateOrCreate(['card_id' => $card_id], ['rate' => $minfin->rate]);
+        ExchangeRate::updateOrCreate(['card_id' => $card_id], [
+            'rate' => $minfin->rate,
+            'contract_buy' => $minfin->contract_buy,
+            'contract_sell' => $minfin->contract_sell,
+        ]);
 
         $result['exchange_rate'] = round($minfin->rate / 100, 2);
 
@@ -647,8 +645,11 @@ class ImmovableController extends BaseController
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
 
-        if ($termination_refund) {
+        if ($termination_contract) {
             $result['termination_contract_id'] = $termination_contract->template_id;
+        }
+
+        if ($termination_refund) {
             $result['termination_refund_id'] = $termination_refund->template_id;
             $result['termination_refund_notary_id'] = $termination_refund->notary_id;
             $result['termination_refund_reg_date'] = $termination_refund->reg_date ? $termination_refund->reg_date->format('d.m.Y') : null;
@@ -656,7 +657,6 @@ class ImmovableController extends BaseController
         }
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
-
     }
 
     public function update_template($immovable_id, Request $r)

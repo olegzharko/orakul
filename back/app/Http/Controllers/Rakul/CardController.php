@@ -685,6 +685,16 @@ class CardController extends BaseController
 
     public function get_card_instructions($card)
     {
-        return ['Паспорт', 'ІПН', 'Стать покупця'];
+        $result = [];
+
+        $ready[] = $this->convert->get_surname_and_initials_n($card->notary);
+        $ready[] = $card->dev_group->title;
+        if ($card->ready) {
+            $ready[] = 'Готово до генерації';
+        } else {
+            $ready[] = 'Потребує внесення данних';
+        }
+
+        return $ready;
     }
 }

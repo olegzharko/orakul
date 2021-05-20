@@ -8,6 +8,7 @@ use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
 use App\Models\Text;
+use App\Models\WorkDay;
 use App\Models\YearConvert;
 
 class ConvertController extends GeneratorController
@@ -316,7 +317,7 @@ class ConvertController extends GeneratorController
         } elseif ($decimal_space == '1') {
             $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_n');
         } elseif ($decimal_space == '2') {
-            $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_z');
+            $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_r');
         } elseif ($decimal_space >= '3' && $decimal_space <= '4') {
             $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " . KeyWord::where('key', 'decimal')->value('title_r');
         } else {
@@ -562,6 +563,18 @@ class ConvertController extends GeneratorController
         if ($person) {
             if (isset($person->surname_o))
                 $str = $person->surname_o . $this->non_break_space . $person->short_name . $person->short_patronymic;
+        }
+
+        return $str;
+    }
+
+    public function get_initials_and_surname_n($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_n))
+                $str = $person->short_name . $person->short_patronymic . $this->non_break_space . $person->surname_n;
         }
 
         return $str;
@@ -1022,16 +1035,37 @@ class ConvertController extends GeneratorController
 
     public function next_three_work_banking_days($date)
     {
-        $i = 0;
+        $week = WorkDay::orderBy('num')->pluck('bank_day', 'num')->toArray();
+
         $days = 0;
-        while($i < 3) {
-            if ($date->addDays($days)->isWeekday()) {
-                $i++;
+        if ($date) {
+            $i = 0;
+            while($i < 3) {
+                $days++;
+                $tmp = clone $date;
+                if ($week[$tmp->addDays($days)->format('w')]) {
+                    $i++;
+                }
+
             }
-            $days++;
         }
 
         return $days;
+    }
+
+    public function day_double_vertical_quotes_month_year($date)
+    {
+        $title = "«##» ###### ####";
+
+        if ($date) {
+            $day = $date->format('d');
+            $month = MonthConvert::where('original', $date->format('m'))->orWhere('original', strval(intval($date->format('m'))))->value('title_r');
+            $year = $date->format('Y');
+
+            $title = '"' . $day . '"' . $this->non_break_space . $month . $this->non_break_space . $year;
+        }
+
+        return $title;
     }
 }
 
