@@ -219,6 +219,7 @@ class DocumentController extends GeneratorController
         $this->set_passport_template_part($this->contract_generate_file);
         // метод тільки для договорів, нема необхідності робити уточнення
         $this->set_current_document_notary($this->contract_generate_file, $this->contract->notary);
+
         $this->set_sign_date($this->contract_generate_file, $this->contract);
         $word = new TemplateProcessor($this->contract_generate_file);
         $word = $this->set_data_word($word);
@@ -892,15 +893,25 @@ class DocumentController extends GeneratorController
             $word->setValue('ДАТА-СПЛАТИ+3', $this->convert->day_double_vertical_quotes_month_year($document->sign_date->addDays($days)));
         }
 
-        $word->setValue('sign-d-r', $document->str_day->title);
-        $word->setValue('sign-m-r', $document->str_month->title_r);
-        $word->setValue('sign-y-r', $document->str_year->title_r);
-        $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
-        $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
 
-        $word->setValue('sign-d-r-up', $this->mb_ucfirst($document->str_day->title));
-        $word->setValue('sign-m-r-up', $this->mb_ucfirst($document->str_month->title_r));
-        $word->setValue('sign-y-r-up', $this->mb_ucfirst($document->str_year->title_r));
+        if ($document->str_day) {
+
+            $word->setValue('sign-d-r', $document->str_day->title);
+            $word->setValue('sign-d-r-up', $this->mb_ucfirst($document->str_day->title));
+        }
+        if ($document->str_month) {
+            $word->setValue('sign-m-r', $document->str_month->title_r);
+            $word->setValue('sign-m-r-up', $this->mb_ucfirst($document->str_month->title_r));
+        }
+        if ($document->str_year) {
+            $word->setValue('sign-y-r', $document->str_year->title_r);
+            $word->setValue('sign-y-r-up', $this->mb_ucfirst($document->str_year->title_r));
+        }
+        if ($document->str_day && $document->str_month && $document->str_year)
+        $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
+        if ($document->str_day && $document->str_month && $document->str_year)
+        $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
+
         $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($document->sign_date));
         $word->setValue('ЗБРН-ЗАБ-ДАТА', $this->display_date($document->sign_date));
         $word->saveAs($template);
@@ -935,13 +946,12 @@ class DocumentController extends GeneratorController
             if ($this->contract->final_sign_date->sign_date > $this->contract->sign_date) {
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
             }
-            else {
-//                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
-                if ($this->contract->immovable->developer_building && $this->contract->immovable->developer_building->communal_date)
-                    $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->developer_building->communal_date));
-                else
-                    $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
-            }
+
+        } else {
+            if ($this->contract->immovable->developer_building && $this->contract->immovable->developer_building->communal_date)
+                $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->developer_building->communal_date));
+            else
+                $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
         }
         // Допоміжні данні
         $word->setValue('alias-dis-sh', CityType::where('alias', 'district')->value('short'));
@@ -989,6 +999,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_company->owner)));
             $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
             $word->setValue('ЗБД-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_company->owner->surname_n));
             $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
@@ -1128,6 +1139,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПІДПИС-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_representative)));
             $word->setValue('ПІДПИС-ПРІЗВ-Н', $this->contract->dev_representative->surname_n);
             $word->setValue('ПІДПИС-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_representative->surname_n));
             $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
@@ -1161,19 +1173,20 @@ class DocumentController extends GeneratorController
             $building_id = $this->contract->immovable->developer_building_id;
             $dev_representative_id = $this->contract->dev_representative->id;
 
-            $proxy_id = $this->contract->immovable->proxy->id;
+            if ($this->contract->immovable->proxy) {
+                $proxy_id = $this->contract->immovable->proxy->id;
 
-            $proxy = BuildingRepresentativeProxy::get_proxy($building_id, $dev_representative_id, $proxy_id);
+                $proxy = BuildingRepresentativeProxy::get_proxy($building_id, $dev_representative_id, $proxy_id);
 
-            /*
-             * PROXY - довіреність тільки якщо є Представник
-             * */
-            $word->setValue('ЗБД-ДОВ-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
-            $word->setValue('ЗБД-ДОВ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable->proxy->notary->activity_o);
+                /*
+                 * PROXY - довіреність тільки якщо є Представник
+                 * */
+                $word->setValue('ЗБД-ДОВ-НОТ-ПІБ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
+                $word->setValue('ЗБД-ДОВ-НОТ-АКТИВНІСТЬ-О', $this->contract->immovable->proxy->notary->activity_o);
 
-            $word->setValue('ЗБД-ДОВ-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
-            $word->setValue('ЗБД-ДОВ-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
-
+                $word->setValue('ЗБД-ДОВ-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
+                $word->setValue('ЗБД-ДОВ-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
+            }
         } else {
             $this->notification("Warning", "Підписант - представник з боку забудовника: інформація відсутня");
         }
@@ -1629,6 +1642,9 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-ТИП-Р', $this->contract->immovable->immovable_type->title_r);
             $word->setValue('Н-ТИП-Р-UP',  $this->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
 
+            $immovable_gender = GenderWord::where('alias', 'located')->value($this->contract->immovable->immovable_type->gender);
+            $word->setValue('Н-РОЗТАШОВ', $immovable_gender);
+
             if ($this->contract->immovable->roominess) {
                 $word->setValue('imm-app-type-title', $this->contract->immovable->roominess->title);
                 $word->setValue('H-КІМНАТНІСТЬ', $this->contract->immovable->roominess->title);
@@ -1667,6 +1683,8 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
             $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
+
+            $word->setValue('H-ПОВНА-АДРЕСА-ОСН', $this->convert->building_full_address_main($this->contract->immovable));
             $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->building_full_address_by_type($this->contract->immovable, 'desc'));
             $word->setValue('H-ПОВНА-АДРЕСА-СПД-СК', $this->convert->building_full_address_by_type_short($this->contract->immovable, 'desc'));
             $word->setValue('Н-БУДИНОК', $this->convert->building_street_and_num($this->contract->immovable)); // building
@@ -1678,13 +1696,10 @@ class DocumentController extends GeneratorController
             $word->setValue('imm-total-space',  $this->convert->get_convert_space($this->contract->immovable->total_space));
             $word->setValue('imm-living-space', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
-            if ($this->contract->type->alias == 'main') {
-                $word->setValue('Н-ПЛ-З-ЦФР', str_replace('.', ',', $this->contract->immovable->total_space));
-                $word->setValue('Н-ПЛ-Ж-ЦФР', str_replace('.', ',', $this->contract->immovable->living_space));
-            } else {
-                $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
-                $word->setValue('Н-ПЛ-Ж', $this->convert->get_convert_space($this->contract->immovable->living_space));
-            }
+            $word->setValue('Н-ПЛ-З-ЦФР', str_replace('.', ',', $this->contract->immovable->total_space));
+            $word->setValue('Н-ПЛ-Ж-ЦФР', str_replace('.', ',', $this->contract->immovable->living_space));
+            $word->setValue('Н-ПЛ-З', $this->convert->get_convert_space($this->contract->immovable->total_space));
+            $word->setValue('Н-ПЛ-Ж', $this->convert->get_convert_space($this->contract->immovable->living_space));
 
             $word->setValue('Н-ПОВЕРХУ', $this->convert->get_immovable_floor($this->contract->immovable->floor));
             $word->setValue('Н-CЕКЦІЯ', $this->convert->number_with_string($this->contract->immovable->section));
@@ -1792,7 +1807,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_property_valuation_prices($word)
     {
-        if ($this->contract->immovable->pvprice) {
+        if ($this->contract->immovable->pvprice && $this->contract->immovable->pvprice->property_valuation) {
             $word->setValue('pv-price-date', $this->display_date($this->contract->immovable->pvprice->date));
             $word->setValue('pv-title', $this->contract->immovable->pvprice->property_valuation->title);
             $word->setValue('pv-certificate', $this->contract->immovable->pvprice->property_valuation->certificate);
@@ -1852,7 +1867,6 @@ class DocumentController extends GeneratorController
             $word->setValue('secur-last-dollar', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar, 'dollar'));
 
             $word->setValue('secur-final-date', $this->contract->immovable->security_payment->grn_cent_str);
-
 
             $word->setValue('Н-ЗАБ-ПЛ-Ч1-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_grn, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->first_part_dollar, 'dollar'));

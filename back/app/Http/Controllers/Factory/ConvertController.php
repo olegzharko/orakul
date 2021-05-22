@@ -246,7 +246,6 @@ class ConvertController extends GeneratorController
 
         $main_part = "$integer $str";
 
-
         $integer = $this->get_number_format_decimal($price);
         $str = trim($this->convert_price_cent_part_to_string($price, $type));
 
@@ -792,6 +791,46 @@ class ConvertController extends GeneratorController
                 . "$building_type $imm_build_num ($imm_build_num_str)"
                 . "";
         }
+
+        return $address;
+    }
+
+    public function building_full_address_main($immovable)
+    {
+        $address = null;
+
+        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
+
+        $imm_num = $immovable->immovable_number;
+
+        if ($immovable->immovable_number && is_string($immovable->immovable_number)) {
+            $imm_num_str = $this->number_to_string(intval($immovable->immovable_number));
+            $letter = str_replace(intval($immovable->immovable_number), '', $immovable->immovable_number);
+            $letter = str_replace('-', '', $letter);
+            $imm_num_str = $imm_num_str . " літера «" . $letter . "»";
+        } else {
+            $imm_num_str = $this->number_to_string($immovable->immovable_number);
+        }
+
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_build_num_str = $building_num_str;
+        $imm_addr_type_r = $immovable->developer_building->address_type->title_r;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_city_type_m = $immovable->developer_building->city->city_type->title_m;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_dis_title_r = $immovable->developer_building->city->district->title_r;
+        $imm_reg_title_r = $immovable->developer_building->city->region->title_r;
+        $building_type = Text::where('alias', 'building')->value('value');
+
+        $address = ""
+            . "$imm_build_num ($imm_build_num_str) "
+            . "по $imm_addr_type_r $imm_addr_title "
+            . "у $imm_city_type_m $imm_city_title_n, "
+            . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_r')) . " "
+            . "$imm_reg_title_r " . trim(KeyWord::where('key', 'region')->value('title_r')) . " "
+            . "";
+
+        // 2-Б (два літера «Б») по вулиці Миру у селі Новосілки, Києво-Святошинського району Київської області
 
         return $address;
     }

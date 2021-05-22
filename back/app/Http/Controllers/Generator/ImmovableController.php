@@ -140,7 +140,7 @@ class ImmovableController extends BaseController
         $currency_rate = $this->get_currency_rate($immovable_id);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
 
-        if (Immovable::find($immovable_id)->contract->clients->count()) {
+        if (Immovable::find($immovable_id)->contract->clients->count() == 2) {
             $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
             if (($reserve_dollar * 100) % 2) {
                 $reserve_dollar = $reserve_dollar + 0.01;
@@ -288,6 +288,7 @@ class ImmovableController extends BaseController
 //        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
 
         $currency_rate = $this->get_currency_rate($immovable_id);
+
         $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
         $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
 
