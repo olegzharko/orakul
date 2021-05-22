@@ -22,7 +22,6 @@ class Card extends Model
         'cancelled',
     ];
 
-
     protected $casts = [
         'date_time' => 'datetime',
         'deleted_at' => 'datetime',
