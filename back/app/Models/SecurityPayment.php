@@ -13,6 +13,7 @@ class SecurityPayment extends Model
     protected $fillable = [
         'immovable_id',
         'first_part_grn',
+        'client_id',
     ];
 
     protected $casts = [

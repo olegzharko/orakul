@@ -13,6 +13,7 @@ use App\Models\BankAccountTemplate;
 use App\Models\BankTaxesPayment;
 use App\Models\BankTaxesTemplate;
 use App\Models\Client;
+use App\Models\ClientContract;
 use App\Models\Communal;
 use App\Models\CommunalTemplate;
 use App\Models\ConsentTemplate;
@@ -255,9 +256,17 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
+        $clients_id = ClientContract::where('contract_id', $contract_id)->pluck('client_id');
+        $clients = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')->whereIn('id', $clients_id)->get();
+        dd($clients);
+
         $payment = SecurityPayment::firstOrCreate(
             ['immovable_id' => $immovable_id],
-            ['first_part_grn' => 1000000],
+            [
+                'first_part_grn' => 1000000,
+                'client_id' => null,
+            ],
         );
 
         $result['sign_date'] = $payment->sign_date ? $payment->sign_date->format('d.m.Y') : null;

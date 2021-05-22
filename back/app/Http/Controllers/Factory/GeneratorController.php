@@ -192,35 +192,6 @@ class GeneratorController extends BaseController
         return $immovable;
     }
 
-//    public function full_address_by_type($immovable)
-//    {
-//        $address = null;
-//
-//        $building_num_str = $this->convert->building_num_str($immovable->developer_building->number);
-//
-//
-//        $imm_num = $immovable->immovable_number;
-//        $imm_num_str = $this->convert->number_to_string($immovable->immovable_number);
-//        $imm_build_num = $immovable->developer_building->number;
-////        $imm_build_num_str = $this->convert->number_to_string($immovable->developer_building->number);
-//        $imm_build_num_str = $building_num_str;
-//        $imm_addr_type_r = $immovable->developer_building->address_type->title_n;
-//        $imm_addr_title = $immovable->developer_building->title;
-//        $imm_city_type_m = $immovable->developer_building->city->city_type->title_n;
-//        $imm_city_title_n = $immovable->developer_building->city->title;
-//        $imm_dis_title_r = $immovable->developer_building->city->district->title_n;
-//        $imm_reg_title_r = $immovable->developer_building->city->region->title_n;
-//
-//        $address = "$imm_addr_type_r $imm_addr_title "
-//            . "$imm_build_num ($imm_build_num_str), "
-//            . "$imm_city_type_m $imm_city_title_n, "
-//            . "$imm_dis_title_r " . trim(KeyWord::where('key', 'district')->value('title_n')) . ", "
-//            . "$imm_reg_title_r " . trim(KeyWord::where('key', 'region')->value('title_n')) . " "
-//            . "";
-//
-//        return $address;
-//    }
-
     public function get_proxy($immovable)
     {
         $building_id = $immovable->developer_building->id;
