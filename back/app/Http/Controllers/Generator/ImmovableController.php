@@ -329,6 +329,7 @@ class ImmovableController extends BaseController
             'last_part_grn' => $r['last_part_grn'] * 100,
             'last_part_dollar' => $last_part_dollar * 100,
             'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d.') : null,
+            'client_id' => $r['client_id'],
         ]);
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id . ' оновлено.');
@@ -629,6 +630,7 @@ class ImmovableController extends BaseController
         $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
         $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date > $this->date ? $final_sing_date->sign_date->format('d.m.Y') : null;
         $result['ready'] = $contract->ready ? true : false;
+        $result['translate'] = $contract->translate ? true : false;
         $result['type_id'] = $contract->type_id;
         $result['contract_template_id'] = $contract->template ? $contract->template->id : null;
         $result['bank_template_id'] = $bank->template_id ?? null;
@@ -695,6 +697,7 @@ class ImmovableController extends BaseController
         Contract::where('immovable_id', $immovable_id)->update([
            'template_id' => $r['contract_template_id'],
            'ready' => $r['ready'],
+           'translate' => $r['translate'] ? 1 : 0,
            'sign_date' => $r['sign_date'],
         ]);
 
