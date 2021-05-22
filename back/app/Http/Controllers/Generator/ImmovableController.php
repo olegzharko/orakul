@@ -259,7 +259,11 @@ class ImmovableController extends BaseController
         $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
         $clients_id = ClientContract::where('contract_id', $contract_id)->pluck('client_id');
         $clients = Client::select('id', 'surname_n', 'name_n', 'patronymic_n')->whereIn('id', $clients_id)->get();
-        dd($clients);
+        $clients_arr = [];
+        foreach ($clients as $key => $value) {
+            $clients_arr[$key]['id'] = $value->id;
+            $clients_arr[$key]['title'] = $this->convert->get_full_name_n($value);
+        }
 
         $payment = SecurityPayment::firstOrCreate(
             ['immovable_id' => $immovable_id],
@@ -276,6 +280,8 @@ class ImmovableController extends BaseController
         $result['last_part_grn'] = round($payment->last_part_grn / 100,2);
         $result['last_part_dollar'] = round($payment->last_part_dollar / 100,2);
         $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
+        $result['clients'] = $clients_arr;
+        $result['client_id'] = $payment->client_id;
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id);
     }
