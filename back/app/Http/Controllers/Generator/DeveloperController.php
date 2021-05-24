@@ -56,7 +56,7 @@ class DeveloperController extends BaseController
             $result['dev_companies'][$key]['id'] = $company->id;
             $result['dev_companies'][$key]['title'] = $company->title;
             $result['dev_companies'][$key]['color'] = $company->color;
-            $result['dev_companies'][$key]['info'][] = "Компанія активна";
+            $result['dev_companies'][$key]['info'][] = $card->dev_group->title;
         }
 
         $dev_representatives = Client::select(
