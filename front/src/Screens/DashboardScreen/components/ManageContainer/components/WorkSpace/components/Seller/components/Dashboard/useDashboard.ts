@@ -36,8 +36,6 @@ export const useDashboard = () => {
   const [representative, setRepresentative] = useState<RepresentativeData[]>([]);
   const [representativeDoc, setRepresentativeDoc] = useState<RepresentativeData[]>([]);
 
-  const isSaveButtonDisabled = useMemo(() => !selectedRepresentative, [selectedRepresentative]);
-
   const onSave = useCallback(async () => {
     if (token) {
       const data = { dev_representative_id: selectedRepresentative };
@@ -95,7 +93,6 @@ export const useDashboard = () => {
     representative,
     selectedRepresentative,
     representativeDoc,
-    isSaveButtonDisabled,
     setSelectedRepresentative,
     onSave,
   };

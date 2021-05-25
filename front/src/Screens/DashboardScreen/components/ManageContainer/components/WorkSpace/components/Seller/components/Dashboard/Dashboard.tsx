@@ -39,7 +39,6 @@ const Dashboard = () => {
       <SectionWithTitle title="Підписант">
         <div className="seller__signer">
           <CustomSelect
-            required
             label="Підписант"
             data={meta.devRepresentative}
             onChange={(e) => meta.setSelectedRepresentative(e)}
@@ -72,7 +71,7 @@ const Dashboard = () => {
       <PrimaryButton
         label="Зберегти"
         onClick={meta.onSave}
-        disabled={meta.isSaveButtonDisabled}
+        disabled={false}
         className="seller__ban-button"
       />
 

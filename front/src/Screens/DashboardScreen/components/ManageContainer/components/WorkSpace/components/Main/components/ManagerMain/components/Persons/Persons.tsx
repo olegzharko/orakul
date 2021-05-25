@@ -2,6 +2,7 @@ import * as React from 'react';
 import AddFormButton from '../../../../../../../../../../../../components/AddFormButton';
 import CustomInput from '../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../components/CustomSelect';
+import PhoneMaskInput from '../../../../../../../../../../../../components/PhoneMaskInput';
 import PrimaryButton from '../../../../../../../../../../../../components/PrimaryButton';
 import RemoveFormButton from '../../../../../../../../../../../../components/RemoveFormButton';
 import SectionWithTitle from '../../../../../../../../../../../../components/SectionWithTitle';
@@ -35,7 +36,7 @@ const Persons = (props: Props) => {
             />
 
             <div className="df-jc-sb">
-              <CustomInput
+              <PhoneMaskInput
                 label="Номер телефону"
                 onChange={(e) => meta.onDataChange(index, { ...person, phone: e })}
                 value={person.phone}

@@ -11,6 +11,8 @@
 
   &__dataView {
     position: relative;
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
     width: 70%;
     padding: 0 30px 48px;
     box-sizing: border-box;

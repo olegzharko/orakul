@@ -19,6 +19,7 @@ type InitialData = {
   termination_refund_reg_number: string | null,
   termination_refund_notary_id: string | null,
   ready: boolean,
+  translate: boolean,
   sign_date: any,
   final_sign_date: any,
   termination_refund_reg_date: any,
@@ -63,6 +64,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     questionnaire_template_id: null,
     statement_template_id: null,
     ready: false,
+    translate: false,
     sign_date: null,
     final_sign_date: null,
     communal_template_id: null,
@@ -82,6 +84,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       questionnaire_template_id: null,
       statement_template_id: null,
       ready: false,
+      translate: false,
       sign_date: null,
       final_sign_date: null,
       communal_template_id: null,
@@ -137,6 +140,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_refund_reg_number: initialData?.termination_refund_reg_number || null,
       termination_refund_notary_id: initialData?.termination_refund_notary_id || null,
       ready: initialData?.ready || false,
+      translate: initialData?.translate || false,
       sign_date: initialData?.sign_date
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
       final_sign_date: initialData?.final_sign_date

@@ -6,6 +6,7 @@ import AddFormButton from '../../../../../../../../../../components/AddFormButto
 import CustomInput from '../../../../../../../../../../components/CustomInput/CustomInput';
 import RemoveFormButton from '../../../../../../../../../../components/RemoveFormButton';
 import { Props, useClients } from './useClients';
+import PhoneMaskInput from '../../../../../../../../../../components/PhoneMaskInput';
 
 const Clients = (props: Props) => {
   const meta = useClients(props);
@@ -22,11 +23,10 @@ const Clients = (props: Props) => {
           />
 
           <div className="mv12 df-jc-sb">
-            <CustomInput
+            <PhoneMaskInput
               label="Номер телефону"
               value={item.phone}
               onChange={(val) => meta.onPhoneChange(index, val)}
-              disabled={props.disabled || false}
             />
 
             {props.clients.length > 1 && (
