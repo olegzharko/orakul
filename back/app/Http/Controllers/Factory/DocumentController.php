@@ -946,7 +946,6 @@ class DocumentController extends GeneratorController
             if ($this->contract->final_sign_date->sign_date > $this->contract->sign_date) {
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->final_sign_date->sign_date));
             }
-
         } else {
             if ($this->contract->immovable->developer_building && $this->contract->immovable->developer_building->communal_date)
                 $word->setValue('ОД-ДАТА', $this->day_quotes_month_year($this->contract->immovable->developer_building->communal_date));
@@ -1273,6 +1272,11 @@ class DocumentController extends GeneratorController
                 $cl_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
             else
                 $cl_gender_pronoun = null;
+
+            if ($this->client->married)
+                $word->setValue('КОШТИ-ТИП', "сімейні");
+            else
+                $word->setValue('КОШТИ-ТИП', "особисті");
 
             $word->setValue('cl-gender-pronoun', $cl_gender_pronoun);
             $word->setValue('cl-gender-pronoun-up', $this->mb_ucfirst($cl_gender_pronoun));
@@ -1605,8 +1609,10 @@ class DocumentController extends GeneratorController
             /*
              * Згода подружжя або заява від покупця про відсутність шлюбних відносин - реєстраційний номер
              * */
-            $word->setValue('ЗГ-ПОД-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->consent->notary));
-            $word->setValue('ЗГ-ПОД-НОТ-АКТ-О', $this->consent->notary->activity_o);
+            if ($this->consent->notary) {
+                $word->setValue('ЗГ-ПОД-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->consent->notary));
+                $word->setValue('ЗГ-ПОД-НОТ-АКТ-О', $this->consent->notary->activity_o);
+            }
             $word->setValue('ЗГ-ПОД-НОТ-ДАТА', $this->display_date($this->consent->sign_date));
             $word->setValue('cs-consent-sign-date', $this->display_date($this->consent->sign_date));
             if ($this->consent->reg_num) {
@@ -1885,7 +1891,7 @@ class DocumentController extends GeneratorController
                 $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->day_quotes_month_year($this->contract->immovable->security_payment->sign_date));
             }
             else
-                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("######"));
+                $word->setValue('Н-ЗАБ-ПЛ-ДАТА-ПІДП', $this->set_style_color_warning("## ####### ####"));
         } else {
             $this->notification("Warning", "Забезпечувальний платіж до попереднього договору: інформація відсутня");
         }

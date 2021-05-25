@@ -516,7 +516,7 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
-        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->get();
+        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->where('developer', null)->get();
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
@@ -856,20 +856,32 @@ class ClientController extends BaseController
 
             $result[$key]['client']['id'] = $client->id;
             $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['client']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+            $result[$key]['client']['list'] = [
+                'ІПН: ' . $client->tax_code,
+                'Паспорт: ' . $client->passport_code,
+                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
+            ];
 
             if ($client->married) {
                 $result[$key]['spouse'] = [];
                 $result[$key]['spouse']['id'] = $client->married->spouse->id;
                 $result[$key]['spouse']['full_name'] = $this->convert->get_full_name($client->married->spouse);
-                $result[$key]['spouse']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+                $result[$key]['spouse']['list'] = [
+                    'ІПН: ' . $client->married->tax_code,
+                    'Паспорт: ' . $client->married->passport_code,
+                    $client->married->birth_date ? $client->married->birth_date->format('d.m.Y') : null,
+                ];
             }
 
             if ($client->representative) {
                 $result[$key]['representative'] = [];
                 $result[$key]['representative']['id'] = $client->representative->confidant_id;
                 $result[$key]['representative']['full_name'] = $this->convert->get_full_name($client->representative->confidant);
-                $result[$key]['representative']['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+                $result[$key]['representative']['list'] = [
+                    'ІПН: ' . $client->representative->tax_code,
+                    'Паспорт: ' . $client->representative->passport_code,
+                    $client->representative->birth_date ? $client->representative->birth_date->format('d.m.Y') : null,
+                ];
             }
         }
 

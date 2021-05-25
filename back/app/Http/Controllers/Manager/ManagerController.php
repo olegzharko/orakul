@@ -192,7 +192,11 @@ class ManagerController extends BaseController
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
             $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
-            $result[$key]['list'] = ['Тест M інформація 1', 'Тест M інформація 2', 'Тест M інформація 3'];
+            $result[$key]['list'] = [
+                'Тип нерухомості: ' . $immovable->immovable_type->title_n,
+                'Номер нерухомості: ' . $immovable->immovable_number,
+                'Реєстраційний номер: ' . $immovable->registration_number,
+            ];
         }
 
         return $this->sendResponse($result, 'Нерухомості по карті ID:' . $card_id);

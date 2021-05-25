@@ -366,7 +366,11 @@ class ImmovableController extends BaseController
         foreach ($immovables as $key => $immovable) {
             $result[$key]['id'] = $immovable->id;
             $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
-            $result[$key]['list'] = ['Тест G інформація 1', 'Тест G інформація 2', 'Тест G інформація 3'];
+            $result[$key]['list'] = [
+                'Тип нерухомості: ' . $immovable->immovable_type->title_n,
+                'Номер нерухомості: ' . $immovable->immovable_number,
+                'Реєстраційний номер: ' . $immovable->registration_number,
+            ];
         }
 
         return $result;
@@ -431,6 +435,7 @@ class ImmovableController extends BaseController
             $result['property_valuation_id'] = $pv_price->property_valuation_id;
             $result['date'] = $pv_price->date ? $pv_price->date->format('d.m.Y') : null;
             $result['price'] = round($pv_price->grn/ 100,2);
+            $result['title'] = $pv_price->title;
         }
 
         return $this->sendResponse($result, 'Дані оціночної компнанії по нерухомості ID:' . $immovable_id);
@@ -451,6 +456,7 @@ class ImmovableController extends BaseController
             'property_valuation_id' => $r['property_valuation_id'],
             'date' => $r['date'],
             'grn' => $r['price'] * 100,
+            'title' => $r['title'],
         ]);
 
         return $this->sendResponse('', 'Дані оціночної компнанії по нерухомості ID:' . $immovable_id . ' оноволено.');

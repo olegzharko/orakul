@@ -83,7 +83,7 @@ class DeveloperController extends BaseController
         $result['representative_info'] = [];
         $result['representative_doc'] = [];
         if ($representative) {
-            $result['representative_info'][] = ['title' => 'Дата народження', 'value' => $representative->birth_date];
+            $result['representative_info'][] = ['title' => 'Дата народження', 'value' => $representative->birth_date ? $representative->birth_date->format('d.m.Y') : null];
             $result['representative_info'][] = ['title' => 'ІПН', 'value' => $representative->code];
             $result['representative_info'][] = ['title' => 'Паспорт Серія-номер', 'value' => $representative->passport_date];
 
@@ -103,23 +103,19 @@ class DeveloperController extends BaseController
         $result['dev_company']['title'] = $dev_company->title;
         $result['dev_company']['color'] = $dev_company->color;
 
-        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
-        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
-        $result['dev_company']['info'][] = ['title' => 'DEV 1', 'value' => 'INFO 1'];
+        // компанія
+        $result['dev_company']['info'][] = ['title' => 'Група: ', 'value' => $dev_company->dev_group->title];
 
+        // owner влоасник забудовник
         $result['ceo_info'][] = ['title' => 'CEO 1', 'value' => 'DATA 1'];
-        $result['ceo_info'][] = ['title' => 'CEO 2', 'value' => 'DATA 2'];
-        $result['ceo_info'][] = ['title' => 'CEO 3', 'value' => 'DATA 3'];
-        $result['ceo_info'][] = ['title' => 'CEO 4', 'value' => 'DATA 4'];
-        $result['ceo_info'][] = ['title' => 'CEO 5', 'value' => 'DATA 5'];
-        $result['ceo_info'][] = ['title' => 'CEO 6', 'value' => 'DATA 6'];
+//        $result['ceo_info'][] = ['title' => 'CEO 2', 'value' => 'DATA 2'];
+//        $result['ceo_info'][] = ['title' => 'CEO 3', 'value' => 'DATA 3'];
+//        $result['ceo_info'][] = ['title' => 'CEO 4', 'value' => 'DATA 4'];
+//        $result['ceo_info'][] = ['title' => 'CEO 5', 'value' => 'DATA 5'];
+//        $result['ceo_info'][] = ['title' => 'CEO 6', 'value' => 'DATA 6'];
 
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 1', 'value' => 'INFO 1'];
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 2', 'value' => 'INFO 2'];
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 3', 'value' => 'INFO 3'];
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 4', 'value' => 'INFO 4'];
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 5', 'value' => 'INFO 5'];
-        $result['ceo_spouse_info'][] = ['title' => 'SPOUSE 6', 'value' => 'INFO 6'];
+        // подружжя забудовника
+        $result['ceo_spouse_info'][] = ['title' => '', 'value' => ''];
 
         $result['dev_fence']['date'] = null;
         $result['dev_fence']['number'] = null;
@@ -238,19 +234,19 @@ class DeveloperController extends BaseController
 //        $result['representative'] = array_merge($result['representative'], $this->collect_passport_info($representative));
 //        $result['representative']['address'] = $this->convert->get_client_full_address($representative);
 
-        $result['representative_info'][] = ['title' => 'Тест 1', 'value' => 'Значення 1'];
-        $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
-        $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
-        $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
-        $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
-        $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
+        $result['representative_info'][] = ['title' => 'Cтатус: ', 'value' => 'актуальна'];
+//        $result['representative_info'][] = ['title' => 'Тест 2', 'value' => 'Значення 2'];
+//        $result['representative_info'][] = ['title' => 'Тест 3', 'value' => 'Значення 3'];
+//        $result['representative_info'][] = ['title' => 'Тест 4', 'value' => 'Значення 4'];
+//        $result['representative_info'][] = ['title' => 'Тест 5', 'value' => 'Значення 5'];
+//        $result['representative_info'][] = ['title' => 'Тест 6', 'value' => 'Значення 6'];
 
-        $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
-        $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
-        $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
-        $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
-        $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
-        $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
+        $result['representative_doc'][] = ['title' => 'Cтатус: ', 'value' => 'актуальна'];
+//        $result['representative_doc'][] = ['title' => 'Дані 2', 'value' => 'Текст 2'];
+//        $result['representative_doc'][] = ['title' => 'Дані 3', 'value' => 'Текст 3'];
+//        $result['representative_doc'][] = ['title' => 'Дані 4', 'value' => 'Текст 4'];
+//        $result['representative_doc'][] = ['title' => 'Дані 5', 'value' => 'Текст 5'];
+//        $result['representative_doc'][] = ['title' => 'Дані 6', 'value' => 'Текст 6'];
 
         return $this->sendResponse($result, "Загальні дані по представнику забудовника.");
     }
