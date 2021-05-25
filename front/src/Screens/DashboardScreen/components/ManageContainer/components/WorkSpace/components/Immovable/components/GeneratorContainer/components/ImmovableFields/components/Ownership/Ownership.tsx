@@ -13,13 +13,19 @@ const Ownership = (props: Props) => {
   return (
     <div className="ownership">
       <SectionWithTitle title="Право власності" onClear={meta.onClear}>
-        <div className="flex-center mb20" style={{ width: '330px' }}>
+        <div className="grid-center-duet mb20">
           <CustomSelect
             label="Нотаріус"
             data={meta.notary}
             onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
             selectedValue={meta.data.notary_id}
           />
+          {/* <CustomSelect
+            label="Нотаріус"
+            data={meta.notary}
+            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
+            selectedValue={meta.data.notary_id}
+          /> */}
         </div>
         <div className="grid-center-duet">
           <CustomDatePicker

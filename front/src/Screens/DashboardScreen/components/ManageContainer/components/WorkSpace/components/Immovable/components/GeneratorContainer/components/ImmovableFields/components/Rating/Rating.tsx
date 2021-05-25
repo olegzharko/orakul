@@ -12,7 +12,7 @@ const Rating = (props: Props) => {
   return (
     <div className="rating">
       <SectionWithTitle title="Оцінка" onClear={onClear}>
-        <div className="grid">
+        <div className="grid mb20">
           <CustomSelect
             label="Оцінка від компанії"
             data={valuation}
@@ -30,6 +30,11 @@ const Rating = (props: Props) => {
             value={data.price}
           />
         </div>
+        <CustomInput
+          label="Заголовок документа"
+          onChange={(e) => setData({ ...data, title: e })}
+          value={data.title}
+        />
       </SectionWithTitle>
 
       <div className="middle-button">

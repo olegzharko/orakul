@@ -1,5 +1,6 @@
 import * as React from 'react';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
+import PhoneMaskInput from '../../../../../../../../../../../../../../components/PhoneMaskInput';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
 import { useContracts, Props } from './useContracts';
@@ -12,7 +13,7 @@ const Contacts = (props: Props) => {
       <SectionWithTitle title="Контактна інформація" onClear={onClear}>
         <div className="middle-column-fields">
           <div className="input-container">
-            <CustomInput
+            <PhoneMaskInput
               label="Номер телефону"
               onChange={(e) => setData({ ...data, phone: e })}
               value={data.phone}
