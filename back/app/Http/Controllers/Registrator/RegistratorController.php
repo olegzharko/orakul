@@ -46,7 +46,7 @@ class RegistratorController extends BaseController
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
-            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
+//            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
@@ -67,7 +67,7 @@ class RegistratorController extends BaseController
                     ->join('dev_employer_types', 'dev_employer_types.id', '=', 'dev_company_employers.type_id')
                     ->first();
 
-                $dev_fence = DevFence::where('dev_company_id', $company->id)->first();
+                $dev_fence = DevFence::where('dev_company_id', $company->id)->firstOrCreate();
                 $color = $this->get_status_color($dev_fence->pass);
 
                 $res_dev[$key]['id'] = $company->id;
@@ -110,11 +110,13 @@ class RegistratorController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        DevFence::where('dev_company_id', $developer_id)->update([
-            'date' => $r['date'],
-            'number' => $r['number'],
-            'pass' => $r['pass'],
-        ]);
+        DevFence::updateOrCreate(
+            ['dev_company_id' => $developer_id],
+            [
+                'date' => $r['date'],
+                'number' => $r['number'],
+                'pass' => $r['pass'],
+            ]);
 
         return $this->sendResponse('', 'Перевірку на заборону для забудовника з ID:' . $developer_id . ' оновлено');
     }
@@ -130,30 +132,31 @@ class RegistratorController extends BaseController
                 'immovables.id',
                 'immovables.immovable_number',
                 'immovables.registration_number as immovable_code',
-                'imm_fences.date',
-                'imm_fences.number',
-                'imm_fences.pass',
-            )->where('ready', true)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
+//                'imm_fences.date',
+//                'imm_fences.number',
+//                'imm_fences.pass',
+            )->where('ready', true)->where('type_id', 1)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
-            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id')
+//            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id')
             ->get()
             ;
 
         $imm_length = count($immovables);
         foreach ($immovables as $key => $imm) {
 
+            $imm_fence = ImmFence::where('immovable_id', $imm->id)->firstOrCreate();
 
-            $color = $this->get_status_color($imm->pass);
+            $color = $this->get_status_color($imm_fence->pass);
 
             $imm_res[$key]['id'] = $imm->id;
             $imm_res[$key]['title'] = $this->convert->building_address_type_title_number(DeveloperBuilding::find($imm->building_id)) . ' ' . $imm->immovable_type . ' ' . $imm->immovable_number;
             $imm_res[$key]['immovable_code'] = $imm->immovable_code;
-            $imm_res[$key]['date'] = $imm->date ? $imm->date->format('d.m.Y H:i') : '';
-            $imm_res[$key]['number'] = $imm->number ?? '';
+            $imm_res[$key]['date'] = $imm_fence->date ? $imm_fence->date->format('d.m.Y H:i') : '';
+            $imm_res[$key]['number'] = $imm_fence->number ?? '';
             $imm_res[$key]['color'] = $color;
-            $imm_res[$key]['pass'] = $imm->pass ? true : false;
+            $imm_res[$key]['pass'] = $imm_fence->pass ? true : false;
             $res_dev[$key]['prev'] = null;
             $res_dev[$key]['next'] = null;
 
@@ -184,11 +187,13 @@ class RegistratorController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        ImmFence::where('immovable_id', $immovable_id)->update([
-            'date' => $r['date'],
-            'number' => $r['number'],
-            'pass' => $r['pass'],
-        ]);
+        ImmFence::updateOrCreate(
+            ['immovable_id' => $immovable_id],
+            [
+                'date' => $r['date'],
+                'number' => $r['number'],
+                'pass' => $r['pass'],
+            ]);
 
         return $this->sendResponse('', 'Перевірку на заборону для нерухомості з ID:' . $immovable_id . ' оновлено');
     }

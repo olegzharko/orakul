@@ -106,7 +106,11 @@ class ClientController extends BaseController
             $result[$key] = [];
             $result[$key]['id'] = $client->id;
             $result[$key]['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+            $result[$key]['list'] = [
+                'ІПН: ' . $client->tax_code,
+                'Паспорт: ' . $client->passport_code,
+                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
+            ];
         }
 
         return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
@@ -1101,9 +1105,7 @@ class ClientController extends BaseController
     {
         $list = [];
 
-        $list[0] = 'Тест 1';
-        $list[1] = 'Тест 2';
-        $list[2] = 'Тест 3';
+        $list[0] = 'Активність: ' . $notary->activity_n;
 
         return $list;
     }

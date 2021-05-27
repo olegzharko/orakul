@@ -354,7 +354,11 @@ class ManagerController extends BaseController
             $result[$key] = [];
             $result[$key]['id'] = $client->id;
             $result[$key]['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['list'] = ['Teст 1', 'Тест 2', 'Test 3'];
+            $result[$key]['list'] = [
+                'ІПН: ' . $client->tax_code,
+                'Паспорт: ' . $client->passport_code,
+                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
+            ];
         }
 
         return $this->sendResponse($result, 'Клієнти по карточці ID' . $card_id);

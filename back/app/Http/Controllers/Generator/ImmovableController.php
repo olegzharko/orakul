@@ -582,7 +582,7 @@ class ImmovableController extends BaseController
 
         if ($immovable->contract) {
             TerminationInfo::updateOrCreate(['contract_id' => $immovable->contract->id],[
-                'price' => $r['price'],
+                'price' => $r['price'] * 100,
                 'notary_id' => $r['notary_id'],
                 'reg_date' => $r['reg_date'],
                 'reg_num' => $r['reg_number'],

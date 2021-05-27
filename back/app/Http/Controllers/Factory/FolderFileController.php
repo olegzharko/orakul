@@ -138,10 +138,12 @@ class FolderFileController extends Controller
         }
     }
 
-
     public function root_title()
     {
+
         $type = $this->contract->template ? $this->contract->template->type->title : ' - ';
+
+
         $title = ""
             . "{$this->date_month} $type {$this->developer_company} ({$this->subscriber}) - "
             . "{$this->client_surname} {$this->address_type} {$this->address_title} "
@@ -149,6 +151,7 @@ class FolderFileController extends Controller
 
         $title = trim($title);
         $title = str_replace("/", "-", $title);
+
 
         return $title;
     }
@@ -165,10 +168,34 @@ class FolderFileController extends Controller
         if (!file_exists("{$dev_company}"))
             mkdir($dev_company, 0777, true);
         // Створення папки договору для конкретної угоди
+        if (file_exists("$dev_company/$folder")) {}
+            $this->deleteDirectory("$dev_company/$folder");
         if (!file_exists("{$dev_company}/{$folder}"))
-            mkdir("{$dev_company}/{$folder}", 0777, true);
+            mkdir("$dev_company/$folder", 0777, true);
 
         $this->generate_path = "{$dev_company}/{$folder}";
+    }
+
+    public function deleteDirectory($dir) {
+        if (!file_exists($dir)) {
+            return true;
+        }
+
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+        }
+
+        return rmdir($dir);
     }
 
     public function contract_title()
@@ -317,11 +344,11 @@ class FolderFileController extends Controller
         return $title;
     }
 
-    public function bank_taxes_title()
+    public function bank_taxes_title($client)
     {
         $title = null;
         $title = "{$this->generate_path}/"
-            . "{$this->bank_taxes_payment}"
+            . "{$this->bank_taxes_payment} (" . $client->surname_n . ")"
             . "{$this->file_type_excel}"
             . "";
 

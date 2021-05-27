@@ -386,7 +386,7 @@ class DocumentController extends GeneratorController
 
     public function bank_taxes_template_set_data()
     {
-        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title();
+        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title($this->client);
 
         $this->set_passport_template_part($this->bank_taxes_generate_file);
 
@@ -661,6 +661,7 @@ class DocumentController extends GeneratorController
             $word->setValue('dev-pssprt-full-n-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
             $word->setValue('dev-pssprt-full-o-up', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_o));
             $word->setValue('ЗБД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
+            $word->setValue('ЗБД-ПАСПОРТ-О', $this->contract->dev_company->owner->passport_type->description_o);
             $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->contract->dev_company->owner->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
@@ -1026,6 +1027,9 @@ class DocumentController extends GeneratorController
 
             $dev_gender_which_adjective = GenderWord::where('alias', "which")->value($this->contract->dev_company->owner->gender);
             $word->setValue('ЗБД-ЯК', $dev_gender_which_adjective);
+
+            $dev_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_company->owner->gender);
+            $word->setValue('ЗБД-ЇХ', $dev_gender_whose);
         } else {
             $this->notification("Warning", "Відсутня інформація про забудовнику");
         }
@@ -1301,7 +1305,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('cl-widowhood', GenderWord::where('alias', "widowhood")->value($this->client->gender));
 
-            if ($this->client->gender)
+            if ($this->client->registration)
                 $cl_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
             else
                 $cl_registration = GenderWord::where('alias', "reside")->value($this->client->gender);
