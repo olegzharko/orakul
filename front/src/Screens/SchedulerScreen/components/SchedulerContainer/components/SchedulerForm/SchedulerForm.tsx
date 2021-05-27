@@ -15,7 +15,7 @@ const SchedulerForm = () => {
           onClick={() => meta.setSelectedTab(0)}
         >
           {meta.newSelectedAppointment
-            ? `${meta.newSelectedAppointment.day} ${meta.newSelectedAppointment.time} ${meta.newSelectedAppointment.date}`
+            ? `${meta.newSelectedAppointment.day} ${meta.newSelectedAppointment.time} ${meta.newSelectedAppointment.date.split('.').reverse().join('.')}`
             : 'Виберіть дату'}
         </div>
 
@@ -24,7 +24,7 @@ const SchedulerForm = () => {
             className={`item ${meta.selectedTab === 1 ? 'selected' : ''}`}
             onClick={() => meta.setSelectedTab(1)}
           >
-            {`${meta.oldSelectedAppointment.day} ${meta.oldSelectedAppointment.time} ${meta.oldSelectedAppointment.date}`}
+            {`${meta.oldSelectedAppointment.day} ${meta.oldSelectedAppointment.time} ${meta.oldSelectedAppointment.date.split('.').reverse().join('.')}`}
             <img
               src="/icons/x.svg"
               alt="close"
