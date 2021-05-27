@@ -78,6 +78,7 @@ export const useSchedulerTable = () => {
         setSelectedOldAppointment({
           ...payload,
           i,
+          date: payload.date.split('.').reverse().join('.'),
         })
       );
     },

@@ -56,7 +56,7 @@ const Participants = (props: Props) => {
       </SectionWithTitle>
 
       <div className="middle-button">
-        <PrimaryButton label="Обновити" onClick={meta.onSave} disabled={false} />
+        <PrimaryButton label="Оновити" onClick={meta.onSave} disabled={false} />
       </div>
     </>
   );

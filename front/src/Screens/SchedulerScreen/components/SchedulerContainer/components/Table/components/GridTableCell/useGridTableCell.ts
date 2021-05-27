@@ -29,7 +29,12 @@ export const useGridTableCell = ({ raw, cell }: Props) => {
     ).isBefore(moment());
 
     if (isBefore) return;
-    dispatch(setSelectedNewAppointment({ ...payload, raw, cell }));
+    dispatch(setSelectedNewAppointment({
+      ...payload,
+      raw,
+      cell,
+      date: payload.date.split('.').reverse().join('.')
+    }));
   }, [hours, rooms, days, raw, cell]);
 
   return { onClick };

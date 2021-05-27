@@ -10,6 +10,7 @@ type InitialData = {
   property_valuation_id: number | null,
   date: any,
   price: number | null,
+  title: string | null,
   property_valuation?: SelectItem[]
 }
 
@@ -28,6 +29,7 @@ export const useRating = ({ initialData, id }: Props) => {
     property_valuation_id: null,
     date: null,
     price: null,
+    title: null,
   });
 
   const onClear = useCallback(() => {
@@ -35,6 +37,7 @@ export const useRating = ({ initialData, id }: Props) => {
       property_valuation_id: null,
       date: null,
       price: null,
+      title: null,
     });
   }, []);
 
@@ -62,6 +65,7 @@ export const useRating = ({ initialData, id }: Props) => {
       property_valuation_id: initialData?.property_valuation_id || null,
       date: initialData?.date ? new Date(changeMonthWitDate(initialData?.date)) : null,
       price: initialData?.price || null,
+      title: initialData?.title || null,
     });
   }, [initialData]);
 
