@@ -165,3 +165,7 @@ body, p {
   justify-items: stretch;
   align-items: stretch;
 }
+
+.MuiFormControl-root.MuiTextField-root {
+  width: 100%;
+}

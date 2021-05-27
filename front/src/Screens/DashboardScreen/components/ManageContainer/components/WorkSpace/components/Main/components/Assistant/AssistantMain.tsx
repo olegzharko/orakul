@@ -61,7 +61,7 @@ const AssistantMain = () => {
       </SectionWithTitle>
 
       {(meta.immovables || []).map((immovable, index) => (
-        <SectionWithTitle key={uuidv4()} title={immovable.address || ''} onClear={() => meta.onImmovableClear(index)}>
+        <SectionWithTitle title={immovable.address || ''} onClear={() => meta.onImmovableClear(index)}>
           <div className="grid-center-duet">
             <CustomSelect
               label="Читач"

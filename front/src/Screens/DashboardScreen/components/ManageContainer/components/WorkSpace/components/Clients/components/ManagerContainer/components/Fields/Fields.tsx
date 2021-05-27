@@ -2,6 +2,7 @@ import * as React from 'react';
 import CustomInput from '../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../components/CustomSelect';
 import CustomSwitch from '../../../../../../../../../../../../components/CustomSwitch';
+import PhoneMaskInput from '../../../../../../../../../../../../components/PhoneMaskInput';
 import PrimaryButton from '../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../components/SectionWithTitle';
 import { useFields } from './useFields';
@@ -43,7 +44,7 @@ const Fields = () => {
             value={meta.client?.patronymic}
           />
 
-          <CustomInput
+          <PhoneMaskInput
             label="Номер телефону"
             onChange={(e) => meta.setClient({ ...meta.client, phone: e })}
             value={meta.client?.phone}

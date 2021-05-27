@@ -42,6 +42,11 @@ const Templates = (props: Props) => {
             onSelect={(e) => meta.setData({ ...meta.data, final_sign_date: e })}
             selectedDate={meta.data.final_sign_date}
           />
+          <CustomSwitch
+            label="Усний переклад"
+            onChange={(e) => meta.setData({ ...meta.data, translate: e })}
+            selected={meta.data.translate}
+          />
         </div>
       </SectionWithTitle>
 

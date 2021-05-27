@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { changeMonthWitDate, formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 import reqImmovablePayment from '../../../../../../../../../../../../../../services/generator/Immovable/reqImmovablePayment';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
@@ -10,7 +11,8 @@ type InitialData = {
   final_date: any,
   reg_num: number | null,
   first_part_grn: number | null,
-  last_part_grn: number | null,
+  client_id: number | null,
+  clients?: SelectItem[],
 }
 
 export type Props = {
@@ -22,13 +24,14 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
 
+  const [clients, setClients] = useState<SelectItem[]>([]);
   // Initial data
   const [data, setData] = useState<InitialData>({
     sign_date: null,
     final_date: null,
     reg_num: null,
     first_part_grn: null,
-    last_part_grn: null,
+    client_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -37,7 +40,7 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
       final_date: null,
       reg_num: null,
       first_part_grn: null,
-      last_part_grn: null,
+      client_id: null,
     });
   }, []);
 
@@ -61,6 +64,7 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
   }, [data, token]);
 
   useEffect(() => {
+    setClients(initialData?.clients || []);
     setData({
       sign_date: initialData?.sign_date
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
@@ -68,12 +72,13 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
         ? new Date(changeMonthWitDate(initialData?.final_date)) : null,
       reg_num: initialData?.reg_num || null,
       first_part_grn: initialData?.first_part_grn || null,
-      last_part_grn: initialData?.last_part_grn || null,
+      client_id: initialData?.client_id || null,
     });
   }, [initialData]);
 
   return {
     data,
+    clients,
     setData,
     onClear,
     onSave,
