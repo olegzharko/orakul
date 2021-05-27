@@ -33,7 +33,7 @@ export const useGridTableCell = ({ raw, cell }: Props) => {
       ...payload,
       raw,
       cell,
-      date: payload.date.split('.').reverse().join('.')
+      date: payload.date
     }));
   }, [hours, rooms, days, raw, cell]);
 
