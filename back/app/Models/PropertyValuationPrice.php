@@ -19,6 +19,7 @@ class PropertyValuationPrice extends Model implements Sortable
         'property_valuation_id',
         'date',
         'grn',
+        'title',
     ];
 
     public $sortable = [
