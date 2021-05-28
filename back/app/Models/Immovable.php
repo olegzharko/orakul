@@ -80,4 +80,9 @@ class Immovable extends Model implements Sortable
     {
         return Immovable::whereIn('id', $immovables_id)->get();
     }
+
+    public function installment()
+    {
+        return $this->hasOne(Installment::class, 'immovable_id');
+    }
 }

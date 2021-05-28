@@ -15,6 +15,7 @@ use \App\Http\Controllers\Rakul\SortController;
 use \App\Http\Controllers\Factory\GeneratorController;
 use \App\Http\Controllers\Generator\DeveloperController;
 use \App\Http\Controllers\Generator\ImmovableController;
+use \App\Http\Controllers\Rakul\InstallmentController;
 use \App\Http\Controllers\Generator\ClientController;
 use \App\Http\Controllers\API\MinfinController;
 
@@ -107,6 +108,9 @@ Route::middleware('auth:api')->group(function () {
 
             Route::get('termination/{immovable_id}', [ImmovableController::class, 'get_termination']); // postman
             Route::put('termination/{immovable_id}', [ImmovableController::class, 'update_termination']);
+
+            Route::get('installment/{immovable_id}', [InstallmentController::class, 'get_installment']); // postman
+            Route::put('installment/{immovable_id}', [InstallmentController::class, 'update_installment']);
 
             Route::get('template/{immovable_id}', [ImmovableController::class, 'get_template']); // postman
             Route::put('template/{immovable_id}', [ImmovableController::class, 'update_template']);
