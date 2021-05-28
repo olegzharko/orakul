@@ -551,6 +551,7 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-ЗАЯВА-ЗГОДА', $cl_sp_word);
         } else {
             $this->notification("Warning", "Договір: текс-шаблон пункту згоди подружжя клієнта або ствердження відсутності шлюбних зв'язквів відсутній");
+            $word->setValue($this->total_clients . '-ЗАЯВА-ЗГОДА', '');
         }
 
         if ($this->client->termination_consent && $this->client->termination_consent->termination_spouse_word)
@@ -1202,7 +1203,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_client($word)
     {
-        if ($this->client) {
+        if ($this->client && $this->client->gender) {
             /*
              * Клієнт - ПІБ
              * */
@@ -1272,7 +1273,7 @@ class DocumentController extends GeneratorController
                 $cs_agree = null;
             $word->setValue('ПОД-ЗГОД', $cs_agree);
 
-            if ($this->client->married)
+            if ($this->client->married && $this->client->married->spouse)
                 $cl_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
             else
                 $cl_gender_pronoun = null;
@@ -1361,8 +1362,8 @@ class DocumentController extends GeneratorController
             /*
              * Контактні данні
              * */
-            $word->setValue('cl-phone', $this->client->phone);
-            $word->setValue('КЛ-ТЕЛЕФОН', $this->client->phone);
+            $word->setValue('cl-phone', $this->convert->phone_number($this->client->phone));
+            $word->setValue('КЛ-ТЕЛЕФОН', $this->convert->phone_number($this->client->phone));
             $word->setValue($this->total_clients . '-КЛ-ТЕЛЕФОН', $this->client->phone);
 
             /*
@@ -1695,6 +1696,7 @@ class DocumentController extends GeneratorController
             $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
 
             $word->setValue('H-ПОВНА-АДРЕСА-ОСН', $this->convert->building_full_address_main($this->contract->immovable));
+            $word->setValue('H-ПОВНА-АДРЕСА-ЗАЯВА', $this->convert->building_full_address_main($this->contract->immovable));
             $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->building_full_address_by_type($this->contract->immovable, 'desc'));
             $word->setValue('H-ПОВНА-АДРЕСА-СПД-СК', $this->convert->building_full_address_by_type_short($this->contract->immovable, 'desc'));
             $word->setValue('Н-БУДИНОК', $this->convert->building_street_and_num($this->contract->immovable)); // building

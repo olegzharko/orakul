@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Factory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeyWord;
+//use MongoDB\Driver\Session;
 use URL;
+use Auth;
+use Session;
 
 class FolderFileController extends Controller
 {
@@ -160,7 +163,6 @@ class FolderFileController extends Controller
     {
         // Однакова назва для папки та договору
         $folder = $this->root_title();
-
         // echo "{$folder}<br><br>";
         $dev_company = $this->contract->dev_company->title;
 

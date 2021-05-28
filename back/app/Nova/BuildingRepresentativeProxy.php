@@ -49,9 +49,9 @@ class BuildingRepresentativeProxy extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Будівля', 'building', 'App\Nova\DeveloperBuilding'),
-            BelongsTo::make('Представник', 'representative', 'App\Nova\Client'),
-            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy'),
+            BelongsTo::make('Будівля', 'building', 'App\Nova\DeveloperBuilding')->sortable(),
+            BelongsTo::make('Представник', 'representative', 'App\Nova\Client')->sortable(),
+            BelongsTo::make('Довіреність', 'proxy', 'App\Nova\Proxy')->sortable(),
         ];
     }
 

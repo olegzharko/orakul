@@ -1106,5 +1106,14 @@ class ConvertController extends GeneratorController
 
         return $title;
     }
+
+    public function phone_number($phone)
+    {
+        $phone = str_replace("(", " (", $phone);
+        $phone = str_replace(")", ") ", $phone);
+        $phone = str_replace("-", " ", $phone);
+
+        return $phone;
+    }
 }
 

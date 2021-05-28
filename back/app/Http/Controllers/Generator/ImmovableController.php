@@ -326,8 +326,8 @@ class ImmovableController extends BaseController
             'reg_num' => $r['reg_num'],
             'first_part_grn' => $r['first_part_grn'] * 100,
             'first_part_dollar' => $first_part_dollar * 100,
-            'last_part_grn' => $r['last_part_grn'] * 100,
-            'last_part_dollar' => $last_part_dollar * 100,
+            'last_part_grn' => $immovable->reserve_grn - ($r['first_part_grn'] * 100),
+            'last_part_dollar' => $immovable->reserve_dollar - ($first_part_dollar * 100),
             'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d.') : null,
             'client_id' => $r['client_id'],
         ]);
