@@ -513,6 +513,11 @@ class DocumentController extends GeneratorController
          * */
         $word = $this->set_exchange_rate($word);
 
+        /*
+         * Розстрочка
+         * */
+        $word = $this->set_installment($word);
+
         return $word;
     }
 
@@ -2014,6 +2019,12 @@ class DocumentController extends GeneratorController
         return $word;
     }
 
+    public function set_installment($word)
+    {
+
+        return $word;
+    }
+
     public function set_client_spouse_consent_for_multiple_deal($word)
     {
         $imm_line = null;
@@ -2023,6 +2034,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('imm-type-num-line-r', array_shift($imm_line));
         }
+
         return $word;
     }
 

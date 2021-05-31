@@ -91,7 +91,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('general/{immovable_id}', [ImmovableController::class, 'update_general']);
 
             Route::get('exchange/{card_id}', [ImmovableController::class, 'get_exchange']); // postman
-            Route::post('exchange/{card_id}', [ImmovableController::class, 'new_exchange']);
+//            Route::post('exchange/{card_id}', [ImmovableController::class, 'new_exchange']);
             Route::put('exchange/{card_id}', [ImmovableController::class, 'update_exchange']);
 
             Route::get('payment/{immovable_id}', [ImmovableController::class, 'get_payment']); // postman
@@ -111,6 +111,7 @@ Route::middleware('auth:api')->group(function () {
 
             Route::get('installment/{immovable_id}', [InstallmentController::class, 'get_installment']); // postman
             Route::put('installment/{immovable_id}', [InstallmentController::class, 'update_installment']);
+            Route::get('installment_test/{immovable_id}', [InstallmentController::class, 'test']);
 
             Route::get('template/{immovable_id}', [ImmovableController::class, 'get_template']); // postman
             Route::put('template/{immovable_id}', [ImmovableController::class, 'update_template']);
