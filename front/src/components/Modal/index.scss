@@ -7,14 +7,16 @@
 
   .modal {
     padding: 50px 80px;
-    border: none;
     outline: none;
     @include primary_title;
     color: white;
+    border-radius: 4px;
+    border-color: transparent;
+    font-family:  "Montserrat", serif;
   }
 
   .modal-success {
-    background-color: #00B74A;
+    background-color: #1f787b;
   }
 
   .modal-failed {

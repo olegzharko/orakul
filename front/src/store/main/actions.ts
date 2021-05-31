@@ -27,12 +27,22 @@ export const setUser = (payload: any) => ({
   payload,
 });
 
-export const setModalInfo = (payload: any) => ({
+const setModalInfoAction = (payload: any) => ({
   type: ACTIONS.SET_MODAL_INFO,
   payload,
 });
 
 // Thunk actions
+export const setModalInfo = (payload: any) => (dispatch: Dispatch<any>) => {
+  dispatch(setModalInfoAction(payload));
+  setTimeout(() => {
+    dispatch(setModalInfoAction({
+      ...payload,
+      open: false,
+    }));
+  }, 2000);
+};
+
 export const sendLogin = (
   bodyData: {
     email: string;

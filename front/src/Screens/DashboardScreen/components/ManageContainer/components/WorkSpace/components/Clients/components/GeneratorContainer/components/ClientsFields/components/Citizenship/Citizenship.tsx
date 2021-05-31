@@ -9,7 +9,7 @@ const Citizenship = (props: Props) => {
 
   return (
     <div className="clients__citizenship">
-      <SectionWithTitle title="Громадянство країни">
+      <SectionWithTitle title="Громадянство">
         <div className="middle-column-fields">
           <div className="input-container">
             <CustomSelect

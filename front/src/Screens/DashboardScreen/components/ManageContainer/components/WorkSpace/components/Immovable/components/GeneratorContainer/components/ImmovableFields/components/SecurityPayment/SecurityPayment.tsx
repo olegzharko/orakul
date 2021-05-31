@@ -24,15 +24,15 @@ const SecurityPayment = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, client_id: +e })}
             selectedValue={meta.data.client_id}
           />
+          <CustomInput
+            label="Номер договору резервування"
+            onChange={(e) => meta.setData({ ...meta.data, reg_num: +e })}
+            value={meta.data.reg_num}
+          />
           <CustomDatePicker
             label="Дата підписання"
             onSelect={(e) => meta.setData({ ...meta.data, sign_date: e })}
             selectedDate={meta.data.sign_date}
-          />
-          <CustomInput
-            label="Реєстраційний номер"
-            onChange={(e) => meta.setData({ ...meta.data, reg_num: +e })}
-            value={meta.data.reg_num}
           />
           <CustomDatePicker
             label="Дата закінчення"

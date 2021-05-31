@@ -11,7 +11,7 @@ const Termination = (props: Props) => {
 
   return (
     <div className="termination">
-      <SectionWithTitle title="Заява-згода розірвання ПД" onClear={meta.onClear}>
+      <SectionWithTitle title="Заява-згода на розірвання ПД" onClear={meta.onClear}>
         <div className="grid">
           <CustomSelect
             label="Нотаріус"
@@ -21,13 +21,13 @@ const Termination = (props: Props) => {
           />
 
           <CustomDatePicker
-            label="Дата підписання заяви-згоди"
+            label="Дата посвідчення"
             onSelect={(e) => meta.setData({ ...meta.data, reg_date: e })}
             selectedDate={meta.data.reg_date}
           />
 
           <CustomInput
-            label="Номер реєстрації у нотаріуса"
+            label="Реєстровий номер"
             onChange={(e) => meta.setData({ ...meta.data, reg_number: e })}
             value={meta.data.reg_number}
           />

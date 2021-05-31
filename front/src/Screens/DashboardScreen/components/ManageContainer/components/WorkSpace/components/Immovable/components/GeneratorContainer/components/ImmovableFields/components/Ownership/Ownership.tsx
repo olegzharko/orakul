@@ -40,12 +40,12 @@ const Ownership = (props: Props) => {
           />
 
           <CustomDatePicker
-            label="Дата витягу на право власності"
+            label="Дата витягу про право власності"
             onSelect={(e) => meta.setData({ ...meta.data, discharge_date: e })}
             selectedDate={meta.data.discharge_date}
           />
           <CustomInput
-            label="Номер витягу на право власності"
+            label="Номер витягу про право власності"
             onChange={(e) => meta.setData({ ...meta.data, discharge_number: +e })}
             value={meta.data.discharge_number}
           />

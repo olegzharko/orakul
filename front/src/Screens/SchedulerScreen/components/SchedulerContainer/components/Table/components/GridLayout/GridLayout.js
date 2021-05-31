@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './GridLayout.scss';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import $ from 'jquery';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
+import { State } from '../../../../../../../../store/types';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -18,6 +19,9 @@ export default function GridLayout({
 }) {
   const [dragAndDropWidth, setDragAndDropWidth] = useState(1200);
   const { schedulerLock } = useSelector((state) => state.scheduler);
+  const oldSelectedAppointment = useSelector(
+    (state) => state.scheduler.oldSelectedAppointment
+  );
 
   useEffect(() => {
     setDragAndDropWidth($('.scheduler__appointments').width());
@@ -28,6 +32,9 @@ export default function GridLayout({
     handleDrag(currentApp);
     handleClick(currentApp);
   };
+
+  const isSelected = useCallback((raw, cell) => oldSelectedAppointment.raw === raw
+    && oldSelectedAppointment.cell === cell, [oldSelectedAppointment]);
 
   if (!appointments) {
     return <span>Loading...</span>;
@@ -51,7 +58,10 @@ export default function GridLayout({
         <div
           key={appointment.i}
           className="appointment"
-          style={{ borderLeft: `4px solid ${appointment.color}` }}
+          style={{
+            borderLeft: `4px solid ${appointment.color}`,
+            backgroundColor: isSelected(appointment.y, appointment.x) ? appointment.color : ''
+          }}
           onClickCapture={() => handleClick(appointment)}
         >
           <div className="appointment__title">{ReactHtmlParser(appointment.title)}</div>

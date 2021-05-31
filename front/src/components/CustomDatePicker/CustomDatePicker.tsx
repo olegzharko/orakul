@@ -7,6 +7,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 
 type Props = {
   label: string;
@@ -14,6 +15,14 @@ type Props = {
   selectedDate?: Date | null;
   required?: boolean;
 }
+
+const customTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#165153',
+    }
+  },
+});
 
 const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) => {
   const [value, setValue] = useState<MaterialUiPickersDate | undefined>(selectedDate);
@@ -34,19 +43,22 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) =>
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardDatePicker
-        error={required && !value}
-        margin="normal"
-        label={label}
-        format="dd/MM/yyyy"
-        value={value}
-        onChange={handleChange}
-        KeyboardButtonProps={{
-          'aria-label': 'change date',
-        }}
-      />
-    </MuiPickersUtilsProvider>
+    <MuiThemeProvider theme={customTheme}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          error={required && !value}
+          margin="normal"
+          label={label}
+          format="dd/MM/yyyy"
+          value={value}
+          onChange={handleChange}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    </MuiThemeProvider>
+
   );
 };
 

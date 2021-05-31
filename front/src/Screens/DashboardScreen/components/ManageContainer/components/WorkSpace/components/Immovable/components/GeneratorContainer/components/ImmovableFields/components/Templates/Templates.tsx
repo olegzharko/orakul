@@ -74,7 +74,7 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Запит">
+      <SectionWithTitle title="Запит щодо зареєстрованих осіб">
         <div className="flex-center">
           <CustomSelect
             label="Шаблон запиту"
@@ -86,7 +86,7 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Анкета">
+      <SectionWithTitle title="Анкета фінансового моніторінгу">
         <div className="flex-center">
           <CustomSelect
             label="Шаблон анкети"
@@ -98,7 +98,7 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Коммунальні">
+      <SectionWithTitle title="Довіреність щодо надання комунальних та інших послуг">
         <div className="flex-center">
           <CustomSelect
             label="Шаблон по коммунальним"
@@ -122,7 +122,7 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
-      <SectionWithTitle title="Заява про отримання коштів">
+      <SectionWithTitle title="Заява про повернення коштів">
         <div className="grid-center-duet">
           <CustomSelect
             label="Шаблон договору розірвання ПД"
@@ -145,7 +145,7 @@ const Templates = (props: Props) => {
           />
 
           <CustomInput
-            label="Реєстраційний номер"
+            label="Реєстровий номер"
             onChange={(e) => meta.setData({ ...meta.data, termination_refund_reg_number: e })}
             value={meta.data.termination_refund_reg_number}
           />
