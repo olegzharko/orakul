@@ -30,6 +30,10 @@ Route::get('clear', function () {
     Artisan::call('cache:clear');
 });
 
+Route::get('phpinfo', function () {
+   phpinfo();die;
+});
+
 Route::get('create/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']); // postman
 Route::get('creat/contracts', [GeneratorController::class, 'create_contracts_by_cards']);
 Route::get('creat/all/contracts', [GeneratorController::class, 'create_all_contracts']);
