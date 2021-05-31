@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Factory;
 
+use App\Http\Controllers\Rakul\InstallmentController;
 use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
 use App\Models\GenderWord;
@@ -23,6 +24,7 @@ class DocumentController extends GeneratorController
     public $convert;
     public $client;
     public $total_clients;
+    public $installment;
     public $consent;
     public $consents_id;
     public $contract_generate_file;
@@ -60,6 +62,7 @@ class DocumentController extends GeneratorController
 //        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
         $this->non_break_space = " ";
         $this->convert = new ConvertController($this->non_break_space);
+        $this->installment = new InstallmentController();
         $this->consent = null;
         $this->consents_id = $consents_id;
         $this->contract_generate_file = null;
@@ -1944,6 +1947,8 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ГРН', $this->convert->get_convert_price($this->contract->immovable->installment->total_price, 'grn'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ДОЛАР', $this->convert->get_convert_price($this->contract->immovable->installment->total_price, 'dollar'));
+
+            dd($this->installment->get_data_for_doc($this->card, $this->contract->immovable));
         }
 
         return $word;
