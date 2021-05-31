@@ -35,7 +35,7 @@ const PhoneMaskInput = ({
       className="custom-input"
       mask="+38(999)999-99-99"
       value={text}
-      disabled={false}
+      disabled={disabled || false}
       onChange={handleChange}
     >
       {() => <TextField variant="outlined" label={label} disabled={disabled || false} />}

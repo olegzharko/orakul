@@ -17,7 +17,7 @@ const Dashboard = () => {
       <div className="dashboard-header section-title">Нерухомість</div>
 
       <div className="grid">
-        {meta.immovables.map((immovable) => (
+        {(meta.immovables || []).map((immovable) => (
           <Card
             key={immovable.id}
             title={immovable.title}

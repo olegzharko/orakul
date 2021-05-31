@@ -9,6 +9,7 @@ import reqImmovableRating from '../../../../../../../../../../../../services/gen
 import reqImmovableTemplate from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTemplate';
 import reqImmovableTermination from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableTermination';
 import { isNumber } from '../../../../../../../../../../../../utils/numbers';
+import reqImmovableInstallment from '../../../../../../../../../../../../services/generator/Immovable/reqImmovableInstallment';
 
 export const useFields = () => {
   const { token } = useSelector((state: State) => state.main.user);
@@ -21,6 +22,7 @@ export const useFields = () => {
   const [retting, setRetting] = useState();
   const [termination, setTermination] = useState();
   const [templates, setTemplates] = useState();
+  const [installment, setInstallment] = useState();
 
   const isCorrectId = useMemo(() => isNumber(immovableId), [immovableId]);
 
@@ -79,6 +81,15 @@ export const useFields = () => {
           setTemplates(res.data);
         }
       })();
+
+      // get INSTALLMENT
+      (async () => {
+        const res = await reqImmovableInstallment(token, immovableId);
+
+        if (res?.success) {
+          setInstallment(res.data);
+        }
+      })();
     }
   }, [token, isCorrectId]);
 
@@ -90,5 +101,6 @@ export const useFields = () => {
     retting,
     termination,
     templates,
+    installment,
   };
 };
