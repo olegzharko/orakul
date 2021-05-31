@@ -186,6 +186,8 @@ class ImmovableController extends BaseController
 
         if ($exchange = ExchangeRate::where(['card_id' => $card_id])->first()) {
             $exchange_rate = $exchange->rate;
+            $contract_buy = $exchange->contract_buy;
+            $contract_sell = $exchange->contract_sell;
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->where('created_at', '>=', $this->date->format('Y.m.d'))->first()) {
 
@@ -198,12 +200,16 @@ class ImmovableController extends BaseController
                     ]);
 
                 $exchange_rate = $minfin->rate;
+                $contract_buy = $minfin->contract_buy;
+                $contract_sell = $minfin->contract_sell;
             }
             else
                 $exchange_rate = null;
         }
 
-        $result['exchange_rate'] = number_format($exchange_rate / 100, 2);;
+        $result['exchange_rate'] = number_format($exchange_rate / 100, 2);
+        $result['contract_buy'] = number_format($contract_buy / 100, 2);
+        $result['contract_sell'] = number_format($contract_sell / 100, 2);
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
     }
@@ -222,10 +228,16 @@ class ImmovableController extends BaseController
         }
 
         $currency_exchage = round($r->exchange_rate, 2);
+        $contract_buy = round($r->contract_buy, 2);
+        $contract_sell = round($r->contract_sell, 2);
 
         ExchangeRate::updateOrCreate(
             ['card_id' => $card_id],
-            ['rate' => $currency_exchage * 100]
+            [
+                'rate' => $currency_exchage * 100,
+                'contract_buy' => $contract_buy * 100,
+                'contract_sell' => $contract_sell * 100,
+            ]
         );
 
 //        $currency_rate = $currency_exchage;
@@ -245,6 +257,8 @@ class ImmovableController extends BaseController
 //        SecurityPayment::where('immovable_id', $immovable_id)->update($security_update);
 
         $result['exchange_rate'] = $currency_exchage;
+        $result['contract_buy'] = $contract_buy;
+        $result['contract_sell'] = $contract_sell;
 
         return $this->sendResponse($result, 'Курс долара оновлено вручну.');
     }
@@ -335,24 +349,24 @@ class ImmovableController extends BaseController
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id . ' оновлено.');
     }
 
-    public function new_exchange($card_id)
-    {
-        $result = [];
-
-        $this->minfin->get_rate_exchange();
-
-        $minfin = Exchange::orderBy('created_at', 'desc')->first();
-
-        ExchangeRate::updateOrCreate(['card_id' => $card_id], [
-            'rate' => $minfin->rate,
-            'contract_buy' => $minfin->contract_buy,
-            'contract_sell' => $minfin->contract_sell,
-        ]);
-
-        $result['exchange_rate'] = round($minfin->rate / 100, 2);
-
-        return $this->sendResponse($result, 'Курс долара оновлено через minfin.com.ua');
-    }
+//    public function new_exchange($card_id)
+//    {
+//        $result = [];
+//
+//        $this->minfin->get_rate_exchange();
+//
+//        $minfin = Exchange::orderBy('created_at', 'desc')->first();
+//
+//        ExchangeRate::updateOrCreate(['card_id' => $card_id], [
+//            'rate' => $minfin->rate,
+//            'contract_buy' => $minfin->contract_buy,
+//            'contract_sell' => $minfin->contract_sell,
+//        ]);
+//
+//        $result['exchange_rate'] = round($minfin->rate / 100, 2);
+//
+//        return $this->sendResponse($result, 'Курс долара оновлено через minfin.com.ua');
+//    }
 
     private function get_immovables_by_card($card_id)
     {
