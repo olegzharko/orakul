@@ -9,6 +9,10 @@ import { useExchangeRate, Props } from './useExchangeRate';
 const ExchangeRate = (props: Props) => {
   const {
     exchangeRate,
+    contractBuy,
+    contractSell,
+    setContractBuy,
+    setContractSell,
     setExchangeRate,
     onClear,
     onSave,
@@ -19,9 +23,17 @@ const ExchangeRate = (props: Props) => {
   return (
     <>
       <SectionWithTitle title="Комерційний курс валют" onClear={onClear}>
-        <div className="exchange df">
+        <div className="flex-center mb20">
           <span>Курс української грн до 1$ CША</span>
-          <CustomInput required label="Курс" onChange={setExchangeRate} value={exchangeRate} />
+        </div>
+
+        <div className="grid mb20">
+          <CustomInput required label="Середній курс долара" onChange={setExchangeRate} value={exchangeRate} />
+          <CustomInput required label="Курс для договорів - купівля" onChange={setContractBuy} value={contractBuy} />
+          <CustomInput required label="Курс для договорів - продаж" onChange={setContractSell} value={contractSell} />
+        </div>
+
+        <div className="middle-button">
           <SecondaryButton label="ОНОВИТИ КУРС" onClick={onRefreshRate} disabled={false} />
         </div>
       </SectionWithTitle>

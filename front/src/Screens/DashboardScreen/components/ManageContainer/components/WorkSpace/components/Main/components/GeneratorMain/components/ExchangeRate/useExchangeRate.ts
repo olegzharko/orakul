@@ -5,7 +5,9 @@ import { setModalInfo } from '../../../../../../../../../../../../store/main/act
 import { State } from '../../../../../../../../../../../../store/types';
 
 type InitialData = {
+  contract_buy: string,
   exchange_rate: string,
+  contract_sell: string,
 }
 
 export type Props = {
@@ -18,9 +20,13 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
   const { token } = useSelector((state: State) => state.main.user);
 
   // Initial data
+  const [contractBuy, setContractBuy] = useState('');
+  const [contractSell, setContractSell] = useState('');
   const [exchangeRate, setExchangeRate] = useState('');
 
   const onClear = useCallback(() => {
+    setContractBuy('');
+    setContractSell('');
     setExchangeRate('');
   }, []);
 
@@ -28,6 +34,8 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
     if (token) {
       const res = await reqImmovableExchange(token, '', 'GET', 'MINFIN');
       if (res.success) {
+        setContractBuy(res.data.contract_buy);
+        setContractSell(res.data.contract_sell);
         setExchangeRate(res.data.exchange_rate);
       }
     }
@@ -35,7 +43,12 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
 
   const onSave = useCallback(async () => {
     if (token) {
-      const { success, message } = await reqImmovableExchange(token, id, 'PUT', null, { exchange_rate: exchangeRate });
+      const data = {
+        contract_buy: contractBuy,
+        contract_sell: contractSell,
+        exchange_rate: exchangeRate,
+      };
+      const { success, message } = await reqImmovableExchange(token, id, 'PUT', null, data);
 
       dispatch(
         setModalInfo({
@@ -45,19 +58,25 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [exchangeRate, token]);
+  }, [contractBuy, contractSell, exchangeRate, token]);
 
   const isSaveButtonDisable = useMemo(
-    () => !exchangeRate, [exchangeRate]
+    () => !contractBuy || !contractSell || !exchangeRate, [contractBuy, contractSell, exchangeRate]
   );
 
   useEffect(() => {
+    setContractBuy(initialData?.contract_buy || '');
+    setContractSell(initialData?.contract_sell || '');
     setExchangeRate(initialData?.exchange_rate || '');
   }, [initialData]);
 
   return {
+    contractBuy,
+    contractSell,
     exchangeRate,
     isSaveButtonDisable,
+    setContractBuy,
+    setContractSell,
     setExchangeRate,
     onClear,
     onSave,

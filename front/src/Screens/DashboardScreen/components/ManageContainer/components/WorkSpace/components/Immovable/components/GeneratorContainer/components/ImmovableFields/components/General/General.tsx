@@ -34,7 +34,7 @@ const General = (props: Props) => {
             value={meta.data.imm_number}
           />
           <CustomInput
-            label="Реєстровий номер"
+            label="Реєстраційний номер"
             onChange={(e) => meta.setData({ ...meta.data, registration_number: e })}
             value={meta.data.registration_number}
           />

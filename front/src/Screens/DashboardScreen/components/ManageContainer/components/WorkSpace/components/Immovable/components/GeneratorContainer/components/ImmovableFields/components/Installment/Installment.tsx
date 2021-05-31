@@ -16,7 +16,7 @@ const Installment = (props: Props) => {
 
   return (
     <div className="installment">
-      <SectionWithTitle title="Розсрочка" onClear={onClear}>
+      <SectionWithTitle title="Розстрочка" onClear={onClear}>
         <div className="grid">
           <CustomInput
             label="Сума"

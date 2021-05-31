@@ -11,7 +11,7 @@ const PowerOfAttorney = (props: Props) => {
 
   return (
     <div className="clients__power-of-attorney">
-      <SectionWithTitle title="Довіренності" onClear={meta.onClear}>
+      <SectionWithTitle title="Довіреність представника клієнта" onClear={meta.onClear}>
         <div className="grid">
           <CustomSelect
             label="Нотаріус"
