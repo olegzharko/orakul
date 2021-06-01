@@ -5,8 +5,8 @@ import { setModalInfo } from '../../../../../../../../../../../../../../store/ma
 import { State } from '../../../../../../../../../../../../../../store/types';
 
 type InitialData = {
-  total_month: string | null
-  total_price: string | null,
+  total_month: number | null
+  total_price: number | null,
   type: any
 }
 
