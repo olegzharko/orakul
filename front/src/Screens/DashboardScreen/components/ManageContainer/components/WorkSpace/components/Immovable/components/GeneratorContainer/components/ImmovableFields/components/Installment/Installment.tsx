@@ -20,13 +20,13 @@ const Installment = (props: Props) => {
         <div className="grid">
           <CustomInput
             label="Сума"
-            onChange={(e) => setData({ ...data, total_price: e })}
+            onChange={(e) => setData({ ...data, total_price: +e })}
             value={data.total_price}
           />
 
           <CustomInput
             label="Кількість місяців"
-            onChange={(e) => setData({ ...data, total_month: e })}
+            onChange={(e) => setData({ ...data, total_month: +e })}
             value={data.total_month}
           />
 
