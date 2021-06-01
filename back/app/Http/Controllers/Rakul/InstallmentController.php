@@ -38,10 +38,10 @@ class InstallmentController extends BaseController
         return $this->sendResponse('', 'Розстрочка оновлена');
     }
 
-    public function get_data_for_doc($card, $immovable)
+    public function get_data_for_doc($card, $immovable, $sign_date)
     {
-        $start_date = $this->contract->sign_date;
-        $dollar_rate = $this->card->exchange_rate->contract_buy; // ####
+        $start_date = $sign_date;
+        $dollar_rate = $card->exchange_rate->contract_buy; // ####
         $last_part = 0;
         $total_price_grn = $immovable->installment->total_price;
         $total_price_dollar = round($total_price_grn / $dollar_rate, 2);
@@ -75,6 +75,7 @@ class InstallmentController extends BaseController
 
     public function test($immovable_id)
     {
+        dd($immovable_id);
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
