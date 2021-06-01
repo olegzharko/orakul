@@ -33,8 +33,8 @@ export default function GridLayout({
     handleClick(currentApp);
   };
 
-  const isSelected = useCallback((raw, cell) => oldSelectedAppointment.raw === raw
-    && oldSelectedAppointment.cell === cell, [oldSelectedAppointment]);
+  const isSelected = useCallback((raw, cell) => oldSelectedAppointment?.raw === raw
+    && oldSelectedAppointment?.cell === cell, [oldSelectedAppointment]);
 
   if (!appointments) {
     return <span>Loading...</span>;
