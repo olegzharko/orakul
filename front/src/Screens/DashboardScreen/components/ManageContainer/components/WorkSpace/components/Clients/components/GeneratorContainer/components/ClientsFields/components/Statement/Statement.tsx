@@ -11,7 +11,7 @@ const Statement = (props: Props) => {
 
   return (
     <div className="clients__statement">
-      <SectionWithTitle title="Заява-згода" onClear={meta.onClear}>
+      <SectionWithTitle title="Сімейний стан покупця" onClear={meta.onClear}>
         <div className="grid mb20">
           <CustomSelect
             label="Шаблон згоди"
@@ -20,7 +20,7 @@ const Statement = (props: Props) => {
             selectedValue={meta.data.consent_template_id}
           />
           <CustomSelect
-            label="Тип шлюбного свідоцтва"
+            label="Тип назви свідоцтва"
             data={meta.marriageTypes}
             onChange={(e) => meta.setData({ ...meta.data, married_type_id: e })}
             selectedValue={meta.data.married_type_id}
@@ -42,7 +42,7 @@ const Statement = (props: Props) => {
             value={meta.data.mar_series_num}
           />
           <CustomDatePicker
-            label="Виданий"
+            label="Дата видачі"
             onSelect={(e) => meta.setData({ ...meta.data, mar_date: e })}
             selectedDate={meta.data.mar_date}
           />
@@ -58,7 +58,7 @@ const Statement = (props: Props) => {
 
         <div className="grid mb20">
           <CustomInput
-            label="Реєстраційний номер свідоцтва"
+            label="Номер актового запису"
             onChange={(e) => meta.setData({ ...meta.data, mar_reg_num: e })}
             value={meta.data.mar_reg_num}
           />
@@ -69,12 +69,12 @@ const Statement = (props: Props) => {
             selectedValue={meta.data.notary_id}
           />
           <CustomDatePicker
-            label="Дата підписання заяви-згоди"
+            label="Дата посвідчення заяви"
             onSelect={(e) => meta.setData({ ...meta.data, sign_date: e })}
             selectedDate={meta.data.sign_date}
           />
           <CustomInput
-            label="Номер реєстрації у нотаріуса"
+            label="Реєстровий номер"
             onChange={(e) => meta.setData({ ...meta.data, reg_num: e })}
             value={meta.data.reg_num}
           />

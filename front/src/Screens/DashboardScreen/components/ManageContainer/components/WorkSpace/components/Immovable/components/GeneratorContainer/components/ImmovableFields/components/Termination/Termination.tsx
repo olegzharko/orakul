@@ -11,7 +11,7 @@ const Termination = (props: Props) => {
 
   return (
     <div className="termination">
-      <SectionWithTitle title="Розірвання попереднього договру" onClear={meta.onClear}>
+      <SectionWithTitle title="Розірвання попереднього договору" onClear={meta.onClear}>
         <div className="grid-center-duet">
           <CustomInput
             label="Сума повернення коштів"
@@ -33,7 +33,7 @@ const Termination = (props: Props) => {
           />
 
           <CustomInput
-            label="Реєстраційний номер"
+            label="Реєстровий номер"
             value={meta.data.reg_number}
             onChange={(e) => meta.setData({ ...meta.data, reg_number: e })}
           />

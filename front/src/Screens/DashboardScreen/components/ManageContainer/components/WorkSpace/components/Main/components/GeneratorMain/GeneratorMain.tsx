@@ -28,7 +28,7 @@ const GeneratorMain = () => {
       </SectionWithTitle>
 
       <div className="middle-button">
-        <PrimaryButton label="Зберегти" onClick={meta.onSave} disabled={false} />
+        <PrimaryButton label="Генерувати" onClick={meta.onSave} disabled={false} />
       </div>
     </main>
   );

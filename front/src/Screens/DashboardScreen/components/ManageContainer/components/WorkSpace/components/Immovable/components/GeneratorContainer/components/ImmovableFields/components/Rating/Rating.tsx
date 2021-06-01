@@ -31,7 +31,7 @@ const Rating = (props: Props) => {
           />
         </div>
         <CustomInput
-          label="Заголовок документа"
+          label="Назва документа у родовому відмінку"
           onChange={(e) => setData({ ...data, title: e })}
           value={data.title}
         />

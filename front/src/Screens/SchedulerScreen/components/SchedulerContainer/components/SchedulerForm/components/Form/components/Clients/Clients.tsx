@@ -27,6 +27,7 @@ const Clients = (props: Props) => {
               label="Номер телефону"
               value={item.phone}
               onChange={(val) => meta.onPhoneChange(index, val)}
+              disabled={props.disabled || false}
             />
 
             {props.clients.length > 1 && (

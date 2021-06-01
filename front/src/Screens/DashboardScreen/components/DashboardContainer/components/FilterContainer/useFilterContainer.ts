@@ -7,17 +7,9 @@ export const useFilterContainer = () => {
   const dispatch = useDispatch();
   const { filterInitialData } = useSelector((state: State) => state.filter);
 
-  const [filterData, setFilterData] = useState<FilterData>();
-
   const onFilterDataChange = useCallback((data: FilterData) => {
-    setFilterData(data);
+    dispatch(fetchAppointmentsByFilter(data));
   }, []);
-
-  const onFilterSubmit = useCallback(() => {
-    if (filterData) {
-      dispatch(fetchAppointmentsByFilter(filterData));
-    }
-  }, [filterData]);
 
   const onContractsFilterChange = useCallback((url: string) => {
     dispatch(fetchAppointmentsByContracts(url));
@@ -26,7 +18,6 @@ export const useFilterContainer = () => {
   return {
     filterInitialData,
     onFilterDataChange,
-    onFilterSubmit,
     onContractsFilterChange,
   };
 };

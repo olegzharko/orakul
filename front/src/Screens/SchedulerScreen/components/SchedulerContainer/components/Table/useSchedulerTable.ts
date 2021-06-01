@@ -77,6 +77,8 @@ export const useSchedulerTable = () => {
       dispatch(
         setSelectedOldAppointment({
           ...payload,
+          raw: y,
+          cell: x,
           i,
           date: payload.date,
         })
