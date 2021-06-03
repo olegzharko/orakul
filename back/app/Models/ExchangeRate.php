@@ -28,7 +28,7 @@ class ExchangeRate extends Model
 
     public static function get_rate_by_imm_id($card_id)
     {
-        return ExchangeRate::where('card_id', $card_id)->first();
+        return ExchangeRate::where('card_id', $card_id)->value('rate');
     }
 
     public static function update_rate($card_id, $rate)
