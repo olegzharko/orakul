@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Factory;
 use App\Http\Controllers\Rakul\InstallmentController;
 use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
+use App\Models\ExchangeRate;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MainInfoType;
@@ -47,6 +48,7 @@ class DocumentController extends GeneratorController
     public $card;
     public $card_id;
     public $paragraph;
+    public $company_rate;
 
     public function __construct($client, $pack_contract, $consents_id, $card_id)
     {
@@ -93,6 +95,8 @@ class DocumentController extends GeneratorController
         foreach ($this->pack_contract as $key => $this->contract) {
             $this->ff = new FolderFileController($this->contract);
             $this->total_clients = count($this->contract->clients);
+
+            $this->company_rate = $this->get_rate_by_company($this->card->id, $this->contract->immovable->developer_building->dev_company);
 
             foreach ($this->contract->clients as $this->client) {
                 // dd($this->client->representative->confidant);
@@ -419,6 +423,14 @@ class DocumentController extends GeneratorController
 
     public function set_data_word($word)
     {
+
+        /*
+         * Розстрочка
+         * Черз проблему з центами має дублюючі поля інших блоків по цінам
+         * тому стоїть на першому місці
+         * */
+        $word = $this->set_installment_info($word);
+
         /*
          * Договір - загальні данні
          * */
@@ -500,11 +512,6 @@ class DocumentController extends GeneratorController
          * Забезпечувальний платіж до попереднього договору
          * */
         $word = $this->set_secure_payment($word);
-
-        /*
-         * Розстрочка
-         * */
-        $word = $this->set_installment_info($word);
 
         /*
          * Забезпечувальний платіж до попереднього договору
@@ -1855,6 +1862,7 @@ class DocumentController extends GeneratorController
     public function set_developer_price($word)
     {
         $word->setValue('price-grn', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
+
         $word->setValue('price-dollar', $this->convert->get_convert_price($this->contract->immovable->dollar, 'dollar'));
         $word->setValue('reserve-grn', $this->convert->get_convert_price($this->contract->immovable->reserve_grn, 'grn'));
         $word->setValue('reserve-dollar', $this->convert->get_convert_price($this->contract->immovable->reserve_dollar, 'dollar'));
@@ -1917,64 +1925,125 @@ class DocumentController extends GeneratorController
 
     public function set_installment_info($word)
     {
+        $dollar_sum_float = 0;
+        // 2 або 1
+        $client_num = count($this->contract->clients);
         // розстрочка на двох
         if ($this->contract->immovable->installment) {
+            // 5 000 000 00
+            $installment_grn_int = $this->contract->immovable->installment->total_price;
 
-            $reserve_part_grn = $this->contract->immovable->security_payment->last_part_grn - $this->contract->immovable->installment->total_price;
-            $installment_grn = $this->contract->immovable->installment->total_price;
-            $installment_dollar = $this->contract->immovable->installment->total_price / $this->card->exchange_rate->rate;
-            $reserve_part_dollar = $this->contract->immovable->security_payment->last_part_dollar - $installment_dollar;
+            $installment = $this->installment->get_data_for_doc($this->card, $this->contract->immovable, $this->contract->sign_date, $client_num);
 
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ГРН', $this->convert->get_convert_price($this->contract->immovable->installment->total_price, 'grn'));
-            $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ДОЛАР', $this->convert->get_convert_price($installment_dollar, 'dollar'));
-
-            if (count($this->contract->clients) == 2) {
-                $client_2 = $this->contract->clients[0];
-                $client_1 = $this->contract->clients[1];
-
-                // забезпечувальний платіж за конкретною людиною
-                if ($this->contract->immovable->security_payment && $this->contract->immovable->security_payment->client_id) {
-                    if ($client_2 && $this->contract->immovable->security_payment->client_id == $client_2->id) {
-                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($reserve_part_grn - $this->contract->immovable->security_payment->first_part_grn) / 2, 'grn'));
-                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price(($reserve_part_dollar - $this->contract->immovable->security_payment->first_part_dollar) / 2, 'dollar'));
-                    } else {
-                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn / 2, 'grn'));
-                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar / 2, 'dollar'));
-                    }
-                    if ($client_1 && $this->contract->immovable->security_payment->client_id == $client_1->id) {
-                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($reserve_part_grn - $this->contract->immovable->security_payment->first_part_grn) / 2, 'grn'));
-                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price(($reserve_part_dollar - $this->contract->immovable->security_payment->first_part_dollar) / 2, 'dollar'));
-                    } else {
-                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn / 2, 'grn'));
-                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar / 2, 'dollar'));
-                    }
-                    // без забезпечувального платежу або у рівних частинах на двох
-                } else {
-                    $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn / 2, 'grn'));
-                    $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar / 2, 'dollar'));
-                    $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn / 2, 'grn'));
-                    $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar / 2, 'dollar'));
-                }
-            // для одного клієнта
-            } else {
-                if ($this->contract->immovable->security_payment) {
-                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn - $this->contract->immovable->security_payment->first_part_grn, 'grn'));
-                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar - $this->contract->immovable->security_payment->first_part_dollar, 'dollar'));
-                } else {
-                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn, 'grn'));
-                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar, 'dollar'));
-                }
-            }
-            $installment = $this->installment->get_data_for_doc($this->card, $this->contract->immovable, $this->contract->sign_date);
-
-            $month = $this->contract->immovable->installment->total_month;
             $i = 1;
+            $installment_dollar_float = 0;
             foreach ($installment as $key => $price) {
                 $word->setValue('РОЗСТ-ДАТА-' . $i, $key);
-                $word->setValue('РОЗСТ-ГРН-' . $i, $this->convert->get_convert_price($price['grn'], 'grn'));
-                $word->setValue('РОЗСТ-ДОЛАР-' . $i, $this->convert->get_convert_price($price['dollar'], 'dollar'));
+                $word->setValue('РОЗСТ-ГРН-' . $i, number_format($price['grn'], 2, ',', $this->non_break_space));
+                $word->setValue('РОЗСТ-ДОЛАР-' . $i, number_format($price['dollar'], 2,',', $this->non_break_space));
+                $installment_dollar_float += $price['dollar'];
                 $i++;
             }
+
+            // отримати загальну суму в доларах
+            $installment_dollar_float = $installment_dollar_float * $client_num;
+            $dollar_sum_float += $installment_dollar_float;
+            // 1 824 818
+            $installment_dollar_int = $installment_dollar_float * 100;
+
+
+            if ($this->contract->immovable->security_payment) {
+                $reserve_part_grn_int = $this->contract->immovable->security_payment->last_part_grn - $this->contract->immovable->installment->total_price;
+
+                // розстрочка для двох клієнтів
+                if ($client_num == 2) {
+                    $client_2 = $this->contract->clients[0];
+                    $client_1 = $this->contract->clients[1];
+
+                    // забезпечувальний платіж за конкретною людиною
+                    if ($this->contract->immovable->security_payment->client_id) {
+                        $reserve_part_who_pay_security_dollar_int = ($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num - $this->contract->immovable->security_payment->first_part_grn;
+                        $reserve_part_who_pay_security_dollar_int = intval(round($reserve_part_who_pay_security_dollar_int / $this->company_rate * 100));
+
+                        $reserve_part_who_dont_pay_security_dollar_int = ($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num;
+                        $reserve_part_who_dont_pay_security_dollar_int = intval(round($reserve_part_who_dont_pay_security_dollar_int / $this->company_rate * 100));
+
+                        $dollar_sum_float += round($reserve_part_who_pay_security_dollar_int / 100, 2);
+                        $dollar_sum_float += round($reserve_part_who_dont_pay_security_dollar_int / 100, 2);
+                        if ($client_2 && $this->contract->immovable->security_payment->client_id == $client_2->id) {
+                            $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num - $this->contract->immovable->security_payment->first_part_grn, 'grn'));
+                            $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_who_pay_security_dollar_int, 'dollar'));
+                        } else {
+                            $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num, 'grn'));
+                            $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_who_dont_pay_security_dollar_int, 'dollar'));
+                        }
+                        if ($client_1 && $this->contract->immovable->security_payment->client_id == $client_1->id) {
+                            $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num - $this->contract->immovable->security_payment->first_part_grn, 'grn'));
+                            $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_who_pay_security_dollar_int, 'dollar'));
+                        } else {
+                            $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price(($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num, 'grn'));
+                            $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_who_dont_pay_security_dollar_int, 'dollar'));
+                        }
+                    // забезпечувальний платіж у рівних частинах на двох
+                    } else {
+                        // 245 000 00  = ( 990 000 00  -  500 000 00 ) / 2  - 10 000 00 / 2
+                        $half_part_grn_int = intval(round(($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num - ($this->contract->immovable->security_payment->first_part_grn / $client_num)));
+                         // 8 941 60  =  245 000 00 / 2740 * 100
+                        $half_part_dollar_int = intval(round($half_part_grn_int / $this->company_rate * 100));
+                        // + 17 883 21 = 245 000 00 / 2740 * 2
+                        $dollar_sum_float += ($half_part_grn_int / $this->company_rate) * $client_num;
+
+                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($half_part_grn_int, 'grn'));
+                        $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($half_part_dollar_int, 'dollar'));
+                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($half_part_grn_int, 'grn'));
+                        $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($half_part_dollar_int, 'dollar'));
+
+                    }
+                // розстрочка для одного клієнта
+                } else {
+                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($reserve_part_grn_int, 'grn'));       // ####################################
+                    $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($reserve_part_dollar_int, 'dollar')); // ####################################
+                }
+            // без забезпечувального платежу
+            } else {
+                if ($client_num == 2) {
+                    $half_part_grn_int = ($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price) / $client_num;
+                    $half_part_dollar_int = intval(round($half_part_grn_int / $this->company_rate * 100));
+
+                    $dollar_sum_float += $half_part_grn_int / $this->company_rate * $client_num;
+
+                    $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($half_part_grn_int, 'grn'));
+                    $word->setValue('2-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($half_part_dollar_int, 'dollar'));
+                    $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ГРН', $this->convert->get_convert_price($half_part_grn_int, 'grn'));
+                    $word->setValue('1-Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-1/2-ДОЛ', $this->convert->get_convert_price($half_part_dollar_int, 'dollar'));
+                } else {
+                    // ################
+                    // ################
+                }
+            }
+
+            // Таблиця розстрочки - Всього: загальна сума знизу
+            if ($client_num == 2) {
+                $word->setValue('РОЗСТ-ГРН-ВСЬОГО', number_format(($installment_grn_int / 100) / $client_num, 2, ',', $this->non_break_space));
+                $word->setValue('РОЗСТ-ДОЛАР-ВСЬОГО', number_format($installment_dollar_float / $client_num, 2, ',', $this->non_break_space));
+            } else {
+                $word->setValue('РОЗСТ-ГРН-ВСЬОГО', number_format($installment_grn_int / 100, 2, ',', $this->non_break_space));
+                $word->setValue('РОЗСТ-ДОЛАР-ВСЬОГО', number_format($dollar_sum_float, 2, ',', $this->non_break_space));
+            }
+
+            // Розстрочка - загальна сума до споати
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ГРН', $this->convert->get_convert_price($this->contract->immovable->installment->total_price, 'grn'));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-РОЗСТ-ДОЛАР', $this->convert->get_convert_price($installment_dollar_int, 'dollar'));
+
+            $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($dollar_sum_float * 100, 'dollar'));
+
+            $reserve_dollar_total = round($this->contract->immovable->reserve_grn / $this->company_rate * 100);
+            $word->setValue('Н-ЦІНА-РЕЗ-ДОЛ', $this->convert->get_convert_price($reserve_dollar_total, 'dollar'));
+
+            $first_part_reserve_dollar = intval(round($reserve_dollar_total - $dollar_sum_float * 100));
+            $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price($first_part_reserve_dollar, 'dollar'));
+
+            $word->setValue('Н-ЦІНА-РЕЗ-ДОЛ', $this->convert->get_convert_price($dollar_sum_float * 100, 'dollar'));
         }
 
         return $word;
@@ -2268,6 +2337,7 @@ class DocumentController extends GeneratorController
                 $pay_buy_client = $this->client;
             }
 
+
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
             $this->notification('Warning', $price * $percent . " " . $i);
             $sheet->setCellValue("A{$i}", $price * $percent);
@@ -2297,5 +2367,18 @@ class DocumentController extends GeneratorController
         }
 
         return $sheet;
+    }
+
+    public function get_rate_by_company($card_id, $dev_company)
+    {
+        $exchange_rate = ExchangeRate::where('card_id', $card_id)->first();
+
+        if ($dev_company->id == 14) {
+            $rate = $exchange_rate->contract_buy;
+        } else {
+            $rate = $exchange_rate->rate;
+        }
+
+        return $rate;
     }
 }

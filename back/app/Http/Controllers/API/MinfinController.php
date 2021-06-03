@@ -28,9 +28,10 @@ class MinfinController extends BaseController
         $exchange->contract_sell = $contract ? round($contract->sell, 2) * 100 : null;
         $exchange->save();
 
-        $result['exchange_rate'] = $currency_exchage;
-        $result['contract_buy'] = $contract->buy;
-        $result['contract_sell'] = $contract->sell;
+        $result['exchange_rate'] = number_format($currency_exchage, 2);
+        $result['contract_buy'] = number_format($contract->buy, 2);
+        $result['contract_sell'] = number_format($contract->sell, 2);
+
 
         return $this->sendResponse($result, 'Новий курс додано до базы даних');
     }
@@ -41,10 +42,10 @@ class MinfinController extends BaseController
 
         $api_data = json_decode($response->getBody());
 
-        if (!$api_data->data || !$api_data->data->auction)
+        if (!$api_data->data || !$api_data->data->bank)
             return $this->sendError('', 'Запит не передав дані');
 
-        return $api_data->data->auction;
+        return $api_data->data->bank;
     }
 
     public function get_dollar_auction()

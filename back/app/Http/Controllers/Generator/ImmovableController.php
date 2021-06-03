@@ -737,6 +737,8 @@ class ImmovableController extends BaseController
             BankTaxesPayment::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['template_id' => $r['taxes_template_id']]);
+        } else {
+            BankTaxesPayment::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['questionnaire_template_id']) {

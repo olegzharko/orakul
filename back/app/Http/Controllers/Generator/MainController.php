@@ -41,7 +41,7 @@ class MainController extends BaseController
         $result['instructions'] = [];
         if ($contract = Contract::where('card_id', $card_id)->where('template_id', null)->first()) {
             $address = $this->convert->building_full_address_by_type($contract->immovable);
-            $result['instructions'][] = ['title' => 'Відсутній шабон для', 'value' => $address];
+            $result['instructions'][] = ['title' => 'Відсутній шаблон для', 'value' => $address];
         }
 
         $result['date_info'] = $date_info;
