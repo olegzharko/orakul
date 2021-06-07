@@ -50,7 +50,7 @@ class ContractTemplate extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'developer_id'
+        'id', 'developer_id', 'title'
     ];
 
 
@@ -76,8 +76,8 @@ class ContractTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
-            Text::make('Заголовок', 'title'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany')->sortable(),
+            Text::make('Заголовок', 'title')->sortable(),
             BelongsTo::make('Тип шаблону', 'type', 'App\Nova\ContractType'),
 //            Select::make('Тип договору', 'type')->options([
 //                'main' => 'Основний договір',

@@ -20,6 +20,7 @@ use App\Models\KeyWord;
 use App\Models\Proxy;
 use App\Models\DevFence;
 use Validator;
+use URL;
 
 class GeneratorController extends BaseController
 {
@@ -46,13 +47,15 @@ class GeneratorController extends BaseController
 
     public function create_contract_by_card_id($card_id)
     {
+        $result = [];
         if ($this->get_contracts_id_by_card_id($card_id)) {
             Card::where('id', $card_id)->update(['ready' => true]);
             $this->card_id = $card_id;
-            $this->start_generate_contract();
+            $fileName = $this->start_generate_contract();
+            $result = $this->save_file($fileName);
         }
 
-        return $this->sendResponse('', 'Договір створено');
+        return $this->sendResponse($result, 'Договір створено');
     }
 
     public function create_all_contracts()
@@ -144,13 +147,15 @@ class GeneratorController extends BaseController
             }
             $this->client = $this->contract->client_contract;
             $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id, $this->card_id);
-            $this->word->creat_files();
+            $result = $this->word->creat_files();
         } else {
             dd("Увага: Угоди відсутні або не готові не генерації!");
         }
 
         unset($this->pack_contract);
         $this->pack_contract = null;
+
+        return $result;
     }
 
     public function notification($type, $message)
@@ -201,6 +206,14 @@ class GeneratorController extends BaseController
         $proxy = Proxy::find($proxy_id);
 
         return $proxy;
+    }
+
+    public function save_file($fileName)
+    {
+        $result['path'] = $fileName;
+        $result['link'] = URL::to('/') . "/" . $fileName;
+
+        return $result;
     }
 }
 

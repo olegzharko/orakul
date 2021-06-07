@@ -14,6 +14,14 @@ class SecurityPayment extends Model
         'immovable_id',
         'first_part_grn',
         'client_id',
+        'sign_date',
+        'reg_num',
+        'first_part_grn',
+        'first_part_dollar',
+        'last_part_grn',
+        'last_part_dollar',
+        'final_date',
+        'client_id',
     ];
 
     protected $casts = [

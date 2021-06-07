@@ -22,6 +22,7 @@ class Contract extends Model implements Sortable
         'ready',
         'translate',
         'sign_date',
+        'final_sign_date',
     ];
 
     public $sortable = [
@@ -34,6 +35,7 @@ class Contract extends Model implements Sortable
         'sign_date' => 'datetime',
         'date' => 'datetime',
         'deleted_at' => 'datetime',
+        'final_sign_date' => 'datetime',
     ];
 
 //    public function contract_type()

@@ -115,12 +115,15 @@ class ImmovableController extends BaseController
 
         $result['imm_number'] = $immovable->immovable_number;
         $result['registration_number'] = $immovable->registration_number;
-        $result['price_dollar'] = round($immovable->dollar / 100,2);
+//        $result['price_dollar'] = round($immovable->dollar / 100,2);
+        $result['price_dollar'] = 0;
         $result['price_grn'] = round($immovable->grn / 100,2);
         $result['reserve_grn'] = round($immovable->reserve_grn / 100, 2);
-        $result['reserve_dollar'] = round($immovable->reserve_dollar / 100,2);
+//        $result['reserve_dollar'] = round($immovable->reserve_dollar / 100,2);
+        $result['reserve_dollar'] = 0;
         $result['m2_grn'] = round($immovable->m2_grn / 100, 2);
-        $result['m2_dollar'] = round($immovable->m2_dollar / 100, 2);
+//        $result['m2_dollar'] = round($immovable->m2_dollar / 100, 2);
+        $result['m2_dollar'] = 0;
         $result['total_space'] = $immovable->total_space;
         $result['living_space'] = $immovable->living_space;
         $result['floor'] = $immovable->floor;
@@ -160,11 +163,14 @@ class ImmovableController extends BaseController
                 'immovable_number' => $r['imm_number'],
                 'registration_number' => $r['registration_number'],
                 'grn' => $r['price_grn'] * 100,
-                'dollar' => $price_dollar * 100,
+//                'dollar' => $price_dollar * 100,
+                'dollar' => 0,
                 'reserve_grn' => $r['reserve_grn'] * 100,
-                'reserve_dollar' => $reserve_dollar * 100,
+//                'reserve_dollar' => $reserve_dollar * 100,
+                'reserve_dollar' => 0,
                 'm2_grn' => $r['m2_grn'] * 100,
-                'm2_dollar' => $m2_dollar * 100,
+//                'm2_dollar' => $m2_dollar * 100,
+                'm2_dollar' => 0,
                 'total_space' => $r['total_space'],
                 'living_space' => $r['living_space'],
                 'floor' => $r['floor'],
@@ -279,23 +285,38 @@ class ImmovableController extends BaseController
             $clients_arr[$key]['title'] = $this->convert->get_full_name_n($value);
         }
 
-        $payment = SecurityPayment::firstOrCreate(
-            ['immovable_id' => $immovable_id],
-            [
-                'first_part_grn' => 1000000,
-                'client_id' => null,
-            ],
-        );
 
-        $result['sign_date'] = $payment->sign_date ? $payment->sign_date->format('d.m.Y') : null;
-        $result['reg_num'] = $payment->reg_num;
-        $result['first_part_grn'] = round($payment->first_part_grn / 100,2);
-        $result['first_part_dollar'] = round($payment->first_part_dollar / 100,2);
-        $result['last_part_grn'] = round($payment->last_part_grn / 100,2);
-        $result['last_part_dollar'] = round($payment->last_part_dollar / 100,2);
-        $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
-        $result['clients'] = $clients_arr;
-        $result['client_id'] = $payment->client_id;
+        $result['sign_date'] = null;
+        $result['reg_num'] = null;
+        $result['first_part_grn'] = null;
+        $result['first_part_dollar'] = null;
+        $result['last_part_grn'] = null;
+        $result['last_part_dollar'] = null;
+        $result['final_date'] = null;
+        $result['clients'] = null;
+        $result['client_id'] = null;
+
+//        $payment = SecurityPayment::firstOrCreate(
+//            ['immovable_id' => $immovable_id],
+//            [
+//                'first_part_grn' => 0,
+//                'client_id' => null,
+//            ],
+//        );
+
+        $payment = SecurityPayment::where('immovable_id', $immovable_id)->first();
+
+        if ($payment) {
+            $result['sign_date'] = $payment->sign_date ? $payment->sign_date->format('d.m.Y') : null;
+            $result['reg_num'] = $payment->reg_num;
+            $result['first_part_grn'] = round($payment->first_part_grn / 100,2);
+            $result['first_part_dollar'] = round($payment->first_part_dollar / 100,2);
+            $result['last_part_grn'] = round($payment->last_part_grn / 100,2);
+            $result['last_part_dollar'] = round($payment->last_part_dollar / 100,2);
+            $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
+            $result['clients'] = $clients_arr;
+            $result['client_id'] = $payment->client_id;
+        }
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id);
     }
@@ -335,16 +356,20 @@ class ImmovableController extends BaseController
             $first_part_dollar = $first_part_dollar - 0.01;
         }
 
-        SecurityPayment::where('immovable_id', $immovable_id)->update([
-            'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d.') : null,
-            'reg_num' => $r['reg_num'],
-            'first_part_grn' => $r['first_part_grn'] * 100,
-            'first_part_dollar' => $first_part_dollar * 100,
-            'last_part_grn' => $immovable->reserve_grn - ($r['first_part_grn'] * 100),
-            'last_part_dollar' => $immovable->reserve_dollar - ($first_part_dollar * 100),
-            'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d.') : null,
-            'client_id' => $r['client_id'],
-        ]);
+        SecurityPayment::updateOrCreate(
+            ['immovable_id' => $immovable_id],
+            [
+                'sign_date' => $r['sign_date'] ? $r['sign_date'] : null,
+                'reg_num' => $r['reg_num'],
+                'first_part_grn' => $r['first_part_grn'] * 100,
+//                'first_part_dollar' => $first_part_dollar * 100,
+                'first_part_dollar' => 0,
+                'last_part_grn' => $immovable->reserve_grn - ($r['first_part_grn'] * 100),
+//                'last_part_dollar' => $immovable->reserve_dollar - ($first_part_dollar * 100),
+                'last_part_dollar' => 0,
+                'final_date' => $r['final_date'] ? $r['final_date'] : null,
+                'client_id' => $r['client_id'],
+            ]);
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id . ' оновлено.');
     }
@@ -721,7 +746,7 @@ class ImmovableController extends BaseController
            'sign_date' => $r['sign_date'],
         ]);
 
-        if ($r['final_sign_date']) {
+        if (isset($r['final_sign_date'])) {
             FinalSignDate::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['sign_date' => $r['final_sign_date']]);
@@ -837,6 +862,7 @@ class ImmovableController extends BaseController
 
     private function validate_imm_data($r)
     {
+
         if (isset($r['date']) && !empty($r['date']))
             $r['date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))

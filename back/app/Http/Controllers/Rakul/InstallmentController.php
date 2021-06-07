@@ -47,6 +47,11 @@ class InstallmentController extends BaseController
 
     public function get_data_for_doc($card, $immovable, $sign_date, $client_num)
     {
+        $result = [];
+
+        if (!$immovable->installment || !$immovable->installment->total_price || !$immovable->installment->total_month)
+            return $result;
+
         $start_date = $sign_date;
 
         // обрати курс долара відповідно компанії забудовника
@@ -77,7 +82,6 @@ class InstallmentController extends BaseController
             $type = 1;
         }
 
-        $result = [];
         $step = $total_month / $type;
         $i = $step - 1;
 

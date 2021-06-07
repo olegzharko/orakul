@@ -54,8 +54,9 @@ class InstallmentPart extends Resource
             Select::make('Тип', 'type')->options([
                 'month' => 'Щомісячно',
                 'quarter' => 'Поквартально',
-            ])->displayUsingLabels(),
-            Text::make('Кількість місяців', 'month'),
+            ])->displayUsingLabels()->sortable(),
+            Text::make('Кількість клієнтів', 'client_num')->sortable(),
+            Text::make('Кількість місяців', 'month')->sortable(),
             Markdown::make('Таблиця', 'block'),
 
         ];
