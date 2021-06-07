@@ -29,6 +29,10 @@ export const useGeneratorMain = () => {
           message: res?.message,
         })
       );
+
+      if (res?.success && res?.data?.link) {
+        document.location.href = res.data.link;
+      }
     }
   }, [token, id]);
 
