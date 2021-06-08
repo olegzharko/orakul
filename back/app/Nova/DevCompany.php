@@ -40,7 +40,11 @@ class DevCompany extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
+    ];
+
+    public static $searchRelations = [
+        'dev_group' => ['title'],
     ];
 
     /**

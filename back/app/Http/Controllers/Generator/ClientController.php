@@ -871,9 +871,9 @@ class ClientController extends BaseController
                 $result[$key]['spouse']['id'] = $client->married->spouse->id;
                 $result[$key]['spouse']['full_name'] = $this->convert->get_full_name($client->married->spouse);
                 $result[$key]['spouse']['list'] = [
-                    'ІПН: ' . $client->married->tax_code,
-                    'Паспорт: ' . $client->married->passport_code,
-                    $client->married->birth_date ? $client->married->birth_date->format('d.m.Y') : null,
+                    'ІПН: ' . $client->married->spouse->tax_code,
+                    'Паспорт: ' . $client->married->spouse->passport_code,
+                    $client->married->spouse->birth_date ? $client->married->spouse->birth_date->format('d.m.Y') : null,
                 ];
             }
 

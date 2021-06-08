@@ -31,7 +31,7 @@ class District extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title_n', 'title_r'
     ];
 
     public static $group = "Локації";
@@ -41,7 +41,9 @@ class District extends Resource
         return "Район";
     }
 
-
+    public static $searchRelations = [
+        'region' => ['title_n'],
+    ];
 
     /**
      * Get the fields displayed by the resource.

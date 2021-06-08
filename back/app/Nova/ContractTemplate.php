@@ -53,6 +53,9 @@ class ContractTemplate extends Resource
         'id', 'developer_id', 'title'
     ];
 
+    public static $searchRelations = [
+        'developer' => ['title'],
+    ];
 
     public static $group = "Шаблон документу";
 

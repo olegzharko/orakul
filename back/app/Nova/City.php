@@ -48,6 +48,11 @@ class City extends Resource
         'id', 'title'
     ];
 
+    public static $searchRelations = [
+        'region' => ['title_n'],
+        'district' => ['title_n'],
+    ];
+
     public static $group = "Локації";
 
     // public static $group = "Забудоник";

@@ -39,6 +39,12 @@ class DevCompanyEmployer extends Resource
         'id',
     ];
 
+    public static $searchRelations = [
+        'dev_company' => ['title'],
+        'employer' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+        'type' => ['title'],
+    ];
+
     /**
      * Get the fields displayed by the resource.
      *

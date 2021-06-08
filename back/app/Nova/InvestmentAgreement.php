@@ -38,6 +38,11 @@ class InvestmentAgreement extends Resource
 
     public static $group = "Забудовник";
 
+    public static $searchRelations = [
+        'dev_company' => ['title'],
+        'investor' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+    ];
+
     public static function label()
     {
         return "Інвестиційний договір продавця";

@@ -32,9 +32,8 @@ class Contract extends Resource
 
     public function title()
     {
-
-        if ($this->notary)
-            $str_notary = $this->notary->surname_n . " " . $this->notary->short_name . " " . $this->notary->short_patronymic;
+        if ($this->card->notary)
+            $str_notary = $this->card->notary->surname_n . " " . $this->card->notary->short_name . " " . $this->card->notary->short_patronymic;
         else
             $str_notary = null;
 
@@ -45,7 +44,7 @@ class Contract extends Resource
             }
         }
         $date = $this->event_datetime ? $this->event_datetime->format('d.m.y') : null;
-        return $date . " Нотаріус: " . $str_notary . ". Клієнт: " . $str_client;
+        return $date . " Нотаріус: " . $str_notary . " - Клієнт: " . $str_client;
     }
 
     /**

@@ -630,7 +630,7 @@ class ConvertController extends GeneratorController
             $region = "$region_title $region_type,";
         }
 
-        if ($c->city && $c->city->district_root == false && $c->city->district) {
+        if ($c->city && $c->city->district && ($c->city->district_root == false || $c->city->district_root == true && $c->city->city_type->title_n != 'місто')) {
             $district_type = trim(KeyWord::where('key', 'district')->value('title_n'));
             $district_title = trim($c->city->district->title_n);
             $district = "$district_title $district_type,";

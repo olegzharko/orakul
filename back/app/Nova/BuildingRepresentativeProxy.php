@@ -39,6 +39,13 @@ class BuildingRepresentativeProxy extends Resource
         return "Будинок, представник, довіреність";
     }
 
+    public static $searchRelations = [
+        'building' => ['title', 'number'],
+        'representative' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+        'proxy' => ['title', 'number', 'reg_num'],
+//        'investor' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+    ];
+
     /**
      * Get the fields displayed by the resource.
      *

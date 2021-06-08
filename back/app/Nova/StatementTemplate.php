@@ -32,7 +32,11 @@ class StatementTemplate extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
+    ];
+
+    public static $searchRelations = [
+        'developer' => ['title'],
     ];
 
     public static $group = "Шаблон документу";
@@ -53,7 +57,7 @@ class StatementTemplate extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Назва', 'title')->rules('required'),
-            BelongsTo::make('Забудовник', 'develoepr', 'App\Nova\DevCompany'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),

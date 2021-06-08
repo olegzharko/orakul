@@ -44,7 +44,15 @@ class Proxy extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title', 'number', 'reg_num'
+    ];
+
+    public static $searchRelations = [
+        'dev_company' => ['title'],
+        'notary' => ['surname_n', 'name_n', 'short_name', 'patronymic_n', 'short_patronymic'],
+//        'building' => ['title', 'number'],
+//        'representative' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+//        'proxy' => ['title', 'number', 'reg_num'],
     ];
 
     /**

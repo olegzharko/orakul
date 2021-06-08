@@ -42,10 +42,10 @@ class MinfinController extends BaseController
 
         $api_data = json_decode($response->getBody());
 
-        if (!$api_data->data || !$api_data->data->bank)
+        if (!$api_data->data || !$api_data->data->auction)
             return $this->sendError('', 'Запит не передав дані');
 
-        return $api_data->data->bank;
+        return $api_data->data->auction;
     }
 
     public function get_dollar_auction()

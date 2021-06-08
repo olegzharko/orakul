@@ -346,7 +346,7 @@ class FolderFileController extends Controller
         return $title;
     }
 
-    public function bank_taxes_title($client)
+    public function bank_taxes_title_excel($client)
     {
         $title = null;
         $title = "{$this->generate_path}/"

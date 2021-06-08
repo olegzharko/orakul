@@ -38,7 +38,11 @@ class BuildingPermit extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'resolution', 'organization'
+    ];
+
+    public static $searchRelations = [
+        'developer_building' => ['title', 'number'],
     ];
 
     /**

@@ -33,7 +33,11 @@ class ConsentTemplate extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
+    ];
+
+    public static $searchRelations = [
+        'dev_company' => ['title'],
     ];
 
     public static $group = "Шаблон документу";

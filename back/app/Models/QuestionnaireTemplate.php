@@ -17,7 +17,7 @@ class QuestionnaireTemplate extends Model implements HasMedia
         'deleted_at' => 'datetime',
     ];
 
-    public function develoepr()
+    public function developer()
     {
         return $this->belongsTo(DevCompany::class, 'developer_id');
     }
