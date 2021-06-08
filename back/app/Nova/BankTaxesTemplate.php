@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class BankTaxesTemplate extends Resource
@@ -52,9 +53,14 @@ class BankTaxesTemplate extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Заголовок', 'title'),
+            Select::make('Тип файлу', 'type')->options([
+                'excel' => 'Excel',
+                'word' => 'Word',
+            ])->displayUsingLabels(),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),
+
         ];
     }
 
