@@ -16,7 +16,7 @@ const Termination = (props: Props) => {
           <CustomInput
             label="Сума повернення коштів"
             value={meta.data.price}
-            onChange={(e) => meta.setData({ ...meta.data, price: +e })}
+            onChange={(e) => meta.setData({ ...meta.data, price: e })}
           />
 
           <CustomSelect

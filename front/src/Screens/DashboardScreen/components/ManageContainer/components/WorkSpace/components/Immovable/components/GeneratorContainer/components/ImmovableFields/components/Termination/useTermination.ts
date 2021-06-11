@@ -10,7 +10,7 @@ type InitialData = {
   notary_id: number | null,
   reg_date: any,
   reg_number: string | null,
-  price: number | null,
+  price: string | null,
   notary?: SelectItem[],
 }
 
