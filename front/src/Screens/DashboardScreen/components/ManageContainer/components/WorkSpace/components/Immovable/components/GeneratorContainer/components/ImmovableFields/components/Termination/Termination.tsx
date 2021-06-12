@@ -12,13 +12,7 @@ const Termination = (props: Props) => {
   return (
     <div className="termination">
       <SectionWithTitle title="Розірвання попереднього договору" onClear={meta.onClear}>
-        <div className="grid-center-duet">
-          <CustomInput
-            label="Сума повернення коштів"
-            value={meta.data.price}
-            onChange={(e) => meta.setData({ ...meta.data, price: e })}
-          />
-
+        <div className="grid">
           <CustomSelect
             label="Нотаріус"
             data={meta.notaries}
@@ -36,6 +30,18 @@ const Termination = (props: Props) => {
             label="Реєстровий номер"
             value={meta.data.reg_number}
             onChange={(e) => meta.setData({ ...meta.data, reg_number: e })}
+          />
+
+          <CustomInput
+            label="Сума повернення коштів в гривнях"
+            value={meta.data.price_grn}
+            onChange={(e) => meta.setData({ ...meta.data, price_grn: e })}
+          />
+
+          <CustomInput
+            label="Сума повернення коштів в доларах"
+            value={meta.data.price_dollar}
+            onChange={(e) => meta.setData({ ...meta.data, price_dollar: e })}
           />
         </div>
       </SectionWithTitle>

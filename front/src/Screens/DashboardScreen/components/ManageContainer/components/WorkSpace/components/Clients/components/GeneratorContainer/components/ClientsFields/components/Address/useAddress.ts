@@ -5,6 +5,7 @@ import { State } from '../../../../../../../../../../../../../../store/types';
 import { setModalInfo } from '../../../../../../../../../../../../../../store/main/actions';
 import reqClientAddress from '../../../../../../../../../../../../../../services/generator/Client/reqClientAddress';
 import reqClientCities from '../../../../../../../../../../../../../../services/generator/Client/reqClientCities';
+import reqClientDistricts from '../../../../../../../../../../../../../../services/generator/Client/reqClientDistricts';
 
 type ActualInitialData = {
   actual_region_id: string | null,
@@ -13,8 +14,11 @@ type ActualInitialData = {
   actual_address: string | null,
   actual_building_type_id: string | null,
   actual_building_num: string | null,
+  actual_building_part_id: string | null,
+  actual_building_part_num: string | null,
   actual_apartment_type_id: string | null,
   actual_apartment_num: string | null,
+  actual_district_id: string | null,
 }
 
 type Data = {
@@ -24,8 +28,11 @@ type Data = {
   address: string | null,
   building_type_id: string | null,
   building_num: string | null,
+  building_part_id: string | null,
+  building_part_num: string | null,
   apartment_type_id: string | null,
   apartment_num: string | null,
+  district_id: string | null,
 }
 interface InitialData extends ActualInitialData, Data {
   registration: boolean,
@@ -34,6 +41,7 @@ interface InitialData extends ActualInitialData, Data {
   address_type?: SelectItem[],
   building_type?: SelectItem[],
   apartment_type?: SelectItem[],
+  building_part?: SelectItem[],
 }
 
 export type Props = {
@@ -51,8 +59,11 @@ export const useAddress = ({ initialData, id }: Props) => {
   const [actualRegions, setActualRegions] = useState<SelectItem[]>([]);
   const [cities, setCities] = useState<SelectItem[]>([]);
   const [actualCities, setActualCities] = useState<SelectItem[]>([]);
+  const [districts, setDistricts] = useState<SelectItem[]>([]);
+  const [actualDistricts, setActualDistricts] = useState<SelectItem[]>([]);
   const [addressType, setAddressType] = useState<SelectItem[]>([]);
   const [buildingType, setBuildingType] = useState<SelectItem[]>([]);
+  const [buildingPartType, setBuildingPartType] = useState<SelectItem[]>([]);
   const [apartmentType, setApartmentType] = useState<SelectItem[]>([]);
   const [registration, setRegistration] = useState<boolean>(false);
   const [actual, setActual] = useState<boolean>(false);
@@ -63,8 +74,11 @@ export const useAddress = ({ initialData, id }: Props) => {
     address: null,
     building_type_id: null,
     building_num: null,
+    building_part_id: null,
+    building_part_num: null,
     apartment_type_id: null,
     apartment_num: null,
+    district_id: null,
   });
   const [actualData, setActualData] = useState<ActualInitialData>({
     actual_region_id: null,
@@ -73,69 +87,12 @@ export const useAddress = ({ initialData, id }: Props) => {
     actual_address: null,
     actual_building_type_id: null,
     actual_building_num: null,
+    actual_building_part_id: null,
+    actual_building_part_num: null,
     actual_apartment_type_id: null,
     actual_apartment_num: null,
+    actual_district_id: null,
   });
-
-  useEffect(() => {
-    setRegions(initialData?.regions || []);
-    setActualRegions(initialData?.regions || []);
-    setAddressType(initialData?.address_type || []);
-    setBuildingType(initialData?.building_type || []);
-    setApartmentType(initialData?.apartment_type || []);
-    setRegistration(initialData?.registration || false);
-    setActual(initialData?.actual || false);
-    setData({
-      region_id: initialData?.region_id || null,
-      city_id: initialData?.city_id || null,
-      address_type_id: initialData?.address_type_id || null,
-      address: initialData?.address || null,
-      building_type_id: initialData?.building_type_id || null,
-      building_num: initialData?.building_num || null,
-      apartment_type_id: initialData?.apartment_type_id || null,
-      apartment_num: initialData?.apartment_num || null,
-    });
-    setActualData({
-      actual_region_id: initialData?.actual_region_id || null,
-      actual_city_id: initialData?.actual_city_id || null,
-      actual_address_type_id: initialData?.actual_address_type_id || null,
-      actual_address: initialData?.actual_address || null,
-      actual_building_type_id: initialData?.actual_building_type_id || null,
-      actual_building_num: initialData?.actual_building_num || null,
-      actual_apartment_type_id: initialData?.actual_apartment_type_id || null,
-      actual_apartment_num: initialData?.actual_apartment_num || null,
-    });
-  }, [initialData]);
-
-  useEffect(() => {
-    if (showModal) return;
-
-    // get CITIES
-    (async () => {
-      if (token && data.region_id) {
-        const res = await reqClientCities(token, data.region_id);
-
-        if (res.success) {
-          setCities(res.data);
-        }
-      }
-    })();
-  }, [token, data.region_id, showModal]);
-
-  useEffect(() => {
-    if (showModal) return;
-
-    // get CITIES
-    (async () => {
-      if (token && actualData.actual_region_id) {
-        const res = await reqClientCities(token, actualData.actual_region_id);
-
-        if (res.success) {
-          setActualCities(res.data);
-        }
-      }
-    })();
-  }, [token, actualData.actual_region_id, showModal]);
 
   const onClear = useCallback(() => {
     setData({
@@ -145,8 +102,11 @@ export const useAddress = ({ initialData, id }: Props) => {
       address: null,
       building_type_id: null,
       building_num: null,
+      building_part_id: null,
+      building_part_num: null,
       apartment_type_id: null,
       apartment_num: null,
+      district_id: null,
     });
 
     setActualData({
@@ -156,8 +116,11 @@ export const useAddress = ({ initialData, id }: Props) => {
       actual_address: null,
       actual_building_type_id: null,
       actual_building_num: null,
+      actual_building_part_id: null,
+      actual_building_part_num: null,
       actual_apartment_type_id: null,
       actual_apartment_num: null,
+      actual_district_id: null,
     });
   }, []);
 
@@ -181,13 +144,129 @@ export const useAddress = ({ initialData, id }: Props) => {
     }
   }, [data, actualData, actual, registration, token]);
 
+  const onRegionChange = useCallback((value) => {
+    setData({ ...data, region_id: value, district_id: null, city_id: null });
+  }, [data]);
+
+  const onActualRegionChange = useCallback((value) => {
+    setActualData({
+      ...actualData,
+      actual_region_id: value,
+      actual_district_id: null,
+      actual_city_id: null,
+    });
+  }, [actualData]);
+
+  const onDistrictChange = useCallback((value) => {
+    setData({ ...data, district_id: value, city_id: null });
+  }, [data]);
+
+  const onActualDistrictChange = useCallback((value) => {
+    setActualData({ ...actualData, actual_district_id: value, actual_city_id: null });
+  }, [actualData]);
+
+  useEffect(() => {
+    setRegions(initialData?.regions || []);
+    setActualRegions(initialData?.regions || []);
+    setAddressType(initialData?.address_type || []);
+    setBuildingType(initialData?.building_type || []);
+    setBuildingPartType(initialData?.building_part || []);
+    setApartmentType(initialData?.apartment_type || []);
+    setRegistration(initialData?.registration || false);
+    setActual(initialData?.actual || false);
+    setData({
+      region_id: initialData?.region_id || null,
+      city_id: initialData?.city_id || null,
+      address_type_id: initialData?.address_type_id || null,
+      address: initialData?.address || null,
+      building_type_id: initialData?.building_type_id || null,
+      building_num: initialData?.building_num || null,
+      building_part_id: initialData?.building_part_id || null,
+      building_part_num: initialData?.building_part_num || null,
+      apartment_type_id: initialData?.apartment_type_id || null,
+      apartment_num: initialData?.apartment_num || null,
+      district_id: initialData?.district_id || null,
+    });
+    setActualData({
+      actual_region_id: initialData?.actual_region_id || null,
+      actual_city_id: initialData?.actual_city_id || null,
+      actual_address_type_id: initialData?.actual_address_type_id || null,
+      actual_address: initialData?.actual_address || null,
+      actual_building_type_id: initialData?.actual_building_type_id || null,
+      actual_building_num: initialData?.actual_building_num || null,
+      actual_building_part_id: initialData?.actual_building_part_id || null,
+      actual_building_part_num: initialData?.actual_building_part_num || null,
+      actual_apartment_type_id: initialData?.actual_apartment_type_id || null,
+      actual_apartment_num: initialData?.actual_apartment_num || null,
+      actual_district_id: initialData?.actual_district_id || null,
+    });
+  }, [initialData]);
+
+  // Change district and city when changed region
+  useEffect(() => {
+    if (showModal) return;
+    // get DISTRICTS
+    (async () => {
+      if (token && data.region_id) {
+        const res = await reqClientDistricts(token, data.region_id);
+
+        if (res.success) {
+          setDistricts(res.data);
+        }
+      }
+    })();
+
+    // get CITIES
+    (async () => {
+      if (token && data.region_id) {
+        const res = await reqClientCities(token, data.region_id, data.district_id);
+
+        if (res.success) {
+          setCities(res.data);
+        }
+      }
+    })();
+  }, [token, data.region_id, data.district_id, showModal]);
+
+  // Change actual district and city when changed actual region
+  useEffect(() => {
+    if (showModal) return;
+
+    // get DISTRICTS
+    (async () => {
+      if (token && actualData.actual_region_id) {
+        const res = await reqClientDistricts(token, actualData.actual_region_id);
+
+        if (res.success) {
+          setActualDistricts(res.data);
+        }
+      }
+    })();
+
+    // get CITIES
+    (async () => {
+      if (token && actualData.actual_region_id) {
+        const res = await reqClientCities(
+          token, actualData.actual_region_id, actualData.actual_district_id
+        );
+
+        if (res.success) {
+          setActualCities(res.data);
+        }
+      }
+    })();
+  }, [token, actualData.actual_region_id, actualData.actual_district_id, showModal]);
+
   return {
     regions,
     actualRegions,
     cities,
     actualCities,
+    districts,
+    actualDistricts,
     addressType,
     buildingType,
+    buildingPartType,
     apartmentType,
     data,
     actualData,
@@ -197,6 +276,10 @@ export const useAddress = ({ initialData, id }: Props) => {
     setShowModal,
     setData,
     setActualData,
+    onRegionChange,
+    onActualRegionChange,
+    onDistrictChange,
+    onActualDistrictChange,
     onClear,
     onSave,
     setRegistration,

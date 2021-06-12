@@ -10,7 +10,8 @@ type InitialData = {
   notary_id: number | null,
   reg_date: any,
   reg_number: string | null,
-  price: string | null,
+  price_grn: string | null,
+  price_dollar: string | null,
   notary?: SelectItem[],
 }
 
@@ -28,7 +29,8 @@ export const useTermination = ({ id, initialData }: Props) => {
     notary_id: null,
     reg_date: null,
     reg_number: null,
-    price: null,
+    price_grn: null,
+    price_dollar: null,
   });
 
   const onClear = useCallback(() => {
@@ -36,7 +38,8 @@ export const useTermination = ({ id, initialData }: Props) => {
       notary_id: null,
       reg_date: null,
       reg_number: null,
-      price: null,
+      price_grn: null,
+      price_dollar: null,
     });
   }, []);
 
@@ -63,7 +66,8 @@ export const useTermination = ({ id, initialData }: Props) => {
     setData({
       notary_id: initialData?.notary_id || null,
       reg_number: initialData?.reg_number || null,
-      price: initialData?.price || null,
+      price_grn: initialData?.price_grn || null,
+      price_dollar: initialData?.price_dollar || null,
       reg_date: initialData?.reg_date ? changeMonthWitDate(initialData?.reg_date) : null,
     });
   }, [initialData]);

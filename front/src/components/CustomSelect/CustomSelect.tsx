@@ -21,6 +21,7 @@ type Props = {
   size?: 'medium' | 'small';
   className?: string;
   required?: boolean;
+  disableDefaultValue?: boolean;
 };
 
 const CustomSelect = ({
@@ -32,6 +33,7 @@ const CustomSelect = ({
   size = 'medium',
   className,
   required,
+  disableDefaultValue,
 }: Props) => {
   const [selected, setSelected] = useState(selectedValue || '');
 
@@ -55,9 +57,11 @@ const CustomSelect = ({
         disabled={disabled || data.length === 0}
         defaultValue=""
       >
-        <MenuItem value="">
-          <em>Выбрать</em>
-        </MenuItem>
+        {!disableDefaultValue && (
+          <MenuItem value="">
+            <em>Выбрать</em>
+          </MenuItem>
+        )}
         {data.map(({ id, title }: Data) => (
           <MenuItem value={id} key={id}>
             {title}

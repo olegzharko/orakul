@@ -27,10 +27,16 @@ const ExchangeRate = (props: Props) => {
           <span>Курс української грн до 1$ CША</span>
         </div>
 
-        <div className="grid mb20">
-          <CustomInput required label="Середній курс долара" onChange={setExchangeRate} value={exchangeRate} />
-          <CustomInput required label="Курс для договорів - купівля" onChange={setContractBuy} value={contractBuy} />
-          <CustomInput required label="Курс для договорів - продаж" onChange={setContractSell} value={contractSell} />
+        <div className="exchange mb20">
+          <div className="exchange__field">
+            <CustomInput required label="Середній курс долара" onChange={setExchangeRate} value={exchangeRate} />
+          </div>
+          <div className="exchange__field">
+            <CustomInput required label="Курс для договорів - купівля" onChange={setContractBuy} value={contractBuy} />
+          </div>
+          <div className="exchange__field">
+            <CustomInput required label="Курс для договорів - продаж" onChange={setContractSell} value={contractSell} />
+          </div>
         </div>
 
         <div className="middle-button">

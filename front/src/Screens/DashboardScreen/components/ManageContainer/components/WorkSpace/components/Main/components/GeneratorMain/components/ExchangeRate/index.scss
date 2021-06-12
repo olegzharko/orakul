@@ -1,6 +1,7 @@
 @import '../../../../../../../../../../../../constants.scss';
 
 .exchange {
+  display: flex;
   justify-content: center;
   align-items: center;
 
@@ -11,7 +12,7 @@
   }
 
   & > div {
-    width: 150px;
+    width: 300px;
     margin: 0 20px;
   }
 

@@ -1,14 +1,13 @@
 import { DEFAULT_URL } from '../../Constants';
 import requestApi from '../../utils/requestApi';
 
-export default async function reqClientCities(
+export default async function reqClientDistricts(
   token: string,
-  regionId: string | null,
-  districtId: string | null,
+  id: string,
 ) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/generator/client/cities/${regionId}${districtId ? `/${districtId}` : ''}`,
+      url: `${DEFAULT_URL}/api/generator/client/districts/${id}`,
       headers: { Authorization: `Bearer ${token}` },
     });
 

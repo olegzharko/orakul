@@ -7,10 +7,14 @@ import { SelectItem } from '../../../../../../../../../../../../../../../../type
 type Props = {
   regions: SelectItem[],
   cities: SelectItem[],
+  districts: SelectItem[],
   addressType: SelectItem[],
   apartmentType: SelectItem[],
   buildingType: SelectItem[],
+  buildingPartType: SelectItem[],
   data: any,
+  onRegionChange: (value: string) => void,
+  onDistrictChange: (value: string) => void,
   setData: (data: any) => void,
   setShowModal: (val: boolean) => void,
   actual?: boolean,
@@ -19,21 +23,35 @@ type Props = {
 const Fields = ({
   regions,
   cities,
+  districts,
   addressType,
   buildingType,
+  buildingPartType,
   apartmentType,
   data,
   actual,
+  onRegionChange,
+  onDistrictChange,
   setData,
   setShowModal
 }: Props) => (
   <div className="address__container">
     <div className="clients__address-container">
       <CustomSelect
+        disableDefaultValue
         label="Область"
         data={regions}
-        onChange={(e) => setData({ ...data, [`${actual ? 'actual_region_id' : 'region_id'}`]: e })}
+        onChange={(e) => onRegionChange(e)}
         selectedValue={actual ? data.actual_region_id : data.region_id}
+      />
+    </div>
+
+    <div className="clients__address-container">
+      <CustomSelect
+        label="Район"
+        data={districts}
+        onChange={(e) => onDistrictChange(e)}
+        selectedValue={actual ? data.actual_district_id : data.district_id}
       />
     </div>
 
@@ -81,6 +99,24 @@ const Fields = ({
           label="Номер будинку"
           onChange={(e) => setData({ ...data, [`${actual ? 'actual_building_num' : 'building_num'}`]: e })}
           value={actual ? data.actual_building_num : data.building_num}
+        />
+      </div>
+    </div>
+
+    <div className="clients__address-container df duet">
+      <div className="long-width">
+        <CustomSelect
+          label="Частина будівлі"
+          data={buildingPartType}
+          onChange={(e) => setData({ ...data, [`${actual ? 'actual_building_part_id' : 'building_part_id'}`]: e })}
+          selectedValue={actual ? data.actual_building_part_id : data.building_part_id}
+        />
+      </div>
+      <div className="short-width">
+        <CustomInput
+          label="Номер"
+          onChange={(e) => setData({ ...data, [`${actual ? 'actual_building_part_num' : 'building_part_num'}`]: e })}
+          value={actual ? data.actual_building_part_num : data.building_part_num}
         />
       </div>
     </div>

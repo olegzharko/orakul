@@ -2,6 +2,7 @@ import * as React from 'react';
 import CustomDatePicker from '../../../../../../../../../../../../../../components/CustomDatePicker';
 import CustomInput from '../../../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../../../components/CustomSelect';
+import CustomSwitch from '../../../../../../../../../../../../../../components/CustomSwitch';
 import PrimaryButton from '../../../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../../../components/SectionWithTitle';
 import { useStatement, Props } from './useStatement';
@@ -13,6 +14,22 @@ const Statement = (props: Props) => {
     <div className="clients__statement">
       <SectionWithTitle title="Сімейний стан покупця" onClear={meta.onClear}>
         <div className="grid mb20">
+          <CustomSelect
+            label="Нотаріус"
+            data={meta.rakulNotary}
+            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
+            selectedValue={meta.data.notary_id}
+          />
+          <CustomDatePicker
+            label="Дата посвідчення заяви"
+            onSelect={(e) => meta.setData({ ...meta.data, sign_date: e })}
+            selectedDate={meta.data.sign_date}
+          />
+          <CustomInput
+            label="Реєстровий номер"
+            onChange={(e) => meta.setData({ ...meta.data, reg_num: e })}
+            value={meta.data.reg_num}
+          />
           <CustomSelect
             label="Шаблон згоди"
             data={meta.consentTemplates}
@@ -62,21 +79,22 @@ const Statement = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, mar_reg_num: e })}
             value={meta.data.mar_reg_num}
           />
-          <CustomSelect
-            label="Нотаріус"
-            data={meta.rakulNotary}
-            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
-            selectedValue={meta.data.notary_id}
+          <CustomSwitch
+            label="Видано повторно"
+            selected={meta.data.original}
+            onChange={(e) => meta.setData({ ...meta.data, original: e })}
           />
+          <CustomSwitch
+            label="Вдівство"
+            selected={meta.data.widow}
+            onChange={(e) => meta.setData({ ...meta.data, widow: e })}
+          />
+
           <CustomDatePicker
-            label="Дата посвідчення заяви"
-            onSelect={(e) => meta.setData({ ...meta.data, sign_date: e })}
-            selectedDate={meta.data.sign_date}
-          />
-          <CustomInput
-            label="Реєстровий номер"
-            onChange={(e) => meta.setData({ ...meta.data, reg_num: e })}
-            value={meta.data.reg_num}
+            label="Вдівство від"
+            onSelect={(e) => meta.setData({ ...meta.data, widow_date: e })}
+            selectedDate={meta.data.widow_date}
+            disabled={!meta.data.widow}
           />
         </div>
       </SectionWithTitle>

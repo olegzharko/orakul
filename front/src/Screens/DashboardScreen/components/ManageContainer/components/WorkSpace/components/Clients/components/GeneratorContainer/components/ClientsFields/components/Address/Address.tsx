@@ -33,10 +33,14 @@ const Address = (props: Props) => {
           <Fields
             regions={meta.regions}
             cities={meta.cities}
+            districts={meta.districts}
             addressType={meta.addressType}
             buildingType={meta.buildingType}
+            buildingPartType={meta.buildingPartType}
             apartmentType={meta.apartmentType}
             data={meta.data}
+            onRegionChange={meta.onRegionChange}
+            onDistrictChange={meta.onDistrictChange}
             setData={meta.setData}
             setShowModal={meta.setShowModal}
           />
@@ -46,10 +50,14 @@ const Address = (props: Props) => {
               actual
               regions={meta.actualRegions}
               cities={meta.actualCities}
+              districts={meta.actualDistricts}
               addressType={meta.addressType}
               buildingType={meta.buildingType}
+              buildingPartType={meta.buildingPartType}
               apartmentType={meta.apartmentType}
               data={meta.actualData}
+              onRegionChange={meta.onActualRegionChange}
+              onDistrictChange={meta.onActualDistrictChange}
               setData={meta.setActualData}
               setShowModal={meta.setShowModal}
             />
