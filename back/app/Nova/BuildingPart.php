@@ -3,8 +3,12 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
 class BuildingPart extends Resource
 {
