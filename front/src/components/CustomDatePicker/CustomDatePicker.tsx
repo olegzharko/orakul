@@ -14,6 +14,7 @@ type Props = {
   onSelect: (value: any) => void;
   selectedDate?: Date | null;
   required?: boolean;
+  disabled?: boolean;
 }
 
 const customTheme = createMuiTheme({
@@ -24,7 +25,7 @@ const customTheme = createMuiTheme({
   },
 });
 
-const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) => {
+const CustomDatePicker = ({ selectedDate, onSelect, label, required, disabled }: Props) => {
   const [value, setValue] = useState<MaterialUiPickersDate | undefined>(selectedDate);
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required }: Props) =>
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
+          disabled={disabled || false}
         />
       </MuiPickersUtilsProvider>
     </MuiThemeProvider>

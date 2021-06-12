@@ -17,6 +17,9 @@ type InitialData = {
   mar_reg_num: string,
   sign_date: any,
   reg_num: string,
+  original: boolean,
+  widow: boolean,
+  widow_date: any,
   consent_spouse_word_id: string,
   notary?: SelectItem[],
   consent_templates?: SelectItem[],
@@ -50,6 +53,9 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
     sign_date: null,
     reg_num: '',
     consent_spouse_word_id: '',
+    original: false,
+    widow: false,
+    widow_date: null,
   });
 
   useEffect(() => {
@@ -70,6 +76,9 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
         ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
       reg_num: initialData?.reg_num || '',
       consent_spouse_word_id: initialData?.consent_spouse_word_id || '',
+      original: initialData?.original || false,
+      widow: initialData?.widow || false,
+      widow_date: initialData?.widow_date || null,
     });
   }, [initialData]);
 
@@ -86,6 +95,9 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       sign_date: null,
       reg_num: '',
       consent_spouse_word_id: '',
+      original: false,
+      widow: false,
+      widow_date: null,
     });
   }, []);
 
@@ -95,6 +107,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
         ...data,
         mar_date: formatDate(data.mar_date),
         sign_date: formatDate(data.sign_date),
+        widow_date: data.widow ? formatDate(data.widow_date) : null,
       };
 
       const { success, message } = await reqClientConsents(token, clientId, personId, 'PUT', reqData);
