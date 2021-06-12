@@ -52,7 +52,7 @@ class BuildingPart extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Тип вулиці скорочено', 'short')->creationRules('unique:building_parts,short')->updateRules('unique:building_parts,short,{{resourceId}}'),
+            Text::make('Тип частини будівлі скорочено', 'short')->creationRules('unique:building_parts,short')->updateRules('unique:building_parts,short,{{resourceId}}'),
             Text::make('Назва у називному відмінку ', 'title_n')->creationRules('unique:building_parts,title_n')->updateRules('unique:building_parts,title_n,{{resourceId}}'),
             Text::make('Назва у родовому відмінку', 'title_r')->creationRules('unique:building_parts,title_r')->updateRules('unique:building_parts,title_r,{{resourceId}}'),
             Text::make('Назва у знахідному відмінку', 'title_z')->creationRules('unique:building_parts,title_z')->updateRules('unique:building_parts,title_z,{{resourceId}}'),
