@@ -600,7 +600,8 @@ class ImmovableController extends BaseController
         }
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
-        $result['price'] = $termnation_info->price;
+        $result['price_grn'] = $termnation_info->price_grn / 100;
+        $result['price_dollar'] = $termnation_info->price_dollar / 100;
         $result['notary_id'] = $termnation_info->notary_id;
         $result['reg_date'] = $termnation_info->reg_date ? $termnation_info->reg_date->format('d.m.Y') : null;
         $result['reg_number'] = $termnation_info->reg_num;
@@ -621,7 +622,8 @@ class ImmovableController extends BaseController
 
         if ($immovable->contract) {
             TerminationInfo::updateOrCreate(['contract_id' => $immovable->contract->id],[
-                'price' => $r['price'] * 100,
+                'price_grn' => $r['price_grn'] * 100,
+                'price_dollar' => $r['price_dollar'] * 100,
                 'notary_id' => $r['notary_id'],
                 'reg_date' => $r['reg_date'],
                 'reg_num' => $r['reg_number'],
@@ -876,6 +878,13 @@ class ImmovableController extends BaseController
         if (isset($r['final_sign_date']) && !empty($r['final_sign_date']))
             $r['final_sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_sign_date']);
 
+        $r['price_grn'] = floatval(str_replace(",", ".", $r['price_grn']));
+        $r['price_dollar'] = floatval(str_replace(",", ".", $r['price_dollar']));
+        $r['reserve_grn'] = floatval(str_replace(",", ".", $r['reserve_grn']));
+        $r['m2_grn'] = floatval(str_replace(",", ".", $r['m2_grn']));
+        $r['total_space'] = floatval(str_replace(",", ".", $r['total_space']));
+        $r['living_space'] = floatval(str_replace(",", ".", $r['living_space']));
+        $r['first_part_grn'] = floatval(str_replace(",", ".", $r['first_part_grn']));
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],
             'building_id' => $r['building_id'],

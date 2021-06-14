@@ -135,7 +135,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('passport/{client_id}', [ClientController::class, 'get_passport']); // postman
             Route::put('passport/{client_id}', [ClientController::class, 'update_passport']);
 
-            Route::get('cities/{region_id}', [ClientController::class, 'get_cities']); // postman
+            Route::get('districts/{region_id}', [ClientController::class, 'get_districts']); // postman
+//            Route::get('root_city/{region_id}', [ClientController::class, 'get_root_city']); // postman
+            Route::get('cities/{region_id}/{district_id?}', [ClientController::class, 'get_cities']); // postman
             Route::get('address/{client_id}', [ClientController::class, 'get_address']); // postman
             Route::put('address/{client_id}', [ClientController::class, 'update_address']);
 

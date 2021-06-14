@@ -44,7 +44,13 @@ class ClientSpouseConsent extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'mar_series', 'mar_series_num', 'mar_depart', 'mar_reg_num'
+    ];
+
+    public static $searchRelations = [
+        'client' => ['surname_n', 'name_n', 'patronymic_n', 'tax_code'],
+        'notary' => ['surname_n', 'name_n', 'patronymic_n'],
+        'contract_spouse_word' => ['title', 'text'],
     ];
 
     public static $group = "Угода";

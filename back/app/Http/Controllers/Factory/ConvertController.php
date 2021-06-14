@@ -100,8 +100,10 @@ class ConvertController extends GeneratorController
             }
             $result = $str . " " . $result;
         } elseif ($thousands) {
-            $result = GenderWord::where('alias', "thousand_four_infinity")->value('many');
+            $str = GenderWord::where('alias', "thousand_four_infinity")->value('many');
+            $result = $str . " " . $result;
         }
+
         $thousands = $thousands - $number;
 
         $number = $thousands % 100;
@@ -242,6 +244,7 @@ class ConvertController extends GeneratorController
         $result = null;
 
         $integer = $this->get_number_format_thousand($price);
+
         $str = trim($this->convert_price_int_part_to_string($price, $type));
 
         $main_part = "$integer $str";
@@ -304,27 +307,84 @@ class ConvertController extends GeneratorController
     {
         $result = null;
 
-        $decimal_space = intval(round(($space - intval($space)) * 10,  1));
-        $integer_space = intval(floor($space));
+        $decimal_space = intval(round(($space - intval($space)) * 100,  1));
 
-        $str = null;
+        if ($decimal_space % 10 == 0) {
+            $decimal_space = intval(round(($space - intval($space)) * 10,  1));
+            $integer_space = intval(floor($space));
 
-        if ($decimal_space == '0') {
-            // сказали убрать описание десятых при нуле
-//            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'decimal')->value('title_r');
             $str = null;
-        } elseif ($decimal_space == '1') {
-            $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_n');
-        } elseif ($decimal_space == '2') {
-            $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_r');
-        } elseif ($decimal_space >= '3' && $decimal_space <= '4') {
-            $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+
+            if ($decimal_space == '0') {
+                // сказали убрать описание десятых при нуле
+                //            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+                $str = null;
+            } elseif ($decimal_space == '1') {
+                $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_n');
+            } elseif ($decimal_space == '2') {
+                $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+            } elseif ($decimal_space >= '3' && $decimal_space <= '4') {
+                $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+            } else {
+                $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " .  KeyWord::where('key', 'decimal')->value('title_r');
+            }
+
+            $result = trim($str . " " . $result);
         } else {
-            $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " .  KeyWord::where('key', 'decimal')->value('title_r');
+            /* старт сотень */
+            $number = $decimal_space % 100;
+            if ($number) {
+                if ($number < 11 || $number > 19) {
+                    $number = $decimal_space % 10;
+                }
+                if ($number == '1') {
+                    $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'hundreds')->value('title_n');
+                } elseif ($number == '2'){
+                    $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'hundreds')->value('title_z');
+                } else {
+                    $str = \App\Models\NumericConvert::where('original', $number)->value('title') . " " . KeyWord::where('key', 'hundreds')->value('title_r');
+                }
+
+                $result = $str . " " . $result;
+            }
+
+            $decimal_part = $decimal_space - $number;
+
+            $number = $decimal_part % 100;
+            if ($number) {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+                $result = $str . " " . $result;
+            }
+            $decimal_part = $decimal_part - $number;
+
+            $number = $decimal_part % 1000;
+            if ($number) {
+                $str = \App\Models\NumericConvert::where('original', $number)->value('title');
+                $result = trim($str . " " . $result);
+            }
+            /* кінець сотень */
         }
 
-        $result = trim($str . " " . $result);
+//        $decimal_space = intval(round(($space - intval($space)) * 10,  1));
+        $integer_space = intval(floor($space));
 
+//        $str = null;
+
+//        if ($decimal_space == '0') {
+//            // сказали убрать описание десятых при нуле
+////            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+//            $str = null;
+//        } elseif ($decimal_space == '1') {
+//            $str = GenderWord::where('alias', "number_one")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_n');
+//        } elseif ($decimal_space == '2') {
+//            $str = GenderWord::where('alias', "number_two")->value('female') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+//        } elseif ($decimal_space >= '3' && $decimal_space <= '4') {
+//            $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " . KeyWord::where('key', 'decimal')->value('title_r');
+//        } else {
+//            $str = \App\Models\NumericConvert::where('original', $decimal_space)->value('title') . " " .  KeyWord::where('key', 'decimal')->value('title_r');
+//        }
+//
+//        $result = trim($str . " " . $result);
 
         /* старт сотень */
         $str = null;
@@ -333,6 +393,7 @@ class ConvertController extends GeneratorController
         if ($number < 11 || $number > 19) {
             $number = $integer_space % 10;
         }
+
         if ($decimal_space) {
     //        if ($number == '0') {
     //            $str = GenderWord::where('alias', "null")->value('male') . " " . KeyWord::where('key', 'point')->value('title_r');
@@ -357,7 +418,6 @@ class ConvertController extends GeneratorController
                 $str = \App\Models\NumericConvert::where('original', $number)->value('title');
             }
         }
-
 
         $result = $str . " " . $result;
 
@@ -490,12 +550,18 @@ class ConvertController extends GeneratorController
         $str = null;
 
         if ($person) {
-            if ($person->name_n || $person->patronymic_n) {
+            if ($person->name_n && $person->patronymic_n) {
                 $name = $person->name_n;
                 $patronymic = $person->patronymic_n;
-            } elseif ($person->name || $person->patronymic) {
+            } elseif ($person->name && $person->patronymic) {
                 $name = $person->name;
                 $patronymic = $person->patronymic;
+            } elseif ($person->name_n &&$person->patronymic_n == null) {
+                $name = $person->surname_n;
+                $patronymic = $person->name_n;
+            } elseif ($person->name &&$person->patronymic == null) {
+                $name = $person->surname;
+                $patronymic = $person->name;
             }
             $str = mb_substr($name, 0, 1) . mb_substr($patronymic, 0, 1);
         }
@@ -604,6 +670,23 @@ class ConvertController extends GeneratorController
 
     public function get_client_full_address_n($c)
     {
+        $full_address = null;
+
+        if ($c) {
+            $full_address .= $this->generate_full_address_n($c);
+        }
+
+        if ($c->actual_address) {
+            $actual_address = ", фактичне місце проживання: ";
+            $actual_address .= $this->generate_full_address_n($c->actual_address);
+            $full_address .= $actual_address;
+        }
+
+        return $full_address;
+    }
+
+    public function generate_full_address_n($c)
+    {
         $region = null;
         $region_type = null;
         $region_title = null;
@@ -668,6 +751,23 @@ class ConvertController extends GeneratorController
     }
 
     public function client_full_address_short($c)
+    {
+        $full_address = null;
+
+        if ($c) {
+            $full_address .= $this->generate_client_full_address_short($c);
+        }
+
+        if ($c->actual_address) {
+            $actual_address = ", фактичне місце проживання: ";
+            $actual_address .= $this->generate_client_full_address_short($c->actual_address);
+            $full_address .= $actual_address;
+        }
+
+        return $full_address;
+    }
+
+    public function generate_client_full_address_short($c)
     {
         $region = null;
         $region_type = null;

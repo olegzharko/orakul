@@ -12,11 +12,14 @@ class ActualAddress extends Model
 
     protected $fillable = [
         'client_id',
+        'district_id',
         'city_id',
         'address_type_id',
         'address',
         'building_type_id',
         'building',
+        'building_part_id',
+        'building_part_num',
         'apartment_type_id',
         'apartment_num',
     ];

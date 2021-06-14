@@ -4,6 +4,8 @@
 /public/icons
 /public/js
 /public/static
+/public/Contract
+/public/Zip
 /resources/views/*
 /storage/*.key
 /vendor

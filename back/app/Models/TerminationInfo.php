@@ -12,7 +12,8 @@ class TerminationInfo extends Model
 
     protected $fillable = [
         'contract_id',
-        'price',
+        'price_grn',
+        'price_dollar',
         'notary_id',
         'reg_date',
         'reg_num'

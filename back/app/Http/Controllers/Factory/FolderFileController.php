@@ -161,10 +161,13 @@ class FolderFileController extends Controller
 
     public function save_folder()
     {
+        $date = new \DateTime();
         // Однакова назва для папки та договору
         $folder = $this->root_title();
         // echo "{$folder}<br><br>";
-        $dev_company = $this->contract->dev_company->title;
+        $contract = 'Contract';
+        $dev_company = $contract . "/" . $this->contract->dev_company->title . "/" . $date->format('d.m.Y');
+
 
         // Створення папки забудовника
         if (!file_exists("{$dev_company}"))
@@ -174,8 +177,12 @@ class FolderFileController extends Controller
             $this->deleteDirectory("$dev_company/$folder");
         if (!file_exists("{$dev_company}/{$folder}"))
             mkdir("$dev_company/$folder", 0777, true);
+        // Створення папки забудовника
+        if (!file_exists("Zip"))
+            mkdir('Zip', 0777, true);
 
-        $this->generate_path = "{$dev_company}/{$folder}";
+//        $this->generate_path = "$contract/$dev_company/$folder";
+        $this->generate_path = "$dev_company/$folder";
     }
 
     public function deleteDirectory($dir) {
@@ -352,6 +359,19 @@ class FolderFileController extends Controller
         $title = "{$this->generate_path}/"
             . "{$this->bank_taxes_payment} (" . $client->surname_n . ")"
             . "{$this->file_type_excel}"
+            . "";
+
+        $template = $this->file_path($this->contract->bank_taxes_payment->template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function bank_taxes_title_word($client_1, $client_2)
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "{$this->bank_taxes_payment} (" . $client_1 . " - " . $client_2 . ")"
+            . "{$this->file_type_docx}"
             . "";
 
         $template = $this->file_path($this->contract->bank_taxes_payment->template);

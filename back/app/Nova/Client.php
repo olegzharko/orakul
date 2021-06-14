@@ -41,7 +41,7 @@ class Client extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'surname_n', 'name_n', 'patronymic_n', 'tax_code', 'passport_code', 'phone', 'mobile', 'email'
     ];
 
     public static $group = "Угода";
@@ -66,7 +66,7 @@ class Client extends Resource
     {
         return [
 
-//            new Panel("Тип клієнта", $this->userType()),
+            new Panel("Тип клієнта", $this->userType()),
             new Panel("ПІБ", $this->fullNameType()),
             new Panel("Контактна інформація", $this->userMainInfo()),
             new Panel("Відноситься до:", $this->relationships()),
@@ -81,7 +81,7 @@ class Client extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Тип клієнта', 'client_type', 'App\Nova\ClientType')->nullable(),
+//            BelongsTo::make('Тип клієнта', 'client_type', 'App\Nova\ClientType')->nullable(),
         ];
     }
 
@@ -121,9 +121,9 @@ class Client extends Resource
     {
         return [
             Heading::make('<p class="text-success">Загальні данні</p>')->asHtml(),
-            PhoneNumber::make('Основний телефон', 'phone'),
-            PhoneNumber::make('Додатковий номер', 'mobile'),
-            Text::make('E-main', 'email'),
+            PhoneNumber::make('Основний телефон', 'phone')->hideFromIndex(),
+            PhoneNumber::make('Додатковий номер', 'mobile')->hideFromIndex(),
+            Text::make('E-main', 'email')->hideFromIndex(),
 
         ];
     }
@@ -145,16 +145,16 @@ class Client extends Resource
             Select::make('Стать', 'gender')->options([
                 'male' => 'Чоловіча',
                 'female' => 'Жіноча',
-            ])->displayUsingLabels(),
+            ])->displayUsingLabels()->hideFromIndex(),
             Heading::make('<p class="text-success">Код</p>')->asHtml(),
             Text::make('ІНН', 'tax_code')->creationRules('unique:clients,tax_code')->updateRules('unique:clients,tax_code,{{resourceId}}'),
             Heading::make('<p class="text-success">Паспорт</p>')->asHtml(),
-            BelongsTo::make('Тип паспорту', 'passport_type', 'App\Nova\PassportTemplate')->nullable(),
+            BelongsTo::make('Тип паспорту', 'passport_type', 'App\Nova\PassportTemplate')->nullable()->hideFromIndex(),
             Text::make('Серія/Номер паспорта', 'passport_code'),
-            DateTime::make('Дата видачі', 'passport_date'),
-            DateTime::make('Діє до', 'passport_finale_date'),
-            Text::make('Орган що видав паспорт', 'passport_department'),
-            Text::make('Запису в ЄДДР (для ID карток)', 'passport_demographic_code'),
+            DateTime::make('Дата видачі', 'passport_date')->hideFromIndex(),
+            DateTime::make('Діє до', 'passport_finale_date')->hideFromIndex(),
+            Text::make('Орган що видав паспорт', 'passport_department')->hideFromIndex(),
+            Text::make('Запису в ЄДДР (для ID карток)', 'passport_demographic_code')->hideFromIndex(),
         ];
     }
 
@@ -162,13 +162,13 @@ class Client extends Resource
     {
         return [
             Heading::make('<p class="text-success">Повна адреса</p>')->asHtml(),
-            BelongsTo::make('Населений пункту', 'city', 'App\Nova\City')->nullable(),
-            BelongsTo::make('Тип вулиці', 'address_type', 'App\Nova\AddressType')->nullable(),
-            Text::make('Назва вулиці', 'address'),
-            BelongsTo::make('Тип будинку', 'building_type', 'App\Nova\BuildingType')->nullable(),
-            Text::make('Номер будинку', 'building'),
-            BelongsTo::make('Тип житлового приміщення', 'apartment_type', 'App\Nova\ApartmentType')->nullable(),
-            Text::make('Номер житлового приміщення', 'apartment_num'),
+            BelongsTo::make('Населений пункту', 'city', 'App\Nova\City')->nullable()->hideFromIndex(),
+            BelongsTo::make('Тип вулиці', 'address_type', 'App\Nova\AddressType')->nullable()->hideFromIndex(),
+            Text::make('Назва вулиці', 'address')->hideFromIndex(),
+            BelongsTo::make('Тип будинку', 'building_type', 'App\Nova\BuildingType')->nullable()->hideFromIndex(),
+            Text::make('Номер будинку', 'building')->hideFromIndex(),
+            BelongsTo::make('Тип житлового приміщення', 'apartment_type', 'App\Nova\ApartmentType')->nullable()->hideFromIndex(),
+            Text::make('Номер житлового приміщення', 'apartment_num')->hideFromIndex(),
         ];
     }
 

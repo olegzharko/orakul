@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\AddressType;
 use App\Models\ApartmentType;
+use App\Models\BuildingPart;
 use App\Models\BuildingType;
 use App\Models\ClientCheckList;
 use App\Models\Citizenship;
@@ -335,20 +336,25 @@ class ClientController extends BaseController
         $regions = Region::select('id', 'title_n as title')->orderBy('title')->get();
         $address_type = AddressType::select('id', 'title_n as title')->orderBy('title')->get();
         $building_type = BuildingType::select('id', 'title_n as title')->orderBy('title')->get();
+        $building_part = BuildingPart::select('id', 'title_n as title')->orderBy('title')->get();
         $apartment_type = ApartmentType::select('id', 'title_n as title')->orderBy('title')->get();
 
         $result['regions'] = $regions;
 
         $result['address_type'] = $address_type;
         $result['building_type'] = $building_type;
+        $result['building_part'] = $building_part;
         $result['apartment_type'] = $apartment_type;
         $result['registration'] = $client->registration ? true : false;
         $result['region_id'] = $client->city ? $client->city->region_id : null;
+        $result['district_id'] = $client->district_id;
         $result['city_id'] = $client->city_id;
         $result['address_type_id'] = $client->address_type_id;
         $result['address'] = $client->address;
         $result['building_type_id'] = $client->building_type_id;
         $result['building_num'] = $client->building;
+        $result['building_part_id'] = $client->building_part_id;
+        $result['building_part_num'] = $client->building_part_num;
         $result['apartment_type_id'] = $client->apartment_type_id;
         $result['apartment_num'] = $client->apartment_num;
 
@@ -366,10 +372,13 @@ class ClientController extends BaseController
             $result['actual'] = true;
             $result['actual_region_id'] = $client->actual_address->city ? $client->actual_address->city->region_id : null;
             $result['actual_city_id'] = $client->actual_address->city_id;
+            $result['actual_district_id'] = $client->actual_address->district_id;
             $result['actual_address_type_id'] = $client->actual_address->address_type_id;
             $result['actual_address'] = $client->actual_address->address;
             $result['actual_building_type_id'] = $client->actual_address->building_type_id;
             $result['actual_building_num'] = $client->actual_address->building;
+            $result['actual_building_part_id'] = $client->actual_address->building_part_id;
+            $result['actual_building_part_num'] = $client->actual_address->building_part_num;
             $result['actual_apartment_type_id'] = $client->actual_address->apartment_type_id;
             $result['actual_apartment_num'] = $client->actual_address->apartment_num;
         } else {
@@ -379,7 +388,7 @@ class ClientController extends BaseController
         return $this->sendResponse($result, 'Дані адреси клієнта з ID ' . $client_id);
     }
 
-    public function get_cities($region_id)
+    public function get_districts($region_id)
     {
         $result = [];
 
@@ -387,11 +396,54 @@ class ClientController extends BaseController
             return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
         }
 
-        $cities = City::select('id', 'title')->where('region_id', $region_id)->orderBy('title')->get();
+        $districts = District::select('id', 'title_n as title')->where('region_id', $region_id)->orderBy('title_n')->get();
 
-        $result = $cities;
+        $result = $districts;
 
         return $this->sendResponse($result, 'Міста по області ID: ' . $region_id);
+    }
+
+//    public function get_root_city($region_id)
+//    {
+//        $result = [];
+//
+//        if (!$region = Region::find($region_id)) {
+//            return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
+//        }
+//
+//        $city = City::select('id', 'title')->where('region_id', $region_id)->where('region_root', true)->orderBy('title')->get();
+//
+//        $result = $city;
+//
+//        return $this->sendResponse($result, 'Міста по області ID: ' . $region_id);
+//    }
+
+    public function get_cities($region_id, $district_id = null)
+    {
+        $result = [];
+
+        if ($region_id && !$region = Region::find($region_id)) {
+            return $this->sendError('', 'Область з ID: ' . $region_id . ' відсутня');
+        }
+
+        if ($district_id && !$district = District::find($district_id)) {
+            return $this->sendError('', 'Район з ID: ' . $district_id . ' відсутній');
+        }
+
+        if ($region_id && $district_id == null) {
+
+            $city = City::select('id', 'title')->where('region_id', $region_id)->where('region_root', true)->orderBy('title')->get();
+
+            $result = $city;
+
+        } elseif ($region_id && $district_id) {
+
+            $cities = City::select('id', 'title')->where('district_id', $district_id)->orWhere('district_new_id', $district_id)->orderBy('title')->get();
+
+            $result = $cities;
+        }
+
+        return $this->sendResponse($result, 'Міста по області ID: ' . $district_id);
     }
 
     public function start_data_create_city()
@@ -431,11 +483,14 @@ class ClientController extends BaseController
 
         Client::where('id', $client_id)->update([
             'registration' => $r['registration'] ? 1 : 0,
+            'district_id' => $r['district_id'],
             'city_id' => $r['city_id'],
             'address_type_id' => $r['address_type_id'],
             'address' => $r['address'],
             'building_type_id' => $r['building_type_id'],
             'building' => $r['building_num'],
+            'building_part_id' => $r['building_part_id'],
+            'building_part_num' => $r['building_part_num'],
             'apartment_type_id' => $r['apartment_type_id'],
             'apartment_num' => $r['apartment_num'],
         ]);
@@ -445,14 +500,19 @@ class ClientController extends BaseController
                 ['client_id' => $client_id],
                 [
                     'actual' => $r['actual'],
+                    'district_id' => $r['actual_district_id'],
                     'city_id' => $r['actual_city_id'],
                     'address_type_id' => $r['actual_address_type_id'],
                     'address' => $r['actual_address'],
                     'building_type_id' => $r['actual_building_type_id'],
                     'building' => $r['actual_building_num'],
+                    'building_part_id' => $r['actual_building_part_id'],
+                    'building_part_num' => $r['actual_building_part_num'],
                     'apartment_type_id' => $r['actual_apartment_type_id'],
                     'apartment_num' => $r['actual_apartment_num'],
                 ]);
+        } else {
+            ActualAddress::where('client_id', $client_id)->delete();
         }
 
         return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
@@ -536,6 +596,9 @@ class ClientController extends BaseController
         $result['mar_reg_num'] = null;
         $result['sign_date'] = null;
         $result['reg_num'] = null;
+        $result['original'] = null;
+        $result['widow'] = null;
+        $result['widow_date'] = null;
 
         if ($client->client_spouse_consent) {
             $result['notary_id'] = $client->client_spouse_consent->notary_id;
@@ -549,6 +612,9 @@ class ClientController extends BaseController
             $result['mar_reg_num'] = $client->client_spouse_consent->mar_reg_num;
             $result['sign_date'] = $client->client_spouse_consent->sign_date ? $client->client_spouse_consent->sign_date->format('d.m.Y') : null;
             $result['reg_num'] = $client->client_spouse_consent->reg_num;
+            $result['original'] = $client->client_spouse_consent->original ? true : false;
+            $result['widow'] = $client->client_spouse_consent->widow ? true : false;
+            $result['widow_date'] = $client->client_spouse_consent->widow_date ? $client->client_spouse_consent->widow_date->format('d.m.Y') : null;
         }
 
         return $this->sendResponse($result, 'Дані по заяві-згоді клієнта з ID ' . $client_id);
@@ -583,6 +649,9 @@ class ClientController extends BaseController
                 'mar_reg_num' => $r['mar_reg_num'],
                 'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
                 'reg_num' => $r['reg_num'],
+                'original' => $r['original'],
+                'widow' => $r['widow'],
+                'widow_date' => $r['widow_date'],
             ]
         );
 

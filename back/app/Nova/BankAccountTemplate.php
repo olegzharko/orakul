@@ -56,8 +56,8 @@ class BankAccountTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Заголовок', 'title'),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
+            Text::make('Заголовок', 'title'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
 //                Markdown::make('Description'),
             ]),

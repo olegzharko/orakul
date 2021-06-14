@@ -114,7 +114,7 @@ class DocumentController extends GeneratorController
                  * */
                 if (count($this->contract->client_spouse_consent) && count($this->contract->client_spouse_consent->where('client_id', $this->client->id))) {
                     if (count($this->contract->client_spouse_consent) == 2) {
-                        if ($this->contract->client_spouse_consent[0]->mar_series_num == $this->contract->client_spouse_consent[1]->mar_series_num) {
+                        if ($this->contract->client_spouse_consent[0]->mar_series_num && $this->contract->client_spouse_consent[1]->mar_series_num && $this->contract->client_spouse_consent[0]->mar_series_num == $this->contract->client_spouse_consent[1]->mar_series_num) {
                             $this->buyer_are_spouse = true;
                         }
                     }
@@ -186,15 +186,46 @@ class DocumentController extends GeneratorController
                 $this->total_clients--;
             }
 
+
+//            if (file_exists($this->ff->generate_path)) {
+//
+//                $zip = new ZipArchive;
+//
+//                $fileName = str_replace("Договір/", "", $this->ff->generate_path);
+//                $fileName = $fileName . ".zip";
+//
+//                $fileName = str_replace("/", ": ", $fileName);
+//
+//                if ($zip->open(public_path("Zip/" . $fileName), ZipArchive::CREATE) === TRUE)
+//                {
+//                    $files = File::files(public_path($this->ff->generate_path));
+//
+//                    foreach ($files as $key => $value) {
+//                        $relativeNameInZipFile = $value->getFilename();
+//                        $zip->addFile($value, $relativeNameInZipFile);
+//                    }
+//
+//                    $zip->close();
+//                }
+//
+//                return $fileName;
+//            } else {
+//                return null;
+//            }
+
             if (file_exists($this->ff->generate_path)) {
 
+                $zip_folder_path_part = 'Zip/';
                 $zip = new ZipArchive;
 
-                $fileName = $this->ff->generate_path . ".zip";
+                $fileName = explode("/", $this->ff->generate_path);
+                unset($fileName[0]);
+                $fileName = implode("/", $fileName);
+                $fileName = $fileName . ".zip";
 
                 $fileName = str_replace("/", ": ", $fileName);
 
-                if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
+                if ($zip->open(public_path($zip_folder_path_part . $fileName), ZipArchive::CREATE) === TRUE)
                 {
                     $files = File::files(public_path($this->ff->generate_path));
 
@@ -206,7 +237,7 @@ class DocumentController extends GeneratorController
                     $zip->close();
                 }
 
-                return $fileName;
+                return $zip_folder_path_part .$fileName;
             } else {
                 return null;
             }
@@ -399,24 +430,57 @@ class DocumentController extends GeneratorController
 
     public function bank_taxes_template_set_data()
     {
-        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
+//        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
+//
+//        $this->set_passport_template_part($this->bank_taxes_generate_file);
+//
+//        /*
+//         * В податкових рахунках використовується дата підписання Угоди $this->contract
+//         * */
+//        $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
+//
+//        // Для Excel
+//        $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
+//        $sheet = $spreadsheet->getActiveSheet();
+//        $this->set_taxes_data($sheet);
+//        $writer = new Xlsx($spreadsheet);
+//        $file_name = $this->bank_taxes_generate_file;
+//        $writer->save($file_name);
+//
+//        unset($word);
+        if ($this->contract->bank_taxes_payment->template->type == 'excel') {
+            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
 
-        $this->set_passport_template_part($this->bank_taxes_generate_file);
+            $this->set_passport_template_part($this->bank_taxes_generate_file);
 
-        /*
-         * В податкових рахунках використовується дата підписання Угоди $this->contract
-         * */
-        $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
+            /*
+             * В податкових рахунках використовується дата підписання Угоди $this->contract
+             * */
+            $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
 
-        // Для Excel
-        $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
-        $sheet = $spreadsheet->getActiveSheet();
-        $this->set_taxes_data($sheet);
-        $writer = new Xlsx($spreadsheet);
-        $file_name = $this->bank_taxes_generate_file;
-        $writer->save($file_name);
+            // Для Excel
+            $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
+            $sheet = $spreadsheet->getActiveSheet();
+            $this->set_taxes_data_for_excel($sheet);
+            $writer = new Xlsx($spreadsheet);
+            $file_name = $this->bank_taxes_generate_file;
+            $writer->save($file_name);
 
-        unset($word);
+        } elseif ($this->contract->bank_taxes_payment->template->type == 'word') {
+            $client_1 = $this->contract->clients[0]->surname_n;
+            $client_2 = $this->contract->clients[1]->surname_n;
+            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_word($client_1, $client_2);
+
+            $this->set_passport_template_part($this->bank_taxes_generate_file);
+
+            $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
+
+            $word = new TemplateProcessor($this->bank_taxes_generate_file);
+            $word = $this->set_data_word($word);
+            $word->saveAs($this->bank_taxes_generate_file);
+
+            unset($word);
+        }
     }
 
 
@@ -533,6 +597,11 @@ class DocumentController extends GeneratorController
          * */
         $word = $this->set_exchange_rate($word);
 
+        /*
+         * Податки
+         * */
+        $word = $this->set_taxes_data_for_word($word);
+
         return $word;
     }
 
@@ -602,12 +671,15 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
          * */
-        if ($this->card->dev_representative) {
+        if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->card->dev_representative
+                    && $this->contract->dev_company->owner->tax_code == $this->card->dev_representative->tax_code) {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
+        } elseif ($this->card->dev_representative) {
             $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
         }
-        else {
-            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
-        }
+//        else {
+//            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
+//        }
 
         $word->setValue('ЗБД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $dev_full_description);
 
@@ -941,6 +1013,8 @@ class DocumentController extends GeneratorController
         $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
 
         $word->setValue('ДАТА-МС', $this->day_quotes_month_year($document->sign_date));
+        if ($document->sign_date)
+            $word->setValue('ДАТА-МС+1М', $this->day_quotes_month_year($document->sign_date->addMonths(1)));
 
         $word->setValue('ЗБРН-Н-ДАТА', $this->display_date($document->sign_date));
         $word->setValue('ЗБРН-ЗАБ-ДАТА', $this->display_date($document->sign_date));
@@ -1146,6 +1220,11 @@ class DocumentController extends GeneratorController
      * */
     public function set_dev_representative($word)
     {
+        if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_representative
+            && $this->contract->dev_company->owner->tax_code == $this->contract->dev_representative->tax_code) {
+            return $word;
+        }
+
         if ($this->contract && $this->contract->dev_representative) {
 
             $word->setValue('dev-rep-full-name-n', $this->convert->get_full_name_n($this->contract->dev_representative));
@@ -1380,14 +1459,14 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
 
 
-            if ($this->client->actual_address) {
-                $word->setValue('КЛ-П-АДР-АКТ', $this->convert->get_client_full_address_n($this->client->actual_address));
-                $word->setValue('КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
-                $word->setValue('КЛ-ПОВНА-АДРЕСА-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
-
-                // для анкет на двох
-                $word->setValue($this->total_clients . '-КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
-            }
+//            if ($this->client->actual_address) {
+//                $word->setValue('КЛ-П-АДР-АКТ', $this->convert->get_client_full_address_n($this->client->actual_address));
+//                $word->setValue('КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+//                $word->setValue('КЛ-ПОВНА-АДРЕСА-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+//
+//                // для анкет на двох
+//                $word->setValue($this->total_clients . '-КЛ-П-АДР-СК-АКТ', $this->convert->client_full_address_short($this->client->actual_address));
+//            }
             /*
              * Контактні данні
              * */
@@ -1774,6 +1853,12 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('imm-reg-num', $this->contract->immovable->registration_number);
             $word->setValue('Н-РЕЄСТР-НОМ', $this->contract->immovable->registration_number);
+
+            if ($this->buyer_are_spouse == false && count($this->contract->clients) == 2) {
+                $word->setValue('ВЛАСНИК-1/2', $this->non_break_space . "за яким мені буде належити 1/2 частка вищевказаної " . $this->contract->immovable->immovable_type->title_r . ", ");
+            } else {
+                $word->setValue('ВЛАСНИК-1/2', '');
+            }
         } else {
             $this->notification("Warning", "Відсутня інформація про об'єкт нерухомості");
         }
@@ -1991,7 +2076,7 @@ class DocumentController extends GeneratorController
             $dollar_sum_float += $installment_dollar_float;
             // 1 824 818
             $installment_dollar_int = $installment_dollar_float * 100;
-
+            
             if ($this->contract->immovable->security_payment) {
                 // 245 000 00  = ( 990 000 00  -  500 000 00 ) / 2  - 10 000 00 / 2
                 $grn_part_int = intval(round($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price - $this->contract->immovable->security_payment->first_part_grn));
@@ -2225,6 +2310,15 @@ class DocumentController extends GeneratorController
         return $word;
     }
 
+    public function set_taxes_data_for_word($word)
+    {
+        $word->setValue('ЗБІР-З-ОПЕРАЦІЙ-ПРИДБАННЯ-1/2', round($this->contract->immovable->grn / 100 * 0.01 / 2, 2));
+        $word->setValue('ПОДАТОК-НА-ДОХОДИ-ФІЗИЧНИХ-ОСІБ', round($this->contract->immovable->grn / 100 * 0.05, 2));
+        $word->setValue('ВІЙСЬКОВИЙ-ЗБІР', round($this->contract->immovable->grn / 100 * 0.015, 2));
+
+        return $word;
+    }
+
     public function set_client_spouse_consent_for_multiple_deal($word)
     {
         $imm_line = null;
@@ -2388,7 +2482,7 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    public function set_taxes_data($sheet)
+    public function set_taxes_data_for_excel($sheet)
     {
         $developer = null;
 

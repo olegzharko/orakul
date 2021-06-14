@@ -34,7 +34,6 @@ class InstallmentController extends BaseController
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
 //        $r->total_price = floatval($r->total_price);
-
         Installment::updateOrCreate(['immovable_id' => $immovable_id],
             [
                 'total_price' => intval($r->total_price * 100),

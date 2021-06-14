@@ -56,8 +56,8 @@ class StatementTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Назва', 'title')->rules('required'),
             BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
+            Text::make('Назва', 'title')->rules('required'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),

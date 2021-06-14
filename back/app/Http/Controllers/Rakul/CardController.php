@@ -553,10 +553,10 @@ class CardController extends BaseController
     {
         $result = [];
 
-        $notary_short = "**";
-        $reader_short = "**";
-        $giver_short = "**";
-        $dev_representative_short = "**";
+        $notary_short = "##";
+        $reader_short = "##";
+        $giver_short = "##";
+        $dev_representative_short = "##";
 
 
         if ($card->notary)
@@ -576,12 +576,12 @@ class CardController extends BaseController
         $accompanying = [];
 
         foreach ($contracts as $contr) {
-            if  ($contr->contract && $contr->contract->reader) {
-                $reader[$contr->contract->reader->id] = $this->convert->get_short_name($contr->contract->reader);
+            if  ($contr && $contr->reader) {
+                $reader[$contr->reader->id] = $this->convert->get_short_name($contr->reader);
             }
 
-            if  ($contr->contract && $contr->contract->accompanying) {
-                $accompanying[$contr->contract->accompanying->id] = $this->convert->get_short_name($contr->contract->accompanying);
+            if  ($contr && $contr->accompanying) {
+                $accompanying[$contr->accompanying->id] = $this->convert->get_short_name($contr->accompanying);
             }
         }
 

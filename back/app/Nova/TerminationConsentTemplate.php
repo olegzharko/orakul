@@ -56,8 +56,8 @@ class TerminationConsentTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Заголовок', 'title'),
             BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
+            Text::make('Заголовок', 'title'),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),

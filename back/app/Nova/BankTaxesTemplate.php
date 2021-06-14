@@ -60,7 +60,6 @@ class BankTaxesTemplate extends Resource
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),
-
         ];
     }
 

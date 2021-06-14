@@ -37,6 +37,7 @@ class Client extends Model implements Sortable
         'passport_department',
         'passport_demographic_code',
         'passport_finale_date',
+        'district_id',
     ];
 
     protected $casts = [

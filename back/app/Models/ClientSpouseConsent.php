@@ -23,12 +23,16 @@ class ClientSpouseConsent extends Model
         'mar_reg_num',
         'sign_date',
         'reg_num',
+        'original',
+        'widow',
+        'widow_date',
     ];
 
     protected $casts = [
         'sign_date' => 'datetime',
         'mar_date' => 'datetime',
         'deleted_at' => 'datetime',
+        'widow_date' => 'datetime',
     ];
 
     public function client()
