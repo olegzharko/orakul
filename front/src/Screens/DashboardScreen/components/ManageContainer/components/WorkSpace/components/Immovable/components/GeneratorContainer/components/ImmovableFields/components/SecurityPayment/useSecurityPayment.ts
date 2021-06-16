@@ -9,7 +9,7 @@ import { State } from '../../../../../../../../../../../../../../store/types';
 type InitialData = {
   sign_date: any,
   final_date: any,
-  reg_num: number | null,
+  reg_num: string | null,
   first_part_grn: number | null,
   client_id: number | null,
   clients?: SelectItem[],
