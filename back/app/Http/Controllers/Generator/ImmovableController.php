@@ -878,13 +878,13 @@ class ImmovableController extends BaseController
         if (isset($r['final_sign_date']) && !empty($r['final_sign_date']))
             $r['final_sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_sign_date']);
 
-        $r['price_grn'] = floatval(str_replace(",", ".", $r['price_grn']));
-        $r['price_dollar'] = floatval(str_replace(",", ".", $r['price_dollar']));
-        $r['reserve_grn'] = floatval(str_replace(",", ".", $r['reserve_grn']));
-        $r['m2_grn'] = floatval(str_replace(",", ".", $r['m2_grn']));
-        $r['total_space'] = floatval(str_replace(",", ".", $r['total_space']));
-        $r['living_space'] = floatval(str_replace(",", ".", $r['living_space']));
-        $r['first_part_grn'] = floatval(str_replace(",", ".", $r['first_part_grn']));
+        $r['price_grn'] = $r['price_grn'] ? floatval(str_replace(",", ".", $r['price_grn'])) : null;
+        $r['price_dollar'] = $r['price_dollar'] ? floatval(str_replace(",", ".", $r['price_dollar'])) : null;
+        $r['reserve_grn'] = $r['reserve_grn'] ? floatval(str_replace(",", ".", $r['reserve_grn'])) : null;
+        $r['m2_grn'] = $r['m2_grn'] ? floatval(str_replace(",", ".", $r['m2_grn'])) : null;
+        $r['total_space'] = $r['total_space'] ? floatval(str_replace(",", ".", $r['total_space'])) : null;
+        $r['living_space'] = $r['living_space'] ? floatval(str_replace(",", ".", $r['living_space'])) : null;
+        $r['first_part_grn'] = $r['first_part_grn'] ? floatval(str_replace(",", ".", $r['first_part_grn'])) : null;
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],
             'building_id' => $r['building_id'],

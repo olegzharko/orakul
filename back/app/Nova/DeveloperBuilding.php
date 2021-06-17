@@ -92,15 +92,16 @@ class DeveloperBuilding extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->nullable(),
-            BelongsTo::make('Інвестиційний договір', 'investment_agreement', 'App\Nova\InvestmentAgreement')->nullable(),
+            BelongsTo::make('Інвестиційний договір', 'investment_agreement', 'App\Nova\InvestmentAgreement')->nullable()->hideFromIndex(),
             BelongsTo::make('Населений пункт', 'city', 'App\Nova\City')->nullable(),
             BelongsTo::make('Тип адреси', 'address_type', 'App\Nova\AddressType')->nullable(),
             Text::make('Назва вулиці', 'title'),
             Text::make('Номер будинку', 'number'),
             Heading::make('<p class="text-success">Після адреси, за маленької букви "у сладі комплесу..."</p>')->asHtml(),
             Markdown::make('Комплекс', 'complex'),
-            DateTime::make('Введення в експлуатацію', 'exploitation_date'),
-            DateTime::make('Підключення будинку до основних систем комунікацій', 'communal_date'),
+            DateTime::make('Введення в експлуатацію дата', 'exploitation_date')->hideFromIndex(),
+            Text::make('Введення в експлуатацію квартал (І квартал 2023)', 'exploitation_quarter')->hideFromIndex(),
+            DateTime::make('Підключення будинку до основних систем комунікацій', 'communal_date')->hideFromIndex(),
             Toggle::make('Активувати', 'active'),
         ];
     }

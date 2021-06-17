@@ -9,10 +9,13 @@ use Laravel\Nova\Tests\Fixtures\Address;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Client extends Model implements Sortable
+class Client extends Model implements Sortable, HasMedia
 {
-    use HasFactory, SortableTrait, SoftDeletes;
+    use HasFactory, InteractsWithMedia, SortableTrait, SoftDeletes;
 
     protected $fillable = [
         'surname_n',
@@ -130,6 +133,11 @@ class Client extends Model implements Sortable
     public function actual_address()
     {
         return $this->hasOne(ActualAddress::class, 'client_id');
+    }
+
+    public function building_part()
+    {
+        return $this->belongsTo(BuildingPart::class, 'building_part_id');
     }
 
 //    public static function get_dev_employers_by_type($dev_company_id, $employer_type)

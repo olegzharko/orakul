@@ -733,6 +733,11 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('title_n'));
             $building_num = trim($c->building);
 
+            $building_part = null;
+            if ($c->building_part_id) {
+                $building_part = ", " . $c->building_part->short . $this->non_break_space . trim($c->building_part_num);
+            }
+
             $apartment_full = null;
             if ($c->apartment_num) {
                 $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n')) . $this->non_break_space . trim($c->apartment_num);
@@ -741,7 +746,7 @@ class ConvertController extends GeneratorController
                 $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('title_n'));
             }
 
-            $building = "$building_type $building_num" . "$apartment_full";
+            $building = "$building_type $building_num" . $building_part . $apartment_full;
         }
 
         $full_address = "$region $district $city $address $building";
@@ -815,6 +820,12 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
 
+
+            $building_part = null;
+            if ($c->building_part_id) {
+                $building_part = ", " . $c->building_part->short . $this->non_break_space . trim($c->building_part_num);
+            }
+
             $apartment_full = null;
             if ($c->apartment_num) {
                 $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short')) . $this->non_break_space . trim($c->apartment_num);
@@ -823,7 +834,7 @@ class ConvertController extends GeneratorController
                 $apartment_full = ", " . trim(ApartmentType::where('id', $c->apartment_type_id)->value('short'));
             }
 
-            $building = $building_type . $this->non_break_space . $building_num . "$apartment_full";
+            $building = $building_type . $this->non_break_space . $building_num . $building_part . $apartment_full;
         }
 
         $full_address = "$region $district $city $address $building";
@@ -1030,7 +1041,14 @@ class ConvertController extends GeneratorController
             return implode(' ', $result);
         }
 
-        $result = $this->number_to_string($num);
+        if (strlen(intval($num)) < strlen($num)) {
+            $result[] = $this->number_to_string(intval($num));
+            $result[] = "літера «" . str_replace(intval($num), '', $num) . "»";
+
+            return implode(' ', $result);
+        }
+
+        $result = trim($this->number_to_string($num));
 
         return $result;
     }

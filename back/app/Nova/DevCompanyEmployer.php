@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use Laravel\Nova\Fields\Markdown;
 
 class DevCompanyEmployer extends Resource
 {
@@ -57,7 +59,10 @@ class DevCompanyEmployer extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
             BelongsTo::make('Працівник', 'employer', 'App\Nova\Client'),
-            BelongsTo::make('Тип працівника', 'type', 'App\Nova\DevEmployerType')
+            BelongsTo::make('Тип працівника', 'type', 'App\Nova\DevEmployerType'),
+            Files::make('Cкан-сет Наказ', 'pdf')->customPropertiesFields([
+                Markdown::make('Description'),
+            ]),
         ];
     }
 

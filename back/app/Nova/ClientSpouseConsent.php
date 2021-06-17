@@ -11,6 +11,8 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use Laravel\Nova\Fields\Markdown;
 
 class ClientSpouseConsent extends Resource
 {
@@ -87,6 +89,10 @@ class ClientSpouseConsent extends Resource
             Text::make('Нотаріус: номер реєстрації у нотаріуса', 'reg_num'),
             BelongsTo::make('Пункт згоди у договорі', 'contract_spouse_word', 'App\Nova\SpouseWord'),
             Toggle::make('Активн згода', 'active'),
+
+            Files::make('Cкан-сет Свідоцвтва про шлюб + Заява-згода або шлюбний договір', 'pdf')->customPropertiesFields([
+                Markdown::make('Description'),
+            ])->rules('required'),
         ];
     }
 

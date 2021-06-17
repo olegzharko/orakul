@@ -37,6 +37,7 @@ class FolderFileController extends Controller
     public $spouses_male;
     public $file_type_docx;
     public $file_type_excel;
+    public $file_type_pdf;
 
     public function __construct($contract)
     {
@@ -65,6 +66,7 @@ class FolderFileController extends Controller
         $this->spouses_male = null;
         $this->file_type_docx = ".docx";
         $this->file_type_excel = ".xlsx";
+        $this->file_type_pdf = ".pdf";
 
         $this->set_value();
         $this->save_folder();
@@ -409,5 +411,71 @@ class FolderFileController extends Controller
 
             file_put_contents($title, $result);
         }
+    }
+
+    public function add_proxy_pdf($model)
+    {
+        $title = "{$this->generate_path}/" . $model->title . "{$this->file_type_pdf}";
+        $title = trim($title);
+
+        $template = $this->pdf_path($model);
+
+        if ($template)
+            $this->create_file_for_contract($template, $title);
+    }
+
+    public function add_dev_company_pdf($model)
+    {
+        $title = "{$this->generate_path}/" . $model->title . "{$this->file_type_pdf}";
+        $title = trim($title);
+
+        $template = $this->pdf_path($model);
+
+        if ($template)
+            $this->create_file_for_contract($template, $title);
+    }
+
+    public function seller_document_pdf($model)
+    {
+        $title = "{$this->generate_path}/" . $model->surname_n . " " . $model->name_n . " " . $model->patronymic_n . "{$this->file_type_pdf}";
+        $title = trim($title);
+
+        $template = $this->pdf_path($model);
+
+        if ($template)
+            $this->create_file_for_contract($template, $title);
+    }
+
+    public function employer_pdf($model)
+    {
+        $title = "{$this->generate_path}/" . "Наказ" . "{$this->file_type_pdf}";
+        $title = trim($title);
+
+        $template = $this->pdf_path($model);
+
+        if ($template)
+            $this->create_file_for_contract($template, $title);
+    }
+
+    public function spouse_consent_pdf($model)
+    {
+        $title = "{$this->generate_path}/" . "Свідоцтво та Заява-згода" . "{$this->file_type_pdf}";
+        $title = trim($title);
+
+        $template = $this->pdf_path($model);
+
+        if ($template)
+            $this->create_file_for_contract($template, $title);
+    }
+
+    public function pdf_path($model)
+    {
+        if ($file = $model->getMedia('pdf')->first()) {
+            $model->pdf = $file->getUrl();
+        } else {
+            $model->pdf = null;
+        }
+
+        return $model->pdf;
     }
 }
