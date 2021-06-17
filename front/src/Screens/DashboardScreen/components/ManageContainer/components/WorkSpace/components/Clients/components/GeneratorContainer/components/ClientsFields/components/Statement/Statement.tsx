@@ -84,6 +84,9 @@ const Statement = (props: Props) => {
             selected={meta.data.original}
             onChange={(e) => meta.setData({ ...meta.data, original: e })}
           />
+        </div>
+
+        <div className="grid mb20">
           <CustomSwitch
             label="Вдівство"
             selected={meta.data.widow}
