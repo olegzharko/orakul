@@ -1,10 +1,12 @@
 import * as React from 'react';
+
 import CustomInput from '../../../../../../../../../../../../components/CustomInput';
 import CustomSelect from '../../../../../../../../../../../../components/CustomSelect';
 import CustomSwitch from '../../../../../../../../../../../../components/CustomSwitch';
 import PhoneMaskInput from '../../../../../../../../../../../../components/PhoneMaskInput';
 import PrimaryButton from '../../../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../../../components/SectionWithTitle';
+
 import { useFields } from './useFields';
 
 const Fields = () => {
@@ -54,6 +56,12 @@ const Fields = () => {
             label="E-mail"
             onChange={(e) => meta.setClient({ ...meta.client, email: e })}
             value={meta.client?.email}
+          />
+
+          <CustomSwitch
+            label="Покупець по попередньому договору"
+            selected={meta.client?.previous_buyer}
+            onChange={(e) => meta.setClient({ ...meta.client, previous_buyer: e })}
           />
         </div>
       </SectionWithTitle>

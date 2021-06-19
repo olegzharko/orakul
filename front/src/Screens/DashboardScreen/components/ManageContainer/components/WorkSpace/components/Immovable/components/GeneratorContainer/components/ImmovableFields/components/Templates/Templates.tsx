@@ -110,6 +110,20 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
+      <SectionWithTitle title="Заява-згода на обробку персональних даних">
+        <div className="flex-center">
+          <CustomSelect
+            label="Шаблон на обробку персональних даних"
+            data={meta.processingPersonalTemplates}
+            onChange={
+              (e) => meta.setData({ ...meta.data, processing_personal_data_template_id: e })
+            }
+            selectedValue={meta.data.processing_personal_data_template_id}
+            className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
       <SectionWithTitle title="Договір розірвання ПД">
         <div className="flex-center">
           <CustomSelect
