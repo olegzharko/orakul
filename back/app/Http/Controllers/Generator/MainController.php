@@ -45,6 +45,8 @@ class MainController extends BaseController
         }
 
         $result['date_info'] = $date_info;
+        $result['card_id'] = str_pad($card_id, 8, '0', STR_PAD_LEFT);
+;
         return $this->sendResponse($result, "Дані для головної створення договору");
     }
 }

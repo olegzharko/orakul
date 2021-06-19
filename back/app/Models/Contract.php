@@ -163,6 +163,11 @@ class Contract extends Model implements Sortable
         return $this->hasOne(Communal::class, 'contract_id');
     }
 
+    public function processing_personal_data()
+    {
+        return $this->hasOne(\App\Models\ProcessingPersonalData::class, 'contract_id');
+    }
+
     public function card()
     {
         return $this->belongsTo(Card::class, 'card_id');

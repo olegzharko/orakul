@@ -297,6 +297,19 @@ class FolderFileController extends Controller
         return $title;
     }
 
+    public function processing_personal_data_title($client, $template)
+    {
+        $title = null;
+        $title = "{$this->generate_path}/"
+            . "$template->title $this->subscriber $client->surname_n $client->tax_code"
+            . "$this->file_type_docx"
+            . "";
+
+        $template = $this->file_path($template);
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
     public function termination_contract_title()
     {
         $title = null;

@@ -60,6 +60,11 @@ class Client extends Model implements Sortable, HasMedia
         return $this->belongsTo(PassportTemplate::class, 'passport_type_id');
     }
 
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id');
+    }
+
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');

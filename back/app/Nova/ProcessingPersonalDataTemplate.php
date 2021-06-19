@@ -10,14 +10,14 @@ use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
 
-class CommunalTemplate extends Resource
+class ProcessingPersonalDataTemplate extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\CommunalTemplate::class;
+    public static $model = \App\Models\ProcessingPersonalDataTemplate::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -43,7 +43,7 @@ class CommunalTemplate extends Resource
 
     public static function label()
     {
-        return "Коммунальні довіреність";
+        return "Згода на обробку персональних даних";
     }
 
     /**

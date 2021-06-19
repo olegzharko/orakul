@@ -4,47 +4,43 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\BelongsTo;
-use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
-use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Heading;
+use Naif\Toggle\Toggle;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class CommunalTemplate extends Resource
+class ProcessingPersonalData extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\CommunalTemplate::class;
+    public static $model = \App\Models\ProcessingPersonalData::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'id';
 
+    public static $group = "Угода";
+
+    public static function label()
+    {
+        return "Згода на обробку персональних даних";
+    }
     /**
      * The columns that should be searched.
      *
      * @var array
      */
     public static $search = [
-        'id', 'title'
+        'id',
     ];
-
-    public static $searchRelations = [
-        'developer' => ['title'],
-    ];
-
-    public static $group = "Шаблон документу";
-
-    public static function label()
-    {
-        return "Коммунальні довіреність";
-    }
 
     /**
      * Get the fields displayed by the resource.
@@ -56,11 +52,8 @@ class CommunalTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
-            Text::make('Заголовок', 'title'),
-            Files::make('Шаблон', 'path')->customPropertiesFields([
-                Markdown::make('Description'),
-            ]),
+            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->nullable(),
+            BelongsTo::make('Шаблон згоди на обрабку персональних даних', 'template', 'App\Nova\ProcessingPersonalDataTemplate'),
         ];
     }
 

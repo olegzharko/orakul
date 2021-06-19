@@ -408,6 +408,7 @@ class ManagerController extends BaseController
                 $buyer_data = $this->tools->get_client_data_for_manager($client);
                 $buyer_data['phone'] = $phone;
                 $buyer_data['email'] = $email;
+                $buyer_data['previous_buyer'] = ClientContract::where('client_id', $client_id)->where('previous_buyer', true)->value('previous_buyer') ? true : false;
                 $buyer_info = $this->tools->clinet_quesetionnaire_info($client->id);
 
                 $result['client']['data'] = $buyer_data;
@@ -457,7 +458,7 @@ class ManagerController extends BaseController
         if ($r['client'] && count($r['client']['data'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']['data']);
             if ($client_id) {
-                $this->card_client($card_id, $client_id);
+                $this->card_client($card_id, $client_id, $r['previous_buyer']);
                 $this->update_check_list($client_id, $r['client']['info']);
                 $this->create_client_spouse_consents($client_id, $r['client']['data']);
             }
@@ -647,14 +648,13 @@ class ManagerController extends BaseController
         }
     }
 
-    public function card_client($card_id, $client_id)
+    public function card_client($card_id, $client_id, $previous_buyer = null)
     {
-
         $contracts_id = Contract::where('card_id', $card_id)->pluck('id');
         foreach ($contracts_id as $contr_id) {
             ClientContract::updateOrCreate(
                 ['client_id' => $client_id, 'contract_id' => $contr_id],
-                ['client_id' => $client_id, 'contract_id' => $contr_id]);
+                ['client_id' => $client_id, 'contract_id' => $contr_id, 'previous_buyer' => $previous_buyer]);
         }
     }
 
