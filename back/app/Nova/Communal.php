@@ -55,7 +55,6 @@ class Communal extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->nullable(),
             BelongsTo::make('Шаблон довіреності по коммунальним', 'template', 'App\Nova\CommunalTemplate'),
-            BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
             DateTime::make('Дата підписання згоди', 'sign_date'),
             Text::make('Зареєстровано в реєстрі за №', 'reg_num'),
