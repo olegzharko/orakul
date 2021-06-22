@@ -15,6 +15,7 @@ export const useGeneratorMain = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [instructions, setInstructions] = useState([]);
   const [exchange, setExchange] = useState();
 
@@ -45,6 +46,7 @@ export const useGeneratorMain = () => {
         if (res?.success) {
           const { date, day, room, time } = res.data.date_info;
           setTitle(`${day} ${date} ${time} ${room}`);
+          setCode(res.data.card_id);
           setInstructions(res.data.instructions);
         }
 
@@ -63,6 +65,7 @@ export const useGeneratorMain = () => {
 
   return {
     id,
+    code,
     title,
     instructions,
     isLoading,

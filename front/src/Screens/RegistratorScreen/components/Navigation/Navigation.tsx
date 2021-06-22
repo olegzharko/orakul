@@ -25,7 +25,7 @@ const Navigation = ({ onSelect, selected }: Props) => {
         type="button"
         onClick={() => handleClick(RegistratorNavigationTypes.DEVELOPER)}
       >
-        <img src="/icons/navigation/developer.svg" alt="developer" />
+        <img src="/images/navigation/developer.svg" alt="developer" />
         Заборони на продавця
       </button>
       <button
@@ -35,7 +35,7 @@ const Navigation = ({ onSelect, selected }: Props) => {
         type="button"
         onClick={() => handleClick(RegistratorNavigationTypes.IMMOVABLE)}
       >
-        <img src="/icons/navigation/immovable.svg" alt="immovable" />
+        <img src="/images/navigation/immovable.svg" alt="immovable" />
         Заборони по нерухомості
       </button>
     </ControlPanel>

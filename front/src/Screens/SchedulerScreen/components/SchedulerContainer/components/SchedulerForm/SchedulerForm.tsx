@@ -26,7 +26,7 @@ const SchedulerForm = () => {
           >
             {`${meta.oldSelectedAppointment.day} ${meta.oldSelectedAppointment.time} ${meta.oldSelectedAppointment.date.split('.').reverse().join('.')}`}
             <img
-              src="/icons/x.svg"
+              src="/images/x.svg"
               alt="close"
               className="clear-icon"
               onClick={meta.onCloseTab}

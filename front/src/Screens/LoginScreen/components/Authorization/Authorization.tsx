@@ -24,7 +24,7 @@ const Authorization = () => {
         autoComplete="on"
         onSubmit={meta.handleLogin}
       >
-        <img src="/icons/logo-full.svg" alt="Rakul" />
+        <img src="/images/logo-full.svg" alt="Rakul" />
 
         <div className="mv12">
           <CustomInput

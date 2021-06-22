@@ -25,7 +25,7 @@ const CardWithClose = ({ id, title, children, link, onClick }: Props) => {
           onClick={handleClick}
           className="card-close__button"
         >
-          <img src="/icons/x.svg" alt="delete" />
+          <img src="/images/x.svg" alt="delete" />
         </button>
       </div>
       <div className="card-close__main">

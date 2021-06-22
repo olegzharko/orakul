@@ -35,7 +35,7 @@ const Contracts = ({ data, onChange }: Props) => {
             onClick={() => handleChange(item.type)}
           >
             <div className="item__left">
-              <img src="/icons/contract.svg" alt="contract" />
+              <img src="/images/contract.svg" alt="contract" />
               <span className="name">{item.title}</span>
             </div>
             <span className="quantity">{item.count}</span>

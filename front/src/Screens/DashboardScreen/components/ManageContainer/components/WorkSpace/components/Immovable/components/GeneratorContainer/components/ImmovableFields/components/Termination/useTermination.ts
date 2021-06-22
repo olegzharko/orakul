@@ -12,7 +12,10 @@ type InitialData = {
   reg_number: string | null,
   price_grn: string | null,
   price_dollar: string | null,
+  first_client_id: string | null,
+  second_client_id: string | null,
   notary?: SelectItem[],
+  clients?: SelectItem[],
 }
 
 export type Props = {
@@ -25,12 +28,15 @@ export const useTermination = ({ id, initialData }: Props) => {
   const { token } = useSelector((state: State) => state.main.user);
 
   const [notaries, setNotaries] = useState<SelectItem[]>([]);
+  const [clients, setClients] = useState<SelectItem[]>([]);
   const [data, setData] = useState<InitialData>({
     notary_id: null,
     reg_date: null,
     reg_number: null,
     price_grn: null,
     price_dollar: null,
+    first_client_id: null,
+    second_client_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -40,6 +46,8 @@ export const useTermination = ({ id, initialData }: Props) => {
       reg_number: null,
       price_grn: null,
       price_dollar: null,
+      first_client_id: null,
+      second_client_id: null,
     });
   }, []);
 
@@ -63,17 +71,21 @@ export const useTermination = ({ id, initialData }: Props) => {
 
   useEffect(() => {
     setNotaries(initialData?.notary || []);
+    setClients(initialData?.clients || []);
     setData({
       notary_id: initialData?.notary_id || null,
       reg_number: initialData?.reg_number || null,
       price_grn: initialData?.price_grn || null,
       price_dollar: initialData?.price_dollar || null,
       reg_date: initialData?.reg_date ? changeMonthWitDate(initialData?.reg_date) : null,
+      first_client_id: initialData?.first_client_id || null,
+      second_client_id: initialData?.second_client_id || null,
     });
   }, [initialData]);
 
   return {
     notaries,
+    clients,
     data,
     onClear,
     onSave,

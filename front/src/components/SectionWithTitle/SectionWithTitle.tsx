@@ -27,7 +27,7 @@ const SectionWithTitle = ({ title, children, onClear, headerColor }: Props) => (
       {onClear && (
         <button type="button" className="clear-button">
           <img
-            src="/icons/clear-form.svg"
+            src="/images/clear-form.svg"
             alt="close"
             className="clear-icon"
             onClick={onClear}

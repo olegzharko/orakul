@@ -29,7 +29,7 @@ const InputWithCopy = ({ label, value, disabled, onChange }: Props) => {
         type="button"
         onClick={handleSave}
       >
-        {done ? <img src="/icons/check.svg" alt="copy" /> : <img src="/icons/copy.svg" alt="copy" />}
+        {done ? <img src="/images/check.svg" alt="copy" /> : <img src="/images/copy.svg" alt="copy" />}
       </button>
     </div>
   );

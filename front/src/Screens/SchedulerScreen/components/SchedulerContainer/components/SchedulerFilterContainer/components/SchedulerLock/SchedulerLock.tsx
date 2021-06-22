@@ -7,7 +7,7 @@ const SchedulerLock = () => {
 
   return (
     <div className={`scheduler__lock-button ${schedulerLock ? '' : 'unLock'}`}>
-      <img src="/icons/lock.svg" alt="lock" onClick={onClick} />
+      <img src="/images/lock.svg" alt="lock" onClick={onClick} />
     </div>
   );
 };

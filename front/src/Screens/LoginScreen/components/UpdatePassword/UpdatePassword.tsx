@@ -13,7 +13,7 @@ const UpdatePassword = () => {
   return (
     <>
       <form className="login__update" onSubmit={meta.handleUpdate}>
-        <img src="/icons/logo-full.svg" alt="Rakul" />
+        <img src="/images/logo-full.svg" alt="Rakul" />
         <h1 className="login__forgot-title mv12">Новий пароль</h1>
 
         <div className="mv12">

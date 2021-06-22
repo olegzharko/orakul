@@ -169,3 +169,14 @@ body, p {
 .MuiFormControl-root.MuiTextField-root {
   width: 100%;
 }
+
+.MuiInputLabel-outlined {
+  width: 85%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.MuiFormLabel-filled, &.MuiInputLabel-shrink {
+    width: auto;
+  }
+}

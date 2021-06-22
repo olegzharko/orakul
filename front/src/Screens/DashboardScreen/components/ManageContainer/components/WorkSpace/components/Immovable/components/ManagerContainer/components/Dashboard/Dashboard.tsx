@@ -33,7 +33,7 @@ const Dashboard = () => {
         ))}
 
         <Link to={`/immovables/${meta.id}/create`} className="add-item-card">
-          <img src="/icons/plus-big.svg" alt="create" />
+          <img src="/images/plus-big.svg" alt="create" />
         </Link>
       </div>
 
