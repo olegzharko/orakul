@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <div className="header container">
       <Link to="/" className="header__logo">
-        <img src="/icons/logo.svg" alt="logo" />
+        <img src="/images/logo.svg" alt="logo" />
       </Link>
       <div className="header__search">
         <input
@@ -19,10 +19,10 @@ const Header = () => {
           onChange={onSearch}
           value={searchText}
         />
-        <img src="/icons/search.svg" alt="search" />
+        <img src="/images/search.svg" alt="search" />
       </div>
       <div className="header__control">
-        <img src="/icons/log-out.svg" alt="logout" onClick={onLogout} />
+        <img src="/images/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>
   );

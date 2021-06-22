@@ -31,7 +31,7 @@ const Dashboard = () => {
         ))}
 
         <Link to={`/side-notaries/${meta.id}/create`} className="add-item-card">
-          <img src="/icons/plus-big.svg" alt="create" />
+          <img src="/images/plus-big.svg" alt="create" />
         </Link>
       </div>
     </div>

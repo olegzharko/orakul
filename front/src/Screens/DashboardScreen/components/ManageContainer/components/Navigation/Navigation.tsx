@@ -19,7 +19,7 @@ const Navigation = ({ selected }: Props) => {
         type="button"
         onClick={() => meta.handleClick(DashboardContractNavigation.MAIN)}
       >
-        <img src="/icons/navigation/book-open.svg" alt="main" />
+        <img src="/images/navigation/book-open.svg" alt="main" />
         Головна
       </button>
 
@@ -31,7 +31,7 @@ const Navigation = ({ selected }: Props) => {
           type="button"
           onClick={() => meta.handleClick(DashboardContractNavigation.SELLER)}
         >
-          <img src="/icons/navigation/developer.svg" alt="seller" />
+          <img src="/images/navigation/developer.svg" alt="seller" />
           Продавець
         </button>
       )}
@@ -44,7 +44,7 @@ const Navigation = ({ selected }: Props) => {
           type="button"
           onClick={() => meta.handleClick(DashboardContractNavigation.IMMOVABLES)}
         >
-          <img src="/icons/navigation/immovable.svg" alt="immovables" />
+          <img src="/images/navigation/immovable.svg" alt="immovables" />
           Нерухомість
         </button>
       )}
@@ -57,7 +57,7 @@ const Navigation = ({ selected }: Props) => {
           type="button"
           onClick={() => meta.handleClick(DashboardContractNavigation.CLIENTS)}
         >
-          <img src="/icons/navigation/user.svg" alt="clients" />
+          <img src="/images/navigation/user.svg" alt="clients" />
           Клієнти
         </button>
       )}
@@ -70,7 +70,7 @@ const Navigation = ({ selected }: Props) => {
           type="button"
           onClick={() => meta.handleClick(DashboardContractNavigation.SIDE_NOTARIES)}
         >
-          <img src="/icons/navigation/book-open.svg" alt="side notaries" />
+          <img src="/images/navigation/book-open.svg" alt="side notaries" />
           Сторонній нотаріус
         </button>
       )}

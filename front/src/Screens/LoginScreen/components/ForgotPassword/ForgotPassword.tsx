@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   return (
     <>
       <form className="login__forgot" onSubmit={meta.handleReset}>
-        <img src="/icons/logo-full.svg" alt="Rakul" />
+        <img src="/images/logo-full.svg" alt="Rakul" />
         <h1 className="login__forgot-title mv12">Відновлення паролю</h1>
 
         <div className="mv12">
