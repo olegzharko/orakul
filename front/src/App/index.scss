@@ -175,4 +175,8 @@ body, p {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  &.MuiFormLabel-filled, &.MuiInputLabel-shrink {
+    width: auto;
+  }
 }

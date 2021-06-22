@@ -9,8 +9,6 @@ import { useTermination, Props } from './useTermination';
 const Termination = (props: Props) => {
   const meta = useTermination(props);
 
-  if (props.initialData?.hide) return null;
-
   return (
     <div className="termination">
       <SectionWithTitle title="Заява-згода на розірвання ПД" onClear={meta.onClear}>

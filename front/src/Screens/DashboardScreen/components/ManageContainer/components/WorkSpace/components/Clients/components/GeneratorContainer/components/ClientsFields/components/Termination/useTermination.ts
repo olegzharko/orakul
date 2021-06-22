@@ -12,7 +12,6 @@ type InitialData = {
   notary_id: string | null,
   reg_date: any,
   reg_number: string | null,
-  hide?: boolean,
   consent_templates?: SelectItem[],
   spouse_words?: SelectItem[],
   notary?: SelectItem[],
