@@ -87,5 +87,6 @@
     "hooks": {
       "pre-commit": "npm run eslint"
     }
-  }
+  },
+  "proxy": "https://app.synction.space/"
 }
