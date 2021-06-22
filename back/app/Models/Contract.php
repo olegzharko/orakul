@@ -20,6 +20,7 @@ class Contract extends Model implements Sortable
         'immovable_id',
         'template_id',
         'ready',
+        'cancelled',
         'translate',
         'sign_date',
         'final_sign_date',

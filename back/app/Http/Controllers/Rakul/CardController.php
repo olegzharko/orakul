@@ -689,8 +689,10 @@ class CardController extends BaseController
 
         $ready[] = $this->convert->get_surname_and_initials_n($card->notary);
         $ready[] = $card->dev_group->title;
-        if ($card->ready) {
+        if ($card->ready && $card->cancelled == false) {
             $ready[] = 'Готово до генерації';
+        } elseif ($card->cancelled == true) {
+            $ready[] = 'Скасовано';
         } else {
             $ready[] = 'Потребує внесення данних';
         }
