@@ -683,10 +683,16 @@ class ClientController extends BaseController
 
     public function get_termination($card_id, $client_id)
     {
+        $hide = true;
         $result = [];
 
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        //  приховати блок заяви-згоди про розірвання договору у подружжя та представника
+        if (ClientContract::where('client_id', $client_id)->first()) {
+            $hide = false;
         }
 
         if (!$card = Card::find($card_id)) {
@@ -719,6 +725,7 @@ class ClientController extends BaseController
         $result['spouse_word_id'] = null;
         $result['reg_date'] = null;
         $result['reg_num'] = null;
+        $result['hide'] = $hide;
 
         if ($client->termination_consent) {
             $result['notary_id'] = $client->termination_consent->notary_id;
