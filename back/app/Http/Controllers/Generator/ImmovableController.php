@@ -36,6 +36,8 @@ use App\Models\ImmovableType;
 use App\Models\PropertyValuation;
 use App\Models\PropertyValuationPrice;
 use App\Models\QuestionnaireTemplate;
+use App\Models\ProcessingPersonalData;
+use App\Models\ProcessingPersonalDataTemplate;
 use App\Models\Room;
 use App\Models\Notary;
 use App\Models\RoominessType;
@@ -578,6 +580,18 @@ class ImmovableController extends BaseController
         $card_id = Immovable::where('immovables.id', $immovable_id)->join('contracts', 'contracts.immovable_id', '=', 'immovables.id')->value('contracts.card_id');
         $contract_id = Contract::where('immovable_id', $immovable_id)->value('id');
 
+        $all_clients_for_card = Contract::select('clients.*')
+            ->where('contracts.card_id', $card_id)
+            ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
+            ->join('clients', 'clients.id', '=', 'client_contract.client_id')
+            ->get();
+
+        $result['client'] = null;
+        foreach ($all_clients_for_card as $key => $client) {
+            $result['client'][$key]['id'] = $client->id;
+            $result['client'][$key]['full_name'] = $this->convert->get_full_name($client);
+        }
+
         $termnation_info = TerminationInfo::firstOrCreate(
             ['contract_id' => $contract_id],
         );
@@ -605,6 +619,8 @@ class ImmovableController extends BaseController
         $result['notary_id'] = $termnation_info->notary_id;
         $result['reg_date'] = $termnation_info->reg_date ? $termnation_info->reg_date->format('d.m.Y') : null;
         $result['reg_number'] = $termnation_info->reg_num;
+        $result['first_client_id'] = $termnation_info->first_client_id;
+        $result['second_client_id'] = $termnation_info->second_client_id;
 
         return $this->sendResponse($result, 'Дані для розірвання попереднього договру');
     }
@@ -627,6 +643,8 @@ class ImmovableController extends BaseController
                 'notary_id' => $r['notary_id'],
                 'reg_date' => $r['reg_date'],
                 'reg_num' => $r['reg_number'],
+                'first_client_id' => $r['first_client_id'],
+                'second_client_id' => $r['second_client_id'],
             ]);
         }
 
@@ -650,6 +668,7 @@ class ImmovableController extends BaseController
         $statement_templates = StatementTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
 
         $communal_templates = CommunalTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $processing_personal_data_templates = ProcessingPersonalDataTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $termination_contract_templates = TerminationContractTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
 
@@ -660,6 +679,7 @@ class ImmovableController extends BaseController
         $questionnaire = Questionnaire::where('contract_id', $contract->id)->first();
         $statement = DeveloperStatement::where('contract_id', $contract->id)->first();
         $communal = Communal::where('contract_id', $contract->id)->first();
+        $processing_personal_data = ProcessingPersonalData::where('contract_id', $contract->id)->first();
         $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
         $termination_contract = TerminationContract::where('contract_id', $contract->id)->first();
         $termination_refund = TerminationRefund::where('contract_id', $contract->id)->first();
@@ -671,6 +691,7 @@ class ImmovableController extends BaseController
         $result['questionnaire_templates'] = $questionnaire_templates;
         $result['statement_templates'] = $statement_templates;
         $result['communal_templates'] = $communal_templates;
+        $result['processing_personal_data_templates'] = $processing_personal_data_templates;
         $result['termination_contracts'] = $termination_contract_templates;
         $result['termination_refunds'] = $termination_refund_templates;
 
@@ -685,6 +706,7 @@ class ImmovableController extends BaseController
         $result['questionnaire_template_id'] = $questionnaire->template_id ?? null;
         $result['statement_template_id'] = $statement->template_id ?? null;
         $result['communal_template_id'] = $communal->template_id ?? null;
+        $result['processing_personal_data_template_id'] = $processing_personal_data->template_id ?? null;
         $result['termination_contract_id'] = null;
         $result['termination_refund_id'] = null;
         $result['termination_refund_notary_id'] = null;
@@ -802,6 +824,12 @@ class ImmovableController extends BaseController
                 ]);
         }
 
+        if ($r['processing_personal_data_template_id']) {
+            ProcessingPersonalData::updateOrCreate(
+                ['contract_id' => $contract_id],
+                ['template_id' => $r['processing_personal_data_template_id']]);
+        }
+
         if ($r['termination_contract_id']) {
             TerminationContract::updateOrCreate(
                 ['contract_id' => $contract_id],
@@ -878,13 +906,13 @@ class ImmovableController extends BaseController
         if (isset($r['final_sign_date']) && !empty($r['final_sign_date']))
             $r['final_sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_sign_date']);
 
-        $r['price_grn'] = floatval(str_replace(",", ".", $r['price_grn']));
-        $r['price_dollar'] = floatval(str_replace(",", ".", $r['price_dollar']));
-        $r['reserve_grn'] = floatval(str_replace(",", ".", $r['reserve_grn']));
-        $r['m2_grn'] = floatval(str_replace(",", ".", $r['m2_grn']));
-        $r['total_space'] = floatval(str_replace(",", ".", $r['total_space']));
-        $r['living_space'] = floatval(str_replace(",", ".", $r['living_space']));
-        $r['first_part_grn'] = floatval(str_replace(",", ".", $r['first_part_grn']));
+        $r['price_grn'] = $r['price_grn'] ? floatval(str_replace(",", ".", $r['price_grn'])) : null;
+        $r['price_dollar'] = $r['price_dollar'] ? floatval(str_replace(",", ".", $r['price_dollar'])) : null;
+        $r['reserve_grn'] = $r['reserve_grn'] ? floatval(str_replace(",", ".", $r['reserve_grn'])) : null;
+        $r['m2_grn'] = $r['m2_grn'] ? floatval(str_replace(",", ".", $r['m2_grn'])) : null;
+        $r['total_space'] = $r['total_space'] ? floatval(str_replace(",", ".", $r['total_space'])) : null;
+        $r['living_space'] = $r['living_space'] ? floatval(str_replace(",", ".", $r['living_space'])) : null;
+        $r['first_part_grn'] = $r['first_part_grn'] ? floatval(str_replace(",", ".", $r['first_part_grn'])) : null;
         $validator = Validator::make([
             'imm_type_id' => $r['imm_type_id'],
             'building_id' => $r['building_id'],
@@ -962,7 +990,7 @@ class ImmovableController extends BaseController
             'exchange_rate' => ['numeric', 'nullable'],
 
             'sign_date' => ['date_format:Y.m.d', 'nullable'],
-            'reg_num' => ['numeric', 'nullable'],
+            'reg_num' => ['string', 'nullable'],
             'first_part_grn' => ['numeric', 'nullable'],
             'first_part_dollar' => ['numeric', 'nullable'],
             'last_part_grn' => ['numeric', 'nullable'],

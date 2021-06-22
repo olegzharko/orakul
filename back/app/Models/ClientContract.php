@@ -13,6 +13,7 @@ class ClientContract extends Model
     protected $fillable = [
         'client_id',
         'contract_id',
+        'previous_buyer',
     ];
 
     protected $casts = [

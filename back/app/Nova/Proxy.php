@@ -9,6 +9,8 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use Laravel\Nova\Fields\Markdown;
 
 class Proxy extends Resource
 {
@@ -35,7 +37,7 @@ class Proxy extends Resource
 
     public static function label()
     {
-        return "Довіренності забудовників для представників";
+        return "Довіреності забудовників для представників";
     }
 
     /**
@@ -76,6 +78,9 @@ class Proxy extends Resource
             Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
             DateTime::make('Дата реєстрації у нотаріуса', 'reg_date'),
             DateTime::make('Дійсно до', 'final_date'),
+            Files::make('Скан-сет довіреності', 'pdf')->customPropertiesFields([
+                Markdown::make('Description'),
+            ]),
         ];
     }
 

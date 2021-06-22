@@ -10,6 +10,8 @@ use Laravel\Nova\Fields\Text;
 use Naif\Toggle\Toggle;
 use Timothyasp\Color\Color;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use Laravel\Nova\Fields\Markdown;
 
 class DevCompany extends Resource
 {
@@ -57,14 +59,17 @@ class DevCompany extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Компанія забудовника', 'title'),
             BelongsTo::make('Група', 'dev_group', 'App\Nova\DevGroup'),
+            Text::make('Компанія забудовника', 'title'),
             Color::make("Колір", "color"),
             Toggle::make('Активний', 'active'),
             HasMany::make('Люди', 'member', 'App\Nova\Client'),
             HasMany::make('Доручення', 'proxy', 'App\Nova\Proxy'),
             HasMany::make('Будинки', 'building', 'App\Nova\DeveloperBuilding'),
             HasMany::make('Інвестиційні договори', 'investment_agreement', 'App\Nova\InvestmentAgreement'),
+            Files::make('Cкан-сет рішення', 'pdf')->customPropertiesFields([
+                Markdown::make('Description'),
+            ]),
         ];
     }
 

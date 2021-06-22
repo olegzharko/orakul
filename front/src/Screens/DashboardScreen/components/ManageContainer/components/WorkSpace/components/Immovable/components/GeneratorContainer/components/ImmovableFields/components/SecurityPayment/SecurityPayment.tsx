@@ -26,7 +26,7 @@ const SecurityPayment = (props: Props) => {
           />
           <CustomInput
             label="Номер договору резервування"
-            onChange={(e) => meta.setData({ ...meta.data, reg_num: +e })}
+            onChange={(e) => meta.setData({ ...meta.data, reg_num: e })}
             value={meta.data.reg_num}
           />
           <CustomDatePicker

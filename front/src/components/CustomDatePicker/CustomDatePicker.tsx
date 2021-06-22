@@ -8,6 +8,7 @@ import {
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import deLocale from "date-fns/locale/uk";
 
 type Props = {
   label: string;
@@ -45,7 +46,7 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required, disabled }:
 
   return (
     <MuiThemeProvider theme={customTheme}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
         <KeyboardDatePicker
           error={required && !value}
           margin="normal"
@@ -53,6 +54,8 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required, disabled }:
           format="dd/MM/yyyy"
           value={value}
           onChange={handleChange}
+          cancelLabel="Закрити"
+          okLabel="Зберегти"
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}

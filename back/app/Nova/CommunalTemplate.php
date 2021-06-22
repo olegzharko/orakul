@@ -43,7 +43,7 @@ class CommunalTemplate extends Resource
 
     public static function label()
     {
-        return "Коммунальні";
+        return "Коммунальні довіреність";
     }
 
     /**

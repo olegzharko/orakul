@@ -30,7 +30,7 @@ use App\Models\Contract;
 use App\Models\TerminationConsent;
 use App\Models\TerminationConsentTemplate;
 use App\Models\ActualAddress;
-use App\Nova\DevCompany;
+use App\Models\DevCompany;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Validator;
@@ -683,13 +683,24 @@ class ClientController extends BaseController
 
     public function get_termination($card_id, $client_id)
     {
+        $hide = true;
         $result = [];
 
         if (!$client = Client::find($client_id)) {
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $consent_templates = TerminationConsentTemplate::select('id', 'title')->get();
+        //  приховати блок заяви-згоди про розірвання договору у подружжя та представника
+        if (ClientContract::where('client_id', $client_id)->first()) {
+            $hide = false;
+        }
+
+        if (!$card = Card::find($card_id)) {
+            return $this->sendError('', 'Карта з ID: ' . $client_id . ' відсутня');
+        }
+
+        $dev_group_company_id = DevCompany::where('dev_group_id', $card->dev_group_id)->pluck('id');
+        $consent_templates = TerminationConsentTemplate::select('id', 'title')->whereIn('dev_company_id', $dev_group_company_id)->get();
 
         $convert_notary = [];
         $other_notary = [];
@@ -710,10 +721,11 @@ class ClientController extends BaseController
         $result['consent_templates'] = $consent_templates;
         $result['notary_id'] = null;
         $result['consent_template_id'] = null;
-        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->get();
+        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_group_company_id)->get();
         $result['spouse_word_id'] = null;
         $result['reg_date'] = null;
         $result['reg_num'] = null;
+        $result['hide'] = $hide;
 
         if ($client->termination_consent) {
             $result['notary_id'] = $client->termination_consent->notary_id;

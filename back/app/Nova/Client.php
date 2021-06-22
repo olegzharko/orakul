@@ -14,6 +14,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use Laravel\Nova\Fields\Markdown;
 
 class Client extends Resource
 {
@@ -72,6 +74,7 @@ class Client extends Resource
             new Panel("Відноситься до:", $this->relationships()),
             new Panel("Код та Паспортні данні", $this->passportInfo()),
             new Panel("Адреса", $this->addressInfo()),
+            new Panel("PDF", $this->pdfInfo()),
             BelongsToMany::make('Угода', 'contracts', 'App\Nova\Contract')->nullable(),
 
         ];
@@ -162,6 +165,7 @@ class Client extends Resource
     {
         return [
             Heading::make('<p class="text-success">Повна адреса</p>')->asHtml(),
+            BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable()->hideFromIndex(),
             BelongsTo::make('Населений пункту', 'city', 'App\Nova\City')->nullable()->hideFromIndex(),
             BelongsTo::make('Тип вулиці', 'address_type', 'App\Nova\AddressType')->nullable()->hideFromIndex(),
             Text::make('Назва вулиці', 'address')->hideFromIndex(),
@@ -169,6 +173,15 @@ class Client extends Resource
             Text::make('Номер будинку', 'building')->hideFromIndex(),
             BelongsTo::make('Тип житлового приміщення', 'apartment_type', 'App\Nova\ApartmentType')->nullable()->hideFromIndex(),
             Text::make('Номер житлового приміщення', 'apartment_num')->hideFromIndex(),
+        ];
+    }
+
+    public function pdfInfo()
+    {
+        return [
+            Files::make('Cкан-сет Паспорт-Код', 'pdf')->customPropertiesFields([
+                Markdown::make('Description'),
+            ]),
         ];
     }
 

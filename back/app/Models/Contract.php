@@ -20,6 +20,7 @@ class Contract extends Model implements Sortable
         'immovable_id',
         'template_id',
         'ready',
+        'cancelled',
         'translate',
         'sign_date',
         'final_sign_date',
@@ -161,6 +162,11 @@ class Contract extends Model implements Sortable
     public function communal()
     {
         return $this->hasOne(Communal::class, 'contract_id');
+    }
+
+    public function processing_personal_data()
+    {
+        return $this->hasOne(\App\Models\ProcessingPersonalData::class, 'contract_id');
     }
 
     public function card()

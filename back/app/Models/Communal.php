@@ -13,7 +13,6 @@ class Communal extends Model
     public $fillable = [
         'contract_id',
         'template_id',
-        'client_id',
         'notary_id',
         'sign_date',
         'final_date',
@@ -40,10 +39,5 @@ class Communal extends Model
     public function notary()
     {
         return $this->belongsTo(Notary::class, 'notary_id');
-    }
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class, 'client_id');
     }
 }

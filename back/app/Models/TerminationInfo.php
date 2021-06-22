@@ -12,11 +12,14 @@ class TerminationInfo extends Model
 
     protected $fillable = [
         'contract_id',
+        'first_client_id',
+        'second_client_id',
+        'contract_id',
         'price_grn',
         'price_dollar',
         'notary_id',
         'reg_date',
-        'reg_num'
+        'reg_num',
     ];
 
     protected $casts = [

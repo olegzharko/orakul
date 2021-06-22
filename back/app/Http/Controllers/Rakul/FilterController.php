@@ -121,7 +121,7 @@ class FilterController extends BaseController
 
         $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('ready', true)
-            ->where('date_time', '>=', $this->date);
+            ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
         if (auth()->user()->type == 'generator')
             $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
@@ -155,7 +155,7 @@ class FilterController extends BaseController
                 "cards.cancelled",
             )
         ->whereIn('cards.room_id', $this->rooms)
-            ->where('cards.date_time', '>=', $this->date)
+            ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
             ->where('contract_types.id', $contract_type_id)
             ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->leftJoin('contract_types', 'contract_types.id', '=', 'contracts.type_id')
@@ -176,7 +176,7 @@ class FilterController extends BaseController
     public function cancelled_cards()
     {
         $query_cards = Card::whereIn('room_id', $this->rooms)
-            ->where('date_time', '>=', $this->date)
+            ->where('date_time', '>=', $this->date->format('Y.m.d'))
             ->where('cancelled', true);
 
         if (auth()->user()->type == 'generator')
@@ -224,7 +224,7 @@ class FilterController extends BaseController
     private function start_card_query()
     {
         $query_cards = Card::whereIn('room_id', $this->rooms)
-            ->where('date_time', '>=', $this->date);
+            ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
         return $query_cards;
     }
@@ -248,7 +248,7 @@ class FilterController extends BaseController
                 "cards.room_id",
                 "cards.date_time",
                 "cards.city_id",
-                "cards.dev_company_id",
+                "cards.dev_group_id",
                 "cards.dev_representative_id",
                 "cards.dev_manager_id",
                 "cards.generator_step",
@@ -276,7 +276,7 @@ class FilterController extends BaseController
             $query_cards = $this->query_for_generator($query_cards);
         }
 
-        $count_cards = $query_cards->where('cancelled', false)->count();
+        $count_cards = $query_cards->count();
 
         return $count_cards;
     }
@@ -289,7 +289,7 @@ class FilterController extends BaseController
             $query_cards = $this->query_for_generator($query_cards);
         }
 
-        $count_cards = $query_cards->where('ready', true)->where('cancelled', false)->count();
+        $count_cards = $query_cards->where('ready', true)->count();
 
         return $count_cards;
     }
