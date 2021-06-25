@@ -50,7 +50,7 @@ export const useSellerBan = ({ initialData, id }: Props) => {
 
   useEffect(() => {
     setData({
-      date: initialData?.date ? new Date(changeMonthWitDate(initialData?.date)) : null,
+      date: initialData?.date ? changeMonthWitDate(initialData?.date) : null,
       number: initialData?.number || '',
       pass: initialData?.pass || false,
     });

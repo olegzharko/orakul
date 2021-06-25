@@ -97,11 +97,11 @@ export const usePassport = ({ initialData, id }: Props) => {
       passport_department: initialData?.passport_department || '',
       passport_demographic_code: initialData?.passport_demographic_code || '',
       passport_finale_date: initialData?.passport_finale_date
-        ? new Date(changeMonthWitDate(initialData?.passport_finale_date)) : null,
+        ? changeMonthWitDate(initialData?.passport_finale_date) : null,
       date_of_birth: initialData?.date_of_birth
-        ? new Date(changeMonthWitDate(initialData?.date_of_birth)) : null,
+        ? changeMonthWitDate(initialData?.date_of_birth) : null,
       passport_date: initialData?.passport_date
-        ? new Date(changeMonthWitDate(initialData?.passport_date)) : null,
+        ? changeMonthWitDate(initialData?.passport_date) : null,
     });
   }, [initialData]);
 
