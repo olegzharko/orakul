@@ -169,8 +169,6 @@ class FolderFileController extends Controller
         // echo "{$folder}<br><br>";
         $contract = 'Contract';
         $dev_company = $contract . "/" . $this->contract->dev_company->title . "/" . $date->format('d.m.Y');
-
-
         // Створення папки забудовника
         if (!file_exists("{$dev_company}"))
             mkdir($dev_company, 0777, true);
@@ -413,13 +411,14 @@ class FolderFileController extends Controller
     {
         if (!file_exists($title)) {
 //            $data = file_get_contents($template);
-
-            $data =curl_init();
+            $data = curl_init();
             curl_setopt($data, CURLOPT_URL,$template);
             curl_setopt($data, CURLOPT_CONNECTTIMEOUT, 2);
             curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($data, CURLOPT_USERAGENT, 'Document Template');
+
             $result = curl_exec($data);
+
             curl_close($data);
 
             file_put_contents($title, $result);

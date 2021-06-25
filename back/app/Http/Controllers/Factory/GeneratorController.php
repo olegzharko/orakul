@@ -211,8 +211,9 @@ class GeneratorController extends BaseController
     public function save_file($fileName)
     {
         $result['path'] = $fileName;
-        $result['link'] = URL::to('/') . "/" . $fileName;
-
+        foreach ($fileName as $value) {
+            $result['link'][] = URL::to('/') . "/" . $value;
+        }
         return $result;
     }
 }

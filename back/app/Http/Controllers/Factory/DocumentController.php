@@ -103,6 +103,8 @@ class DocumentController extends GeneratorController
 
     public function creat_files()
     {
+        $result = [];
+
         foreach ($this->pack_contract as $key => $this->contract) {
             $this->ff = new FolderFileController($this->contract);
 //            dd($this->ff->generate_path);
@@ -199,8 +201,6 @@ class DocumentController extends GeneratorController
 
                 $this->total_clients--;
             }
-
-
 //            if (file_exists($this->ff->generate_path)) {
 //
 //                $zip = new ZipArchive;
@@ -251,11 +251,11 @@ class DocumentController extends GeneratorController
                     $zip->close();
                 }
 
-                return $zip_folder_path_part .$fileName;
-            } else {
-                return null;
+                $result[] = $zip_folder_path_part .$fileName;
             }
         }
+
+        return $result;
     }
 
     public function contract_template_set_data()
