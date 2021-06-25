@@ -32,7 +32,11 @@ export const useGeneratorMain = () => {
       );
 
       if (res?.success && res?.data?.link) {
-        document.location.href = res.data.link;
+        res.data.link.forEach((link: string, index: number) => {
+          setTimeout(() => {
+            document.location.href = link;
+          }, index * 500);
+        });
       }
     }
   }, [token, id]);
