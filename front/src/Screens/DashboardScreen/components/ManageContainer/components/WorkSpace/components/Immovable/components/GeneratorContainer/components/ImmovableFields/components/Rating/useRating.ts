@@ -63,7 +63,7 @@ export const useRating = ({ initialData, id }: Props) => {
     setValuation(initialData?.property_valuation || []);
     setData({
       property_valuation_id: initialData?.property_valuation_id || null,
-      date: initialData?.date ? new Date(changeMonthWitDate(initialData?.date)) : null,
+      date: initialData?.date ? changeMonthWitDate(initialData?.date) : null,
       price: initialData?.price || null,
       title: initialData?.title || null,
     });

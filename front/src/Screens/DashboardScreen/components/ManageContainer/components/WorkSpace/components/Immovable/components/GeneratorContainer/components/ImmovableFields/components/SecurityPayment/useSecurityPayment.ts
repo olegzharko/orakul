@@ -67,9 +67,9 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
     setClients(initialData?.clients || []);
     setData({
       sign_date: initialData?.sign_date
-        ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
+        ? changeMonthWitDate(initialData?.sign_date) : null,
       final_date: initialData?.final_date
-        ? new Date(changeMonthWitDate(initialData?.final_date)) : null,
+        ? changeMonthWitDate(initialData?.final_date) : null,
       reg_num: initialData?.reg_num || null,
       first_part_grn: initialData?.first_part_grn || null,
       client_id: initialData?.client_id || null,

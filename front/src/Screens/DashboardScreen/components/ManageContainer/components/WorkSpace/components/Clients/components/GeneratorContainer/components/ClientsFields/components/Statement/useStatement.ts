@@ -17,7 +17,8 @@ type InitialData = {
   mar_reg_num: string,
   sign_date: any,
   reg_num: string,
-  original: boolean,
+  duplicate: boolean,
+  duplicate_date: any,
   widow: boolean,
   widow_date: any,
   consent_spouse_word_id: string,
@@ -53,7 +54,8 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
     sign_date: null,
     reg_num: '',
     consent_spouse_word_id: '',
-    original: false,
+    duplicate: false,
+    duplicate_date: null,
     widow: false,
     widow_date: null,
   });
@@ -69,14 +71,15 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       married_type_id: initialData?.married_type_id || '',
       mar_series: initialData?.mar_series || '',
       mar_series_num: initialData?.mar_series_num || '',
-      mar_date: initialData?.mar_date ? new Date(changeMonthWitDate(initialData?.mar_date)) : null,
+      mar_date: initialData?.mar_date ? changeMonthWitDate(initialData?.mar_date) : null,
       mar_depart: initialData?.mar_depart || '',
       mar_reg_num: initialData?.mar_reg_num || '',
       sign_date: initialData?.sign_date
-        ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
+        ? changeMonthWitDate(initialData?.sign_date) : null,
       reg_num: initialData?.reg_num || '',
       consent_spouse_word_id: initialData?.consent_spouse_word_id || '',
-      original: initialData?.original || false,
+      duplicate: initialData?.duplicate || false,
+      duplicate_date: initialData?.duplicate_date || null,
       widow: initialData?.widow || false,
       widow_date: initialData?.widow_date || null,
     });
@@ -95,7 +98,8 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
       sign_date: null,
       reg_num: '',
       consent_spouse_word_id: '',
-      original: false,
+      duplicate: false,
+      duplicate_date: null,
       widow: false,
       widow_date: null,
     });
@@ -108,6 +112,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
         mar_date: formatDate(data.mar_date),
         sign_date: formatDate(data.sign_date),
         widow_date: data.widow ? formatDate(data.widow_date) : null,
+        duplicate_date: data.duplicate_date ? formatDate(data.duplicate_date) : null,
       };
 
       const { success, message } = await reqClientConsents(token, clientId, personId, 'PUT', reqData);
