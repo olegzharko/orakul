@@ -586,10 +586,10 @@ class ImmovableController extends BaseController
             ->join('clients', 'clients.id', '=', 'client_contract.client_id')
             ->get();
 
-        $result['client'] = null;
+        $result['clients'] = null;
         foreach ($all_clients_for_card as $key => $client) {
-            $result['client'][$key]['id'] = $client->id;
-            $result['client'][$key]['full_name'] = $this->convert->get_full_name($client);
+            $result['clients'][$key]['id'] = $client->id;
+            $result['clients'][$key]['title'] = $this->convert->get_full_name($client);
         }
 
         $termnation_info = TerminationInfo::firstOrCreate(

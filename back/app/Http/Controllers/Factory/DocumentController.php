@@ -107,7 +107,7 @@ class DocumentController extends GeneratorController
 
         foreach ($this->pack_contract as $key => $this->contract) {
             $this->ff = new FolderFileController($this->contract);
-//            dd($this->ff->generate_path);
+
             $this->total_clients = count($this->contract->clients);
 
             $this->company_rate = $this->get_rate_by_company($this->card->id, $this->contract->immovable->developer_building->dev_company);
@@ -160,11 +160,6 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Коммунальні від забудовника відсутні");
 
-                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
-                    $this->termination_contract_template_set_data();
-                else
-                    $this->notification("Warning", "Договір розірвання відсутній");
-
                 if ($this->contract->termination_refund && $this->contract->termination_refund->template_id)
                     $this->termination_refund_template_set_data();
                 else
@@ -201,6 +196,28 @@ class DocumentController extends GeneratorController
 
                 $this->total_clients--;
             }
+
+            $this->total_clients = 0;
+            $termination_clients = [];
+            $termination_clients[] = $this->contract->termination_info->first_client;
+            $termination_clients[] = $this->contract->termination_info->second_client;
+
+            $termination_clients = array_filter($termination_clients);
+
+            $this->contract->clients = $termination_clients;
+            $this->total_clients = count($termination_clients);
+
+            if ($this->total_clients) {
+                foreach ($this->contract->clients as $this->client) {
+                    if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                        $this->termination_contract_template_set_data();
+                    else
+                        $this->notification("Warning", "Договір розірвання відсутній");
+
+                    $this->total_clients--;
+                }
+            }
+
 //            if (file_exists($this->ff->generate_path)) {
 //
 //                $zip = new ZipArchive;
@@ -372,7 +389,6 @@ class DocumentController extends GeneratorController
     public function termination_contract_template_set_data()
     {
         $this->termination_contract_generate_file = $this->ff->termination_contract_title();
-
         $this->convert->date_to_string($this->contract->termination_contract, $this->contract->sign_date);
 
         $this->set_full_info_template($this->termination_contract_generate_file);
@@ -768,6 +784,9 @@ class DocumentController extends GeneratorController
         $word->setValue('full-name-tax-code-id-card-address', $full_description);
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+
+
+        $word->setValue($this->total_clients . '-РОЗ-КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
 
         /*
          * Лінія для області підпису

@@ -36,4 +36,14 @@ class TerminationInfo extends Model
     {
         return $this->belongsTo(Notary::class, 'notary_id');
     }
+
+    public function first_client()
+    {
+        return $this->belongsTo(Client::class, 'first_client_id');
+    }
+
+    public function second_client()
+    {
+        return $this->belongsTo(Client::class, 'second_client_id');
+    }
 }
