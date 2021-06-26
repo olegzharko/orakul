@@ -5,7 +5,7 @@ import CustomSwitch from '../CustomSwitch';
 import SectionWithTitle from '../SectionWithTitle';
 
 export type CheckBanFieldsData = {
-  date: Date,
+  date: any,
   number: string,
   pass: boolean,
 }

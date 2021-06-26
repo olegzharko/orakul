@@ -150,11 +150,11 @@ export const useTemplates = ({ initialData, id }: Props) => {
       ready: initialData?.ready || false,
       translate: initialData?.translate || false,
       sign_date: initialData?.sign_date
-        ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
+        ? changeMonthWitDate(initialData?.sign_date) : null,
       final_sign_date: initialData?.final_sign_date
-        ? new Date(changeMonthWitDate(initialData?.final_sign_date)) : null,
+        ? changeMonthWitDate(initialData?.final_sign_date) : null,
       termination_refund_reg_date: initialData?.termination_refund_reg_date
-        ? new Date(changeMonthWitDate(initialData?.termination_refund_reg_date)) : null,
+        ? changeMonthWitDate(initialData?.termination_refund_reg_date) : null,
     });
   }, [initialData]);
 

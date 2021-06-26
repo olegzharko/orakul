@@ -43,7 +43,7 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
 
   useEffect(() => {
     setData({
-      date: developer?.date ? new Date(changeMonthWitDate(developer?.date)) : new Date(),
+      date: developer?.date ? changeMonthWitDate(developer?.date) : new Date(),
       number: developer?.number || '',
       pass: developer?.pass || false,
     });
