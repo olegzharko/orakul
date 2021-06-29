@@ -81,8 +81,14 @@ const Statement = (props: Props) => {
           />
           <CustomSwitch
             label="Видано повторно"
-            selected={meta.data.original}
-            onChange={(e) => meta.setData({ ...meta.data, original: e })}
+            selected={meta.data.duplicate}
+            onChange={(e) => meta.setData({ ...meta.data, duplicate: e })}
+          />
+          <CustomDatePicker
+            label="Дата, коли видано повторно"
+            onSelect={(e) => meta.setData({ ...meta.data, duplicate_date: e })}
+            selectedDate={meta.data.duplicate_date}
+            disabled={!meta.data.duplicate}
           />
         </div>
 

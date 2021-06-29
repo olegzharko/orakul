@@ -20,7 +20,7 @@ const RemoveFormButton = ({ onClick, index, disabled }: Props) => {
       onClick={handleClick}
       onKeyPress={() => onClick(index)}
     >
-      <img src="/icons/minus.svg" alt="minus" />
+      <img src="/images/minus.svg" alt="minus" />
     </div>
   );
 };

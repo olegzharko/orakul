@@ -37,7 +37,7 @@ const Check = ({
         disabled={!prev}
         className="custom-button"
       >
-        <img src="/icons/arrow-left.svg" alt="previous" className="left" />
+        <img src="/images/arrow-left.svg" alt="previous" className="left" />
         Попередній
       </button>
 
@@ -52,7 +52,7 @@ const Check = ({
         className="custom-button"
       >
         Наступний
-        <img src="/icons/arrow-right.svg" alt="next" className="right" />
+        <img src="/images/arrow-right.svg" alt="next" className="right" />
       </button>
     </div>
   </>

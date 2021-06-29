@@ -113,10 +113,11 @@ export const useFields = () => {
     }
   }, [denominative, ablative, token]);
 
-  const isButtonDisabled = useMemo(() =>
-    // eslint-disable-next-line implicit-arrow-linebreak
-    Object.values(denominative).some((item) => !item)
-    || Object.values(ablative).some((item) => !item), [denominative, ablative]);
+  const isButtonDisabled = useMemo(() => !denominative.surname_n
+    || !denominative.short_name
+    || !denominative.short_patronymic
+    || !ablative.activity_o,
+  [denominative, ablative]);
 
   return {
     denominative,

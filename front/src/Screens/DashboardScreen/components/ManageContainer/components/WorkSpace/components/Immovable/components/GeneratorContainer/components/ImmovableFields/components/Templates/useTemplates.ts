@@ -18,6 +18,7 @@ type InitialData = {
   termination_refund_id: number | null,
   termination_refund_reg_number: string | null,
   termination_refund_notary_id: string | null,
+  processing_personal_data_template_id: string | null,
   ready: boolean,
   translate: boolean,
   sign_date: any,
@@ -31,6 +32,7 @@ type InitialData = {
   communal_templates?: SelectItem[],
   termination_contracts?: SelectItem[],
   termination_refunds?: SelectItem[],
+  processing_personal_data_templates?: SelectItem[],
   notary?: SelectItem[],
   contract_templates?: any,
 }
@@ -54,6 +56,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
   const [communalTemplates, setCommunalTemplates] = useState<SelectItem[]>([]);
   const [terminationContracts, setTerminationContracts] = useState<SelectItem[]>([]);
   const [terminationRefunds, setTerminationRefunds] = useState<SelectItem[]>([]);
+  const [processingPersonalTemplates, setProcessingPersonalTemplates] = useState<SelectItem[]>([]);
   const [notaries, setNotaries] = useState<SelectItem[]>([]);
 
   const [data, setData] = useState<InitialData>({
@@ -73,6 +76,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     termination_refund_reg_date: null,
     termination_refund_reg_number: null,
     termination_refund_notary_id: null,
+    processing_personal_data_template_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -93,6 +97,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_refund_reg_date: null,
       termination_refund_reg_number: null,
       termination_refund_notary_id: null,
+      processing_personal_data_template_id: null,
     });
   }, []);
 
@@ -126,6 +131,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     setCommunalTemplates(initialData?.communal_templates || []);
     setTerminationContracts(initialData?.termination_contracts || []);
     setTerminationRefunds(initialData?.termination_refunds || []);
+    setProcessingPersonalTemplates(initialData?.processing_personal_data_templates || []);
     setNotaries(initialData?.notary || []);
     setData({
       type_id: initialData?.type_id || null,
@@ -139,14 +145,16 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_refund_id: initialData?.termination_refund_id || null,
       termination_refund_reg_number: initialData?.termination_refund_reg_number || null,
       termination_refund_notary_id: initialData?.termination_refund_notary_id || null,
+      processing_personal_data_template_id:
+        initialData?.processing_personal_data_template_id || null,
       ready: initialData?.ready || false,
       translate: initialData?.translate || false,
       sign_date: initialData?.sign_date
-        ? new Date(changeMonthWitDate(initialData?.sign_date)) : null,
+        ? changeMonthWitDate(initialData?.sign_date) : null,
       final_sign_date: initialData?.final_sign_date
-        ? new Date(changeMonthWitDate(initialData?.final_sign_date)) : null,
+        ? changeMonthWitDate(initialData?.final_sign_date) : null,
       termination_refund_reg_date: initialData?.termination_refund_reg_date
-        ? new Date(changeMonthWitDate(initialData?.termination_refund_reg_date)) : null,
+        ? changeMonthWitDate(initialData?.termination_refund_reg_date) : null,
     });
   }, [initialData]);
 
@@ -168,6 +176,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     communalTemplates,
     terminationContracts,
     terminationRefunds,
+    processingPersonalTemplates,
     notaries,
     setData,
     onClear,

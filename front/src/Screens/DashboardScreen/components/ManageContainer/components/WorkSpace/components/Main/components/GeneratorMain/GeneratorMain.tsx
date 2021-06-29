@@ -15,7 +15,10 @@ const GeneratorMain = () => {
 
   return (
     <main className="main">
-      <div className="dashboard-header section-title">{meta.title}</div>
+      <div className="dashboard-header section-title">
+        <span>{meta.title}</span>
+        <span>{meta.code}</span>
+      </div>
 
       <ExchangeRate initialData={meta.exchange} id={meta.id} />
 

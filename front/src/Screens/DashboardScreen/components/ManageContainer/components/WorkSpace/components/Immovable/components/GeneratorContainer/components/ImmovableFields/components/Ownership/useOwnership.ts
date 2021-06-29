@@ -65,10 +65,10 @@ export const useOwnership = ({ initialData, id }: Props) => {
 
   useEffect(() => {
     setData({
-      reg_date: initialData?.reg_date ? new Date(changeMonthWitDate(initialData?.reg_date)) : null,
+      reg_date: initialData?.reg_date ? changeMonthWitDate(initialData?.reg_date) : null,
       reg_number: initialData?.reg_number || '',
       discharge_date: initialData?.discharge_date
-        ? new Date(changeMonthWitDate(initialData?.discharge_date)) : null,
+        ? changeMonthWitDate(initialData?.discharge_date) : null,
       discharge_number: initialData?.discharge_number || '',
       notary_id: initialData?.notary_id || null,
     });

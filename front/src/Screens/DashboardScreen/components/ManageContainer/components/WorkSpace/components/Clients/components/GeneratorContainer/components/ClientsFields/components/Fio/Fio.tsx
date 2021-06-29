@@ -12,7 +12,7 @@ const Fio = (props: Props) => {
         <span className="section-title">ПІБ</span>
         <button type="button" className="clear-button">
           <img
-            src="/icons/clear-form.svg"
+            src="/images/clear-form.svg"
             alt="close"
             className="clear-icon"
             onClick={onClear}

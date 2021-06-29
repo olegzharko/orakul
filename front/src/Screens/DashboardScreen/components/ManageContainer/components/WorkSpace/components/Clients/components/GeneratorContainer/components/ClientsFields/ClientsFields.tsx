@@ -7,8 +7,9 @@ import Fio from './components/Fio';
 import Passport from './components/Passport';
 import Statement from './components/Statement';
 import PowerOfAttorney from './components/PowerOfAttorney';
-import { useClientsFields } from './useClientsFields';
 import Termination from './components/Termination';
+
+import { useClientsFields } from './useClientsFields';
 
 const ClientsFields = () => {
   const meta = useClientsFields();
@@ -33,14 +34,13 @@ const ClientsFields = () => {
             clientId={meta.clientId}
             personId={meta.personId}
           />
+          <Termination
+            initialData={meta.termination}
+            clientId={meta.clientId}
+            personId={meta.personId}
+          />
         </>
       )}
-
-      <Termination
-        initialData={meta.termination}
-        clientId={meta.clientId}
-        personId={meta.personId}
-      />
     </main>
   );
 };

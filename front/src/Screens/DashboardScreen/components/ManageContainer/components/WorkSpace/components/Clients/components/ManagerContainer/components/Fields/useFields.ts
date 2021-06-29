@@ -45,7 +45,11 @@ export const useFields = () => {
   const onClientClear = useCallback(() => {
     const clearClient: any = {};
     Object.keys(client).forEach((item: string) => {
-      clearClient[item] = '';
+      if (typeof client[item] === 'boolean') {
+        clearClient[item] = false;
+      } else {
+        clearClient[item] = '';
+      }
     });
     setClient(clearClient);
     setClientChecks((prev: any) => prev.map((item: any) => {
@@ -148,6 +152,7 @@ export const useFields = () => {
             email: '',
             married_type_id: null,
             passport_type_id: null,
+            previous_buyer: false,
           });
           setClientChecks(res?.data.client.info);
           setSpouse(res?.data.spouse.data || {

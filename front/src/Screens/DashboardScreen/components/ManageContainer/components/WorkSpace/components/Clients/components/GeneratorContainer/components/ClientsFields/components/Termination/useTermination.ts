@@ -49,7 +49,7 @@ export const useTermination = ({ initialData, clientId, personId }: Props) => {
       consent_template_id: initialData?.consent_template_id || null,
       notary_id: initialData?.notary_id || null,
       reg_number: initialData?.reg_number || null,
-      reg_date: initialData?.reg_date ? new Date(changeMonthWitDate(initialData?.reg_date)) : null,
+      reg_date: initialData?.reg_date ? changeMonthWitDate(initialData?.reg_date) : null,
     });
   }, [initialData]);
 

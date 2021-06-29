@@ -15,6 +15,7 @@ export const useGeneratorMain = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [instructions, setInstructions] = useState([]);
   const [exchange, setExchange] = useState();
 
@@ -31,7 +32,11 @@ export const useGeneratorMain = () => {
       );
 
       if (res?.success && res?.data?.link) {
-        document.location.href = res.data.link;
+        res.data.link.forEach((link: string, index: number) => {
+          setTimeout(() => {
+            document.location.href = link;
+          }, index * 500);
+        });
       }
     }
   }, [token, id]);
@@ -45,6 +50,7 @@ export const useGeneratorMain = () => {
         if (res?.success) {
           const { date, day, room, time } = res.data.date_info;
           setTitle(`${day} ${date} ${time} ${room}`);
+          setCode(res.data.card_id);
           setInstructions(res.data.instructions);
         }
 
@@ -63,6 +69,7 @@ export const useGeneratorMain = () => {
 
   return {
     id,
+    code,
     title,
     instructions,
     isLoading,

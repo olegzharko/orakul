@@ -6,7 +6,7 @@ import { sendLogin } from '../../../../store/main/actions';
 
 export const useAuthorization = () => {
   const dispatch = useDispatch();
-  const [images, setImages] = useState<string[] | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [remember, setRemember] = useState<boolean>(false);
@@ -24,6 +24,7 @@ export const useAuthorization = () => {
   useEffect(() => {
     const fetchImages = async () => {
       const res = await getLoginCarouselImages();
+      if (!res) return;
       setImages(res.map((item: any) => item.image));
     };
     fetchImages();

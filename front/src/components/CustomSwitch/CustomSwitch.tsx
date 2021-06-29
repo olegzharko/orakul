@@ -17,22 +17,15 @@ const CustomSwitch = ({
   selected,
   disabled
 }: Props) => {
-  const [value, setValue] = useState(selected);
-
   const handleChange = (event: any) => {
-    setValue(event.target.checked);
     onChange(event.target.checked);
   };
-
-  useEffect(() => {
-    setValue(selected);
-  }, [selected]);
 
   return (
     <FormControlLabel
       control={(
         <Switch
-          checked={value}
+          checked={selected || false}
           onChange={handleChange}
           name="checkedB"
           color="primary"

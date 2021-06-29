@@ -19,7 +19,7 @@ const AddFormButton = ({ onClick, disabled }: Props) => {
       onClick={handleClick}
       onKeyPress={handleClick}
     >
-      <img src="/icons/plus.svg" alt="plus" />
+      <img src="/images/plus.svg" alt="plus" />
     </div>
   );
 };

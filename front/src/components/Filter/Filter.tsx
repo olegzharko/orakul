@@ -16,7 +16,7 @@ const Filter = (props: Props) => {
         <div className="filter__header">
           <span className="title">Фільтр</span>
           <img
-            src="/icons/clear-form.svg"
+            src="/images/clear-form.svg"
             alt="clear form"
             onClick={meta.clearAll}
             className="filter__clear"
@@ -100,7 +100,7 @@ const Filter = (props: Props) => {
       {props.horizontal && (
         <div className=" df">
           <img
-            src="/icons/clear-form.svg"
+            src="/images/clear-form.svg"
             alt="clear form"
             onClick={meta.clearAll}
             className="filter__clear"

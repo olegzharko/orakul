@@ -18,7 +18,7 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
   const dispatch = useDispatch();
 
   const [data, setData] = useState<CheckBanFieldsData>({
-    date: new Date(),
+    date: null,
     number: '',
     pass: false,
   });
@@ -43,7 +43,7 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
 
   useEffect(() => {
     setData({
-      date: immovable?.date ? new Date(changeMonthWitDate(immovable?.date)) : new Date(),
+      date: immovable?.date ? changeMonthWitDate(immovable?.date) : null,
       number: immovable?.number || '',
       pass: immovable?.pass || false,
     });
