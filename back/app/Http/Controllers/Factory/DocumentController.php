@@ -90,10 +90,10 @@ class DocumentController extends GeneratorController
         $this->buyer_are_spouse = false;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_red = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"red\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
+        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_end = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr><w:t xml:space=\"preserve\">";
 //        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:t xml:space=\"preserve\> </w:t></w:rPr></w:r><w:r><w:t xml:space=\"preserve\">";
         $this->paragraph = "</w:t></w:r></w:p><w:p><w:r><w:t>";
         $this->style_space_line = "                                    ";
@@ -1344,6 +1344,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПІДПИС-ДН', $this->display_date($this->contract->dev_representative->birth_date));
 
             $word->setValue('ПІДПИС-П-АДР-СК', $this->convert->client_full_address_short($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->contract->dev_representative));
 
             if ($this->contract->dev_representative->gender)
                 $dev_representative_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_representative->gender);
@@ -1537,6 +1538,7 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-П-АДР', $this->convert->get_client_full_address_n($this->client));
             $word->setValue('КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
             $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
+            $word->setValue('КЛ-ПОВНА-АДРЕСА', $this->convert->client_full_address_short($this->client));
 
             // для анкет на двох
             $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));

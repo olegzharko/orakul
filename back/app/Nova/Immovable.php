@@ -88,30 +88,30 @@ class Immovable extends Resource
             Text::make('Реєстраційний номер', 'registration_number'),
 
             Heading::make('<p class="text-success">Повна вартість в гривнях</p>')->asHtml(),
-            Money::make('grn', 'UAH')->storedInMinorUnits(),
+            Money::make('grn', 'UAH')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Повна вартість в доларах</p>')->asHtml(),
-            Money::make('dollar', 'USD')->storedInMinorUnits(),
+            Money::make('dollar', 'USD')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Сума внеску згідно попереднього договору в гривнях</p>')->asHtml(),
-            Money::make('reserve_grn', 'UAH')->storedInMinorUnits(),
+            Money::make('reserve_grn', 'UAH')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Сума внеску згідно попереднього договору в доларах</p>')->asHtml(),
-            Money::make('reserve_dollar', 'USD')->storedInMinorUnits(),
+            Money::make('reserve_dollar', 'USD')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Вартість 1 кв. м. гривнях</p>')->asHtml(),
-            Money::make('m2_grn', 'UAH')->storedInMinorUnits(),
+            Money::make('m2_grn', 'UAH')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Вартість 1 кв. м. доларах</p>')->asHtml(),
-            Money::make('m2_dollar', 'USD')->storedInMinorUnits(),
+            Money::make('m2_dollar', 'USD')->storedInMinorUnits()->hideFromIndex(),
 
             Heading::make('<p class="text-success">Загальні данні</p>')->asHtml(),
             BelongsTo::make('Кількість кімнат', 'roominess', 'App\Nova\RoominessType')->nullable(),
-            AdvancedNumber::make('Загальна площа', 'total_space')->thousandsSeparator(',')->decimals(1),
-            AdvancedNumber::make('Житлова площа', 'living_space')->thousandsSeparator(',')->decimals(1),
-            AdvancedNumber::make('Номер поверху цифрою', 'floor'),
+            AdvancedNumber::make('Загальна площа', 'total_space')->thousandsSeparator(',')->decimals(1)->hideFromIndex(),
+            AdvancedNumber::make('Житлова площа', 'living_space')->thousandsSeparator(',')->decimals(1)->hideFromIndex(),
+            AdvancedNumber::make('Номер поверху цифрою', 'floor')->hideFromIndex(),
 //            Text::make('Номер поверху словами', 'floor_str'),
-            AdvancedNumber::make('Номер секції цифрою', 'section'),
+            AdvancedNumber::make('Номер секції цифрою', 'section')->hideFromIndex(),
 
             HasOne::make('Забезпечувальний платіж', 'security_payment', 'App\Nova\SecurityPayment'),
 

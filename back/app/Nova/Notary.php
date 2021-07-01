@@ -68,39 +68,36 @@ class Notary extends Resource
             Text::make('Прізвище', 'surname_n')->rules('required'),
 
             Text::make('Ім\'я', 'name_n')->rules('required'),
-            Text::make('Ім\'я скорочено з крапкою', 'short_name')->rules('required'),
+            Text::make('Ім\'я скорочено з крапкою', 'short_name')->rules('required')->hideFromIndex(),
 
             Text::make('По батькові', 'patronymic_n')->rules('required'),
-            Text::make('По батькові скорочено з крапкою', 'short_patronymic')->rules('required'),
+            Text::make('По батькові скорочено з крапкою', 'short_patronymic')->rules('required')->hideFromIndex(),
             Text::make('Повна діяльнісь у називному відмінку', 'activity_n')->rules('required'),
 
             Heading::make('<p class="text-success">Родовий відмінок</p>')->asHtml(),
-            Text::make('Прізвище ', 'surname_r')->rules('required'),
-            Text::make('Ім\'я', 'name_r')->rules('required'),
-            Text::make('По батькові', 'patronymic_r')->rules('required'),
-            Text::make('Повна діяльнісь', 'activity_r')->rules('required'),
+            Text::make('Прізвище ', 'surname_r')->rules('required')->hideFromIndex(),
+            Text::make('Ім\'я', 'name_r')->rules('required')->hideFromIndex(),
+            Text::make('По батькові', 'patronymic_r')->rules('required')->hideFromIndex(),
+            Text::make('Повна діяльнісь', 'activity_r')->rules('required')->hideFromIndex(),
 
             Heading::make('<p class="text-success">Давальний відмінок</p>')->asHtml(),
-            Text::make('Прізвище ', 'surname_d')->rules('required'),
-            Text::make('Ім\'я', 'name_d')->rules('required'),
-            Text::make('По батькові', 'patronymic_d')->rules('required'),
-            Text::make('Повна діяльнісь у', 'activity_d')->rules('required'),
+            Text::make('Прізвище ', 'surname_d')->rules('required')->hideFromIndex(),
+            Text::make('Ім\'я', 'name_d')->rules('required')->hideFromIndex(),
+            Text::make('По батькові', 'patronymic_d')->rules('required')->hideFromIndex(),
+            Text::make('Повна діяльнісь у', 'activity_d')->rules('required')->hideFromIndex(),
 
             Heading::make('<p class="text-success">Орудний відмінок</p>')->asHtml(),
-            Text::make('Прізвище', 'surname_o')->rules('required'),
-            Text::make('Ім\'я', 'name_o')->rules('required'),
-            Text::make('По батькові', 'patronymic_o')->rules('required'),
-            Text::make('Повна діяльність', 'activity_o')->rules('required'),
+            Text::make('Прізвище', 'surname_o')->rules('required')->hideFromIndex(),
+            Text::make('Ім\'я', 'name_o')->rules('required')->hideFromIndex(),
+            Text::make('По батькові', 'patronymic_o')->rules('required')->hideFromIndex(),
+            Text::make('Повна діяльність', 'activity_o')->rules('required')->hideFromIndex(),
 
             Toggle::make('Ативувати', 'active')->color('#165153'),
 
             Heading::make("Називний: хто? що? - ластівк-а"),
             Heading::make("Родовий: кого?чого? - ластівк-и"),
             Heading::make("Давальний: кому?чому? - ластівц-і"),
-            Heading::make("Знахідний: кого?що? -	ластівк-у"),
             Heading::make("Орудний: ким?чим? - ластівк-ою"),
-            Heading::make("Місцевий: на кому?на чому? - на ластівц-і"),
-            Heading::make("Кличний: * * - ластівк-о"),
         ];
     }
 
