@@ -661,14 +661,15 @@ class CardController extends BaseController
             $result['title'] = $this->get_card_title($card);
             $result['short_info'] = $this->get_card_short_info($card);
             $result['instructions'] = $this->get_card_instructions($card);
+            $test[] = $result;
             if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
                 $group[$i]['cards'][] = $result;
             } else {
                 $i = $card->date_time->format('d.m.');
-                $group[$i] = [];
                 $group[$i]['day'] = $week[$card->date_time->format('w')];
                 $group[$i]['date'] = $card->date_time->format('d.m.');
-                $group[$i]['cards'] = [];
+                if (!isset($group[$i]['cards']))
+                    $group[$i]['cards'] = [];
                 $group[$i]['cards'][] = $result;
             }
         }
