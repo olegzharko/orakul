@@ -2190,7 +2190,7 @@ class DocumentController extends GeneratorController
             $dollar_sum_float += $installment_dollar_float;
             // 1 824 818
             $installment_dollar_int = $installment_dollar_float * 100;
-            
+
             if ($this->contract->immovable->security_payment) {
                 // 245 000 00  = ( 990 000 00  -  500 000 00 ) / 2  - 10 000 00 / 2
                 $grn_part_int = intval(round($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price - $this->contract->immovable->security_payment->first_part_grn));
@@ -2444,7 +2444,10 @@ class DocumentController extends GeneratorController
 
     public function set_bank_account_data($word)
     {
-        $word->setValue('СУМА-ДО-СПЛАТИ', $this->bank_account_total_price);
+        if ($this->bank_account_total_price)
+            $word->setValue('СУМА-ДО-СПЛАТИ', $this->bank_account_total_price);
+        else
+            $word->setValue('СУМА-ДО-СПЛАТИ', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
 
         return $word;
     }
