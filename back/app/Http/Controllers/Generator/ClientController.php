@@ -15,7 +15,6 @@ use App\Models\CityType;
 use App\Models\Client;
 use App\Models\City;
 use App\Models\ClientContract;
-use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
 use App\Models\ClientSpouseConsentContract;
 use App\Models\ConsentTemplate;

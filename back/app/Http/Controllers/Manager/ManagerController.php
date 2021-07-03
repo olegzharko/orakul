@@ -76,15 +76,6 @@ class ManagerController extends BaseController
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
 
-        /*
-         * Якщо менеджер почав передивлятись картку
-         * то вона переходить в режим редагування лише
-         * відділом обробки данних
-         * */
-        if (!$card->generator_step) {
-            Card::where('id', $card_id)->update(['generator_step' => true]);
-        }
-
         $date_info = $this->tools->header_info($card);
 
         $notary = $this->tools->get_company_notary();
