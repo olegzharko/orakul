@@ -596,7 +596,8 @@ class ClientController extends BaseController
         $result['mar_reg_num'] = null;
         $result['sign_date'] = null;
         $result['reg_num'] = null;
-        $result['original'] = null;
+        $result['duplicate'] = null;
+        $result['duplicate_date'] = null;
         $result['widow'] = null;
         $result['widow_date'] = null;
 
@@ -612,7 +613,8 @@ class ClientController extends BaseController
             $result['mar_reg_num'] = $client->client_spouse_consent->mar_reg_num;
             $result['sign_date'] = $client->client_spouse_consent->sign_date ? $client->client_spouse_consent->sign_date->format('d.m.Y') : null;
             $result['reg_num'] = $client->client_spouse_consent->reg_num;
-            $result['original'] = $client->client_spouse_consent->original ? true : false;
+            $result['duplicate'] = $client->client_spouse_consent->duplicate ? true : false;
+            $result['duplicate_date'] = $client->client_spouse_consent->duplicate_date ? $client->client_spouse_consent->duplicate_date->format('d.m.Y') : null;
             $result['widow'] = $client->client_spouse_consent->widow ? true : false;
             $result['widow_date'] = $client->client_spouse_consent->widow_date ? $client->client_spouse_consent->widow_date->format('d.m.Y') : null;
         }
@@ -649,7 +651,8 @@ class ClientController extends BaseController
                 'mar_reg_num' => $r['mar_reg_num'],
                 'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y-m-d') : null,
                 'reg_num' => $r['reg_num'],
-                'original' => $r['original'],
+                'duplicate' => $r['duplicate'],
+                'duplicate_date' => $r['duplicate_date'],
                 'widow' => $r['widow'],
                 'widow_date' => $r['widow_date'],
             ]

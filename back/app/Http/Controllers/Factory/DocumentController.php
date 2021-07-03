@@ -26,6 +26,10 @@ use File;
 use URL;
 use DateTime;
 
+use App\Http\Controllers\FTP\ConnectController;
+
+use Illuminate\Support\Facades\Storage;
+
 class DocumentController extends GeneratorController
 {
     public $ff;
@@ -58,6 +62,7 @@ class DocumentController extends GeneratorController
     public $card_id;
     public $paragraph;
     public $company_rate;
+    public $ftp;
 
     public function __construct($client, $pack_contract, $consents_id, $card_id)
     {
@@ -74,6 +79,7 @@ class DocumentController extends GeneratorController
         $this->non_break_space = " ";
         $this->convert = new ConvertController($this->non_break_space);
         $this->installment = new InstallmentController();
+        $this->ftp = new ConnectController();
         $this->consent = null;
         $this->bank_account_total_price = null;
         $this->consents_id = $consents_id;
@@ -107,6 +113,9 @@ class DocumentController extends GeneratorController
 
         foreach ($this->pack_contract as $key => $this->contract) {
             $this->ff = new FolderFileController($this->contract);
+
+            if ($this->ftp && $this->ff->generate_path)
+                $this->ftp->create_directory($this->ff->generate_path);
 
             $this->total_clients = count($this->contract->clients);
 
@@ -218,32 +227,6 @@ class DocumentController extends GeneratorController
                 }
             }
 
-//            if (file_exists($this->ff->generate_path)) {
-//
-//                $zip = new ZipArchive;
-//
-//                $fileName = str_replace("Договір/", "", $this->ff->generate_path);
-//                $fileName = $fileName . ".zip";
-//
-//                $fileName = str_replace("/", ": ", $fileName);
-//
-//                if ($zip->open(public_path("Zip/" . $fileName), ZipArchive::CREATE) === TRUE)
-//                {
-//                    $files = File::files(public_path($this->ff->generate_path));
-//
-//                    foreach ($files as $key => $value) {
-//                        $relativeNameInZipFile = $value->getFilename();
-//                        $zip->addFile($value, $relativeNameInZipFile);
-//                    }
-//
-//                    $zip->close();
-//                }
-//
-//                return $fileName;
-//            } else {
-//                return null;
-//            }
-
             if (file_exists($this->ff->generate_path)) {
 
                 $zip_folder_path_part = 'Zip/';
@@ -301,6 +284,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->contract_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->contract_generate_file);
     }
 
     public function questionnaire_template_set_data()
@@ -318,6 +303,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->questionnaire_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->questionnaire_generate_file);
     }
 
     public function developer_statement_template_set_data()
@@ -334,6 +321,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->developer_statement_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->developer_statement_generate_file);
     }
 
     public function developer_consent()
@@ -350,6 +339,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->developer_consent_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->developer_consent_generate_file);
     }
 
     public function communal_template_set_data()
@@ -367,6 +358,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->communal_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->communal_generate_file);
     }
 
     public function processing_personal_data_template_set_data()
@@ -384,6 +377,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->processing_personal_data_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->processing_personal_data_generate_file);
     }
 
     public function termination_contract_template_set_data()
@@ -402,6 +397,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->termination_contract_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->termination_contract_generate_file);
     }
 
     public function termination_refund_template_set_data()
@@ -420,6 +417,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->termination_refund_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->termination_refund_generate_file);
     }
 
     public function consent_template_set_data()
@@ -437,6 +436,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->consent_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->consent_generate_file);
     }
 
     public function termination_consent_template_set_data()
@@ -455,6 +456,8 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->termination_consent_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->termination_consent_generate_file);
     }
 
     public function bank_account_template_set_data()
@@ -473,28 +476,12 @@ class DocumentController extends GeneratorController
         $word->saveAs($this->bank_account_generate_file);
 
         unset($word);
+
+        $this->ftp->upload_file($this->ff->generate_path, $this->bank_account_generate_file);
     }
 
     public function bank_taxes_template_set_data()
     {
-//        $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
-//
-//        $this->set_passport_template_part($this->bank_taxes_generate_file);
-//
-//        /*
-//         * В податкових рахунках використовується дата підписання Угоди $this->contract
-//         * */
-//        $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
-//
-//        // Для Excel
-//        $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
-//        $sheet = $spreadsheet->getActiveSheet();
-//        $this->set_taxes_data($sheet);
-//        $writer = new Xlsx($spreadsheet);
-//        $file_name = $this->bank_taxes_generate_file;
-//        $writer->save($file_name);
-//
-//        unset($word);
         if ($this->contract->bank_taxes_payment->template->type == 'excel') {
             $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
 
@@ -506,12 +493,15 @@ class DocumentController extends GeneratorController
             $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
 
             // Для Excel
-            $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($this->bank_taxes_generate_file);
+            $spreadsheet = $reader->load($this->bank_taxes_generate_file);
             $sheet = $spreadsheet->getActiveSheet();
             $this->set_taxes_data_for_excel($sheet);
             $writer = new Xlsx($spreadsheet);
             $file_name = $this->bank_taxes_generate_file;
             $writer->save($file_name);
+
+            $this->ftp->upload_file($this->ff->generate_path, $this->bank_taxes_generate_file);
 
         } elseif ($this->contract->bank_taxes_payment->template->type == 'word') {
             $client_1 = $this->contract->clients[0]->surname_n;
@@ -527,6 +517,8 @@ class DocumentController extends GeneratorController
             $word->saveAs($this->bank_taxes_generate_file);
 
             unset($word);
+
+            $this->ftp->upload_file($this->ff->generate_path, $this->bank_taxes_generate_file);
         }
     }
 

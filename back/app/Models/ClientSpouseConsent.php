@@ -26,7 +26,8 @@ class ClientSpouseConsent extends Model implements HasMedia
         'mar_reg_num',
         'sign_date',
         'reg_num',
-        'original',
+        'duplicate',
+        'duplicate_date',
         'widow',
         'widow_date',
     ];
@@ -36,6 +37,7 @@ class ClientSpouseConsent extends Model implements HasMedia
         'mar_date' => 'datetime',
         'deleted_at' => 'datetime',
         'widow_date' => 'datetime',
+        'duplicate_date' => 'datetime',
     ];
 
     public function client()

@@ -52,6 +52,13 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => '192.168.22.2',
+            'username' => 'Contract',
+            'password' => '123QWer45',
+        ],
+
     ],
 
     /*

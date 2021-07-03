@@ -458,7 +458,7 @@ class ManagerController extends BaseController
         if ($r['client'] && count($r['client']['data'])) {
             $client_id = $this->create_or_update_client($card_id, $client_id, $r['client']['data']);
             if ($client_id) {
-                $this->card_client($card_id, $client_id, $r['previous_buyer']);
+                $this->card_client($card_id, $client_id, $r['client']['data']['previous_buyer']);
                 $this->update_check_list($client_id, $r['client']['info']);
                 $this->create_client_spouse_consents($client_id, $r['client']['data']);
             }

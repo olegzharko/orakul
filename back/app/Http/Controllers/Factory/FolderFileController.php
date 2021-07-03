@@ -168,7 +168,9 @@ class FolderFileController extends Controller
         $folder = $this->root_title();
         // echo "{$folder}<br><br>";
         $contract = 'Contract';
-        $dev_company = $contract . "/" . $this->contract->dev_company->title . "/" . $date->format('d.m.Y');
+//        $dev_company = $contract . "/" . $this->contract->dev_company->title . "/" . $date->format('d.m.Y');
+        $dev_company = $contract . "/" . $date->format('d.m.Y') . "/" . $this->contract->dev_company->title;
+
         // Створення папки забудовника
         if (!file_exists("{$dev_company}"))
             mkdir($dev_company, 0777, true);

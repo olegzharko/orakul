@@ -636,6 +636,14 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
+        if ($r['first_client_id'] == $r['second_client_id']) {
+            unset($r['second_client_id']);
+        }
+
+        if ($r['first_client_id'] == null && $r['second_client_id']) {
+           $r['first_client_id'] = $r['second_client_id'];
+           unset($r['second_client_id']);
+        }
         if ($immovable->contract) {
             TerminationInfo::updateOrCreate(['contract_id' => $immovable->contract->id],[
                 'price_grn' => $r['price_grn'] * 100,
