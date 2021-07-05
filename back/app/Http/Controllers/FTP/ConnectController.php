@@ -71,6 +71,7 @@ class ConnectController extends Controller
         curl_exec ($ch);
         $error_no = curl_errno($ch);
         curl_close ($ch);
+
         if ($error_no == 0) {
             $error = 'File uploaded succesfully.';
         } else {

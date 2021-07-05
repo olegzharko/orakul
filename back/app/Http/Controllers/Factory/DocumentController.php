@@ -79,7 +79,7 @@ class DocumentController extends GeneratorController
         $this->non_break_space = " ";
         $this->convert = new ConvertController($this->non_break_space);
         $this->installment = new InstallmentController();
-        $this->ftp = new ConnectController();
+        $this->ftp = new \App\Http\Controllers\FTP\ConnectController();
         $this->consent = null;
         $this->bank_account_total_price = null;
         $this->consents_id = $consents_id;
