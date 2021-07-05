@@ -18,7 +18,7 @@ const PrimaryButton = ({
   const handleClick = useCallback((e) => {
     setIsClicked(true);
     onClick(e);
-  }, []);
+  }, [onClick]);
 
   useEffect(() => {
     setIsClicked(false);
