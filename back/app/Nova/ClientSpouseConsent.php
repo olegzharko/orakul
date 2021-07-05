@@ -74,21 +74,21 @@ class ClientSpouseConsent extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Клієнт', 'client', 'App\Nova\Client'),
             BelongsToMany::make('Угода', 'contracts', 'App\Nova\Contract')->nullable(),
-            BelongsTo::make('Шаблон згоди', 'template', 'App\Nova\ConsentTemplate'),
+            BelongsTo::make('Шаблон згоди', 'template', 'App\Nova\ConsentTemplate')->hideFromIndex(),
 
 
-            BelongsTo::make('Тип шлюбного свідоцтва', 'marriage_type', 'App\Nova\MarriageType')->nullable(),
-            Text::make('Серія свідоцтва', 'mar_series'),
-            Text::make('Номер свідоцтва', 'mar_series_num'),
-            DateTime::make('Виданий', 'mar_date'),
-            Text::make('Орган, що видав', 'mar_depart'),
-            Text::make('Реєстраційний номер свідоцтва', 'mar_reg_num'),
+            BelongsTo::make('Тип шлюбного свідоцтва', 'marriage_type', 'App\Nova\MarriageType')->nullable()->hideFromIndex(),
+            Text::make('Серія свідоцтва', 'mar_series')->hideFromIndex(),
+            Text::make('Номер свідоцтва', 'mar_series_num')->hideFromIndex(),
+            DateTime::make('Виданий', 'mar_date')->hideFromIndex(),
+            Text::make('Орган, що видав', 'mar_depart')->hideFromIndex(),
+            Text::make('Реєстраційний номер свідоцтва', 'mar_reg_num')->hideFromIndex(),
 
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
             DateTime::make('Нотаріус: дата підписання заяви-згоди', 'sign_date'),
             Text::make('Нотаріус: номер реєстрації у нотаріуса', 'reg_num'),
             BelongsTo::make('Пункт згоди у договорі', 'contract_spouse_word', 'App\Nova\SpouseWord'),
-            Toggle::make('Активн згода', 'active'),
+            Toggle::make('Активн згода', 'active')->hideFromIndex(),
 
             Files::make('Cкан-сет Свідоцвтва про шлюб + Заява-згода або шлюбний договір', 'pdf')->customPropertiesFields([
                 Markdown::make('Description'),

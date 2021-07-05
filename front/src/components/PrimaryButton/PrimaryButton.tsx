@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/button-has-type */
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import './index.scss';
 
 type Props = {
@@ -12,16 +12,33 @@ type Props = {
 
 const PrimaryButton = ({
   label, onClick, disabled, className
-}: Props) => (
-  <button
-    className={`primary-button ${disabled ? 'disabled' : ''} ${
-      className || ''
-    }`}
-    onClick={onClick}
-    disabled={disabled}
-  >
-    {label}
-  </button>
-);
+}: Props) => {
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const handleClick = useCallback((e) => {
+    setIsClicked(true);
+    onClick(e);
+  }, []);
+
+  useEffect(() => {
+    setIsClicked(false);
+  }, [onClick]);
+
+  return (
+    <button
+      className={
+        `primary-button
+        ${disabled ? 'disabled' : ''}
+        ${className || ''}
+        ${isClicked ? 'clicked' : ''}
+        `
+      }
+      onClick={handleClick}
+      disabled={disabled}
+    >
+      {label}
+    </button>
+  );
+};
 
 export default PrimaryButton;

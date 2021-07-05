@@ -876,7 +876,7 @@ class ConvertController extends GeneratorController
     {
         $address = null;
 
-        $building_num_str = $this->building_num_to_str($immovable->developer_building->number);
+        $building_num_str = $immovable->developer_building ? $this->building_num_to_str($immovable->developer_building->number) : null;
 
         $imm_num = $immovable->immovable_number;
 

@@ -121,6 +121,7 @@ class FilterController extends BaseController
 
         $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('ready', true)
+            ->orderBy('date_time')
             ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
         if (auth()->user()->type == 'generator')
@@ -160,6 +161,7 @@ class FilterController extends BaseController
             ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->leftJoin('contract_types', 'contract_types.id', '=', 'contracts.type_id')
             ->leftJoin('contract_templates', 'contract_templates.id', '=', 'contracts.template_id')
+            ->orderBy('cards.date_time')
             ->distinct('cards.id');
 
 
@@ -168,6 +170,7 @@ class FilterController extends BaseController
         }
 
         $cards = $query_cards->get();
+
         $result = $this->card->get_cards_in_generator_format($cards);
 
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
@@ -177,6 +180,7 @@ class FilterController extends BaseController
     {
         $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('date_time', '>=', $this->date->format('Y.m.d'))
+            ->orderBy('date_time')
             ->where('cancelled', true);
 
         if (auth()->user()->type == 'generator')

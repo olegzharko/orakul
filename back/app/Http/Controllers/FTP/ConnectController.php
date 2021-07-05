@@ -54,8 +54,9 @@ class ConnectController extends Controller
     public function upload_file($path, $localfile)
     {
         $path = str_replace("Contract/", "", $path);
+
         $ch = curl_init();
-//        $localfile = $this->contract_generate_file;
+
         $file_name = explode("/", $localfile);
         $file_name = end($file_name);
         $remotefile = $path . "/" . $file_name;
@@ -65,7 +66,6 @@ class ConnectController extends Controller
         curl_setopt($ch, CURLOPT_UPLOAD, 1);
         curl_setopt($ch, CURLOPT_INFILE, $fp);
         curl_setopt($ch, CURLOPT_INFILESIZE, filesize($localfile));
-//        curl_setopt($ch, CURLOPT_ENCODING, "");
         curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
 
         curl_exec ($ch);

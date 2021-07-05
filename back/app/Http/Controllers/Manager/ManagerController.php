@@ -475,6 +475,8 @@ class ManagerController extends BaseController
             }
         }
 
+
+
         if ($r['representative'] && count($r['representative']['data'])) {
             $representative_id = Representative::where('client_id', $client_id)->value('confidant_id');
             $representative_id = $this->create_or_update_client($card_id, $representative_id, $r['representative']['data']);
@@ -746,9 +748,9 @@ class ManagerController extends BaseController
     public function del_representative($client_id)
     {
         $representative_id = Representative::where('client_id', $client_id)->value('confidant_id');
-        if ($representative_id) {
-            Representative::where('confidant_id', $representative_id)->delete();
+//        if ($representative_id) {
+            Representative::where('confidant_id', $representative_id)->orWhere('client_id', $client_id)->delete();
             Client::where('id', $representative_id)->delete();
-        }
+//        }
     }
 }

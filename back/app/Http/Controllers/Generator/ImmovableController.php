@@ -772,10 +772,11 @@ class ImmovableController extends BaseController
         $notary_id = $card->notary_id;
 
         Contract::where('immovable_id', $immovable_id)->update([
-           'template_id' => $r['contract_template_id'],
-           'ready' => $r['ready'],
-           'translate' => $r['translate'] ? 1 : 0,
-           'sign_date' => $r['sign_date'],
+            'type_id' => $r['type_id'],
+            'template_id' => $r['contract_template_id'],
+            'ready' => $r['ready'],
+            'translate' => $r['translate'] ? 1 : 0,
+            'sign_date' => $r['sign_date'],
         ]);
 
         if (isset($r['final_sign_date'])) {

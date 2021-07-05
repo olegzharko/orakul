@@ -96,10 +96,10 @@ class DocumentController extends GeneratorController
         $this->buyer_are_spouse = false;
         $this->style_color = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
         $this->style_color_red = "</w:t></w:r><w:r><w:rPr><w:highlight w:val=\"red\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:b/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
-        $this->style_end = "</w:t></w:r><w:r><w:t xml:space=\"preserve\">";
+        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_italic = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:i/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_end = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr><w:t xml:space=\"preserve\">";
 //        $this->non_break_space = "</w:t></w:r><w:r><w:rPr><w:t xml:space=\"preserve\> </w:t></w:rPr></w:r><w:r><w:t xml:space=\"preserve\">";
         $this->paragraph = "</w:t></w:r></w:p><w:p><w:r><w:t>";
         $this->style_space_line = "                                    ";
@@ -250,6 +250,8 @@ class DocumentController extends GeneratorController
 
                     $zip->close();
                 }
+
+//                return $zip_folder_path_part .$fileName;
 
                 $result[] = $zip_folder_path_part .$fileName;
             }
@@ -1191,6 +1193,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ЗБД-ПІБ-Р', $this->convert->get_full_name_r($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПІБ-Д', $this->convert->get_full_name_d($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner));
+            $word->setValue('ЗБД-ПІБ-Н-I', $this->convert->get_full_name_n($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ПІБ-Р-I', $this->convert->get_full_name_r($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ІПН', $this->contract->dev_company->owner->tax_code);
             $word->setValue('ЗБД-ІПН-Ж', $this->set_style_bold($this->contract->dev_company->owner->tax_code));
@@ -1351,6 +1354,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПІДПИС-ДН', $this->display_date($this->contract->dev_representative->birth_date));
 
             $word->setValue('ПІДПИС-П-АДР-СК', $this->convert->client_full_address_short($this->contract->dev_representative));
+            $word->setValue('ПІДПИС-ПОВНА-АДРЕСА', $this->convert->get_client_full_address_n($this->contract->dev_representative));
 
             if ($this->contract->dev_representative->gender)
                 $dev_representative_registration = GenderWord::where('alias', "registration")->value($this->contract->dev_representative->gender);
@@ -1544,6 +1548,7 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-П-АДР', $this->convert->get_client_full_address_n($this->client));
             $word->setValue('КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
             $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
+            $word->setValue('КЛ-ПОВНА-АДРЕСА', $this->convert->client_full_address_short($this->client));
 
             // для анкет на двох
             $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
@@ -1808,6 +1813,10 @@ class DocumentController extends GeneratorController
                 $word->setValue('mar-date', $this->display_date($this->consent->mar_date));
                 $word->setValue('mar-depart', $this->consent->mar_depart);
                 $word->setValue('mar-reg-num', $this->consent->mar_reg_num);
+                if ($this->consent->original) // original не правильно названа переменная - надо duplicate
+                    $word->setValue('СВ-ПОВТОРНО',  KeyWord::where('key', "repeatedly")->value('title_n') . " ");
+                else
+                    $word->setValue('СВ-ПОВТОРНО', '');
             } elseif ($this->consent && $this->consent->mar_date) {
                 $this->notification("Warning", "Дата про шлюбні документи відсутні");
             }
@@ -2117,7 +2126,10 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-ЗАБ-ПЛ-Ч1-ДОЛ', $this->convert->get_convert_price($first_part_dollar * 100, 'dollar'));
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
-            $this->bank_account_total_price = $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn');
+
+            // якщо суму не визначив блок розстрочки, то задаємо залишкове значення
+            if (!$this->bank_account_total_price)
+                $this->bank_account_total_price = $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn');
             $word->setValue('Н-ЗАБ-ПЛ-Ч2-ДОЛ', $this->convert->get_convert_price($last_part_dollar * 100, 'dollar'));
             $word->setValue($this->total_clients . '-Н-ЗАБ-ПЛ-Ч2-1/2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn / 2, 'grn'));
             $word->setValue($this->total_clients . '-Н-ЗАБ-ПЛ-Ч2-1/2-ДОЛ', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_dollar / 2, 'dollar'));
@@ -2158,6 +2170,7 @@ class DocumentController extends GeneratorController
 
     public function set_installment_info($word)
     {
+
         $dollar_sum_float = 0;
         // 2 або 1
         $client_num = count($this->contract->clients);
@@ -2187,7 +2200,7 @@ class DocumentController extends GeneratorController
             $dollar_sum_float += $installment_dollar_float;
             // 1 824 818
             $installment_dollar_int = $installment_dollar_float * 100;
-            
+
             if ($this->contract->immovable->security_payment) {
                 // 245 000 00  = ( 990 000 00  -  500 000 00 ) / 2  - 10 000 00 / 2
                 $grn_part_int = intval(round($this->contract->immovable->reserve_grn - $this->contract->immovable->installment->total_price - $this->contract->immovable->security_payment->first_part_grn));
@@ -2198,6 +2211,7 @@ class DocumentController extends GeneratorController
 
                 $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-ГРН', $this->convert->get_convert_price($grn_part_int, 'grn'));
                 $this->bank_account_total_price = $this->convert->get_convert_price($grn_part_int, 'grn');
+
                 $word->setValue('Н-ЗАБ-ПЛ-Ч2-БЕЗ-РОЗСТ-ДОЛ', $this->convert->get_convert_price($dollar_part_int, 'dollar'));
 
                 // розстрочка для двох клієнтів
@@ -2382,7 +2396,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_client_representative_data($word)
     {
-        if ($this->client->representative) {
+        if ($this->client->representative && $this->client->representative->notary) {
             $word->setValue('cr-ntr-surname-o', $this->client->representative->notary->surname_o);
             $word->setValue('cr-ntr-sh-name', $this->client->representative->notary->short_name);
             $word->setValue('cr-ntr-sh-patr', $this->client->representative->notary->short_patronymic);
@@ -2440,7 +2454,10 @@ class DocumentController extends GeneratorController
 
     public function set_bank_account_data($word)
     {
-        $word->setValue('СУМА-ДО-СПЛАТИ', $this->bank_account_total_price);
+        if ($this->bank_account_total_price)
+            $word->setValue('СУМА-ДО-СПЛАТИ', $this->bank_account_total_price);
+        else
+            $word->setValue('СУМА-ДО-СПЛАТИ', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
 
         return $word;
     }

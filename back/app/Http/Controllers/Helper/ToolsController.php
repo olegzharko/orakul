@@ -184,45 +184,10 @@ class ToolsController extends Controller
             $resutl['patronymic'] = $client->patronymic_n;
             $resutl['passport_type_id'] = $client->passport_type_id;
             $resutl['married_type_id'] = $client->client_spouse_consent ? $client->client_spouse_consent->marriage_type_id : null;
-//            $resutl['check_list'] = $this->check_list_by_client_id($client->id);
         }
 
         return $resutl;
     }
-
-//    public function check_list_by_client_id($client_id)
-//    {
-//        $result = [];
-//
-//        $client_check_list = ClientCheckList::select(
-//            "spouse_consent",
-//            "current_place_of_residence",
-//            "photo_in_the_passport",
-//            "immigrant_help",
-//            "passport",
-//            "tax_code",
-//            "evaluation_in_the_fund",
-//            "check_fop",
-//            "document_scans",
-//            "unified_register_of_court_decisions",
-//            "sanctions",
-//            "financial_monitoring",
-//            "unified_register_of_debtors",
-//        )->firstOrCreate(['client_id' => $client_id])->toArray();
-//
-//        $i = 0;
-//        foreach ($client_check_list as $key => $value) {
-//
-//            $result[$i]['title'] = Text::where('alias', $key)->value('value');
-//            $result[$i]['key'] = $key;
-//            $result[$i]['value'] = $value ? true : false;
-//            $i++;
-//        }
-//
-//        return $result;
-//
-//        return $check_list;
-//    }
 
     public function clinet_quesetionnaire_info($client_id)
     {
@@ -255,5 +220,4 @@ class ToolsController extends Controller
 
         return $result;
     }
-
 }

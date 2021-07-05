@@ -214,6 +214,7 @@ class GeneratorController extends BaseController
         foreach ($fileName as $value) {
             $result['link'][] = URL::to('/') . "/" . $value;
         }
+
         return $result;
     }
 }
