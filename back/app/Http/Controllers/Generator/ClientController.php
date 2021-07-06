@@ -716,11 +716,23 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
+
+        $dev_companies_id = DevCompany::select(
+                'dev_companies.*'
+            )
+            ->where('contracts.card_id', $card_id)
+            ->where('contracts.deleted_at', null)
+            ->join('developer_buildings', 'developer_buildings.dev_company_id', 'dev_companies.id')
+            ->join('immovables', 'immovables.developer_building_id', 'developer_buildings.id')
+            ->join('contracts', 'contracts.immovable_id', 'immovables.id')
+            ->distinct('dev_companies.id')->pluck('dev_companies.id')->toArray();
+
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['notary_id'] = null;
         $result['consent_template_id'] = null;
-        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_group_company_id)->get();
+//        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_group_company_id)->get();
+        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_companies_id)->get();
         $result['spouse_word_id'] = null;
         $result['reg_date'] = null;
         $result['reg_num'] = null;
