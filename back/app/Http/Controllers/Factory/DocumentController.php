@@ -1111,7 +1111,6 @@ class DocumentController extends GeneratorController
         /*
          * Для попереднього договору вноситься дата підписання основного договору
          * */
-
         if ($final_sing_date = FinalSignDate::where('contract_id', $this->contract->id)->first()) {
             $word->setValue('con-final-date-qd-m', $this->day_quotes_month_year($final_sing_date->sign_date));
 

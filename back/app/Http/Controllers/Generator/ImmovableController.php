@@ -771,7 +771,7 @@ class ImmovableController extends BaseController
             'sign_date' => $r['sign_date'],
         ]);
 
-        if (isset($r['final_sign_date'])) {
+        if (isset($r['final_sign_date']) && !empty($r['final_sign_date'])) {
             FinalSignDate::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['sign_date' => $r['final_sign_date']]);
