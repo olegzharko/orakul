@@ -20,6 +20,10 @@
     cursor: default;
   }
 
+  &.clicked {
+    background-color: #6f6f6f;
+  }
+
   &:hover {
     opacity: .7;
   }
