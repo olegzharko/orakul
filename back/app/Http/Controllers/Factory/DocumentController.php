@@ -733,12 +733,14 @@ class DocumentController extends GeneratorController
          * якщо він є
          * */
         if ($this->total_clients > 1) {
-            $full_description = $full_description . ", \${ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
+            $full_description = $full_description . ", \${КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
+            $preliminary_full_description = $preliminary_full_description . ", \${КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
         }
 
         $word->setValue('full-name-tax-code-id-card-address', $full_description);
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $preliminary_full_description);
 
         /*
