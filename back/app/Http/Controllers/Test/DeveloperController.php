@@ -130,10 +130,10 @@ class DeveloperController extends TestController
             $investment_agrement->date = rand(10, 30) . ".0" . rand(1, 9) . "2020";;
             $investment_agrement->save();
 
-            $client_investment_agrement = new ClientInvestmentAgreement();
-            $client_investment_agrement->client_id = null;
-            $client_investment_agrement->investment_agreement_id = $investment_agrement->id;
-            $client_investment_agrement->save();
+//            $client_investment_agrement = new ClientInvestmentAgreement();
+//            $client_investment_agrement->client_id = null;
+//            $client_investment_agrement->investment_agreement_id = $investment_agrement->id;
+//            $client_investment_agrement->save();
 
             $building = new DeveloperBuilding();
             $building->dev_company_id = $dev_company_id;

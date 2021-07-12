@@ -13,7 +13,6 @@ use App\Models\CardClient;
 use App\Models\ClientCheckList;
 use App\Models\Client;
 use App\Models\ClientContract;
-use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
 use App\Models\ClientSpouseConsentContract;
 use App\Models\Contact;

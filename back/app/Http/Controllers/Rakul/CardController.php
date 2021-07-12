@@ -36,6 +36,7 @@ class CardController extends BaseController
     public $client;
     public $convert;
     public $tools;
+    public $auth_user_type;
 
     public function __construct()
     {
@@ -47,6 +48,10 @@ class CardController extends BaseController
         $this->client = new ClientController();
         $this->convert = new ConvertController();
         $this->tools = new ToolsController();
+        if (auth() && auth()->user())
+            $this->auth_user_type = auth()->user()->type;
+        else
+            $this->auth_user_type = null;
     }
 
     /*
@@ -501,23 +506,6 @@ class CardController extends BaseController
 
         $day_height = $days;
 
-
-//        $startTimeStamp = strtotime($date->format('d.m.Y'));
-//        $endTimeStamp = strtotime($card->date_time->format('d.m.Y'));
-//
-//        $timeDiff = abs($endTimeStamp - $startTimeStamp);
-//
-//        $numberDays = $timeDiff/86400;  // 86400 seconds in one day
-//
-//        $numberDays = intval($numberDays);
-//
-//        dd($numberDays);
-//        if ($numberDays) {
-//            $day_height = $numberDays;
-//        } else {
-//            $day_height = 0;
-//        }
-
         return $day_height;
     }
 
@@ -543,6 +531,12 @@ class CardController extends BaseController
         foreach ($immovables as $imm) {
             $title[] = $imm->address_short . ' ' . $imm->title . ' ' . $imm->number . ' ' . $imm->imm_short . ' ' . $imm->immovable_number;
         }
+        if (count($immovables) == 2) {
+            $title[] = "";
+        } elseif (count($immovables) == 1) {
+            $title[] = "";
+            $title[] = "";
+        }
 
         $title = implode(" <br> ", $title);
 
@@ -565,11 +559,6 @@ class CardController extends BaseController
         if ($card->dev_representative) {
             $dev_representative_short = $this->convert->get_short_name($card->dev_representative);
         }
-
-//        elseif ($card->dev_company) {
-//            $owner = $card->dev_company->member->where('type_id', $this->developer_type)->first();
-//            $dev_representative_short = $this->convert->get_short_name($owner);
-//        }
 
         $contracts = $card->has_contracts;
         $reader = [];
@@ -686,17 +675,141 @@ class CardController extends BaseController
 
     public function get_card_instructions($card)
     {
+        $user_type = auth()->user()->type;
         $result = [];
 
-        $ready[] = $this->convert->get_surname_and_initials_n($card->notary);
-        $ready[] = $card->dev_group->title;
-        if ($card->ready && $card->cancelled == false) {
-            $ready[] = 'Готово до генерації';
-        } elseif ($card->cancelled == true) {
-            $ready[] = 'Скасовано';
-        } else {
-            $ready[] = 'Потребує внесення данних';
+        $ready[] = "ID: " . $this->convert->get_id_in_pad_format($card->id);
+        if ($user_type == 'generator') {
+            $ready[] = 'КУРС ДОЛАРА: ' . $this->get_card_currency($card);
         }
+//        $ready[] = 'Забудовник: ';
+//        $ready[] = $card->dev_group->title;
+        $ready = $this->get_notary($card, $ready);
+
+        if ($user_type == 'manager' || $user_type == 'assistant') {
+            $ready = $this->card_generator($card, $ready);
+        }
+
+        $ready = $this->card_reader_and_accompanying($card, $ready);
+        $ready = $this->card_representative($card, $ready);
+        $ready = $this->get_clients($card, $ready);
+        $ready = $this->current_step($card, $ready);
+
+        return $ready;
+    }
+
+    public function get_card_currency($card)
+    {
+        $result = null;
+
+        $rate = $card->exchange_rate && $card->exchange_rate->rate ? $card->exchange_rate->rate / 100 : "00.00";
+        $contract_buy = $card->exchange_rate && $card->exchange_rate->contract_buy ? number_format($card->exchange_rate->contract_buy / 100, 2) : "00.00";
+        $contract_sell = $card->exchange_rate && $card->exchange_rate->contract_sell ? $card->exchange_rate->contract_sell / 100 : "00.00";
+        $updated_at = $card->exchange_rate && $card->exchange_rate->updated_at ? $card->exchange_rate->updated_at->format('d.m H:i') : "-";
+
+        if ($card->exchange_rate)
+            $result = "СК: " . $rate . " | ДК: " . $contract_buy . " | ДП: " . $contract_sell  . " | Від: " . $updated_at;
+        else
+            $result = "Курc відсутній";
+
+        return $result;
+    }
+
+    public function card_generator($card, $ready)
+    {
+        if ($card->staff_generator_id) {
+            $ready[] = "НАБИРАЧ: " . $this->convert->get_full_name($card->generator);
+        }
+        else
+            $ready[] = "НАБИРАЧ: - ";
+
+        return $ready;
+    }
+
+    public function get_clients($card, $ready)
+    {
+        $contract = $card->has_contracts->first();
+        if ($contract->clients && $contract->clients->count() == 0)
+            $ready[] = "ПОКУПЕЦЬ: - ";
+        elseif ($contract->clients && $contract->clients->count() > 1)
+            $ready[] = "ПОКУПЦІ: ";
+
+        foreach ($contract->clients as $client) {
+            if ($contract->clients->count() == 1) {
+                $ready[] = "ПОКУПЕЦЬ: " . $this->convert->get_full_name($client);
+            } else {
+                $ready[] = $this->convert->get_full_name($client);
+            }
+        }
+
+        return $ready;
+    }
+
+    public function current_step($card, $ready)
+    {
+        if ($card->generator_step == null) {
+            $ready[] = 'ЕТАП: ' .  'Збір даних';
+        } elseif ($card->ready && $card->cancelled == false) {
+            $ready[] = 'ЕТАП: ' . 'Готово';
+        } elseif ($card->cancelled == true) {
+            $ready[] = 'ЕТАП: ' . 'Cкасовано';
+        } else {
+            $ready[] = 'ЕТАП: ' . 'Генерується ';
+        }
+
+        return $ready;
+    }
+
+    public function card_reader_and_accompanying($card, $ready)
+    {
+        $contracts = $card->has_contracts;
+
+        foreach ($contracts as $contr) {
+
+            $immovable = $contr->immovable;
+            $developer_company = $contr->immovable->developer_building->dev_company->title;
+//            $ready[] = 'ЗАБУДОВНИК: ';
+            $ready[] = 'ЗАБУДОВНИК: ' . $developer_company;
+
+
+            $address = $this->convert->immovable_building_address($immovable);
+            $ready[] = 'АДРЕСА: ' . $address;
+//            $ready[] = $address;
+
+            if  ($contr->reader) {
+                $ready[] = "ЧИТАЧ: " . $this->convert->get_full_name($contr->reader);
+            }
+            else
+                $ready[] = "ЧИТАЧ: -";
+
+            if  ($contr->accompanying) {
+                $ready[] = "ВИДАВАЧ: " . $this->convert->get_full_name($contr->accompanying);
+            }
+            else
+                $ready[] = "ВИДАВАЧ: -";
+        }
+
+        return $ready;
+    }
+
+    public function get_notary($card, $ready)
+    {
+        if ($card->notary) {
+            $ready[] = "НОТАРІУС: " .  $this->convert->get_full_name($card->notary);
+        }
+        else
+            $ready[] = "НОТАРІУС: -";
+
+        return $ready;
+    }
+
+    public function card_representative($card, $ready)
+    {
+        if ($card->notary) {
+            $ready[] = "ПРЕДСТАВНИК: " .  $this->convert->get_full_name($card->dev_representative);
+        }
+        else
+            $ready[] = "ПРЕДСТАВНИК: -";
 
         return $ready;
     }

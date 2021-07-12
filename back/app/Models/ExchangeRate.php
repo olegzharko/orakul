@@ -12,6 +12,7 @@ class ExchangeRate extends Model
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -19,6 +20,7 @@ class ExchangeRate extends Model
         'rate',
         'contract_buy',
         'contract_sell',
+        'updated_at',
     ];
 
     public function immovable()

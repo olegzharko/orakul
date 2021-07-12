@@ -677,6 +677,18 @@ class ConvertController extends GeneratorController
         return $str;
     }
 
+    public function immovable_building_address($immovable)
+    {
+        $str = null;
+
+        if ($immovable->developer_building)  {
+            $str = $immovable->developer_building->address_type->short . $this->non_break_space . $immovable->developer_building->title . $this->non_break_space . $immovable->developer_building->number . ", " . $immovable->immovable_type->short . $this->non_break_space . $immovable->immovable_number;
+        }
+
+        return $str;
+    }
+
+
     public function get_client_full_address_n($c)
     {
         $full_address = null;
@@ -1246,6 +1258,13 @@ class ConvertController extends GeneratorController
         $phone = str_replace("-", " ", $phone);
 
         return $phone;
+    }
+
+    public function get_id_in_pad_format($id)
+    {
+        $id = str_pad($id, 8, '0', STR_PAD_LEFT);
+
+        return $id;
     }
 }
 

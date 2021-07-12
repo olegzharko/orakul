@@ -134,6 +134,25 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
     }
 
+    public function process_cards()
+    {
+        $result = null;
+
+        $query_cards = Card::whereIn('room_id', $this->rooms)
+            ->where('ready', false)
+            ->orderBy('date_time')
+            ->where('date_time', '>=', $this->date->format('Y.m.d'));
+
+        if (auth()->user()->type == 'generator')
+            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+
+        $cards = $query_cards->get();
+
+        $result = $this->card->get_cards_in_generator_format($cards);
+
+        return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
+    }
+
     public function cards_by_contract_type($contract_type)
     {
         $result = null;
@@ -203,6 +222,7 @@ class FilterController extends BaseController
         $result = [];
 
         $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->orderBy('sort_order')->get();
+//        dd($filter_tyep);
 
         foreach ($filter_tyep as $key => $type) {
             $result[$key]['title'] = $type->title;
@@ -217,6 +237,8 @@ class FilterController extends BaseController
                 $result[$key]['count'] = $this->count_by_type('preliminary');
             } elseif (strpos($type->alias, 'cancelled')) {
                 $result[$key]['count'] = $this->count_cancelled_cards();
+            } elseif (strpos($type->alias, 'process')) {
+                $result[$key]['count'] = $this->count_process_cards();
             } else {
                 $result[$key]['count'] = null;
             }
@@ -307,6 +329,19 @@ class FilterController extends BaseController
         }
 
         $count_cards = $query_cards->where('cancelled', true)->count();
+
+        return $count_cards;
+    }
+
+    public function count_process_cards()
+    {
+        $query_cards = $this->start_card_query();
+
+        if (auth()->user()->type == 'generator'){
+            $query_cards = $this->query_for_generator($query_cards);
+        }
+
+        $count_cards = $query_cards->where('ready', false)->count();
 
         return $count_cards;
     }

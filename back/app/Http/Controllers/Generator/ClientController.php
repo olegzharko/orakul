@@ -15,11 +15,11 @@ use App\Models\CityType;
 use App\Models\Client;
 use App\Models\City;
 use App\Models\ClientContract;
-use App\Models\ClientInvestmentAgreement;
 use App\Models\ClientSpouseConsent;
 use App\Models\ClientSpouseConsentContract;
 use App\Models\ConsentTemplate;
 use App\Models\District;
+use App\Models\KeyWord;
 use App\Models\MarriageType;
 use App\Models\Notary;
 use App\Models\Region;
@@ -107,11 +107,7 @@ class ClientController extends BaseController
             $result[$key] = [];
             $result[$key]['id'] = $client->id;
             $result[$key]['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['list'] = [
-                'ІПН: ' . $client->tax_code,
-                'Паспорт: ' . $client->passport_code,
-                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
-            ];
+            $result[$key]['list'] = $this->get_list($client);
         }
 
         return $this->sendResponse($result, 'Клієнта по ID: ' . $client_id. ' видалено');
@@ -662,7 +658,7 @@ class ClientController extends BaseController
 //                'duplicate' => $r['original'],
 //>>>>>>> e92117ae8db7afe64f74c17215438e553e38a50e
                 'widow' => $r['widow'],
-                'widow_date' => $r['widow_date'],
+                'widow_date' => $r['widow_date'] ? $r['widow_date']->format('Y-m-d') : null,
             ]
         );
 
@@ -728,11 +724,23 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
+
+        $dev_companies_id = DevCompany::select(
+                'dev_companies.*'
+            )
+            ->where('contracts.card_id', $card_id)
+            ->where('contracts.deleted_at', null)
+            ->join('developer_buildings', 'developer_buildings.dev_company_id', 'dev_companies.id')
+            ->join('immovables', 'immovables.developer_building_id', 'developer_buildings.id')
+            ->join('contracts', 'contracts.immovable_id', 'immovables.id')
+            ->distinct('dev_companies.id')->pluck('dev_companies.id')->toArray();
+
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
         $result['notary_id'] = null;
         $result['consent_template_id'] = null;
-        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_group_company_id)->get();
+//        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_group_company_id)->get();
+        $result['spouse_words'] = SpouseWord::select('id', 'title')->where('termination', true)->whereIn('dev_company_id', $dev_companies_id)->get();
         $result['spouse_word_id'] = null;
         $result['reg_date'] = null;
         $result['reg_num'] = null;
@@ -952,32 +960,20 @@ class ClientController extends BaseController
 
             $result[$key]['client']['id'] = $client->id;
             $result[$key]['client']['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['client']['list'] = [
-                'ІПН: ' . $client->tax_code,
-                'Паспорт: ' . $client->passport_code,
-                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
-            ];
+            $result[$key]['client']['list'] = $this->get_list($client);
 
             if ($client->married) {
                 $result[$key]['spouse'] = [];
                 $result[$key]['spouse']['id'] = $client->married->spouse->id;
                 $result[$key]['spouse']['full_name'] = $this->convert->get_full_name($client->married->spouse);
-                $result[$key]['spouse']['list'] = [
-                    'ІПН: ' . $client->married->spouse->tax_code,
-                    'Паспорт: ' . $client->married->spouse->passport_code,
-                    $client->married->spouse->birth_date ? $client->married->spouse->birth_date->format('d.m.Y') : null,
-                ];
+                $result[$key]['spouse']['list'] = $this->get_list($client->married->spouse);
             }
 
-            if ($client->representative) {
+            if ($client->representative && $client->representative->confidant) {
                 $result[$key]['representative'] = [];
                 $result[$key]['representative']['id'] = $client->representative->confidant_id;
                 $result[$key]['representative']['full_name'] = $this->convert->get_full_name($client->representative->confidant);
-                $result[$key]['representative']['list'] = [
-                    'ІПН: ' . $client->representative->tax_code,
-                    'Паспорт: ' . $client->representative->passport_code,
-                    $client->representative->birth_date ? $client->representative->birth_date->format('d.m.Y') : null,
-                ];
+                $result[$key]['representative']['list'] = $this->get_list($client->representative->confidant);
             }
         }
 
@@ -998,6 +994,8 @@ class ClientController extends BaseController
             $r['sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['sign_date']);
         if (isset($r['reg_date']) && !empty($r['reg_date']))
             $r['reg_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['reg_date']);
+        if (isset($r['widow_date']) && !empty($r['widow_date']))
+            $r['widow_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['widow_date']);
 
         $validator = Validator::make([
             'surname_n' => $r['surname_n'],
@@ -1200,5 +1198,21 @@ class ClientController extends BaseController
         $list[0] = 'Активність: ' . $notary->activity_n;
 
         return $list;
+    }
+
+    public function get_list($client)
+    {
+        if ($client->gender)
+            $gender = KeyWord::where('key', 'gender_' . $client->gender)->value('title_n');
+        else
+            $gender = "-";
+        $result = null;
+        $result[] = "ID клієнта: " . $this->convert->get_id_in_pad_format($client->id);
+        $result[] = 'Паспорт: ' . $client->passport_code;
+        $result[] = 'ІПН: ' . $client->tax_code;
+        $result[] = 'Cтать: ' . $gender;
+        $result[] = $client->birth_date ? "Дата народження: " . $client->birth_date->format('d.m.Y') : null;
+        $result[] = 'Телефон: ' . $client->phone;
+        return $result;
     }
 }

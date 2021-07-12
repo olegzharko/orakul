@@ -59,6 +59,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']); // postman
         #######################
         Route::get('ready', [FilterController::class, 'ready_cards']); // postman
+        Route::get('process', [FilterController::class, 'process_cards']);
         Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']); // postman
         Route::get('cancelled', [FilterController::class, 'cancelled_cards']); // postman
         Route::get('total', [CardController::class, 'index']); // postman

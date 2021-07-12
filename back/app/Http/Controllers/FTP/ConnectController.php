@@ -46,8 +46,8 @@ class ConnectController extends Controller
             $path = str_replace(array('%82','%94','+'), array('&#233;','&#246;',' '), urlencode("Тест"));
 
             // створити папку
-//            @ftp_mkdir($conn_id, $path);
-            ftp_mkdir($conn_id, $path);die; // without ignoring error
+            @ftp_mkdir($conn_id, $path);
+//            ftp_mkdir($conn_id, $path);die; // without ignoring error
         }
 
         // завершити підключення

@@ -157,6 +157,29 @@ class ImmovableController extends BaseController
 
         $m2_dollar = round($r['m2_grn'] / $currency_rate, 2);
 
+        $m2_grn = null;
+        if (isset($r['m2_grn']) && !empty($r['m2_grn'])) {
+            $m2_grn = $r['m2_grn'] * 100;
+        } elseif (Immovable::find($immovable_id)->contract->type->alias == 'preliminary') {
+            if (isset($r['total_space']) && !empty($r['total_space']) && isset($r['price_grn']) && !empty($r['price_grn'])) {
+                $m2_grn = $r['price_grn'] / $r['total_space'] * 100;
+            } else {
+                $m2_grn = null;
+            }
+        }
+
+        if (Immovable::find($immovable_id)->contract->type->alias == 'preliminary') {
+            if (isset($r['price_grn']) && !empty($r['price_grn'])) {
+                $reserve_grn = ($r['price_grn'] - 1000) * 100;
+            }
+        } else {
+            if (isset($r['reserve_grn']) && !empty($r['reserve_grn'])) {
+                $reserve_grn = $r['reserve_grn'] * 100;
+            } else {
+                $reserve_grn = null;
+            }
+        }
+
         if ($imm = Immovable::find($immovable_id)) {
             Immovable::where('id', $immovable_id)->update([
                 'immovable_type_id' => $r['imm_type_id'],
@@ -167,10 +190,12 @@ class ImmovableController extends BaseController
                 'grn' => $r['price_grn'] * 100,
 //                'dollar' => $price_dollar * 100,
                 'dollar' => 0,
-                'reserve_grn' => $r['reserve_grn'] * 100,
+//                'reserve_grn' => $r['reserve_grn'] * 100,
+                'reserve_grn' => $reserve_grn,
 //                'reserve_dollar' => $reserve_dollar * 100,
                 'reserve_dollar' => 0,
-                'm2_grn' => $r['m2_grn'] * 100,
+//                'm2_grn' => $r['m2_grn'] * 100,
+                'm2_grn' => $m2_grn,
 //                'm2_dollar' => $m2_dollar * 100,
                 'm2_dollar' => 0,
                 'total_space' => $r['total_space'],
@@ -287,7 +312,6 @@ class ImmovableController extends BaseController
             $clients_arr[$key]['title'] = $this->convert->get_full_name_n($value);
         }
 
-
         $result['sign_date'] = null;
         $result['reg_num'] = null;
         $result['first_part_grn'] = null;
@@ -297,14 +321,6 @@ class ImmovableController extends BaseController
         $result['final_date'] = null;
         $result['clients'] = null;
         $result['client_id'] = null;
-
-//        $payment = SecurityPayment::firstOrCreate(
-//            ['immovable_id' => $immovable_id],
-//            [
-//                'first_part_grn' => 0,
-//                'client_id' => null,
-//            ],
-//        );
 
         $payment = SecurityPayment::where('immovable_id', $immovable_id)->first();
 
@@ -317,7 +333,11 @@ class ImmovableController extends BaseController
             $result['last_part_dollar'] = round($payment->last_part_dollar / 100,2);
             $result['final_date'] = $payment->final_date ? $payment->final_date->format('d.m.Y') : null;
             $result['clients'] = $clients_arr;
-            $result['client_id'] = $payment->client_id;
+
+            if ($payment->client_id)
+                $result['client_id'] = $payment->client_id;
+            elseif (count($clients_arr) == 1)
+                $result['client_id'] = $clients_arr[0]['id'];
         }
 
         return $this->sendResponse($result, 'Забезпучвальний платіж по нерухомісті ID:' . $immovable_id);
@@ -404,14 +424,78 @@ class ImmovableController extends BaseController
 
         $immovables = Immovable::get_all_by_id($immovables_id);
 
-        foreach ($immovables as $key => $immovable) {
+        $contracts = Card::find($card_id)->has_contracts;
+
+
+        foreach ($contracts as $key => $contract) {
+            $immovable = $contract->immovable;
+
+            $address = $this->convert->immovable_building_address($contract->immovable);
+
+            $immovable = $contract->immovable;
+            $immovable_type = $contract->immovable->immovable_type->alias;
+            $contract_type = $contract->type->alias;
+
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
-            $result[$key]['list'] = [
-                'Тип нерухомості: ' . $immovable->immovable_type->title_n,
-                'Номер нерухомості: ' . $immovable->immovable_number,
-                'Реєстраційний номер: ' . $immovable->registration_number,
-            ];
+//            $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
+            $result[$key]['title'] = $address;
+//            $result[$key]['list'][] = 'Тип нерухомості: ' . $immovable->immovable_type->title_n;
+//            $result[$key]['list'][] = 'Номер нерухомості: ' . $immovable->immovable_number;
+
+
+            $result[$key]['list'][] = "ID нерхомості: " . $this->convert->get_id_in_pad_format($immovable->id);
+            if ($contract_type == 'main' && $immovable->registration_number)
+                $result[$key]['list'][] = 'Реєстраційний номер: ' . $immovable->registration_number;
+            elseif ($contract_type == 'main' && !$immovable->registration_number)
+                $result[$key]['list'][] = 'Реєстраційний номер: -';
+
+            if ($immovable->grn)
+                $result[$key]['list'][] = 'Ціна грн: ' . $this->convert->get_number_format_thousand($immovable->grn) . " грн";
+            else
+                $result[$key]['list'][] = 'Ціна грн: -';
+
+            if ($immovable->total_space)
+                $result[$key]['list'][] = 'Загальна площа: ' . $immovable->total_space . " m2";
+            else
+                $result[$key]['list'][] = 'Загальна площа: -';
+
+            if (!$immovable->living_space && $contract_type == 'main' && $immovable_type == 'appartment') // preliminary
+                $result[$key]['list'][] = 'Житлова площа';
+
+            if ($contract_type == 'preliminary' && $immovable->m2_grn)
+                $result[$key]['list'][] = 'Ціна за m2: ' . $this->convert->get_number_format_thousand($immovable->m2_grn) . " грн";
+            else
+                $result[$key]['list'][] = 'Ціна за m2: -';
+
+            if ($immovable->roominess_id && $contract_type == 'preliminary')
+                $result[$key]['list'][] = 'Кімнатність: ' . $immovable->roominess_id;
+            elseif (!$immovable->roominess_id && $contract_type == 'preliminary')
+                $result[$key]['list'][] = 'Кімнатність: -';
+
+            if (!$immovable->floor && $contract_type == 'preliminary' && $immovable_type == 'appartment')
+                $result[$key]['list'][] = 'Поверх';
+            if (!$immovable->section && $contract_type == 'preliminary' && $immovable_type == 'appartment')
+                $result[$key]['list'][] = 'Секція';
+
+            if ($contract->template_id)
+                $result[$key]['list'][] = "Договір: обрано";
+            else
+                $result[$key]['list'][] = "Договір: -";
+
+            if ($contract_type == 'preliminary' && $contract->bank_account_payment)
+                $result[$key]['list'][] = 'Квитанція: обрана';
+            elseif ($contract_type == 'preliminary' && !$contract->bank_account_payment)
+                $result[$key]['list'][] = 'Квитанція: -';
+
+            if ($contract->accompanying_id)
+                $result[$key]['list'][] = 'Читач: ' . $this->convert->get_full_name($contract->accompanying);
+            else
+                $result[$key]['list'][] = 'Читач: -';
+
+            if ($contract->reader_id)
+                $result[$key]['list'][] = 'Видавач: ' . $this->convert->get_full_name($contract->reader);
+            else
+                $result[$key]['list'][] = 'Видавач: -';
         }
 
         return $result;
@@ -703,8 +787,15 @@ class ImmovableController extends BaseController
         $result['termination_contracts'] = $termination_contract_templates;
         $result['termination_refunds'] = $termination_refund_templates;
 
-        $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : null;
-        $result['final_sign_date'] = $final_sing_date && $final_sing_date->sign_date > $this->date ? $final_sing_date->sign_date->format('d.m.Y') : null;
+        if ($final_sing_date && $final_sing_date->sign_date > $this->date)
+            $final_sing_date = $final_sing_date->sign_date->format('d.m.Y');
+        elseif ($immovable->developer_building->communal_date)
+            $final_sing_date = $immovable->developer_building->communal_date->format('d.m.Y');
+        else
+            $final_sing_date = null;
+
+        $result['sign_date'] = $contract->sign_date ? $contract->sign_date->format('d.m.Y') : $contract->card->date_time->format('d.m.Y');
+        $result['final_sign_date'] = $final_sing_date;
         $result['ready'] = $contract->ready ? true : false;
         $result['translate'] = $contract->translate ? true : false;
         $result['type_id'] = $contract->type_id;
@@ -779,7 +870,7 @@ class ImmovableController extends BaseController
             'sign_date' => $r['sign_date'],
         ]);
 
-        if (isset($r['final_sign_date'])) {
+        if (isset($r['final_sign_date']) && !empty($r['final_sign_date'])) {
             FinalSignDate::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['sign_date' => $r['final_sign_date']]);

@@ -144,6 +144,7 @@ class DocumentController extends GeneratorController
                 else
                     $this->notification("Warning", "Контракт відсутній");
 
+
                 if ($this->contract->questionnaire && $this->contract->questionnaire->template_id)
                     $this->questionnaire_template_set_data();
                 else
@@ -206,24 +207,28 @@ class DocumentController extends GeneratorController
                 $this->total_clients--;
             }
 
-            $this->total_clients = 0;
-            $termination_clients = [];
-            $termination_clients[] = $this->contract->termination_info->first_client;
-            $termination_clients[] = $this->contract->termination_info->second_client;
+            // Розірвання ПД
+            // Тестовый блок
+            if ($this->contract->termination_info) {
+                $this->total_clients = 0;
+                $termination_clients = [];
+                $termination_clients[] = $this->contract->termination_info->first_client;
+                $termination_clients[] = $this->contract->termination_info->second_client;
 
-            $termination_clients = array_filter($termination_clients);
+                $termination_clients = array_filter($termination_clients);
 
-            $this->contract->clients = $termination_clients;
-            $this->total_clients = count($termination_clients);
+                $this->contract->clients = $termination_clients;
+                $this->total_clients = count($termination_clients);
 
-            if ($this->total_clients) {
-                foreach ($this->contract->clients as $this->client) {
-                    if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
-                        $this->termination_contract_template_set_data();
-                    else
-                        $this->notification("Warning", "Договір розірвання відсутній");
+                if ($this->total_clients) {
+                    foreach ($this->contract->clients as $this->client) {
+                        if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                            $this->termination_contract_template_set_data();
+                        else
+                            $this->notification("Warning", "Договір розірвання не обрано");
 
-                    $this->total_clients--;
+                        $this->total_clients--;
+                    }
                 }
             }
 
@@ -250,8 +255,6 @@ class DocumentController extends GeneratorController
 
                     $zip->close();
                 }
-
-//                return $zip_folder_path_part .$fileName;
 
                 $result[] = $zip_folder_path_part .$fileName;
             }
@@ -735,6 +738,18 @@ class DocumentController extends GeneratorController
         }
 
         $word->saveAs($template_generate_file);
+
+
+        if ($this->consent->widow) {
+            $word = new TemplateProcessor($template_generate_file);
+            $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
+            $word->setValue('ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
+            $word->saveAs($template_generate_file);
+        } else {
+            $word = new TemplateProcessor($template_generate_file);
+            $word->setValue('ВДІВСТВО-ДАТА', '');
+            $word->saveAs($template_generate_file);
+        }
     }
 
     public function set_full_info_template($template_generate_file)
@@ -761,9 +776,11 @@ class DocumentController extends GeneratorController
          * */
         if ($this->client->representative) {
             $full_description = MainInfoType::where('alias', 'full-client-and-representative-confidant')->value('description');
+            $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-client-and-representative-confidant')->value('description');
         }
         else {
             $full_description = MainInfoType::where('alias', 'full-name-tax-code-id-card-address')->value('description');
+            $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-name-tax-code-id-card-address')->value('description');
         }
 
         /*
@@ -773,11 +790,14 @@ class DocumentController extends GeneratorController
          * */
         if ($this->total_clients > 1) {
             $full_description = $full_description . ", \${ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
+            $preliminary_full_description = $preliminary_full_description . ", \${КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
         }
 
         $word->setValue('full-name-tax-code-id-card-address', $full_description);
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $preliminary_full_description);
 
 
         $word->setValue($this->total_clients . '-РОЗ-КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
@@ -1121,7 +1141,6 @@ class DocumentController extends GeneratorController
         /*
          * Для попереднього договору вноситься дата підписання основного договору
          * */
-
         if ($final_sing_date = FinalSignDate::where('contract_id', $this->contract->id)->first()) {
             $word->setValue('con-final-date-qd-m', $this->day_quotes_month_year($final_sing_date->sign_date));
 
@@ -1531,6 +1550,7 @@ class DocumentController extends GeneratorController
              * Клієнт - IПН
              * */
             $word->setValue('cl-tax-code', $this->client->tax_code);
+
             $word->setValue('cl-tax-code-b', $this->set_style_bold($this->client->tax_code));
 
             $word->setValue('КЛ-ІПН', $this->client->tax_code);
@@ -1577,6 +1597,20 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue($this->total_clients . '-КЛ-ЇХ', $cl_gender_whose);
+
+//        if ($this->consent && $this->consent->widow) {
+//            $word = new TemplateProcessor($this->consent_generate_file);
+//            $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
+//            $word->setValue('Я-ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
+//            $word->saveAs($this->consent_generate_file);
+//        } else {
+//
+//            if ($this->consent && $this->consent->widow) {
+//                $word->setValue('Я-ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
+//            } else {
+//                $word->setValue('ВДІВСТВО-ДАТА', '');
+//            }
+//        }
 
         } else {
             $this->notification("Warning", "Відсутня інформація про клієнта");
@@ -1794,6 +1828,17 @@ class DocumentController extends GeneratorController
         } else {
             $this->notification("Warning", "Згода подружжя: шаблон підтвердження шлюбу відсутній");
         }
+
+        if ($this->consent && $this->consent->widow) {
+            $word = new TemplateProcessor($this->consent_generate_file);
+            $me_widowhood = MainInfoType::where('alias', 'me-widow-date')->value('description');
+            $word->setValue('Я-ВДІВСТВО-ДАТА', $me_widowhood . ",$this->non_break_space");
+            $word->saveAs($this->consent_generate_file);
+        } else {
+            $word = new TemplateProcessor($this->consent_generate_file);
+            $word->setValue('Я-ВДІВСТВО-ДАТА', '');
+            $word->saveAs($this->consent_generate_file);
+        }
     }
 
     /*
@@ -1837,6 +1882,12 @@ class DocumentController extends GeneratorController
             else {
                 $word->setValue('ЗГ-ПОД-НОТ-НОМЕР', $this->set_style_color_warning("####"));
                 $word->setValue('cs-consent-reg-num', $this->set_style_color_warning("####"));
+            }
+
+            if ($this->consent->widow) {
+                $widowhood = GenderWord::where('alias', 'widowhood')->value($this->client->gender);
+                $word->setValue('КЛ-ВДОВ', $widowhood);
+                $word->setValue('КЛ-ВДІВСТВО-ДАТА', $this->display_date($this->consent->widow_date));
             }
         } else {
             $this->notification("Warning", "Відсутня інформація про згоду подружжя клієнта");

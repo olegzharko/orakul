@@ -11,10 +11,12 @@ use GuzzleHttp\Client;
 class MinfinController extends BaseController
 {
     public $client;
+    public $api_key;
 
     public function __construct()
     {
         $this->client = new \GuzzleHttp\Client();
+        $this->api_key = "cbef9c587eb1110b0da451d3f8e99ac4e62b0f34";
     }
 
     public function get_rate_exchange()
@@ -38,7 +40,7 @@ class MinfinController extends BaseController
 
     public function get_contract_buy()
     {
-        $response = $this->client->request('GET', 'https://api.minfin.com.ua/contracts/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
+        $response = $this->client->request('GET', 'https://api.minfin.com.ua/contracts/' . $this->api_key .'/');
 
         $api_data = json_decode($response->getBody());
 
@@ -50,7 +52,7 @@ class MinfinController extends BaseController
 
     public function get_dollar_auction()
     {
-        $response = $this->client->request('GET', 'https://api.minfin.com.ua/auction/info/7a176e1592eb3b008f05ccd42c78f9d2c81e461c/');
+        $response = $this->client->request('GET', 'https://api.minfin.com.ua/auction/info/' . $this->api_key . '/');
 
         $api_data = json_decode($response->getBody());
 
