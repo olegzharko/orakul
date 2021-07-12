@@ -14,7 +14,6 @@ class ConnectController extends Controller
 
     public function __construct()
     {
-
 //        $dir = $this->ff->generate_path;
 
         $this->ip = '192.168.22.2';
@@ -28,10 +27,10 @@ class ConnectController extends Controller
     public function create_directory($dir)
     {
         $dir = str_replace("Contract/", "", $dir);
-        // set up basic connection
+        // підключення до сереверу
         $conn_id = ftp_connect($this->ip);
 
-        // login with username and password
+        // авторизація по FTP
         $login_result = ftp_login($conn_id, $this->username, $this->password);
 
         // створити папку для файлів
@@ -43,11 +42,15 @@ class ConnectController extends Controller
             else
                 $path = $path . "/" . $folder;
 
-            // try to create the directory $dir
-            @ftp_mkdir($conn_id, $path);
+//            $path = str_replace(array('%82','%94','+'), array('&#233;','&#246;',' '), urlencode($path));
+            $path = str_replace(array('%82','%94','+'), array('&#233;','&#246;',' '), urlencode("Тест"));
+
+            // створити папку
+//            @ftp_mkdir($conn_id, $path);
+            ftp_mkdir($conn_id, $path);die; // without ignoring error
         }
 
-        // close the connection
+        // завершити підключення
         ftp_close($conn_id);
     }
 
@@ -55,27 +58,34 @@ class ConnectController extends Controller
     {
         $path = str_replace("Contract/", "", $path);
 
-        $ch = curl_init();
-
         $file_name = explode("/", $localfile);
         $file_name = end($file_name);
         $remotefile = $path . "/" . $file_name;
 
-        $fp = fopen($localfile, 'r');
-        curl_setopt($ch, CURLOPT_URL, "ftp://$this->username:$this->password@$this->ip/".$remotefile);
-        curl_setopt($ch, CURLOPT_UPLOAD, 1);
-        curl_setopt($ch, CURLOPT_INFILE, $fp);
-        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($localfile));
-        curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+//        $ch = curl_init();
+//
+//        $fp = fopen($localfile, 'r');
+//        curl_setopt($ch, CURLOPT_URL, "ftp://$this->username:$this->password@$this->ip/".$remotefile);
+//        curl_setopt($ch, CURLOPT_UPLOAD, 1);
+//        curl_setopt($ch, CURLOPT_INFILE, $fp);
+//        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($localfile));
+//        curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+//
+//        curl_exec ($ch);
+//        $error_no = curl_errno($ch);
+//        curl_close ($ch);
+//
+//        if ($error_no == 0) {
+//            $error = 'Файли завантажено успішно';
+//        } else {
+//            $error = 'Помилка';
+//        }
 
-        curl_exec ($ch);
-        $error_no = curl_errno($ch);
-        curl_close ($ch);
-
-        if ($error_no == 0) {
-            $error = 'File uploaded succesfully.';
-        } else {
-            $error = 'File upload error.';
-        }
+//        system("mkdir oleg|_|2");
+//        $command = "/usr/bin/lftp -c 'open -u Contract,123QWer45 ftp://192.168.22.2; put -O / Нота.txt'";
+        $command = "/usr/bin/lftp -c 'open -u $this->username,$this->password ftp://$this->ip; put -O / Нота.txt'";
+        $command = "/usr/bin/lftp -c 'open -u $this->username,$this->password ftp://$this->ip; put -O $remotefile $localfile'";
+        exec($command, $output);
+//        shell_exec($command);
     }
 }

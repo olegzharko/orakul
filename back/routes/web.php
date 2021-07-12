@@ -34,6 +34,19 @@ Route::get('phpinfo', function () {
    phpinfo();die;
 });
 
+Route::get('lftp-nspace', function () {
+    $command = "/usr/bin/lftp -c 'open -u Contract,123QWer45 ftp://192.168.22.2; put -O / Нота.txt'";
+    exec($command, $output);
+    dd($output);
+});
+
+
+Route::get('lftp-rakul', function () {
+    $command = "/usr/bin/lftp -c 'open -u ozharko_dir,75vUtTYh9x3P ftp://ozharko.ftp.tools; put -O / Нота.txt'";
+    exec($command, $output);
+    dd($output);
+});
+
 Route::get('create/{card_id}', [GeneratorController::class, 'create_contract_by_card_id']); // postman
 Route::get('creat/contracts', [GeneratorController::class, 'create_contracts_by_cards']);
 Route::get('creat/all/contracts', [GeneratorController::class, 'create_all_contracts']);
