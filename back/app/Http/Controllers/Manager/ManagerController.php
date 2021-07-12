@@ -180,14 +180,36 @@ class ManagerController extends BaseController
 
         $immovables = Immovable::get_all_by_id($immovables_id);
 
-        foreach ($immovables as $key => $immovable) {
+        $contracts = Card::find($card_id)->has_contracts;
+
+        foreach ($contracts as $key => $contract) {
+            $immovable = $contract->immovable;
+
+            $address = $this->convert->immovable_building_address($immovable);
+
+            $contract_type = $contract->type->alias;
             $result[$key]['id'] = $immovable->id;
-            $result[$key]['title'] = $this->convert->building_full_address_by_type($immovable);
-            $result[$key]['list'] = [
-                'Тип нерухомості: ' . $immovable->immovable_type->title_n,
-                'Номер нерухомості: ' . $immovable->immovable_number,
-                'Реєстраційний номер: ' . $immovable->registration_number,
-            ];
+            $result[$key]['title'] = $address;
+
+            if ($contract_type == 'preliminary')
+                $result[$key]['list'][] = 'Тип договору: попередній';
+            else
+                $result[$key]['list'][] = 'Тип договору: основний';
+
+            if ($immovable->registration_number)
+                $result[$key]['list'][] = 'Реєстраційний номер: ' . $immovable->registration_number;
+            else
+                $result[$key]['list'][] = 'Реєстраційний номер: -';
+
+            if ($contract->accompanying_id)
+                $result[$key]['list'][] = 'Читач: ' . $this->convert->get_full_name($contract->accompanying);
+            else
+                $result[$key]['list'][] = 'Читач: -';
+
+            if ($contract->reader_id)
+                $result[$key]['list'][] = 'Видавач: ' . $this->convert->get_full_name($contract->reader);
+            else
+                $result[$key]['list'][] = 'Видавач: -';
         }
 
         return $this->sendResponse($result, 'Нерухомості по карті ID:' . $card_id);
@@ -345,11 +367,11 @@ class ManagerController extends BaseController
             $result[$key] = [];
             $result[$key]['id'] = $client->id;
             $result[$key]['full_name'] = $this->convert->get_full_name($client);
-            $result[$key]['list'] = [
-                'ІПН: ' . $client->tax_code,
-                'Паспорт: ' . $client->passport_code,
-                $client->birth_date ? $client->birth_date->format('d.m.Y') : null,
-            ];
+            $result[$key]['list'][] = 'ІПН: ' . $client->tax_code;
+            $result[$key]['list'][] = 'Паспорт: ' . $client->passport_code;
+            $result[$key]['list'][] =  $client->birth_date ? 'День народження: ' . $client->birth_date->format('d.m.Y') : null;
+            $result[$key]['list'][] = 'Телефон: ' . $client->phone;
+            $result[$key]['list'][] = 'Email: ' . $client->email;
         }
 
         return $this->sendResponse($result, 'Клієнти по карточці ID' . $card_id);

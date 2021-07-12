@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Generator;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
+use App\Models\BuildingRepresentativeProxy;
 use App\Models\ClientType;
 use App\Models\DevCompany;
 use App\Models\DevCompanyEmployer;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Client;
 use App\Models\Text;
+use App\Models\Proxy;
 use Validator;
 
 class DeveloperController extends BaseController
@@ -81,14 +83,39 @@ class DeveloperController extends BaseController
         $result['representative_id'] = $representative ? $representative->id : null;
 
         $result['representative_info'] = [];
-        $result['representative_doc'] = [];
         if ($representative) {
-            $result['representative_info'][] = ['title' => 'Дата народження', 'value' => $representative->birth_date ? $representative->birth_date->format('d.m.Y') : null];
-            $result['representative_info'][] = ['title' => 'ІПН', 'value' => $representative->code];
-            $result['representative_info'][] = ['title' => 'Паспорт Серія-номер', 'value' => $representative->passport_date];
+//            $result['representative_info'][] = ['title' => 'Телефон', 'value' => $representative->phone ?? '-'];
+            $result['representative_info'][] = ['title' => 'Дата народження', 'value' => $representative->birth_date ? $representative->birth_date->format('d.m.Y') : '-'];
+            $result['representative_info'][] = ['title' => 'ІПН', 'value' => $representative->tax_code ?? '-'];
+            $result['representative_info'][] = ['title' => 'Тип паспорту', 'value' => $representative->passport_type ? $representative->passport_type->title : '-'];
+            $result['representative_info'][] = ['title' => 'Серія/Номер паспорту', 'value' => $representative->passport_code ?? '-'];
+            $result['representative_info'][] = ['title' => 'Виданий', 'value' => $representative->passport_date ? $representative->passport_date->format('d.m.Y') : '-'];
+            $result['representative_info'][] = ['title' => 'Дійсний до:', 'value' => $representative->passport_finale_date ? $representative->passport_finale_date->format('d.m.Y') : '-'];
 
 
-            $result['representative_doc'][] = ['title' => 'Дані 1', 'value' => 'Текст 1'];
+            $developer_buildings_id = Card::select('developer_buildings.*')->where('cards.id', $card_id)
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->leftJoin('immovables', 'contracts.immovable_id', '=', 'immovables.id')
+            ->leftJoin('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
+            ->pluck('developer_buildings.id');
+
+            $proxies_id = BuildingRepresentativeProxy::select('proxies.*')
+            ->whereIn('building_id', $developer_buildings_id)
+            ->where('dev_representative_id', $representative->id)
+            ->leftJoin('proxies', 'proxies.id', '=', 'building_representative_proxies.proxy_id')
+            ->pluck('proxies.id');
+
+            $proxies = Proxy::whereIn('id', $proxies_id)->get();
+
+            $result['representative_doc'] = [];
+            foreach ($proxies as $value) {
+                $result['representative_doc'][] = ['title' => 'Номер довіреності', 'value' => $value->reg_num];
+                $result['representative_doc'][] = ['title' => 'Дата посвідчення', 'value' => $value->reg_date ? $value->reg_date->format('d.m.Y') : '-'];
+                $result['representative_doc'][] = ['title' => 'Дат закінчення', 'value' => $value->final_date ? $value->final_date->format('d.m.Y') : '-'];
+            }
+
+            if (!count($result['representative_doc']))
+                $result['representative_doc'][] = ['title' => 'ВІДСУТНЯ ДОВІРЕНІСТЬ', 'value' => ''];
         }
 
         return $this->sendResponse($result, 'Продавці відносно будинку та підписанти.');
@@ -102,25 +129,42 @@ class DeveloperController extends BaseController
 
         $result['dev_company']['title'] = $dev_company->title;
         $result['dev_company']['color'] = $dev_company->color;
+        $result['dev_company']['info'] = [];
+        $result['ceo_spouse_info'] = [];
 
-        // компанія
-        $result['dev_company']['info'][] = ['title' => 'Група: ', 'value' => $dev_company->dev_group->title];
+        $owner = DevCompanyEmployer::where('dev_company_id', $dev_company_id)->where('type_id', 1)->first();
+        if ($owner) {
+            $owner = $owner->employer;
 
-        // owner влоасник забудовник
-        $result['ceo_info'][] = ['title' => 'CEO 1', 'value' => 'DATA 1'];
+            // компанія
+            $result['dev_company']['info'][] = ['title' => 'ПІБ', 'value' => $this->convert->get_full_name_n($owner)];
+            $result['dev_company']['info'][] = ['title' => 'Телефон', 'value' => $owner->phone ?? '-'];
+            $result['dev_company']['info'][] = ['title' => 'Дата народження', 'value' => $owner->birth_date ? $owner->birth_date->format('d.m.Y') : '-'];
+            $result['dev_company']['info'][] = ['title' => 'ІПН', 'value' => $owner->tax_code ?? '-'];
+            $result['dev_company']['info'][] = ['title' => 'Тип паспорту', 'value' => $owner->passport_type ? $owner->passport_type->title : '-'];
+            $result['dev_company']['info'][] = ['title' => 'Серія/Номер паспорту', 'value' => $owner->passport_code ?? '-'];
+            $result['dev_company']['info'][] = ['title' => 'Виданий', 'value' => $owner->passport_date ? $owner->passport_date->format('d.m.Y') : '-'];
+            $result['dev_company']['info'][] = ['title' => 'Дійсний до:', 'value' => $owner->passport_finale_date ? $owner->passport_finale_date->format('d.m.Y') : '-'];
+        } else {
+            $result['dev_company']['info'][] = ['title' => 'Фонд', 'value' => ''];
+        }
 
         // подружжя забудовника
-        $result['ceo_spouse_info'][] = ['title' => '', 'value' => ''];
 
-        $result['dev_fence']['date'] = null;
-        $result['dev_fence']['number'] = null;
-        $result['dev_fence']['pass'] = null;
-
-        if ($fence = DevFence::where('dev_company_id', $dev_company_id)->where('card_id', $card_id)->orderBy('date', 'desc')->first() ) {
-            $result['dev_fence']['date'] = $fence->date ? $fence->date->format('d.m.Y. H:i') : null;
-            $result['dev_fence']['number'] = $fence->number;
-            $result['dev_fence']['pass'] = $fence->pass;
+        if ($owner && $owner->married && $owner->married->spouse) {
+            $spouse = $owner->married->spouse;
+            $result['ceo_spouse_info'][] = ['title' => 'ПІБ', 'value' => $this->convert->get_full_name_n($spouse)];
+            $result['ceo_spouse_info'][] = ['title' => 'Телефон', 'value' => $spouse->phone ?? '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'Дата народження', 'value' => $spouse->birth_date ? $spouse->birth_date->format('d.m.Y') : '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'ІПН', 'value' => $spouse->tax_code ?? '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'Тип паспорту', 'value' => $spouse->passport_type ? $spouse->passport_type->title : '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'Серія/Номер паспорту', 'value' => $spouse->passport_code ?? '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'Виданий', 'value' => $spouse->passport_date ? $spouse->passport_date->format('d.m.Y') : '-'];
+            $result['ceo_spouse_info'][] = ['title' => 'Дійсний до:', 'value' => $spouse->passport_finale_date ? $spouse->passport_finale_date->format('d.m.Y') : '-'];
+        } else {
+            $result['ceo_spouse_info'][] = ['title' => 'Фонд', 'value' => ''];
         }
+
 
         return $this->sendResponse($result, 'Загальні дані по забудовнику.');
     }
@@ -164,14 +208,11 @@ class DeveloperController extends BaseController
         return $this->sendResponse('', 'Дані по забороні на продавця оновлені');
     }
 
-    public function get_representative($card_id)
+
+    // Видали функцію після видалення запиту
+    public function get_representative($client_id)
     {
-        $result = [];
-
-        $result['representative_info'][] = ['title' => 'Cтатус: ', 'value' => 'актуальна'];
-        $result['representative_doc'][] = ['title' => 'Cтатус: ', 'value' => 'актуальна'];
-
-        return $this->sendResponse($result, "Загальні дані по представнику забудовника.");
+        return [];
     }
 
     public function update_representative($card_id, Request $r)

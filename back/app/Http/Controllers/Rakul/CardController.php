@@ -36,6 +36,7 @@ class CardController extends BaseController
     public $client;
     public $convert;
     public $tools;
+    public $auth_user_type;
 
     public function __construct()
     {
@@ -47,6 +48,10 @@ class CardController extends BaseController
         $this->client = new ClientController();
         $this->convert = new ConvertController();
         $this->tools = new ToolsController();
+        if (auth() && auth()->user())
+            $this->auth_user_type = auth()->user()->type;
+        else
+            $this->auth_user_type = null;
     }
 
     /*
@@ -543,6 +548,12 @@ class CardController extends BaseController
         foreach ($immovables as $imm) {
             $title[] = $imm->address_short . ' ' . $imm->title . ' ' . $imm->number . ' ' . $imm->imm_short . ' ' . $imm->immovable_number;
         }
+        if (count($immovables) == 2) {
+            $title[] = "";
+        } elseif (count($immovables) == 1) {
+            $title[] = "";
+            $title[] = "";
+        }
 
         $title = implode(" <br> ", $title);
 
@@ -686,18 +697,86 @@ class CardController extends BaseController
 
     public function get_card_instructions($card)
     {
+        $user_type = auth()->user()->type;
         $result = [];
 
-        $ready[] = $this->convert->get_surname_and_initials_n($card->notary);
-        $ready[] = $card->dev_group->title;
-        if ($card->ready && $card->cancelled == false) {
-            $ready[] = 'Готово до генерації';
-        } elseif ($card->cancelled == true) {
-            $ready[] = 'Скасовано';
-        } else {
-            $ready[] = 'Потребує внесення данних';
+        $ready[] = "ID: " . $this->convert->get_id_in_pad_format($card->id);
+        if ($user_type == 'generator') {
+            $ready[] = $this->get_card_currency($card);
         }
+        $ready[] = $card->dev_group->title;
+        $ready[] = $this->convert->get_surname_and_initials_n($card->notary);
+        if ($user_type == 'manager' || $user_type == 'assistant') {
+            $ready[] = $this->card_generator($card);
+        }
+        $ready[] = $this->get_clients($card);
+        $ready[] = $this->current_step($card, $user_type);
 
         return $ready;
+    }
+
+    public function get_card_currency($card)
+    {
+        $result = null;
+
+        $rate = $card->exchange_rate && $card->exchange_rate->rate ? $card->exchange_rate->rate / 100 : "00.00";
+        $contract_buy = $card->exchange_rate && $card->exchange_rate->contract_buy ? number_format($card->exchange_rate->contract_buy / 100, 2) : "00.00";
+        $contract_sell = $card->exchange_rate && $card->exchange_rate->contract_sell ? $card->exchange_rate->contract_sell / 100 : "00.00";
+        $updated_at = $card->exchange_rate && $card->exchange_rate->updated_at ? $card->exchange_rate->updated_at->format('d.m H:i') : "-";
+
+        if ($card->exchange_rate)
+            $result = "СК: " . $rate . " | ДК: " . $contract_buy . " | ДП: " . $contract_sell  . " | Від: " . $updated_at;
+        else
+            $result = "Курc відсутній";
+
+        return $result;
+    }
+
+    public function card_generator($card)
+    {
+        $result = null;
+
+        if ($card->staff_generator_id)
+            $result = "Набирач: " . $this->convert->get_full_name($card->generator);
+        else
+            $result = "Набирач: - ";
+
+        return $result;
+    }
+
+    public function get_clients($card)
+    {
+        $result = null;
+
+        $contract = $card->has_contracts->first();
+        if ($contract->clients && $contract->clients->count() == 0)
+            $result = "Клієнти: -";
+        elseif ($contract->clients && $contract->clients->count() == 1)
+            $result = "Клієнт: ";
+        elseif ($contract->clients && $contract->clients->count() > 1)
+            $result = "Клієнтів: ";
+
+        foreach ($contract->clients as $client) {
+            $result .= " " . $this->convert->get_full_name($client);
+        }
+
+        return $result;
+    }
+
+    public function current_step($card)
+    {
+        $result = null;
+
+        if ($card->generator_step == null) {
+            $result = 'Етап збору даних';
+        } elseif ($card->ready && $card->cancelled == false) {
+            $result = 'Гнерація: готово';
+        } elseif ($card->cancelled == true) {
+            $result = 'Генерація: скасовано';
+        } else {
+            $result = 'Генерація: в процесі';
+        }
+
+        return $result;
     }
 }

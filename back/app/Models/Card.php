@@ -25,6 +25,7 @@ class Card extends Model
     protected $casts = [
         'date_time' => 'datetime',
         'deleted_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public static function get_card_by_contract($contract_id)
@@ -87,6 +88,11 @@ class Card extends Model
     public function exchange_rate()
     {
         return $this->hasOne(ExchangeRate::class, 'card_id');
+    }
+
+    public function generator()
+    {
+        return $this->belongsTo(User::class, 'staff_generator_id');
     }
 
     public static function new_card($r)
