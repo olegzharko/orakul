@@ -487,13 +487,13 @@ class ImmovableController extends BaseController
             elseif ($contract_type == 'preliminary' && !$contract->bank_account_payment)
                 $result[$key]['list'][] = 'Квитанція: -';
 
-            if ($contract->accompanying_id)
-                $result[$key]['list'][] = 'Читач: ' . $this->convert->get_full_name($contract->accompanying);
+            if ($contract->reader_id)
+                $result[$key]['list'][] = 'Читач: ' . $this->convert->get_full_name($contract->reader);
             else
                 $result[$key]['list'][] = 'Читач: -';
 
-            if ($contract->reader_id)
-                $result[$key]['list'][] = 'Видавач: ' . $this->convert->get_full_name($contract->reader);
+            if ($contract->accompanying_id)
+                $result[$key]['list'][] = 'Видавач: ' . $this->convert->get_full_name($contract->accompanying);
             else
                 $result[$key]['list'][] = 'Видавач: -';
         }

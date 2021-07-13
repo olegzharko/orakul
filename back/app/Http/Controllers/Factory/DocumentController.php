@@ -789,7 +789,7 @@ class DocumentController extends GeneratorController
          * якщо він є
          * */
         if ($this->total_clients > 1) {
-            $full_description = $full_description . ", \${ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
+            $full_description = $full_description . ", \${КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
             $preliminary_full_description = $preliminary_full_description . ", \${КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА}";
         }
 

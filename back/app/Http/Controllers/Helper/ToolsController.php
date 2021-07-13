@@ -125,21 +125,21 @@ class ToolsController extends Controller
 
     public function get_reader_staff()
     {
-        $reader = User::where('reader', true)->get();
+        $reader = User::where('reader', true)->orderBy('surname')->get();
 
         return $this->convertor_full_name($reader, 'full_name');
     }
 
     public function get_accompanying_staff()
     {
-        $accompanying = User::where('accompanying', true)->get();
+        $accompanying = User::where('accompanying', true)->orderBy('surname')->get();
 
         return $this->convertor_full_name($accompanying, 'full_name');
     }
 
     public function get_generator_staff()
     {
-        $accompanying = User::where('generator', true)->get();
+        $accompanying = User::where('generator', true)->orderBy('surname')->get();
 
         return $this->convertor_full_name($accompanying, 'full_name');
     }

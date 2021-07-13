@@ -243,7 +243,7 @@ class ClientController extends BaseController
             return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
         }
 
-        $citizenships = Citizenship::select('id', 'title_n as title')->get();
+        $citizenships = Citizenship::select('id', 'title_n as title')->orderBy('title_n')->get();
 
         $citizenship_id = $client->citizenship_id;
 
