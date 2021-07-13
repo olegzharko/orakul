@@ -59,6 +59,9 @@ class InstallmentController extends BaseController
         else
             $dollar_rate_int = $card->exchange_rate->rate;
 
+        if (!$dollar_rate_int)
+            return $result;
+
         $total_price_grn_int = $immovable->installment->total_price;
 
         if ($client_num == 2) {
