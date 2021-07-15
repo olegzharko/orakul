@@ -372,7 +372,8 @@ class DocumentController extends GeneratorController
         $this->set_full_info_template($this->termination_refund_generate_file);
         $this->set_passport_template_part($this->termination_refund_generate_file);
         $this->set_current_document_notary($this->termination_refund_generate_file, $this->contract->termination_refund->notary);
-        $this->set_sign_date($this->termination_refund_generate_file, $this->contract->termination_refund);
+        // дату посвідчення заяви у нотаріуса про поверненя коштів беремо з дати підписання договору
+        $this->set_sign_date($this->termination_refund_generate_file, $this->contract);
 
         $word = new TemplateProcessor($this->termination_refund_generate_file);
         $word = $this->set_data_word($word);
@@ -782,6 +783,14 @@ class DocumentController extends GeneratorController
 
         $word->setValue('cr-ntr-representative-client-up', $this->mb_ucfirst($cr_ntr_representative_client));
 
+        // Підставка реквізититів в ПД з представника клієнта
+        if ($this->client->representative) {
+            $client_and_representative_confidant_details = MainInfoType::where('alias', 'client-and-representative-confidant-details')->value('description');
+            $word->setValue('ПРЕДСТАВНИК-КЛ', $client_and_representative_confidant_details);
+        } else {
+            $word->setValue('ПРЕДСТАВНИК-КЛ', '');
+        }
+
         $word->saveAs($template_generate_file);
     }
 
@@ -898,6 +907,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-pssprt-full-n-up', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
             $word->setValue('cr-pssprt-full-o-up', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
             $word->setValue('cr-pssprt-id-short', $this->client->representative->confidant->passport_type->short_info);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н', $this->client->representative->confidant->passport_type->description_n);
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -1046,7 +1056,7 @@ class DocumentController extends GeneratorController
             $word->setValue('sign-y-r-up', $this->mb_ucfirst($document->str_year->title_r));
         }
         if ($document->str_day && $document->str_month && $document->str_year)
-        $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
+            $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
         if ($document->str_day && $document->str_month && $document->str_year)
         $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
 
@@ -1366,10 +1376,12 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
+            $word->setValue('КЛ-ПІБ-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
             $word->setValue('КЛ-ІНІЦ-ПРІЗВ', $this->convert->get_initials_and_surname_n($this->client));
             $word->setValue('КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-Н-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Н-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ПІБ-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Р', $this->convert->get_full_name_r($this->client));
             $word->setValue('КЛ-ПІБ-О', $this->convert->get_full_name_o($this->client));
@@ -1569,70 +1581,75 @@ class DocumentController extends GeneratorController
             /*
              * Представник - ПІБ
              * */
-            $word->setValue('cr-full-name-n', $this->convert->get_full_name_n($this->client->representative->confidant));
-            $word->setValue('cr-surname-n', $this->client->representative->confidant->surname_n);
-            $word->setValue('cr-name-n', $this->client->representative->confidant->name_n);
-            $word->setValue('cr-patr-n', $this->client->representative->confidant->patronymic_n);
+            $confidant = $this->client->representative->confidant;
+            $word->setValue('cr-full-name-n', $this->convert->get_full_name_n($confidant));
+            $word->setValue('cr-surname-n', $confidant->surname_n);
+            $word->setValue('cr-name-n', $confidant->name_n);
+            $word->setValue('cr-patr-n', $confidant->patronymic_n);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->convert->get_full_name_n_upper($confidant));
 
-            $word->setValue('cr-surname-n-b', $this->set_style_bold($this->client->representative->confidant->surname_n));
-            $word->setValue('cr-name-n-b', $this->set_style_bold($this->client->representative->confidant->name_n));
-            $word->setValue('cr-patr-n-b', $this->set_style_bold($this->client->representative->confidant->patronymic_n));
+            $word->setValue('cr-surname-n-b', $this->set_style_bold($confidant->surname_n));
+            $word->setValue('cr-name-n-b', $this->set_style_bold($confidant->name_n));
+            $word->setValue('cr-patr-n-b', $this->set_style_bold($confidant->patronymic_n));
 
-            $word->setValue('cr-surname-r', $this->client->representative->confidant->surname_r);
-            $word->setValue('cr-name-r', $this->client->representative->confidant->name_r);
-            $word->setValue('cr-patr-r', $this->client->representative->confidant->patronymic_r);
+            $word->setValue('cr-surname-r', $confidant->surname_r);
+            $word->setValue('cr-name-r', $confidant->name_r);
+            $word->setValue('cr-patr-r', $confidant->patronymic_r);
 
-            $word->setValue('cr-surname-o', $this->client->representative->confidant->surname_o);
-            $word->setValue('cr-name-o', $this->client->representative->confidant->name_o);
-            $word->setValue('cr-patr-o', $this->client->representative->confidant->patronymic_o);
+            $word->setValue('cr-surname-o', $confidant->surname_o);
+            $word->setValue('cr-name-o', $confidant->name_o);
+            $word->setValue('cr-patr-o', $confidant->patronymic_o);
 
-            $word->setValue('cr-surname-n-up-s', mb_strtoupper($this->client->representative->confidant->surname_n));
-            $word->setValue('cr-name-n-up-s', mb_strtoupper($this->client->representative->confidant->name_n));
-            $word->setValue('cr-patr-n-up-s', mb_strtoupper($this->client->representative->confidant->patronymic_n));
+            $word->setValue('cr-surname-n-up-s', mb_strtoupper($confidant->surname_n));
+            $word->setValue('cr-name-n-up-s', mb_strtoupper($confidant->name_n));
+            $word->setValue('cr-patr-n-up-s', mb_strtoupper($confidant->patronymic_n));
 
-            $word->setValue('cr-surname-r-up-s', mb_strtoupper($this->client->representative->confidant->surname_r));
-            $word->setValue('cr-name-r-up-s', mb_strtoupper($this->client->representative->confidant->name_r));
-            $word->setValue('cr-patr-r-up-s', mb_strtoupper($this->client->representative->confidant->patronymic_r));
+            $word->setValue('cr-surname-r-up-s', mb_strtoupper($confidant->surname_r));
+            $word->setValue('cr-name-r-up-s', mb_strtoupper($confidant->name_r));
+            $word->setValue('cr-patr-r-up-s', mb_strtoupper($confidant->patronymic_r));
 
-            $word->setValue('cr-surname-o-up-s', mb_strtoupper($this->client->representative->confidant->surname_o));
-            $word->setValue('cr-name-o-up-s', mb_strtoupper($this->client->representative->confidant->name_o));
-            $word->setValue('cr-patr-o-up-s', mb_strtoupper($this->client->representative->confidant->patronymic_o));
+            $word->setValue('cr-surname-o-up-s', mb_strtoupper($confidant->surname_o));
+            $word->setValue('cr-name-o-up-s', mb_strtoupper($confidant->name_o));
+            $word->setValue('cr-patr-o-up-s', mb_strtoupper($confidant->patronymic_o));
 
-            $word->setValue('cr-birth_date', $this->display_date($this->client->representative->confidant->birth_date));
+            $word->setValue('cr-birth_date', $this->display_date($confidant->birth_date));
 
-            $word->setValue('cr-gender-r', KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_r'));
-            $word->setValue('cr-gender-r-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_r')));
-            $word->setValue('cr-gender-o', KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_o'));
-            $word->setValue('cr-gender-o-up', $this->mb_ucfirst(KeyWord::where('key', $this->client->representative->confidant->gender)->value('title_o')));
+            $word->setValue('cr-gender-r', KeyWord::where('key', $confidant->gender)->value('title_r'));
+            $word->setValue('cr-gender-r-up', $this->mb_ucfirst(KeyWord::where('key', $confidant->gender)->value('title_r')));
+            $word->setValue('cr-gender-o', KeyWord::where('key', $confidant->gender)->value('title_o'));
+            $word->setValue('cr-gender-o-up', $this->mb_ucfirst(KeyWord::where('key', $confidant->gender)->value('title_o')));
 
             /*
              * Представник - IПН
              * */
-            $word->setValue('cr-tax-code', $this->client->representative->confidant->tax_code);
-            $word->setValue('cr-tax-code-b', $this->set_style_bold($this->client->representative->confidant->tax_code));
+            $word->setValue('cr-tax-code', $confidant->tax_code);
+            $word->setValue('cr-tax-code-b', $this->set_style_bold($confidant->tax_code));
+            $word->setValue('ПРЕДСТАВНИК-ІПН-Ж', $this->set_style_bold($confidant->tax_code));
 
             /*
              * Представник - місце проживання
              * */
-            $word->setValue('cr-f-addr', $this->convert->get_client_full_address_n($this->client->representative->confidant));
+            $word->setValue('cr-f-addr', $this->convert->get_client_full_address_n($confidant));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-П-АДР', $this->convert->get_client_full_address_n($confidant));
 
-            $cr_gender_registration = GenderWord::where('alias', "registration")->value($this->client->representative->confidant->gender);
+            $cr_gender_registration = GenderWord::where('alias', "registration")->value($confidant->gender);
             $word->setValue('cr-gender-reg', $cr_gender_registration);
 
-            $cr_gender_which = GenderWord::where('alias', "which")->value($this->client->representative->confidant->gender);
+            $cr_gender_which = GenderWord::where('alias', "which")->value($confidant->gender);
             $word->setValue('cr-gender-which', $cr_gender_which);
 
-            $cr_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->representative->confidant->gender);
+            $cr_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($confidant->gender);
             $word->setValue('cr-gender-which-adj', $cr_gender_which_adjective);
 
-            $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($this->client->representative->confidant->gender);
+            $cl_gender_acquainted = GenderWord::where('alias', "acquainted")->value($confidant->gender);
             $word->setValue('cr-gender-acq', $cl_gender_acquainted);
 
-            $word->setValue('cr-citizenship', $this->get_citizenship($this->client->representative->confidant));
+            $word->setValue('cr-citizenship', $this->get_citizenship($confidant));
             /*
              * Представник - контактні данні
              * */
-            $word->setValue('cr-phone', $this->client->representative->confidant->phone);
+            $word->setValue('cr-phone', $confidant->phone);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ТЕЛЕФОН', $confidant->phone);
 
         } else {
             $this->notification("Warning", "Представник відсутній");
@@ -2392,9 +2409,16 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-ntr-surname-o', $this->client->representative->notary->surname_o);
             $word->setValue('cr-ntr-sh-name', $this->client->representative->notary->short_name);
             $word->setValue('cr-ntr-sh-patr', $this->client->representative->notary->short_patronymic);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->client->representative->notary));
+
             $word->setValue('cr-ntr-actvt-o', $this->client->representative->notary->activity_o);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-НОТ-АКТ-О', $this->client->representative->notary->activity_o);
+
             $word->setValue('cr-reg-date', $this->display_date($this->client->representative->reg_date));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-НОТ-ДАТА', $this->display_date($this->client->representative->reg_date));
+
             $word->setValue('cr-reg-num', $this->client->representative->reg_num);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-НОТ-НОМЕР', $this->client->representative->reg_num);
         } else {
             $this->notification("Warning", "Ноторіальні данні по довіренності представника покупця: інформація відсутня");
         }
