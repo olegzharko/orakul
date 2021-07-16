@@ -668,6 +668,7 @@ class ImmovableController extends BaseController
             ->where('contracts.card_id', $card_id)
             ->join('client_contract', 'client_contract.contract_id', '=', 'contracts.id')
             ->join('clients', 'clients.id', '=', 'client_contract.client_id')
+            ->distinct('clients.id')
             ->get();
 
         $result['clients'] = null;

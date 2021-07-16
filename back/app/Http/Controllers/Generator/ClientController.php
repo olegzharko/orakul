@@ -576,7 +576,7 @@ class ClientController extends BaseController
             $other_notary[$key]['title'] = $this->convert->get_surname_and_initials_n($value);
         }
 
-        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->where('developer', null)->get();
+        $consent_spouse_words = SpouseWord::select('id', 'title')->where('dev_company_id', $dev_companies_id)->where('developer', null)->where('termination', null)->orderBy('title')->get();
 
         $result['notary'] = array_merge($convert_notary, $other_notary);
         $result['consent_templates'] = $consent_templates;
