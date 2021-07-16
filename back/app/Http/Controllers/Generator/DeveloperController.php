@@ -73,9 +73,16 @@ class DeveloperController extends BaseController
             ->join('dev_companies', 'dev_companies.id', '=', 'dev_company_employers.dev_company_id')
             ->get();
 
+        $dev_representatives_id = [];
         foreach ($dev_representatives as $key => $representative) {
+            $dev_representatives_id[] = $representative->id;
             $result['dev_representative'][$key]['id'] = $representative->id;
             $result['dev_representative'][$key]['title'] = $this->convert->get_full_name($representative);
+        }
+
+        if ($card->dev_representative && !in_array($card->dev_representative->id, $dev_representatives_id)) {
+            Card::where('id', $card_id)->update(['dev_representative_id' => null]);
+            $card = Card::find($card_id);
         }
 
         $representative = $card->dev_representative;

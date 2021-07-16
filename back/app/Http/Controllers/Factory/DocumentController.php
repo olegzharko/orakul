@@ -16,6 +16,7 @@ use App\Models\MainInfoType;
 use App\Models\Card;
 use App\Models\MonthConvert;
 use App\Models\BankTaxesList;
+use App\Models\Text;
 use App\Models\Service;
 use App\Nova\PropertyValuation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -704,11 +705,12 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
          * */
-        if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->card->dev_representative
-                    && $this->contract->dev_company->owner->tax_code == $this->card->dev_representative->tax_code) {
-            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
-        } elseif ($this->card->dev_representative) {
+//        if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->card->dev_representative
+//                    && $this->contract->dev_company->owner->tax_code == $this->card->dev_representative->tax_code) {
+        if ($this->card->dev_representative) {
             $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
+        } else {
+            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
         }
 //        else {
 //            $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
@@ -907,6 +909,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-pssprt-full-n-up', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
             $word->setValue('cr-pssprt-full-o-up', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
             $word->setValue('cr-pssprt-id-short', $this->client->representative->confidant->passport_type->short_info);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-ID-КОД', $this->client->representative->confidant->passport_type->short_info);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н', $this->client->representative->confidant->passport_type->description_n);
             $word->saveAs($template_generate_file);
 
@@ -1279,6 +1282,14 @@ class DocumentController extends GeneratorController
      * */
     public function set_dev_representative($word)
     {
+        if ($this->contract && $this->contract->dev_representative) {
+            $word->setValue('ПРОДАВЕЦЬ-Н', mb_strtoupper(Text::where('alias', 'representative-seller-n')->value('value')));
+            $word->setValue('ПРОДАВЕЦЬ-Р', mb_strtoupper(Text::where('alias', 'representative-seller-r')->value('value')));
+        } else {
+            $word->setValue('ПРОДАВЕЦЬ-Н', mb_strtoupper(Text::where('alias', 'seller-n')->value('value')));
+            $word->setValue('ПРОДАВЕЦЬ-Р', mb_strtoupper(Text::where('alias', 'seller-r')->value('value')));
+        }
+
         if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_representative
             && $this->contract->dev_company->owner->tax_code == $this->contract->dev_representative->tax_code) {
             return $word;
@@ -1488,6 +1499,7 @@ class DocumentController extends GeneratorController
 
             $cl_gender_which = GenderWord::where('alias', "which")->value($this->client->gender);
             $word->setValue('cl-gender-which', $cl_gender_which);
+            $word->setValue('КЛ-ЯКИХ', $cl_gender_which);
 
             $cl_gender_which_adjective = GenderWord::where('alias', "which-adjective")->value($this->client->gender);
             $word->setValue('cl-gender-which-adj', $cl_gender_which_adjective);
@@ -1551,19 +1563,11 @@ class DocumentController extends GeneratorController
             $word->setValue($this->total_clients . '-КЛ-ПІБ-Н', $this->convert->get_full_name_n($this->client));
             $word->setValue($this->total_clients . '-КЛ-ЇХ', $cl_gender_whose);
 
-//        if ($this->consent && $this->consent->widow) {
-//            $word = new TemplateProcessor($this->consent_generate_file);
-//            $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
-//            $word->setValue('Я-ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
-//            $word->saveAs($this->consent_generate_file);
-//        } else {
-//
-//            if ($this->consent && $this->consent->widow) {
-//                $word->setValue('Я-ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
-//            } else {
-//                $word->setValue('ВДІВСТВО-ДАТА', '');
-//            }
-//        }
+            if ($this->client->representative) {
+                $word->setValue('ПОКУПЕЦЬ', mb_strtoupper(Text::where('alias', 'representative-buyer')->value('value')));
+            } else {
+                $word->setValue('ПОКУПЕЦЬ', mb_strtoupper(Text::where('alias', 'buyer')->value('value')));
+            }
 
         } else {
             $this->notification("Warning", "Відсутня інформація про клієнта");
@@ -1586,6 +1590,7 @@ class DocumentController extends GeneratorController
             $word->setValue('cr-surname-n', $confidant->surname_n);
             $word->setValue('cr-name-n', $confidant->name_n);
             $word->setValue('cr-patr-n', $confidant->patronymic_n);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПІБ-Н', $this->convert->get_full_name_n($confidant));
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПІБ-ВЕЛИКИМИ-БУКВАМИ', $this->convert->get_full_name_n_upper($confidant));
 
             $word->setValue('cr-surname-n-b', $this->set_style_bold($confidant->surname_n));
@@ -1623,6 +1628,7 @@ class DocumentController extends GeneratorController
              * Представник - IПН
              * */
             $word->setValue('cr-tax-code', $confidant->tax_code);
+            $word->setValue('ПРЕДСТАВНИК-ІПН', $confidant->tax_code);
             $word->setValue('cr-tax-code-b', $this->set_style_bold($confidant->tax_code));
             $word->setValue('ПРЕДСТАВНИК-ІПН-Ж', $this->set_style_bold($confidant->tax_code));
 
@@ -1634,6 +1640,7 @@ class DocumentController extends GeneratorController
 
             $cr_gender_registration = GenderWord::where('alias', "registration")->value($confidant->gender);
             $word->setValue('cr-gender-reg', $cr_gender_registration);
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ЗАРЕЄСТР', $cr_gender_registration);
 
             $cr_gender_which = GenderWord::where('alias', "which")->value($confidant->gender);
             $word->setValue('cr-gender-which', $cr_gender_which);
@@ -1816,6 +1823,13 @@ class DocumentController extends GeneratorController
                 $word->setValue('mar-date', $this->display_date($this->consent->mar_date));
                 $word->setValue('mar-depart', $this->consent->mar_depart);
                 $word->setValue('mar-reg-num', $this->consent->mar_reg_num);
+
+                $word->setValue('СВ-СЕРІЯ', $this->consent->mar_series);
+                $word->setValue('СВ-НОМЕР-СЕРІЇ', $this->consent->mar_series_num);
+                $word->setValue('СВ-ДАТА', $this->display_date($this->consent->mar_date));
+                $word->setValue('СВ-ВІДДІЛ', $this->consent->mar_depart);
+                $word->setValue('СВ-РЕЄСТРАЦІЙНИЙ-НОМЕР', $this->consent->mar_reg_num);
+
                 if ($this->consent->original) // original не правильно названа переменная - надо duplicate
                     $word->setValue('СВ-ПОВТОРНО',  KeyWord::where('key', "repeatedly")->value('title_n') . " ");
                 else
