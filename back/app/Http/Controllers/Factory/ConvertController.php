@@ -590,8 +590,17 @@ class ConvertController extends GeneratorController
         $str = null;
 
         if ($person) {
-            if (isset($person->surname_n))
+            if ($person->short_name) {
                 $str = $person->surname_n . $this->non_break_space . $person->short_name . $person->short_patronymic;
+            } else {
+                $surname = $person->surname_n;
+
+                if ($person->name_n)
+                    $name = mb_substr($person->name_n, 0, 1) . ".";
+                if ($person->patronymic_n)
+                    $patronymic = mb_substr($person->patronymic_n, 0, 1) . ".";
+                $str = $surname . $this->non_break_space . $name . $patronymic;
+            }
         }
 
         return $str;

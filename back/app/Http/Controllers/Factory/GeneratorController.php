@@ -48,6 +48,7 @@ class GeneratorController extends BaseController
     public function create_contract_by_card_id($card_id)
     {
         $result = [];
+
         if ($this->get_contracts_id_by_card_id($card_id)) {
             Card::where('id', $card_id)->update(['ready' => true]);
             $this->card_id = $card_id;

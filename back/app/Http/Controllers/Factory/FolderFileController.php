@@ -38,6 +38,7 @@ class FolderFileController extends Controller
     public $file_type_docx;
     public $file_type_excel;
     public $file_type_pdf;
+    public $convert;
 
     public function __construct($contract)
     {
@@ -64,6 +65,7 @@ class FolderFileController extends Controller
         $this->bank_taxes_payment = null;
         $this->termination_contract = null;
         $this->spouses_male = null;
+        $this->convert = new ConvertController();
         $this->file_type_docx = ".docx";
         $this->file_type_excel = ".xlsx";
         $this->file_type_pdf = ".pdf";
@@ -91,14 +93,20 @@ class FolderFileController extends Controller
             $this->developer_company = $this->contract->dev_company->title;
         }
 
-        if ($this->contract->assistant) {
-            $this->subscriber .= $this->contract->assistant->surname_n;
+        if ($this->contract->dev_representative) {
+            $this->subscriber = $this->convert->get_surname_and_initials_n($this->contract->dev_representative);
         } elseif ($this->contract->dev_company && $this->contract->dev_company->owner) {
             $this->subscriber = $this->contract->dev_company->owner->surname_n;
         }
 
-        if ($this->contract->client) {
-            $this->client_surname = $this->contract->client->surname_n;
+        if ($this->contract->clients) {
+
+            foreach ($this->contract->clients as $client) {
+                if ($this->client_surname == null)
+                    $this->client_surname = $this->convert->get_surname_and_initials_n($client);
+                else
+                    $this->client_surname = $this->client_surname . " " . $client->surname_n;
+            }
         }
 
         if ($this->contract->immovable && $this->contract->immovable->developer_building) {
@@ -143,48 +151,109 @@ class FolderFileController extends Controller
         }
     }
 
+//    public function root_title()
+//    {
+//
+//        $type = $this->contract->template ? $this->contract->template->type->title : ' - ';
+//
+//
+//        $title = ""
+//            . "{$this->date_month} $type {$this->developer_company} ({$this->subscriber}) - "
+//            . "{$this->client_surname} {$this->address_type} {$this->address_title} "
+//            . "{$this->address_num} {$this->immovable_type} {$this->immovable_num} {$this->married} ";
+//
+//        $title = trim($title);
+//        $title = str_replace("/", "-", $title);
+//
+//
+//        return $title;
+//    }
+
     public function root_title()
     {
 
         $type = $this->contract->template ? $this->contract->template->type->title : ' - ';
 
-
         $title = ""
-            . "{$this->date_month} $type {$this->developer_company} ({$this->subscriber}) - "
-            . "{$this->client_surname} {$this->address_type} {$this->address_title} "
-            . "{$this->address_num} {$this->immovable_type} {$this->immovable_num} {$this->married} ";
+            . "$this->date_month $type $this->developer_company ($this->subscriber) - "
+            . "$this->client_surname $this->address_type $this->address_title "
+            . "$this->address_num $this->immovable_type $this->immovable_num $this->married ";
 
         $title = trim($title);
         $title = str_replace("/", "-", $title);
 
-
         return $title;
+
+        // 06.07 Основний Софіївська сфера (ГУЛІЄВ) -  просп. Героїв Небесної Сотні 26-20 кв. 54
     }
+
+//    public function save_folder()
+//    {
+//        $date = new \DateTime();
+//        // Однакова назва для папки та договору
+//        $folder = $this->root_title();
+//        // echo "{$folder}<br><br>";
+//        $contract = 'Contract';
+//        $dev_company = $contract . "/" . $date->format('d.m.Y') . "/" . $this->contract->dev_company->title;
+//
+//        // Створення папки забудовника
+//        if (!file_exists("{$dev_company}"))
+//            mkdir($dev_company, 0777, true);
+//        // Створення папки договору для конкретної угоди
+//        if (file_exists("$dev_company/$folder")) {}
+//            $this->deleteDirectory("$dev_company/$folder");
+//        if (!file_exists("{$dev_company}/{$folder}"))
+//            mkdir("$dev_company/$folder", 0777, true);
+//        // Створення папки забудовника
+//        if (!file_exists("Zip"))
+//            mkdir('Zip', 0777, true);
+//
+//        $this->generate_path = "$dev_company/$folder";
+//    }
 
     public function save_folder()
     {
+        $contract = 'Contract';
+
         $date = new \DateTime();
+        $date_format = $date->format('d.m.Y');
+
         // Однакова назва для папки та договору
         $folder = $this->root_title();
-        // echo "{$folder}<br><br>";
-        $contract = 'Contract';
-//        $dev_company = $contract . "/" . $this->contract->dev_company->title . "/" . $date->format('d.m.Y');
-        $dev_company = $contract . "/" . $date->format('d.m.Y') . "/" . $this->contract->dev_company->title;
 
-        // Створення папки забудовника
-        if (!file_exists("{$dev_company}"))
-            mkdir($dev_company, 0777, true);
+        for ($i = 1; $i < 14; $i++) {
+            $this->deleteDirectory("$contract/" . date('d.m.Y', strtotime("-$i days")));
+        }
+
+        $path_contract_date = $contract . DIRECTORY_SEPARATOR . $date_format;
+
+        // Створення папки угоди
+        if (!file_exists($path_contract_date))
+            mkdir($path_contract_date, 0777, true);
+
         // Створення папки договору для конкретної угоди
-        if (file_exists("$dev_company/$folder")) {}
-            $this->deleteDirectory("$dev_company/$folder");
-        if (!file_exists("{$dev_company}/{$folder}"))
-            mkdir("$dev_company/$folder", 0777, true);
+
+        $deal_path = $path_contract_date . DIRECTORY_SEPARATOR . $folder;
+        if (!file_exists($deal_path)) {
+            mkdir($deal_path, 0777, true);
+        } else {
+            $i = 1;
+            while(file_exists($deal_path)) {
+                $next_deal_path = $deal_path . "___" . $i;
+                if (!file_exists($next_deal_path)) {
+                    $deal_path = $next_deal_path;
+                    mkdir($next_deal_path, 0777, true);
+                    break ;
+                }
+                $i++;
+            }
+        }
+
         // Створення папки забудовника
         if (!file_exists("Zip"))
             mkdir('Zip', 0777, true);
 
-//        $this->generate_path = "$contract/$dev_company/$folder";
-        $this->generate_path = "$dev_company/$folder";
+        $this->generate_path = $deal_path;
     }
 
     public function deleteDirectory($dir) {
