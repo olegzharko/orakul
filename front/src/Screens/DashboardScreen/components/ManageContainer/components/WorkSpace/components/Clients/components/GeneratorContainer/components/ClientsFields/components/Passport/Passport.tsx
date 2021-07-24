@@ -30,7 +30,7 @@ const Passport = (props: Props) => {
             selectedDate={data.date_of_birth}
           />
           <CustomInput
-            label="ІНН"
+            label="ІПН"
             onChange={(e) => setData({ ...data, tax_code: e })}
             value={data.tax_code}
           />

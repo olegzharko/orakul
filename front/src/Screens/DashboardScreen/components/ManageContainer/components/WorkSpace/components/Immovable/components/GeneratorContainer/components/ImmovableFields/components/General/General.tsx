@@ -44,17 +44,8 @@ const General = (props: Props) => {
             onChange={(e) => meta.setData({ ...meta.data, price_grn: e })}
             value={meta.data.price_grn}
           />
-          <CustomInput
-            label="Сума внеску зг. попереднього договору в грн"
-            onChange={(e) => meta.setData({ ...meta.data, reserve_grn: e })}
-            value={meta.data.reserve_grn}
-          />
 
-          <CustomInput
-            label="Вартість 1 кв. м. гривнях"
-            onChange={(e) => meta.setData({ ...meta.data, m2_grn: e })}
-            value={meta.data.m2_grn}
-          />
+          <div />
 
           <div className="duet">
             <CustomInput

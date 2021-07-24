@@ -49,7 +49,7 @@ const Fields = () => {
         </div>
 
         <CustomInput
-          label="Назва нотаріального округу у називному відмінку"
+          label="Назва нотаріального округу в називному відмінку (Хто? Що?), з маленької букви"
           onChange={(e) => meta.setDenominate({ ...meta.denominative, activity_n: e })}
           value={meta.denominative.activity_n}
         />
@@ -78,7 +78,7 @@ const Fields = () => {
 
         <CustomInput
           required
-          label="Назва нотаріального округу в орудному відмінку"
+          label="Назва нотаріального округу в орудному відмінку (Ким? Чим?), з маленької букви"
           onChange={(e) => meta.setAblative({ ...meta.ablative, activity_o: e })}
           value={meta.ablative.activity_o}
         />

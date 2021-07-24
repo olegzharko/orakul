@@ -34,5 +34,14 @@ export const useHeader = () => {
     history.push('/');
   }, []);
 
-  return { onSearch, onLogout, searchText };
+  const onLogoClick = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  return {
+    onSearch,
+    onLogout,
+    onLogoClick,
+    searchText,
+  };
 };

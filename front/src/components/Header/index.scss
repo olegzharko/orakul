@@ -50,4 +50,13 @@
       opacity: .5;
     }
   }
+
+  &__logo {
+    cursor: pointer;
+    transition: $transition_default;
+
+    &:hover {
+      opacity: .7;
+    }
+  }
 }

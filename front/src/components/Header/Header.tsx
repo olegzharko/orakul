@@ -5,13 +5,21 @@ import { Link } from 'react-router-dom';
 import { useHeader } from './useHeader';
 
 const Header = () => {
-  const { onSearch, onLogout, searchText } = useHeader();
+  const {
+    onSearch,
+    onLogout,
+    onLogoClick,
+    searchText,
+  } = useHeader();
 
   return (
     <div className="header container">
-      <Link to="/" className="header__logo">
-        <img src="/images/logo.svg" alt="logo" />
-      </Link>
+      <img
+        className="header__logo"
+        src="/images/logo.svg"
+        alt="logo"
+        onClick={onLogoClick}
+      />
       <div className="header__search">
         <input
           type="text"
