@@ -85,14 +85,14 @@ class ClientSpouseConsent extends Resource
             Text::make('Реєстраційний номер свідоцтва', 'mar_reg_num')->hideFromIndex(),
 
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
-            DateTime::make('Нотаріус: дата підписання заяви-згоди', 'sign_date'),
+            DateTime::make('Нотаріус: дата підписання заяви-згоди', 'sign_date')->sortable(),
             Text::make('Нотаріус: номер реєстрації у нотаріуса', 'reg_num'),
             BelongsTo::make('Пункт згоди у договорі', 'contract_spouse_word', 'App\Nova\SpouseWord'),
             Toggle::make('Активн згода', 'active')->hideFromIndex(),
 
             Files::make('Cкан-сет Свідоцвтва про шлюб + Заява-згода або шлюбний договір', 'pdf')->customPropertiesFields([
                 Markdown::make('Description'),
-            ])->rules('required'),
+            ]),
         ];
     }
 

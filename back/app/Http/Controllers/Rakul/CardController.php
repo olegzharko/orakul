@@ -233,10 +233,13 @@ class CardController extends BaseController
                 $this->client->update_card_client($card_id, $r['clients']);
             }
 
+
+            $date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
+
             Card::where('id', $card_id)->update([
                 'notary_id' => $r['notary_id'],
                 'room_id' => $r['room_id'],
-                'date_time' => $r['date_time'],
+                'date_time' => $date_time,
 //                'dev_company_id' => $r['dev_company_id'],
                 'dev_group_id' => $r['dev_company_id'],
                 'dev_representative_id' => $r['dev_representative_id'],
@@ -395,6 +398,7 @@ class CardController extends BaseController
         }
 
         // Дата та час укладання угоди
+
         if (!isset($errors['date_time'])) {
 //            dd('in', \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']));
             $date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
@@ -764,6 +768,7 @@ class CardController extends BaseController
     {
         $contracts = $card->has_contracts;
 
+        $accompanying = [];
         foreach ($contracts as $contr) {
 
             $immovable = $contr->immovable;
@@ -782,12 +787,14 @@ class CardController extends BaseController
             else
                 $ready[] = "ЧИТАЧ: -";
 
-            if  ($contr->accompanying) {
-                $ready[] = "ВИДАВАЧ: " . $this->convert->get_full_name($contr->accompanying);
-            }
-            else
-                $ready[] = "ВИДАВАЧ: -";
+            if ($contr->accompanying)
+                $accompanying[] = $contr->accompanying;
         }
+
+        if  (count($accompanying))
+            $ready[] = "ВИДАВАЧ: " . $accompanying[0];
+        else
+            $ready[] = "ВИДАВАЧ: -";
 
         return $ready;
     }

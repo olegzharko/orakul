@@ -49,8 +49,8 @@ class BankAccountPayment extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Шаблон рахунку', 'template', 'App\Nova\BankAccountTemplate'),
-            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract'),
+            BelongsTo::make('Шаблон рахунку', 'template', 'App\Nova\BankAccountTemplate')->sortable(),
+            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->sortable(),
         ];
     }
 

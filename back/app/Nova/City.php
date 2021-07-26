@@ -77,10 +77,10 @@ class City extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Область', 'region', 'App\Nova\Region')->nullable(),
-            BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable(),
-            BelongsTo::make('Тип населеного пункту', 'city_type', 'App\Nova\CityType')->nullable(),
-            Text::make('Назва у називному відмінку', 'title')->creationRules('unique:cities,title')->updateRules('unique:cities,title,{{resourceId}}'),
+            BelongsTo::make('Область', 'region', 'App\Nova\Region')->nullable()->sortable(),
+            BelongsTo::make('Район', 'district', 'App\Nova\District')->nullable()->sortable(),
+            BelongsTo::make('Тип населеного пункту', 'city_type', 'App\Nova\CityType')->nullable()->sortable(),
+            Text::make('Назва у називному відмінку', 'title')->creationRules('unique:cities,title')->updateRules('unique:cities,title,{{resourceId}}')->sortable(),
             Toggle::make('Місто областного значення', 'region_root'),
             Toggle::make('Місто районного значення', 'district_root'),
         ];

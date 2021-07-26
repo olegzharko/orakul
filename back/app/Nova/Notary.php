@@ -31,7 +31,7 @@ class Notary extends Resource
 
     public function title()
     {
-        return $this->surname_n . " " . $this->short_name . " " . $this->short_patronymic;
+        return $this->surname_n . " " . $this->short_name . " " . $this->short_patronymic . " " . $this->activity_n;
     }
     /**
      * The columns that should be searched.

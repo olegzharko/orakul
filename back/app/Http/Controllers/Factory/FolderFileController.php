@@ -215,8 +215,8 @@ class FolderFileController extends Controller
     {
         $contract = 'Contract';
 
-        $date = new \DateTime();
-        $date_format = $date->format('d.m.Y');
+//        $date = new \DateTime();
+        $date_format = $this->contract->card->date_time->format('d.m.Y');
 
         // Однакова назва для папки та договору
         $folder = $this->root_title();
@@ -421,11 +421,11 @@ class FolderFileController extends Controller
         return $title;
     }
 
-    public function bank_account_title()
+    public function bank_account_title($client)
     {
         $title = null;
         $title = "{$this->generate_path}/"
-            . "{$this->bank_account_payment}"
+            . "{$this->bank_account_payment} (" . $client->surname_n . ")"
             . "{$this->file_type_docx}"
             . "";
 

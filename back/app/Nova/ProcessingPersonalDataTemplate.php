@@ -56,8 +56,8 @@ class ProcessingPersonalDataTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany'),
-            Text::make('Заголовок', 'title'),
+            BelongsTo::make('Забудовник', 'developer', 'App\Nova\DevCompany')->sortable(),
+            Text::make('Заголовок', 'title')->sortable(),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ]),

@@ -55,6 +55,10 @@ class InvestmentAgreement extends Resource
      */
     public static $search = [
         'id',
+        'dev_company_id',
+        'number',
+        'date',
+        'investor_id',
     ];
 
     /**

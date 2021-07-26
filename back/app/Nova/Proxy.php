@@ -76,7 +76,7 @@ class Proxy extends Resource
 //            BelongsTo::make('Представник', 'dev_representative', 'App\Nova\Client')->nullable(),
             BelongsTo::make('Нотаріус', 'notary', 'App\Nova\Notary'),
             Text::make('Номер реєстраціх у нотаріуса', 'reg_num'),
-            DateTime::make('Дата реєстрації у нотаріуса', 'reg_date'),
+            DateTime::make('Дата реєстрації у нотаріуса', 'reg_date')->sortable(),
             DateTime::make('Дійсно до', 'final_date'),
             Files::make('Скан-сет довіреності', 'pdf')->customPropertiesFields([
                 Markdown::make('Description'),

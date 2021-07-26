@@ -214,6 +214,10 @@ class ImmovableController extends BaseController
     {
         $result = [];
 
+        $exchange_rate = null;
+        $contract_buy = null;
+        $contract_sell = null;
+
         if (!$card = Card::find($card_id))
             return $this->sendError('', 'Карта по ID:' . $card_id . ' не було знайдено.');
 

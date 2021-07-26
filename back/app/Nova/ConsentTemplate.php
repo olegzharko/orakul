@@ -57,8 +57,8 @@ class ConsentTemplate extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany'),
-            Text::make('Назва', 'title')->rules('required'),
+            BelongsTo::make('Забудовник', 'dev_company', 'App\Nova\DevCompany')->sortable(),
+            Text::make('Назва', 'title')->rules('required')->sortable(),
             Files::make('Шаблон', 'path')->customPropertiesFields([
                 Markdown::make('Description'),
             ])->rules('required'),
