@@ -8,6 +8,7 @@
 /public/Zip
 /resources/views/*
 /storage/*.key
+/storage
 /vendor
 .env
 .env.backup
