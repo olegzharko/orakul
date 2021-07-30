@@ -24,10 +24,13 @@ class ReceptionController extends BaseController
     }
     public function reception()
     {
-        $rooms = Room::select('id', 'title', 'sort_order')->where('active', true)->get();
+        $rooms = Room::select('id', 'title', 'sort_order', 'color')->where('active', true)->get();
+        
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
         $work_days_and_date = $this->get_day_and_date();
         $form_date = $this->form_data();
+        
+        
 
         $result = [
             'rooms' => $rooms,

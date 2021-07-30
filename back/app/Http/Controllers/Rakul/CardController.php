@@ -97,6 +97,8 @@ class CardController extends BaseController
             'dev_group_id as dev_company_id',
             'dev_representative_id',
             'dev_manager_id',
+            'generator_step',
+            'ready',
         )->find($id);
 
         if (!$card) {
@@ -110,6 +112,18 @@ class CardController extends BaseController
         } else {
             $card->date = null;
             $card->time = null;
+        }
+
+        if ($card->generator_step) {
+            $card->generator_step = true;
+        } else {
+            $card->generator_step = false;
+        }
+
+        if ($card->ready) {
+            $card->ready = true;
+        } else {
+            $card->ready = false;
         }
 
         $contracts = $card->has_contracts;
