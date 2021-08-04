@@ -22,8 +22,6 @@ const SchedulerTable = () => {
     onAppointmentClick,
   } = useSchedulerTable();
 
-  console.log(shouldLoad, appointments);
-
   if (shouldLoad) {
     return (
       <div className="scheduler">

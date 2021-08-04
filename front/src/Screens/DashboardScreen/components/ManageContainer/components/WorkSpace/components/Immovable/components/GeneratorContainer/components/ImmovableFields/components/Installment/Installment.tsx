@@ -19,12 +19,14 @@ const Installment = (props: Props) => {
       <SectionWithTitle title="Розстрочка" onClear={onClear}>
         <div className="grid">
           <CustomInput
+            type="number"
             label="Сума"
             onChange={(e) => setData({ ...data, total_price: +e })}
             value={data.total_price}
           />
 
           <CustomInput
+            type="number"
             label="Кількість місяців"
             onChange={(e) => setData({ ...data, total_month: +e })}
             value={data.total_month}

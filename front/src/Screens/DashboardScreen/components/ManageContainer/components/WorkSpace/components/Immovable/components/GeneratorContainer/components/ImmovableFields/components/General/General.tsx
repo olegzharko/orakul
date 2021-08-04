@@ -73,6 +73,7 @@ const General = (props: Props) => {
               value={meta.data.floor}
             />
             <CustomInput
+              type="number"
               label="№ секції"
               onChange={(e) => meta.setData({ ...meta.data, section: +e })}
               value={meta.data.section}
