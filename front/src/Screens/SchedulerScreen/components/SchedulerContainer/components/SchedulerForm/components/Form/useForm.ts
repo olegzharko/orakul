@@ -72,28 +72,25 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     && selectedCard;
   }, [devCompanyId, immovables, selectedCard]);
 
+  const isDeleteDisabled = useMemo(() => {
+    const generator_step = initialValues?.card.generator_step;
+    const ready = initialValues?.card.ready;
+    return generator_step || ready;
+  }, [initialValues]);
+
   const editButtonLabel = useMemo(() => {
     const generator_step = initialValues?.card.generator_step;
     const ready = initialValues?.card.ready;
 
     if (generator_step) {
-      return {
-        label: 'Передано до генерації',
-        disabled: true,
-      };
+      return 'Передано до генерації';
     }
 
     if (ready) {
-      return {
-        label: 'Почати видачу',
-        disabled: true,
-      };
+      return 'Почати видачу';
     }
 
-    return {
-      label: 'Редагувати',
-      disabled: false,
-    };
+    return 'Редагувати';
   }, [initialValues]);
 
   // Form onChange functions
@@ -225,8 +222,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   }, [selectedCard]);
 
   const onDeleteCardClick = useCallback(() => {
+    if (isDeleteDisabled) return;
     setIsConfirmDialogOpen(true);
-  }, []);
+  }, [isDeleteDisabled]);
 
   const onConfirmDialogClose = useCallback(() => {
     setIsConfirmDialogOpen(false);
@@ -272,6 +270,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     insideEdit,
     isConfirmDialogOpen,
     confirmDialogContent,
+    isDeleteDisabled,
     editButtonLabel,
     onDeleteCardClick,
     onConfirmDialogClose,
