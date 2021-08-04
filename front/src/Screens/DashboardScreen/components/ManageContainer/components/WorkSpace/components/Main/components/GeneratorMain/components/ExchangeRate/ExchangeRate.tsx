@@ -23,8 +23,9 @@ const ExchangeRate = (props: Props) => {
   return (
     <>
       <SectionWithTitle title="Комерційний курс валют" onClear={onClear}>
-        <div className="flex-center mb20">
-          <span>Курс української грн до 1$ CША</span>
+        <div className="middle-column-fields mb20 column">
+          <span className="mb20">Курс української грн до 1$ CША</span>
+          <span className="mb20">{`Остання дата оновлення курсу доллара: ${props.initialData?.exchange_date || ''}`}</span>
         </div>
 
         <div className="exchange mb20">

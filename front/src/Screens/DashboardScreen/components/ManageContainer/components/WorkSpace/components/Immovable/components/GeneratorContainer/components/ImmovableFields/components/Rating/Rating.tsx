@@ -26,7 +26,7 @@ const Rating = (props: Props) => {
           />
           <CustomInput
             label="Ціна в грн"
-            onChange={(e) => setData({ ...data, price: +e })}
+            onChange={(e) => setData({ ...data, price: e })}
             value={data.price}
           />
         </div>

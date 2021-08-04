@@ -16,6 +16,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
   const { filterInitialData } = useSelector((state: State) => state.filter);
+  const { schedulerLock } = useSelector((state: State) => state.scheduler);
 
   useEffect(() => {
     dispatch(fetchFilterData());
@@ -103,6 +104,11 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     selectedRepresentative,
     selectedSortType,
   ]);
+
+  useEffect(() => {
+    if (schedulerLock) return;
+    clearAll();
+  }, [schedulerLock]);
 
   return {
     shouldRenderFilter,

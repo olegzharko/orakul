@@ -5,14 +5,14 @@ import React from 'react';
 import { Props, useGridTableCell } from './useGridTableCell';
 
 const GridLayoutCell = (props: Props) => {
-  const { onClick } = useGridTableCell(props);
+  const { backGroundColor, onClick } = useGridTableCell(props);
 
   return (
     <td
       onClick={onClick}
       style={{
         width: `calc(100% / ${props.rowsQuantity})`,
-        backgroundColor: props.selected ? '#E5E5E5' : '',
+        backgroundColor: props.selected ? '#E5E5E5' : backGroundColor,
       }}
     />
   );

@@ -7,7 +7,7 @@ import {
   fetchSchedulerSettings,
   moveCalendarCard,
 } from '../../../../../../store/scheduler/actions';
-import { fetchAppointments, setAppointments } from '../../../../../../store/appointments/actions';
+import { clearAppointments, fetchAppointments } from '../../../../../../store/appointments/actions';
 import { State } from '../../../../../../store/types';
 import formatAppointmentDate from './utils/formatAppointmentDate';
 
@@ -23,7 +23,9 @@ export const useSchedulerTable = () => {
       dispatch(fetchAppointments());
     }
 
-    return () => { dispatch(setAppointments([])); };
+    return () => {
+      dispatch(clearAppointments());
+    };
   }, [token]);
 
   const rooms = useMemo(() => options?.rooms, [options]);

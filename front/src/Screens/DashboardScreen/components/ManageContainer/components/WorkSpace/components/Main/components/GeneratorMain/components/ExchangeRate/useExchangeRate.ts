@@ -8,6 +8,7 @@ type InitialData = {
   contract_buy: string,
   exchange_rate: string,
   contract_sell: string,
+  exchange_date: string,
 }
 
 export type Props = {

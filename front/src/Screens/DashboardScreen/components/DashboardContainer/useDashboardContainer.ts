@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAppointments, fetchAppointments } from '../../../../store/appointments/actions';
-import { UserTypes } from '../../../../types';
+import { fetchAppointments, clearAppointments } from '../../../../store/appointments/actions';
 import { State } from '../../../../store/types';
 
 export const useDashboardContainer = () => {
@@ -11,12 +10,16 @@ export const useDashboardContainer = () => {
   useEffect(() => {
     dispatch(fetchAppointments());
 
-    return () => { dispatch(setAppointments([])); };
+    return () => {
+      dispatch(clearAppointments());
+    };
   }, []);
 
+  const isAppointmentsEmpty = useMemo(() => !appointments.length, [appointments]);
+
   const formatAppointments = useMemo(() => appointments.map((item: any) => ({
-    title: `${item.day} ${item.date}`,
-    cards: item.cards.map((card: any) => ({
+    title: `${item.day || ''} ${item.date || ''}`,
+    cards: item.cards?.map((card: any) => ({
       id: card.id,
       title: card.title,
       content: card.instructions,
@@ -24,5 +27,9 @@ export const useDashboardContainer = () => {
     }))
   })), [appointments]);
 
-  return { formatAppointments, isLoading };
+  return {
+    formatAppointments,
+    isLoading,
+    isAppointmentsEmpty
+  };
 };

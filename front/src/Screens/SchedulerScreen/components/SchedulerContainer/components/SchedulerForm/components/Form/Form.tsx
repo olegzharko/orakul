@@ -11,6 +11,7 @@ import PrimaryButton from '../../../../../../../../components/PrimaryButton';
 import Loader from '../../../../../../../../components/Loader/Loader';
 import ImmovableContainer from './components/ImmovableContainer';
 import { useForm, Props } from './useForm';
+import ConfirmDialog from '../../../../../../../../components/ConfirmDialog';
 
 const SchedulerForm = (props: Props) => {
   const meta = useForm(props);
@@ -37,7 +38,7 @@ const SchedulerForm = (props: Props) => {
               src="/images/delete.svg"
               alt="delete"
               className="clear-icon"
-              onClick={meta.onDeleteCard}
+              onClick={meta.onDeleteCardClick}
             />
           ) : (
             <img
@@ -90,7 +91,7 @@ const SchedulerForm = (props: Props) => {
             onChange={meta.onManagerChange}
             data={meta.manager}
             label="Менеджер"
-            selectedValue={meta.selecedDevManagerId}
+            selectedValue={meta.selectedDevManagerId}
             disabled={meta.insideEdit || false}
           />
         </div>
@@ -114,9 +115,9 @@ const SchedulerForm = (props: Props) => {
         <div className="mv12">
           {meta.insideEdit && (
             <PrimaryButton
-              label="Редагувати"
+              label={meta.editButtonLabel.label}
               onClick={() => meta.setEdit(false)}
-              disabled={props.edit ? false : !meta.activeAddButton}
+              disabled={meta.editButtonLabel.disabled}
               className="schedulerForm__editButton"
             />
           )}
@@ -130,6 +131,14 @@ const SchedulerForm = (props: Props) => {
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={meta.isConfirmDialogOpen}
+        title={meta.confirmDialogContent.title}
+        message={meta.confirmDialogContent.message}
+        handleClose={meta.onConfirmDialogClose}
+        handleConfirm={meta.onConfirmDialogAgreed}
+      />
     </div>
   );
 };

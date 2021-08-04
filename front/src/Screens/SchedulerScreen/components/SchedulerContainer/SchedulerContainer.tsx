@@ -5,11 +5,11 @@ import './index.scss';
 import SchedulerTable from './components/Table/SchedulerTable';
 import SchedulerFilter from './components/SchedulerFilterContainer';
 import SchedulerForm from './components/SchedulerForm';
-import { useModal } from '../../../../components/Modal/useModal';
-import Modal from '../../../../components/Modal';
+import { useRequestModal } from '../../../../components/RequestModal/useRequestModal';
+import Modal from '../../../../components/RequestModal';
 
 const SchedulerContainer = () => {
-  const modalProps = useModal();
+  const modalProps = useRequestModal();
 
   return (
     <div className="scheduler__container">

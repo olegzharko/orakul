@@ -9,12 +9,12 @@ import ContentPanel from '../../components/ContentPanel';
 import Dashboard from '../../components/Dashboard';
 import Immovable from './components/Immovable';
 import Developer from './components/Developer';
-import Modal from '../../components/Modal';
-import { useModal } from '../../components/Modal/useModal';
+import Modal from '../../components/RequestModal';
+import { useRequestModal } from '../../components/RequestModal/useRequestModal';
 
 const RegistratorScreen = () => {
   const meta = useRegistratorScreen();
-  const modalProps = useModal();
+  const modalProps = useRequestModal();
 
   return (
     <>

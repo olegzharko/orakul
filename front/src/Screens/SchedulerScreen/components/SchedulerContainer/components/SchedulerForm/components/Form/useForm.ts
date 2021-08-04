@@ -65,34 +65,41 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     developersInfo,
   ]);
 
+  const activeAddButton = useMemo(() => {
+    return Boolean(devCompanyId)
+    && immovables.length
+    && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
+    && selectedCard;
+  }, [devCompanyId, immovables, selectedCard]);
+
+  const editButtonLabel = useMemo(() => {
+    const generator_step = initialValues?.card.generator_step;
+    const ready = initialValues?.card.ready;
+
+    if (generator_step) {
+      return {
+        label: 'Передано до генерації',
+        disabled: true,
+      };
+    }
+
+    if (ready) {
+      return {
+        label: 'Почати видачу',
+        disabled: true,
+      };
+    }
+
+    return {
+      label: 'Редагувати',
+      disabled: false,
+    };
+  }, [initialValues]);
+
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {
     setNotary(value);
   }, []);
-
-  useEffect(() => {
-    if (initialValues) {
-      setEdit(true);
-      setNotary(initialValues.card.notary_id);
-      setDevCompanyId(initialValues.card.dev_company_id);
-      setDevRepresentativeId(initialValues.card.dev_representative_id);
-      setDevManagerId(initialValues.card.dev_manager_id);
-      setImmovables(
-        initialValues.immovables.length === 0
-          ? [immovableItem]
-          : initialValues.immovables
-      );
-      setClients(
-        initialValues.clients.length === 0
-          ? [clientItem]
-          : initialValues.clients
-      );
-    }
-
-    if (initialValues?.card.dev_company_id) {
-      dispatch(fetchDeveloperInfo(initialValues.card.dev_company_id));
-    }
-  }, [initialValues]);
 
   const onDeveloperChange = useCallback(
     (value) => {
@@ -166,17 +173,6 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     setClients((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
   }, [clients]);
 
-  const onDeleteCard = useCallback(() => {
-    dispatch(removeCalendarCard(selectedCard.i));
-  }, [selectedCard]);
-
-  const activeAddButton = useMemo(() => {
-    return Boolean(devCompanyId)
-    && immovables.length
-    && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
-    && selectedCard;
-  }, [devCompanyId, immovables, selectedCard]);
-
   const onFormCreate = useCallback(() => {
     const date_time = `${selectedCard.year}.${selectedCard.date}. ${selectedCard.time}`;
 
@@ -218,6 +214,52 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     selectedCard,
   ]);
 
+  // Confirm Dialog Props
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+
+  const confirmDialogContent = useMemo(() => {
+    return {
+      title: `Видалити картку ${selectedCard?.i}`,
+      message: 'Ви впевнені, що бажаєте видалити картку?'
+    };
+  }, [selectedCard]);
+
+  const onDeleteCardClick = useCallback(() => {
+    setIsConfirmDialogOpen(true);
+  }, []);
+
+  const onConfirmDialogClose = useCallback(() => {
+    setIsConfirmDialogOpen(false);
+  }, []);
+
+  const onConfirmDialogAgreed = useCallback(() => {
+    dispatch(removeCalendarCard(selectedCard?.i));
+  }, [selectedCard, removeCalendarCard]);
+
+  useEffect(() => {
+    if (initialValues) {
+      setEdit(true);
+      setNotary(initialValues.card.notary_id);
+      setDevCompanyId(initialValues.card.dev_company_id);
+      setDevRepresentativeId(initialValues.card.dev_representative_id);
+      setDevManagerId(initialValues.card.dev_manager_id);
+      setImmovables(
+        initialValues.immovables.length === 0
+          ? [immovableItem]
+          : initialValues.immovables
+      );
+      setClients(
+        initialValues.clients.length === 0
+          ? [clientItem]
+          : initialValues.clients
+      );
+    }
+
+    if (initialValues?.card.dev_company_id) {
+      dispatch(fetchDeveloperInfo(initialValues.card.dev_company_id));
+    }
+  }, [initialValues]);
+
   return {
     shouldLoad,
     notaries,
@@ -228,6 +270,12 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     clients,
     activeAddButton,
     insideEdit,
+    isConfirmDialogOpen,
+    confirmDialogContent,
+    editButtonLabel,
+    onDeleteCardClick,
+    onConfirmDialogClose,
+    onConfirmDialogAgreed,
     onNotaryChange,
     onDeveloperChange,
     onRepresentativeChange,
@@ -241,10 +289,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     onClearAll,
     onFormCreate,
     setEdit,
-    onDeleteCard,
     selectedNotaryId: notary,
     selectedDeveloperId: devCompanyId,
     selectedDevRepresentativeId: devRepresentativeId,
-    selecedDevManagerId: devManagerId,
+    selectedDevManagerId: devManagerId,
   };
 };
