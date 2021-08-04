@@ -9,7 +9,7 @@ import reqImmovableRating from '../../../../../../../../../../../../../../servic
 type InitialData = {
   property_valuation_id: number | null,
   date: any,
-  price: number | null,
+  price: string | null,
   title: string | null,
   property_valuation?: SelectItem[]
 }

@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import CustomInput from '../../../../components/CustomInput';
 import CustomPasswordInput from '../../../../components/CustomPasswordInput';
-import Modal from '../../../../components/Modal';
-import { useModal } from '../../../../components/Modal/useModal';
+import Modal from '../../../../components/RequestModal';
+import { useRequestModal } from '../../../../components/RequestModal/useRequestModal';
 import PrimaryButton from '../../../../components/PrimaryButton';
 import { useUpdatePassword } from './useUpdatePassword';
 

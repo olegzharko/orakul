@@ -67,7 +67,7 @@ const Statement = (props: Props) => {
 
         <div className="mb20">
           <CustomInput
-            label="Орган, що видав"
+            label="Орган, що видав в орудному відмінку. Ким? Чим?"
             onChange={(e) => meta.setData({ ...meta.data, mar_depart: e })}
             value={meta.data.mar_depart}
           />

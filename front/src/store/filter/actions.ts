@@ -15,10 +15,10 @@ export const fetchFilterData = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().main.user;
+  const { token, type } = getState().main.user;
 
-  if (token) {
-    const data = await getFilterData(token);
+  if (token && type) {
+    const data = await getFilterData(token, type);
     dispatch(setFilterInitialData(data));
   }
 };

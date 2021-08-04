@@ -16,7 +16,7 @@ const Termination = (props: Props) => {
           <CustomSelect
             label="Нотаріус"
             data={meta.notaries}
-            onChange={(e) => meta.setData({ ...meta.data, notary_id: +e })}
+            onChange={(e) => meta.setData({ ...meta.data, notary_id: e })}
             selectedValue={meta.data.notary_id}
           />
 

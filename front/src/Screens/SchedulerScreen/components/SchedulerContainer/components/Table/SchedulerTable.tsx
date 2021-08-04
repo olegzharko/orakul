@@ -58,7 +58,7 @@ const SchedulerTable = () => {
           ))}
         </div>
         <div className="scheduler__appointments">
-          <GridTable rows={tableRows} columns={tableColumns} />
+          <GridTable rows={tableRows} columns={tableColumns} rooms={rooms} />
           <GridLayout
             appointments={appointments}
             cols={tableColumns.length}

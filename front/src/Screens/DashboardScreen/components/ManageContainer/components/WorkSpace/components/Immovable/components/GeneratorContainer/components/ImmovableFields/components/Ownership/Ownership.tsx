@@ -34,6 +34,7 @@ const Ownership = (props: Props) => {
             selectedDate={meta.data.reg_date}
           />
           <CustomInput
+            type="number"
             label="Номер запису про право власності"
             onChange={(e) => meta.setData({ ...meta.data, reg_number: +e })}
             value={meta.data.reg_number}

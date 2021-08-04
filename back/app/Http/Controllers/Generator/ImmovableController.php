@@ -217,6 +217,7 @@ class ImmovableController extends BaseController
         $exchange_rate = null;
         $contract_buy = null;
         $contract_sell = null;
+        $exchange_date = null;
 
         if (!$card = Card::find($card_id))
             return $this->sendError('', 'Карта по ID:' . $card_id . ' не було знайдено.');
@@ -225,6 +226,7 @@ class ImmovableController extends BaseController
             $exchange_rate = $exchange->rate;
             $contract_buy = $exchange->contract_buy;
             $contract_sell = $exchange->contract_sell;
+            $exchange_date = $exchange->updated_at;
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->where('created_at', '>=', $this->date->format('Y.m.d'))->first()) {
 
@@ -239,6 +241,7 @@ class ImmovableController extends BaseController
                 $exchange_rate = $minfin->rate;
                 $contract_buy = $minfin->contract_buy;
                 $contract_sell = $minfin->contract_sell;
+                $exchange_date = $minfin->updated_at;
             }
             else
                 $exchange_rate = null;
@@ -247,6 +250,7 @@ class ImmovableController extends BaseController
         $result['exchange_rate'] = number_format($exchange_rate / 100, 2);
         $result['contract_buy'] = number_format($contract_buy / 100, 2);
         $result['contract_sell'] = number_format($contract_sell / 100, 2);
+        $result['exchange_date'] = $exchange_date ? $exchange_date->format('d.m.Y H:i') : '';
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
     }

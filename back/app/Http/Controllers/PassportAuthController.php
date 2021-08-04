@@ -48,6 +48,7 @@ class PassportAuthController extends BaseController
                 'data' => [
                     'id' => auth()->user()->id,
                     'type' => auth()->user()->type,
+                    'extra_type' => $this->get_extra_type(auth()->user()->type),
                     'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
@@ -154,5 +155,15 @@ class PassportAuthController extends BaseController
         } else {
             return $this->sendError("Користувач не був авторизований.");
         }
+    }
+
+    public function get_extra_type($type)
+    {
+        $result = [];
+
+        if (auth()->user()->type != 'generator')
+            $result[] = ['title' => 'Генератор', 'type' => 'generator'];
+
+        return $result;
     }
 }
