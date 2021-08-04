@@ -1,11 +1,13 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { setUserTypeAction } from '../../../../store/main/actions';
 import { State } from '../../../../store/types';
 import { UserTypes } from '../../../../types';
 
 export const useUserSelect = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const extra_type = useSelector((state: State) => state.main.user.extra_type);
@@ -20,6 +22,8 @@ export const useUserSelect = () => {
   }, []);
 
   const handleUserType = useCallback((type: UserTypes) => {
+    setIsOpen(false);
+    history.push('/');
     dispatch(setUserTypeAction(type));
   }, []);
 
@@ -30,7 +34,7 @@ export const useUserSelect = () => {
         label: title,
         onClick: () => handleUserType(type),
       }))
-  ), [extra_type]);
+  ), [extra_type, userType]);
 
   return {
     isOpen,

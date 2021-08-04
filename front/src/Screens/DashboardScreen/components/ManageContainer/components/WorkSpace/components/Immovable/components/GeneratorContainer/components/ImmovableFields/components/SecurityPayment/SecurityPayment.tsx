@@ -14,6 +14,7 @@ const SecurityPayment = (props: Props) => {
       <SectionWithTitle title="Забезпечувальний платіж" onClear={meta.onClear}>
         <div className="grid">
           <CustomInput
+            type="number"
             label="I частина з. платежу у грн"
             onChange={(e) => meta.setData({ ...meta.data, first_part_grn: +e })}
             value={meta.data.first_part_grn}

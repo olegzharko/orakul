@@ -41,7 +41,6 @@ export const deleteAppointment = (id: string) => ({
 export const clearAppointments = () => async (
   dispatch: Dispatch<any>,
 ) => {
-  console.log('clear');
   dispatch(setIsLoading(true));
   dispatch(setAppointments([]));
 };

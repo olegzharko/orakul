@@ -7,7 +7,7 @@ import { SelectItem } from '../../../../../../../../../../../../../../types';
 import { changeMonthWitDate, formatDate } from '../../../../../../../../../../../../../../utils/formatDates';
 
 type InitialData = {
-  notary_id: number | null,
+  notary_id: string | null,
   reg_date: any,
   reg_number: string | null,
   price_grn: string | null,
