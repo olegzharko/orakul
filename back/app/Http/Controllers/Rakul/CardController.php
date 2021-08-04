@@ -57,28 +57,34 @@ class CardController extends BaseController
     /*
      * GET
      * */
-    public function index()
+    public function index($user_type = null)
     {
+        if (is_numeric($user_type)) {
+            $id = $user_type;
+            return $this->show($id);
+        }
         $result = null;
 
         $cards_query = Card::whereIn('room_id', $this->rooms)
                 ->where('date_time', '>=', $this->date->format('Y.m.d'));
 
-        if (auth()->user()->type == 'calendar' || auth()->user()->type == 'reception') {
+        if (!$user_type) {
+            $user_type = auth()->user()->type;
+        }
 
+        if ($user_type == 'calendar' || $user_type == 'reception') {
             $cards = $cards_query->where('cancelled', false)->get();
-
             $result = $this->get_cards_in_reception_format($cards);
-        } elseif (auth()->user()->type == 'generator') {
+        } elseif ($user_type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
             $result = $this->get_cards_in_generator_format($cards);
-        } elseif (auth()->user()->type == 'manager' || auth()->user()->type == 'assistant') {
+        } elseif ($user_type == 'manager' || $user_type == 'assistant') {
             $cards = $cards_query->orderBy('date_time')->get();
             $result = $this->get_cards_in_generator_format($cards);
         }
         else {
-            return $this->sendError("Тип сторінки " . auth()->user()->type . " не підримується");
+            return $this->sendError("Тип сторінки " . $user_type . " не підримується");
         }
 
         return $this->sendResponse($result, 'Картки з договорами');
@@ -621,6 +627,8 @@ class CardController extends BaseController
                 $result[$key]['h'] = 1;
                 $result[$key]['color'] = $card->dev_group->color;
                 $result[$key]['title'] = $this->get_card_title($card);
+                $result[$key]['generator_step'] = $card->generator_step ? true : false;
+                $result[$key]['ready'] = $card->ready ? true : false;
                 $result[$key]['short_info'] = $this->get_card_short_info($card);
 
             }

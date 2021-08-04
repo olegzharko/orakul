@@ -51,18 +51,19 @@ Route::middleware('auth:api')->group(function () {
     Route::get('reception', [ReceptionController::class, 'reception']); // postman
     Route::get('calendar', [ReceptionController::class, 'reception']); // postman // убрать этот запрос. сменить на reception /api/calendar
     Route::put('cards/move/{id}', [CardController::class, 'move']);
+    Route::get('cards/{user_type}', [CardController::class, 'index']);
     Route::resource('cards', CardController::class); // postman get cards
     Route::get('exchange', [MinfinController::class, 'get_rate_exchange']); // postman
 
     Route::group(['prefix' => 'filter'], function () {
-        Route::get('dropdown', [FilterController::class, 'dropdown']); // postman
+        Route::get('dropdown/{user_type?}', [FilterController::class, 'dropdown']); // postman
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']); // postman
         #######################
-        Route::get('ready', [FilterController::class, 'ready_cards']); // postman
-        Route::get('process', [FilterController::class, 'process_cards']);
-        Route::get('contract/type/{contract_type}', [FilterController::class, 'cards_by_contract_type']); // postman
-        Route::get('cancelled', [FilterController::class, 'cancelled_cards']); // postman
-        Route::get('total', [CardController::class, 'index']); // postman
+        Route::get('ready/{user_type?}', [FilterController::class, 'ready_cards']); // postman
+        Route::get('process/{user_type?}', [FilterController::class, 'process_cards']);
+        Route::get('contract/type/{contract_type}/{user_type?}', [FilterController::class, 'cards_by_contract_type']); // postman
+        Route::get('cancelled/{user_type?}', [FilterController::class, 'cancelled_cards']); // postman
+        Route::get('total/{user_type?}', [CardController::class, 'index']); // postman
         #######################
         Route::post('sort', [SortController::class, 'sort']);
         Route::post('search', [SearchController::class, 'search']);
