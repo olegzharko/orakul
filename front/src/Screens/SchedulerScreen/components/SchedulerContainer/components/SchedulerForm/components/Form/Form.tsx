@@ -37,7 +37,7 @@ const SchedulerForm = (props: Props) => {
             <img
               src="/images/delete.svg"
               alt="delete"
-              className="clear-icon"
+              className={`clear-icon ${meta.isDeleteDisabled ? 'disabled' : ''}`}
               onClick={meta.onDeleteCardClick}
             />
           ) : (
@@ -115,9 +115,9 @@ const SchedulerForm = (props: Props) => {
         <div className="mv12">
           {meta.insideEdit && (
             <PrimaryButton
-              label={meta.editButtonLabel.label}
+              label={meta.editButtonLabel}
               onClick={() => meta.setEdit(false)}
-              disabled={meta.editButtonLabel.disabled}
+              disabled={meta.isDeleteDisabled}
               className="schedulerForm__editButton"
             />
           )}

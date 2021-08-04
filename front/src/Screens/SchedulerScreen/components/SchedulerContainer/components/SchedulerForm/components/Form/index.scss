@@ -25,6 +25,14 @@
         opacity: .5;
       }
     }
+
+    .clear-icon {
+
+      &.disabled {
+        opacity: .5;
+        cursor: default;
+      }
+    }
   }
 
   &__editButton {
