@@ -1,5 +1,4 @@
-import React from 'react';
-import './index.scss';
+import React, { ReactElement } from 'react';
 import MModal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -7,13 +6,11 @@ import Fade from '@material-ui/core/Fade';
 type Props = {
   open: boolean;
   handleClose: () => void;
-  success: boolean;
-  message: string;
+  children: ReactElement;
 };
 
-// eslint-disable-next-line prettier/prettier
 const Modal = ({
-  open, handleClose, success, message
+  open, handleClose, children
 }: Props) => (
   <MModal
     className="modal-container"
@@ -25,11 +22,7 @@ const Modal = ({
       timeout: 500,
     }}
   >
-    <Fade in={open}>
-      <div className={`modal ${success ? 'modal-success' : 'modal-failed'}`}>
-        <p className="message">{message}</p>
-      </div>
-    </Fade>
+    <Fade in={open}>{children}</Fade>
   </MModal>
 );
 

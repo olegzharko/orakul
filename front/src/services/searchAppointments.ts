@@ -1,3 +1,4 @@
+import { UserTypes } from '../types';
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
@@ -5,6 +6,7 @@ export default async function searchAppointments(
   token: string,
   bodyData: {
     text: string;
+    type: UserTypes;
   }
 ) {
   try {

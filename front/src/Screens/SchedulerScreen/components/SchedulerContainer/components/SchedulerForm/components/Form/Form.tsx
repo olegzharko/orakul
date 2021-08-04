@@ -115,9 +115,9 @@ const SchedulerForm = (props: Props) => {
         <div className="mv12">
           {meta.insideEdit && (
             <PrimaryButton
-              label="Редагувати"
+              label={meta.editButtonLabel.label}
               onClick={() => meta.setEdit(false)}
-              disabled={props.edit ? false : !meta.activeAddButton}
+              disabled={meta.editButtonLabel.disabled}
               className="schedulerForm__editButton"
             />
           )}

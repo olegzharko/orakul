@@ -3,6 +3,7 @@ import './index.scss';
 import { Link } from 'react-router-dom';
 
 import { useHeader } from './useHeader';
+import UserSelect from './components/UserSelect';
 
 const Header = () => {
   const {
@@ -30,6 +31,7 @@ const Header = () => {
         <img src="/images/search.svg" alt="search" />
       </div>
       <div className="header__control">
+        <UserSelect />
         <img src="/images/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>

@@ -43,11 +43,18 @@
   }
 
   &__control {
+    display: flex;
+    flex-direction: row;
     cursor: pointer;
-    transition: $transition_default;
 
-    &:hover {
-      opacity: .5;
+    img {
+      width: 20px;
+      height: 20px;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
     }
   }
 

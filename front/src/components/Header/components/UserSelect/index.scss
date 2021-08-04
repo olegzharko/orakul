@@ -1,0 +1,15 @@
+.user-select {
+  width: 20px;
+  margin-right: 20px;
+
+  &__modal {
+    display: flex;
+    flex-direction: column;
+    outline: none;
+  }
+
+  &__button {
+    padding: 20px 60px!important;
+    margin: 15px 0;
+  }
+}

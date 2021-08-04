@@ -22,6 +22,8 @@ const SchedulerTable = () => {
     onAppointmentClick,
   } = useSchedulerTable();
 
+  console.log(shouldLoad, appointments);
+
   if (shouldLoad) {
     return (
       <div className="scheduler">
@@ -58,7 +60,7 @@ const SchedulerTable = () => {
           ))}
         </div>
         <div className="scheduler__appointments">
-          <GridTable rows={tableRows} columns={tableColumns} />
+          <GridTable rows={tableRows} columns={tableColumns} rooms={rooms} />
           <GridLayout
             appointments={appointments}
             cols={tableColumns.length}

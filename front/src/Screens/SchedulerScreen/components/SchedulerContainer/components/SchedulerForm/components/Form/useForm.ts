@@ -72,6 +72,30 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     && selectedCard;
   }, [devCompanyId, immovables, selectedCard]);
 
+  const editButtonLabel = useMemo(() => {
+    const generator_step = initialValues?.card.generator_step;
+    const ready = initialValues?.card.ready;
+
+    if (generator_step) {
+      return {
+        label: 'Передано до генерації',
+        disabled: true,
+      };
+    }
+
+    if (ready) {
+      return {
+        label: 'Почати видачу',
+        disabled: true,
+      };
+    }
+
+    return {
+      label: 'Редагувати',
+      disabled: false,
+    };
+  }, [initialValues]);
+
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {
     setNotary(value);
@@ -248,6 +272,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     insideEdit,
     isConfirmDialogOpen,
     confirmDialogContent,
+    editButtonLabel,
     onDeleteCardClick,
     onConfirmDialogClose,
     onConfirmDialogAgreed,

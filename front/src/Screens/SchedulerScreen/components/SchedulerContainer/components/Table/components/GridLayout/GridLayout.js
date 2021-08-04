@@ -7,7 +7,6 @@ import $ from 'jquery';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
-import { State } from '../../../../../../../../store/types';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -68,9 +67,13 @@ export default function GridLayout({
           <table className="appointment__table">
             <tbody>
               <tr>
-                {Object.values(appointment.short_info).map((item) => (
-                  <td key={uuidv4()}>{item}</td>
-                ))}
+                {
+                  appointment.short_info && (
+                    Object.values(appointment.short_info).map((item) => (
+                      <td key={uuidv4()}>{item}</td>
+                    ))
+                  )
+                }
               </tr>
             </tbody>
           </table>
