@@ -23,8 +23,10 @@ export const useUserSelect = () => {
 
   const handleUserType = useCallback((type: UserTypes) => {
     setIsOpen(false);
-    history.push('/');
-    dispatch(setUserTypeAction(type));
+    setTimeout(() => {
+      history.push('/');
+      dispatch(setUserTypeAction(type));
+    }, 100);
   }, []);
 
   const userTypeButtons = useMemo(() => (
