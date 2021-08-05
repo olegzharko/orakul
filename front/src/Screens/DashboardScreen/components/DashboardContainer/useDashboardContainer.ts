@@ -6,6 +6,7 @@ import { State } from '../../../../store/types';
 export const useDashboardContainer = () => {
   const dispatch = useDispatch();
   const { appointments, isLoading } = useSelector((state: State) => state.appointments);
+  const { type } = useSelector((state: State) => state.main.user);
 
   useEffect(() => {
     dispatch(fetchAppointments());
@@ -13,7 +14,7 @@ export const useDashboardContainer = () => {
     return () => {
       dispatch(clearAppointments());
     };
-  }, []);
+  }, [type]);
 
   const isAppointmentsEmpty = useMemo(() => !appointments.length, [appointments]);
 
