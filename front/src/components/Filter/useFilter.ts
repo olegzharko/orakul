@@ -18,9 +18,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   const { filterInitialData } = useSelector((state: State) => state.filter);
   const { schedulerLock } = useSelector((state: State) => state.scheduler);
 
-  useEffect(() => {
-    dispatch(fetchFilterData());
-  }, [token]);
+  const [shouldRender, setShouldRender] = useState<boolean>(false);
 
   const readers = useMemo(() => filterInitialData?.reader, [filterInitialData]);
   const notaries = useMemo(() => filterInitialData?.notary, [
@@ -73,6 +71,10 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
 
   // useEffects
   useEffect(() => {
+    dispatch(fetchFilterData());
+  }, []);
+
+  useEffect(() => {
     setSelectedRepresentative(null);
     if (token && selectedDeveloper) {
       getDeveloperInfo(token, +selectedDeveloper)
@@ -81,6 +83,11 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   }, [selectedDeveloper]);
 
   useEffect(() => {
+    if (!shouldRender) {
+      setShouldRender(true);
+      return;
+    }
+
     const data: FilterData = {
       notary_id: selectedNotary || null,
       reader_id: selectedReader || null,
