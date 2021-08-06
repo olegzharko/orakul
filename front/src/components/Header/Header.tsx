@@ -1,26 +1,20 @@
 import * as React from 'react';
 import './index.scss';
-import { Link } from 'react-router-dom';
 
 import { useHeader } from './useHeader';
 import UserSelect from './components/UserSelect';
+import PageNavigationControl from './components/PageNavigationControl';
 
 const Header = () => {
   const {
     onSearch,
     onLogout,
-    onLogoClick,
     searchText,
   } = useHeader();
 
   return (
     <div className="header container">
-      <img
-        className="header__logo"
-        src="/images/logo.svg"
-        alt="logo"
-        onClick={onLogoClick}
-      />
+      <PageNavigationControl />
       <div className="header__search">
         <input
           type="text"
