@@ -472,7 +472,10 @@ class DocumentController extends GeneratorController
             // Для Excel
             $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
             $sheet = $spreadsheet->getActiveSheet();
-            $this->set_taxes_data_for_excel($sheet);
+            if ($this->two_clients)
+                $this->set_excel_taxes_data_for_two_clients($sheet);
+            else
+                $this->set_excel_taxes_data_for_one_client($sheet);
             $writer = new Xlsx($spreadsheet);
             $file_name = $this->bank_taxes_generate_file;
             $writer->save($file_name);
@@ -2484,7 +2487,7 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    public function set_taxes_data_for_excel($sheet)
+    public function set_excel_taxes_data_for_one_client($sheet)
     {
         $developer = null;
 
@@ -2499,7 +2502,6 @@ class DocumentController extends GeneratorController
             } else {
                 $pay_buy_client = $this->client;
             }
-
 
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
             $this->notification('Warning', $price * $percent . " " . $i);
@@ -2527,6 +2529,64 @@ class DocumentController extends GeneratorController
         $sheet->setCellValue("B13", $this->client->phone);
         if ($this->contract->dev_representative) {
             $sheet->setCellValue("E9", "через " . $this->contract->dev_representative->surname_n);
+        }
+
+        return $sheet;
+    }
+
+    public function set_excel_taxes_data_for_two_clients($sheet)
+    {
+        $taxes = BankTaxesList::get();
+        $developer = $this->contract->dev_company->owner;
+        $first_client = $this->contract->clients[0];
+        $second_client = $this->contract->clients[1];
+
+        $price = sprintf("%.2f", $this->contract->immovable->grn/100);
+        $sheet->setCellValue("J1", $price);
+
+        $i = 2;
+        foreach ($taxes as $tax) {
+            $pay_buy_client = [];
+            if ($tax->type == 'developer') {
+                $pay_buy_client[] = $developer;
+            } else {
+                $pay_buy_client[] = $first_client;
+                $pay_buy_client[] = $second_client;
+            }
+
+            $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
+            foreach ($pay_buy_client as $client) {
+                if ($tax->type == 'developer')
+                    $sheet->setCellValue("A{$i}", $price * $percent);
+                else
+                    $sheet->setCellValue("A{$i}", $price * $percent / 2);
+                $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($client));
+                $sheet->setCellValue("C{$i}", $client->tax_code);
+                $full_tax_info = $tax->code_and_edrpoy . $client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($client);
+                $sheet->setCellValue("E{$i}", $full_tax_info);
+
+                $sheet->setCellValue("F{$i}", $tax->mfo);
+                $sheet->setCellValue("G{$i}", $tax->bank_account);
+                $sheet->setCellValue("H{$i}", $tax->name_recipient);
+                $sheet->setCellValue("I{$i}", $tax->okpo);
+                $i++;
+            }
+        }
+
+        $sheet->setCellValue("A9", "покупець 1");
+        $sheet->setCellValue("B9", $this->convert->get_full_name_n($first_client));
+        $sheet->setCellValue("C9", $first_client->tax_code);
+        $sheet->setCellValue("A10", "покупець 2");
+        $sheet->setCellValue("B10", $this->convert->get_full_name_n($second_client));
+        $sheet->setCellValue("C10", $second_client->tax_code);
+        $sheet->setCellValue("B11", "продавець");
+        $sheet->setCellValue("B11", $this->convert->get_full_name_n($developer));
+        $sheet->setCellValue("C11", $developer->tax_code);
+        $sheet->setCellValue("B12", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
+        $sheet->setCellValue("B13", $price);
+        $sheet->setCellValue("B15", $first_client->phone);
+        if ($this->contract->dev_representative) {
+            $sheet->setCellValue("E11", "через " . $this->contract->dev_representative->surname_n);
         }
 
         return $sheet;
