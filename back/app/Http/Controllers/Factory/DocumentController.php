@@ -703,7 +703,7 @@ class DocumentController extends GeneratorController
         $word->saveAs($template_generate_file);
 
 
-        if ($this->consent->widow) {
+        if ($this->consent && $this->consent->widow) {
             $word = new TemplateProcessor($template_generate_file);
             $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
             $word->setValue('ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
@@ -1271,6 +1271,10 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
             $word->setValue('КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
 
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+
 //            $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
@@ -1547,6 +1551,11 @@ class DocumentController extends GeneratorController
             $word->setValue('ПОД-ПІБ-Р', $this->convert->get_full_name_r($this->client->married->spouse));
             $word->setValue('ПОД-ПІБ-О', $this->convert->get_full_name_o($this->client->married->spouse));
             $word->setValue('ПОД-ДН', $this->display_date($this->client->married->spouse->birth_date));
+
+            $word->setValue('ПОД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
+            $word->setValue('ПОД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
+            $word->setValue('ПОД-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+
             /*
              * Подружжя клієнта - паспорт та код
              * */

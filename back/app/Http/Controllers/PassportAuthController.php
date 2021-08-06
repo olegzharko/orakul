@@ -164,7 +164,7 @@ class PassportAuthController extends BaseController
         if (auth()->user()->manager)
             $result[] = ['title' => 'Менеджер', 'type' => 'manager'];
 
-//        if (auth()->user()->generator)
+        if (auth()->user()->generator)
             $result[] = ['title' => 'Генератор', 'type' => 'generator'];
 
         if (auth()->user()->type == 'reception')

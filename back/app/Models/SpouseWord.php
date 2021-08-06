@@ -10,6 +10,13 @@ class SpouseWord extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+      'title',
+      'dev_company_id',
+      'developer',
+      'termination',
+    ];
+
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
