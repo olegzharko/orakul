@@ -883,12 +883,16 @@ class ImmovableController extends BaseController
             FinalSignDate::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['sign_date' => $r['final_sign_date']]);
+        } else {
+            FinalSignDate::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['bank_template_id']) {
             BankAccountPayment::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['template_id' => $r['bank_template_id']]);
+        } else {
+            BankAccountPayment::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['taxes_template_id']) {
@@ -907,7 +911,10 @@ class ImmovableController extends BaseController
                     'sign_date' => $r['sign_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            Questionnaire::where('contract_id', $contract_id)->delete();
         }
+
 
         if ($r['statement_template_id']) {
             DeveloperStatement::updateOrCreate(
@@ -917,6 +924,8 @@ class ImmovableController extends BaseController
                     'sign_date' => $r['sign_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            DeveloperStatement::where('contract_id', $contract_id)->delete();
         }
 
 
@@ -931,20 +940,24 @@ class ImmovableController extends BaseController
                     'final_date' => $r['final_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            Communal::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['processing_personal_data_template_id']) {
             ProcessingPersonalData::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['template_id' => $r['processing_personal_data_template_id']]);
+        } else {
+            ProcessingPersonalData::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['termination_contract_id']) {
             TerminationContract::updateOrCreate(
                 ['contract_id' => $contract_id],
-                [
-                    'template_id' => $r['termination_contract_id'],
-                ]);
+                ['template_id' => $r['termination_contract_id']]);
+        } else {
+            TerminationContract::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['termination_refund_id']) {
@@ -956,6 +969,8 @@ class ImmovableController extends BaseController
                     'reg_date' => $r['termination_refund_reg_date'],
                     'reg_num' => $r['termination_refund_reg_number'],
                 ]);
+        } else {
+            TerminationRefund::where('contract_id', $contract_id)->delete();
         }
 
         if ($immovable->developer_building->dev_company) {

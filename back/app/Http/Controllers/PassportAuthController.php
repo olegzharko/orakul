@@ -160,19 +160,18 @@ class PassportAuthController extends BaseController
     public function get_extra_type($type)
     {
         $result = [];
-        if (auth()->user()->type == 'reception')
-            $result[] = ['title' => 'Ресепшн', 'type' => auth()->user()->type];
-        if (auth()->user()->type == 'manager')
-            $result[] = ['title' => 'Менеджер', 'type' => auth()->user()->type];
-        if (auth()->user()->type == 'assistant')
-            $result[] = ['title' => 'Асистент', 'type' => auth()->user()->type];
-        if (auth()->user()->type != 'generator')
+
+        if (auth()->user()->manager)
+            $result[] = ['title' => 'Менеджер', 'type' => 'manager'];
+
+//        if (auth()->user()->generator)
             $result[] = ['title' => 'Генератор', 'type' => 'generator'];
 
-            $result[] = ['title' => 'Генератор', 'type' => 'generator'];
+        if (auth()->user()->type == 'reception')
+            $result[] = ['title' => 'Ресепшн', 'type' => 'reception'];
+
+        if (auth()->user()->type == 'assistant')
             $result[] = ['title' => 'Асистент', 'type' => 'assistant'];
-            $result[] = ['title' => 'Реєстратор', 'type' => 'registrator'];
-            $result[] = ['title' => 'Менеджер', 'type' => 'manager'];
 
         return $result;
     }
