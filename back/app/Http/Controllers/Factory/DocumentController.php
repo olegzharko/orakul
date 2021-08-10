@@ -703,7 +703,7 @@ class DocumentController extends GeneratorController
         $word->saveAs($template_generate_file);
 
 
-        if ($this->consent->widow) {
+        if ($this->consent && $this->consent->widow) {
             $word = new TemplateProcessor($template_generate_file);
             $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
             $word->setValue('ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
@@ -733,7 +733,7 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних представника так покупця або чисто шаблон покупця
          * */
-        if ($this->client->representative) {
+        if ($this->client->representative && $this->client->representative->confidant_id) {
             $full_description = MainInfoType::where('alias', 'full-client-and-representative-confidant')->value('description');
             $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-client-and-representative-confidant')->value('description');
         }
