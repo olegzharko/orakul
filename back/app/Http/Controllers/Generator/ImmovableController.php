@@ -168,6 +168,7 @@ class ImmovableController extends BaseController
             }
         }
 
+        $reserve_grn = null;
         if (Immovable::find($immovable_id)->contract->type->alias == 'preliminary') {
             if (isset($r['price_grn']) && !empty($r['price_grn'])) {
                 $reserve_grn = ($r['price_grn'] - 1000) * 100;
@@ -175,8 +176,6 @@ class ImmovableController extends BaseController
         } else {
             if (isset($r['reserve_grn']) && !empty($r['reserve_grn'])) {
                 $reserve_grn = $r['reserve_grn'] * 100;
-            } else {
-                $reserve_grn = null;
             }
         }
 
@@ -217,6 +216,7 @@ class ImmovableController extends BaseController
         $exchange_rate = null;
         $contract_buy = null;
         $contract_sell = null;
+        $nbu_ask = null;
         $exchange_date = null;
 
         if (!$card = Card::find($card_id))
@@ -226,6 +226,7 @@ class ImmovableController extends BaseController
             $exchange_rate = $exchange->rate;
             $contract_buy = $exchange->contract_buy;
             $contract_sell = $exchange->contract_sell;
+            $nbu_ask = $exchange->nbu_ask;
             $exchange_date = $exchange->updated_at;
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->where('created_at', '>=', $this->date->format('Y.m.d'))->first()) {
@@ -236,11 +237,13 @@ class ImmovableController extends BaseController
                         'rate' => $minfin->rate,
                         'contract_buy' => $minfin->contract_buy,
                         'contract_sell' => $minfin->contract_sell,
+                        'nbu_ask' => $minfin->nbu_ask,
                     ]);
 
                 $exchange_rate = $minfin->rate;
                 $contract_buy = $minfin->contract_buy;
                 $contract_sell = $minfin->contract_sell;
+                $nbu_ask = $minfin->nbu_ask;
                 $exchange_date = $minfin->updated_at;
             }
             else
@@ -250,6 +253,7 @@ class ImmovableController extends BaseController
         $result['exchange_rate'] = number_format($exchange_rate / 100, 2);
         $result['contract_buy'] = number_format($contract_buy / 100, 2);
         $result['contract_sell'] = number_format($contract_sell / 100, 2);
+        $result['nbu_ask'] = number_format($nbu_ask / 100, 2);
         $result['exchange_date'] = $exchange_date ? $exchange_date->format('d.m.Y H:i') : '';
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
@@ -271,6 +275,7 @@ class ImmovableController extends BaseController
         $currency_exchage = round($r->exchange_rate, 2);
         $contract_buy = round($r->contract_buy, 2);
         $contract_sell = round($r->contract_sell, 2);
+        $nbu_ask = round($r->nbu_ask, 2);
 
         ExchangeRate::updateOrCreate(
             ['card_id' => $card_id],
@@ -278,6 +283,7 @@ class ImmovableController extends BaseController
                 'rate' => $currency_exchage * 100,
                 'contract_buy' => $contract_buy * 100,
                 'contract_sell' => $contract_sell * 100,
+                'nbu_ask' => $nbu_ask * 100,
             ]
         );
 
@@ -300,6 +306,7 @@ class ImmovableController extends BaseController
         $result['exchange_rate'] = $currency_exchage;
         $result['contract_buy'] = $contract_buy;
         $result['contract_sell'] = $contract_sell;
+        $result['nbu_ask'] = $nbu_ask;
 
         return $this->sendResponse($result, 'Курс долара оновлено вручну.');
     }
