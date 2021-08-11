@@ -9,9 +9,7 @@ import { isNumber } from '../../../../../../../../../../utils/numbers';
 type SideNotaryDenominativeData = {
   surname_n: string,
   name_n: string,
-  short_name: string,
   patronymic_n: string,
-  short_patronymic: string,
   activity_n: string,
 }
 
@@ -31,9 +29,7 @@ export const useFields = () => {
   const [denominative, setDenominate] = useState<SideNotaryDenominativeData>({
     surname_n: '',
     name_n: '',
-    short_name: '',
     patronymic_n: '',
-    short_patronymic: '',
     activity_n: '',
   });
   const [ablative, setAblative] = useState<SideNotaryFblativeData>({
@@ -55,9 +51,7 @@ export const useFields = () => {
           setDenominate({
             surname_n: res.data.surname_n || '',
             name_n: res.data.name_n || '',
-            short_name: res.data.short_name || '',
             patronymic_n: res.data.patronymic_n || '',
-            short_patronymic: res.data.short_patronymic || '',
             activity_n: res.data.activity_n || '',
           });
 
@@ -76,9 +70,7 @@ export const useFields = () => {
     setDenominate({
       surname_n: '',
       name_n: '',
-      short_name: '',
       patronymic_n: '',
-      short_patronymic: '',
       activity_n: '',
     });
   }, []);
@@ -113,11 +105,8 @@ export const useFields = () => {
     }
   }, [denominative, ablative, token]);
 
-  const isButtonDisabled = useMemo(() => !denominative.surname_n
-    || !denominative.short_name
-    || !denominative.short_patronymic
-    || !ablative.activity_o,
-  [denominative, ablative]);
+  const isButtonDisabled = useMemo(() => Object.values(denominative).some((item) => !item)
+    || Object.values(ablative).some((item) => !item), [denominative, ablative]);
 
   return {
     denominative,
