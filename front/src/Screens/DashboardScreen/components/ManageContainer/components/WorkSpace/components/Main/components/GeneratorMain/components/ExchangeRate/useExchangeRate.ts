@@ -9,6 +9,7 @@ type InitialData = {
   exchange_rate: string,
   contract_sell: string,
   exchange_date: string,
+  nbu_ask: string;
 }
 
 export type Props = {
@@ -24,11 +25,13 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
   const [contractBuy, setContractBuy] = useState('');
   const [contractSell, setContractSell] = useState('');
   const [exchangeRate, setExchangeRate] = useState('');
+  const [nbu, setNbu] = useState('');
 
   const onClear = useCallback(() => {
     setContractBuy('');
     setContractSell('');
     setExchangeRate('');
+    setNbu('');
   }, []);
 
   const onRefreshRate = useCallback(async () => {
@@ -38,6 +41,7 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
         setContractBuy(res.data.contract_buy);
         setContractSell(res.data.contract_sell);
         setExchangeRate(res.data.exchange_rate);
+        setNbu(res.data.nbu_ask);
       }
     }
   }, [token]);
@@ -48,6 +52,7 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
         contract_buy: contractBuy,
         contract_sell: contractSell,
         exchange_rate: exchangeRate,
+        nbu_ask: nbu,
       };
       const { success, message } = await reqImmovableExchange(token, id, 'PUT', null, data);
 
@@ -62,13 +67,18 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
   }, [contractBuy, contractSell, exchangeRate, token]);
 
   const isSaveButtonDisable = useMemo(
-    () => !contractBuy || !contractSell || !exchangeRate, [contractBuy, contractSell, exchangeRate]
+    () => !contractBuy
+      || !contractSell
+      || !exchangeRate
+      || !nbu,
+    [contractBuy, contractSell, exchangeRate, nbu]
   );
 
   useEffect(() => {
     setContractBuy(initialData?.contract_buy || '');
     setContractSell(initialData?.contract_sell || '');
     setExchangeRate(initialData?.exchange_rate || '');
+    setNbu(initialData?.nbu_ask || '');
   }, [initialData]);
 
   return {
@@ -76,9 +86,11 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
     contractSell,
     exchangeRate,
     isSaveButtonDisable,
+    nbu,
     setContractBuy,
     setContractSell,
     setExchangeRate,
+    setNbu,
     onClear,
     onSave,
     onRefreshRate
