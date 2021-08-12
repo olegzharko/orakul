@@ -40,6 +40,7 @@ const General = (props: Props) => {
           />
 
           <CustomInput
+            type="number"
             label="Повна вартість в гривнях"
             onChange={(e) => meta.setData({ ...meta.data, price_grn: e })}
             value={meta.data.price_grn}
