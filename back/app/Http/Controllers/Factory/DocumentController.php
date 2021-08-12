@@ -1529,6 +1529,11 @@ class DocumentController extends GeneratorController
             $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
 
+//            $cr_gender_which_adjective = GenderWord::where('alias', "which")->value($this->client->gender);
+//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК', $cr_gender_which_adjective);
+//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК-UP', $this->mb_ucfirst($cr_gender_which_adjective));
+
+
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
 
@@ -2605,13 +2610,20 @@ class DocumentController extends GeneratorController
 
     public function get_rate_by_company($card_id, $dev_company)
     {
-        $exchange_rate = ExchangeRate::where('card_id', $card_id)->first();
+        $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if ($dev_company->contract_rate == true) {
-            $rate = $exchange_rate->contract_buy;
-        } else {
-            $rate = $exchange_rate->rate;
-        }
+        if ($dev_company->ammount_rate)
+            $rate = $exchange->rate;
+        elseif ($dev_company->contract_rate)
+            $rate = $exchange->contract_buy;
+        elseif ($dev_company->nbu_rate)
+            $rate = $exchange->nbu_ask;
+
+//        if ($dev_company->contract_rate == true) {
+//            $rate = $exchange->contract_buy;
+//        } else {
+//            $rate = $exchange->rate;
+//        }
 
         return $rate;
     }

@@ -143,10 +143,12 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $currency_rate = $this->get_currency_rate($immovable_id);
+        $immovable = Immovable::find($immovable_id);
+
+        $currency_rate = $this->get_currency_rate($immovable);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
 
-        if (Immovable::find($immovable_id)->contract->clients->count() == 2) {
+        if ($immovable->contract->clients->count() == 2) {
             $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
             if (($reserve_dollar * 100) % 2) {
                 $reserve_dollar = $reserve_dollar + 0.01;
@@ -1081,7 +1083,6 @@ class ImmovableController extends BaseController
             'statement_template_id' => $r['statement_template_id'],
 
             'exchange_rate' => $r['exchange_rate'],
-            'nbu_ask' => $r['nbu_ask'],
 
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d') : null,
             'reg_num' => $r['reg_num'],
@@ -1124,7 +1125,6 @@ class ImmovableController extends BaseController
             'statement_template_id' => ['numeric', 'nullable'],
 
             'exchange_rate' => ['numeric', 'nullable'],
-            'nbu_ask' => ['numeric', 'nullable'],
 
             'sign_date' => ['date_format:Y.m.d', 'nullable'],
             'reg_num' => ['string', 'nullable'],
@@ -1166,7 +1166,6 @@ class ImmovableController extends BaseController
             'statement_template_id.numeric' => 'Необхідно передати ID шаблону заяви від забудовника в числовому форматі',
 
             'exchange_rate.numeric' => 'Необхідно передати курс долара в числовому форматі',
-            'nbu_ask.numeric' => 'Необхідно передати курс долара в числовому форматі',
         ]);
 
         $errors = $validator->errors()->messages();
@@ -1228,17 +1227,24 @@ class ImmovableController extends BaseController
         return $validator;
     }
 
-    public function get_currency_rate($immovable_id)
+    public function get_currency_rate($immovable)
     {
-        $card_id = Contract::get_card_id_by_immovable_id($immovable_id);
+        $card_id = Contract::get_card_id_by_immovable_id($immovable->id);
 
-        $rate = ExchangeRate::get_rate_by_imm_id($card_id);
+        $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if (!$rate) {
-            $rate = Exchange::get_minfin_rate();
+        if ($immovable->developer_building->dev_company->ammount_rate)
+            $rate = $exchange->rate;
+        elseif ($immovable->developer_building->dev_company->contract_rate)
+            $rate = $exchange->contract_buy;
+        elseif ($immovable->developer_building->dev_company->nbu_rate)
+            $rate = $exchange->nbu_ask;
 
-            ExchangeRate::update_rate($card_id, $rate);
-        }
+//        if (!$rate) {
+//            $rate = Exchange::get_minfin_rate();
+//
+//            ExchangeRate::update_rate($card_id, $rate);
+//        }
 
         $rate = round($rate/100, 2);
 
