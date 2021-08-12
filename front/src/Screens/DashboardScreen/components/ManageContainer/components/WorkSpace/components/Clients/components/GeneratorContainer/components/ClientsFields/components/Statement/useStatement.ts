@@ -107,7 +107,6 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
 
   const onSave = useCallback(async () => {
     if (token) {
-      console.log(data.widow_date);
       const reqData = {
         ...data,
         mar_date: formatDate(data.mar_date),

@@ -25,6 +25,7 @@ const Rating = (props: Props) => {
             selectedDate={data.date}
           />
           <CustomInput
+            type="number"
             label="Ціна в грн"
             onChange={(e) => setData({ ...data, price: e })}
             value={data.price}
