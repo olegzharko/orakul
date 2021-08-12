@@ -4,10 +4,13 @@ import forgotPasswordService from '../../services/login/forgotPassword';
 import resetPasswordService, {
   ResetPasswordType,
 } from '../../services/login/resetPassword';
+import { UserTypes } from '../../types';
+import { State } from '../types';
 
 export const ACTIONS = {
   SET_TOKEN: 'SET_TOKEN',
   SET_USER: 'SET_USER',
+  SET_USER_TYPE: 'SET_USER_TYPE',
   SET_LOADING: 'SET_LOADING',
   SET_MODAL_INFO: 'SET_MODAL_INFO',
 };
@@ -27,12 +30,25 @@ export const setUser = (payload: any) => ({
   payload,
 });
 
+export const setUserType = (payload: UserTypes) => ({
+  type: ACTIONS.SET_USER_TYPE,
+  payload,
+});
+
 const setModalInfoAction = (payload: any) => ({
   type: ACTIONS.SET_MODAL_INFO,
   payload,
 });
 
 // Thunk actions
+export const setUserTypeAction = (type: UserTypes) => (
+  dispatch: Dispatch<any>,
+  getState: () => State,
+) => {
+  dispatch(setUserType(type));
+  localStorage.setItem('user', JSON.stringify({ ...getState().main.user, type }));
+};
+
 export const setModalInfo = (payload: any) => (dispatch: Dispatch<any>) => {
   dispatch(setModalInfoAction(payload));
   setTimeout(() => {

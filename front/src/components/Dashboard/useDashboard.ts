@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SectionCard } from './components/DashboardSection/DashboardSection';
 
 // eslint-disable-next-line no-shadow

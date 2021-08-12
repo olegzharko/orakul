@@ -1,10 +1,11 @@
 import { FilterData } from '../store/types';
+import { UserTypes } from '../types';
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
 export default async function setSchedulerFilter(
   token: string,
-  bodyData: FilterData
+  bodyData: FilterData & {user_type: UserTypes}
 ) {
   try {
     const data = await requestApi({

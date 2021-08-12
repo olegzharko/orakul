@@ -43,8 +43,42 @@
   }
 
   &__control {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+
+    img {
+      width: 20px;
+      height: 20px;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+    }
+  }
+
+  &__logo {
     cursor: pointer;
     transition: $transition_default;
+    margin-right: 10px;
+
+    &:hover {
+      opacity: .7;
+    }
+  }
+
+  &__navigation {
+    display: flex;
+    align-items: center;
+  }
+
+  &__navButton {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    transition: $transition_default;
+    margin: 0 10px;
 
     &:hover {
       opacity: .5;

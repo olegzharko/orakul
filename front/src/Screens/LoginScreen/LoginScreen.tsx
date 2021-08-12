@@ -4,11 +4,11 @@ import Authorization from './components/Authorization';
 import './index.scss';
 import ForgotPassword from './components/ForgotPassword';
 import UpdatePassword from './components/UpdatePassword';
-import Modal from '../../components/Modal';
-import { useModal } from '../../components/Modal/useModal';
+import Modal from '../../components/RequestModal';
+import { useRequestModal } from '../../components/RequestModal/useRequestModal';
 
 const LoginScreen = () => {
-  const modalProps = useModal();
+  const modalProps = useRequestModal();
 
   return (
     <main className="login">

@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 type RequestOptions = {
   url: string;
   method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
@@ -7,7 +6,6 @@ type RequestOptions = {
 };
 
 const requestApi = async (options: RequestOptions) => {
-  // eslint-disable-next-line object-curly-newline
   const { url, method = 'GET', headers = {}, bodyData } = options;
 
   const params = {

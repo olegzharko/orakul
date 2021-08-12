@@ -21,7 +21,7 @@ const Fields = () => {
           color: 'white',
         }}
       >
-        Клієнт
+        Покупець
       </div>
 
       <SectionWithTitle title="" onClear={meta.onClientClear}>

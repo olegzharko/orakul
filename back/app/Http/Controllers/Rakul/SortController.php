@@ -30,11 +30,17 @@ class SortController extends BaseController
     {
         $result = null;
         $cards_id = null;
+        $user_type = null;
         $validator = $this->validate_data($r);
 
         if (count($validator->errors()->getMessages())) {
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
+
+        if (isset($r['user_type']) && !empty($r['user_type']))
+            $user_type = $r['user_type'];
+        else
+            $user_type = auth()->user()->type;
 
         $query_cards_id = Card::select(
             'cards.id',
@@ -80,14 +86,14 @@ class SortController extends BaseController
                         ->orderBy('cards.date_time')
                         ;
 
-        if (auth()->user()->type == 'reception') {
+        if ($user_type == 'reception') {
             $cards = $cards_query->where('cancelled', false)->get();
             $result = $this->card->get_cards_in_reception_format($cards);
         }
-        elseif (auth()->user()->type == 'generator') {
+        elseif ($user_type == 'generator') {
             $cards = $cards_query->where('staff_generator_id', auth()->user()->id)->where('generator_step', true)->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
-        } elseif (auth()->user()->type == 'manager' || auth()->user()->type == 'assistant') {
+        } elseif ($user_type == 'manager' || $user_type == 'assistant') {
             $cards = $cards_query->orderBy('date_time')->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
         } else {

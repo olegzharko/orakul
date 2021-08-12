@@ -143,10 +143,12 @@ class ImmovableController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        $currency_rate = $this->get_currency_rate($immovable_id);
+        $immovable = Immovable::find($immovable_id);
+
+        $currency_rate = $this->get_currency_rate($immovable);
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
 
-        if (Immovable::find($immovable_id)->contract->clients->count() == 2) {
+        if ($immovable->contract->clients->count() == 2) {
             $reserve_dollar = round($r['reserve_grn'] / $currency_rate, 2);
             if (($reserve_dollar * 100) % 2) {
                 $reserve_dollar = $reserve_dollar + 0.01;
@@ -168,6 +170,7 @@ class ImmovableController extends BaseController
             }
         }
 
+        $reserve_grn = null;
         if (Immovable::find($immovable_id)->contract->type->alias == 'preliminary') {
             if (isset($r['price_grn']) && !empty($r['price_grn'])) {
                 $reserve_grn = ($r['price_grn'] - 1000) * 100;
@@ -175,8 +178,6 @@ class ImmovableController extends BaseController
         } else {
             if (isset($r['reserve_grn']) && !empty($r['reserve_grn'])) {
                 $reserve_grn = $r['reserve_grn'] * 100;
-            } else {
-                $reserve_grn = null;
             }
         }
 
@@ -217,6 +218,7 @@ class ImmovableController extends BaseController
         $exchange_rate = null;
         $contract_buy = null;
         $contract_sell = null;
+        $nbu_ask = null;
         $exchange_date = null;
 
         if (!$card = Card::find($card_id))
@@ -226,6 +228,7 @@ class ImmovableController extends BaseController
             $exchange_rate = $exchange->rate;
             $contract_buy = $exchange->contract_buy;
             $contract_sell = $exchange->contract_sell;
+            $nbu_ask = $exchange->nbu_ask;
             $exchange_date = $exchange->updated_at;
         } else {
             if ($minfin = Exchange::orderBy('created_at', 'desc')->where('created_at', '>=', $this->date->format('Y.m.d'))->first()) {
@@ -236,11 +239,13 @@ class ImmovableController extends BaseController
                         'rate' => $minfin->rate,
                         'contract_buy' => $minfin->contract_buy,
                         'contract_sell' => $minfin->contract_sell,
+                        'nbu_ask' => $minfin->nbu_ask,
                     ]);
 
                 $exchange_rate = $minfin->rate;
                 $contract_buy = $minfin->contract_buy;
                 $contract_sell = $minfin->contract_sell;
+                $nbu_ask = $minfin->nbu_ask;
                 $exchange_date = $minfin->updated_at;
             }
             else
@@ -250,6 +255,7 @@ class ImmovableController extends BaseController
         $result['exchange_rate'] = number_format($exchange_rate / 100, 2);
         $result['contract_buy'] = number_format($contract_buy / 100, 2);
         $result['contract_sell'] = number_format($contract_sell / 100, 2);
+        $result['nbu_ask'] = number_format($nbu_ask / 100, 2);
         $result['exchange_date'] = $exchange_date ? $exchange_date->format('d.m.Y H:i') : '';
 
         return $this->sendResponse($result, 'Курс для картки ID:' . $card_id);
@@ -271,6 +277,7 @@ class ImmovableController extends BaseController
         $currency_exchage = round($r->exchange_rate, 2);
         $contract_buy = round($r->contract_buy, 2);
         $contract_sell = round($r->contract_sell, 2);
+        $nbu_ask = round($r->nbu_ask, 2);
 
         ExchangeRate::updateOrCreate(
             ['card_id' => $card_id],
@@ -278,6 +285,7 @@ class ImmovableController extends BaseController
                 'rate' => $currency_exchage * 100,
                 'contract_buy' => $contract_buy * 100,
                 'contract_sell' => $contract_sell * 100,
+                'nbu_ask' => $nbu_ask * 100,
             ]
         );
 
@@ -300,6 +308,7 @@ class ImmovableController extends BaseController
         $result['exchange_rate'] = $currency_exchage;
         $result['contract_buy'] = $contract_buy;
         $result['contract_sell'] = $contract_sell;
+        $result['nbu_ask'] = $nbu_ask;
 
         return $this->sendResponse($result, 'Курс долара оновлено вручну.');
     }
@@ -357,6 +366,10 @@ class ImmovableController extends BaseController
 
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
+
+        if ($immovable->price_grn) {
+            return $this->sendError('Відсутня ціна за нерухомість', '');
+        }
 
         $validator = $this->validate_imm_data($r);
 
@@ -883,12 +896,16 @@ class ImmovableController extends BaseController
             FinalSignDate::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['sign_date' => $r['final_sign_date']]);
+        } else {
+            FinalSignDate::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['bank_template_id']) {
             BankAccountPayment::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['template_id' => $r['bank_template_id']]);
+        } else {
+            BankAccountPayment::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['taxes_template_id']) {
@@ -907,7 +924,10 @@ class ImmovableController extends BaseController
                     'sign_date' => $r['sign_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            Questionnaire::where('contract_id', $contract_id)->delete();
         }
+
 
         if ($r['statement_template_id']) {
             DeveloperStatement::updateOrCreate(
@@ -917,6 +937,8 @@ class ImmovableController extends BaseController
                     'sign_date' => $r['sign_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            DeveloperStatement::where('contract_id', $contract_id)->delete();
         }
 
 
@@ -931,20 +953,24 @@ class ImmovableController extends BaseController
                     'final_date' => $r['final_date'],
                     'notary_id' => $notary_id,
                 ]);
+        } else {
+            Communal::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['processing_personal_data_template_id']) {
             ProcessingPersonalData::updateOrCreate(
                 ['contract_id' => $contract_id],
                 ['template_id' => $r['processing_personal_data_template_id']]);
+        } else {
+            ProcessingPersonalData::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['termination_contract_id']) {
             TerminationContract::updateOrCreate(
                 ['contract_id' => $contract_id],
-                [
-                    'template_id' => $r['termination_contract_id'],
-                ]);
+                ['template_id' => $r['termination_contract_id']]);
+        } else {
+            TerminationContract::where('contract_id', $contract_id)->delete();
         }
 
         if ($r['termination_refund_id']) {
@@ -956,6 +982,8 @@ class ImmovableController extends BaseController
                     'reg_date' => $r['termination_refund_reg_date'],
                     'reg_num' => $r['termination_refund_reg_number'],
                 ]);
+        } else {
+            TerminationRefund::where('contract_id', $contract_id)->delete();
         }
 
         if ($immovable->developer_building->dev_company) {
@@ -1199,17 +1227,24 @@ class ImmovableController extends BaseController
         return $validator;
     }
 
-    public function get_currency_rate($immovable_id)
+    public function get_currency_rate($immovable)
     {
-        $card_id = Contract::get_card_id_by_immovable_id($immovable_id);
+        $card_id = Contract::get_card_id_by_immovable_id($immovable->id);
 
-        $rate = ExchangeRate::get_rate_by_imm_id($card_id);
+        $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if (!$rate) {
-            $rate = Exchange::get_minfin_rate();
+        if ($immovable->developer_building->dev_company->ammount_rate)
+            $rate = $exchange->rate;
+        elseif ($immovable->developer_building->dev_company->contract_rate)
+            $rate = $exchange->contract_buy;
+        elseif ($immovable->developer_building->dev_company->nbu_rate)
+            $rate = $exchange->nbu_ask;
 
-            ExchangeRate::update_rate($card_id, $rate);
-        }
+//        if (!$rate) {
+//            $rate = Exchange::get_minfin_rate();
+//
+//            ExchangeRate::update_rate($card_id, $rate);
+//        }
 
         $rate = round($rate/100, 2);
 

@@ -3,6 +3,8 @@ export const changeMonthWitDate = (date: string): Date => new Date(date && date.
 export const formatDate = (date: Date | null): string | null => {
   if (!date) return null;
 
+  date = new Date(date);
+
   const day = date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate();
   const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   const year = date.getFullYear();

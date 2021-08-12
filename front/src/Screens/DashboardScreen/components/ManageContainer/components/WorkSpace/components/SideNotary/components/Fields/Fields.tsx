@@ -12,7 +12,6 @@ const Fields = () => {
       <SectionWithTitle title="Називний відмінок та скорочення" onClear={meta.onDenominativeClear}>
         <div className="grid mb20">
           <CustomInput
-            required
             label="Прізвище"
             onChange={(e) => meta.setDenominate({ ...meta.denominative, surname_n: e })}
             value={meta.denominative.surname_n}
@@ -31,25 +30,8 @@ const Fields = () => {
           />
         </div>
 
-        <div className="grid mb20">
-          <div />
-          <CustomInput
-            required
-            label="Ім'я скорочено з крапкою"
-            onChange={(e) => meta.setDenominate({ ...meta.denominative, short_name: e })}
-            value={meta.denominative.short_name}
-          />
-
-          <CustomInput
-            required
-            label="По батькові скорочено з крапкою"
-            onChange={(e) => meta.setDenominate({ ...meta.denominative, short_patronymic: e })}
-            value={meta.denominative.short_patronymic}
-          />
-        </div>
-
         <CustomInput
-          label="Назва нотаріального округу у називному відмінку"
+          label="Назва нотаріального округу в називному відмінку (Хто? Що?), з маленької букви (приватний нотаріус Київського міського нотаріального округу)"
           onChange={(e) => meta.setDenominate({ ...meta.denominative, activity_n: e })}
           value={meta.denominative.activity_n}
         />
@@ -77,8 +59,7 @@ const Fields = () => {
         </div>
 
         <CustomInput
-          required
-          label="Назва нотаріального округу в орудному відмінку"
+          label="Назва нотаріального округу в орудному відмінку (Ким? Чим?), з маленької букви (державним реєстратором Київського міського округу)"
           onChange={(e) => meta.setAblative({ ...meta.ablative, activity_o: e })}
           value={meta.ablative.activity_o}
         />

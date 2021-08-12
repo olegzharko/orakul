@@ -5,6 +5,7 @@ use \App\Http\Controllers\Factory\DocumentController;
 use \App\Http\Controllers\Factory\GeneratorController;
 use \App\Http\Controllers\Factory\ConvertController;
 use \App\Http\Controllers\React\ViewController;
+use \App\Http\Controllers\PDFParserController;
 use App\Http\Controllers\PassportAuthController;
 
 /*
@@ -27,6 +28,8 @@ Route::get('get_excel', [\App\Http\Controllers\GiftController::class, 'get_excel
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);
 Route::get('test_price_convert/{number}', [ConvertController::class, 'test_price_convert']);
+
+Route::get('pdf_parser', [PDFParserController::class, 'start']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');

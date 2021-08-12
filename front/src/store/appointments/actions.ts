@@ -38,6 +38,13 @@ export const deleteAppointment = (id: string) => ({
   payload: id,
 });
 
+export const clearAppointments = () => async (
+  dispatch: Dispatch<any>,
+) => {
+  dispatch(setIsLoading(true));
+  dispatch(setAppointments([]));
+};
+
 export const fetchAppointments = () => async (
   dispatch: Dispatch<any>,
   getState: () => State
@@ -46,9 +53,10 @@ export const fetchAppointments = () => async (
 
   if (token && type && id) {
     dispatch(setIsLoading(true));
-    const { data, success } = await getAppointments(token);
+    const res = await getAppointments(token, type);
 
-    if (data && success) {
+    if (res?.success) {
+      const { data } = res;
       dispatch(setAppointments(Object.values(data)));
     }
 
@@ -60,12 +68,13 @@ export const fetchAppointmentsByFilter = (bodyData: FilterData) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().main.user;
+  const { token, type } = getState().main.user;
 
-  if (token) {
-    const { data, success } = await setSchedulerFilter(token, bodyData);
+  if (token && type) {
+    const res = await setSchedulerFilter(token, { ...bodyData, user_type: type });
 
-    if (success) {
+    if (res?.success) {
+      const { data } = res;
       dispatch(setAppointments(Object.values(data)));
     }
   }
@@ -81,6 +90,7 @@ export const fetchAppointmentsByContracts = (url: string) => async (
     const res = await getCardsByContractType(token, url);
 
     if (res?.success) {
+      const { data } = res;
       dispatch(setAppointments(Object.values(res.data)));
     }
   }
@@ -90,12 +100,17 @@ export const searchAppointments = (text: string) => async (
   dispatch: Dispatch<any>,
   getState: () => State
 ) => {
-  const { token } = getState().main.user;
+  const { token, type } = getState().main.user;
 
-  if (token) {
-    const { success, data } = await searchAppointmentsServices(token, { text });
+  if (!token || !type) {
+    throw new Error(`missed token or type in searchAppointments. Token: ${token}, Type: ${type}`);
+  }
 
-    if (data && success) {
+  if (token && type) {
+    const res = await searchAppointmentsServices(token, { text, type });
+
+    if (res?.success) {
+      const { data } = res;
       dispatch(setAppointments(Object.values(data)));
     }
   }

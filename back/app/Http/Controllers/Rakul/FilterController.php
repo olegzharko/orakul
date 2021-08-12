@@ -43,7 +43,7 @@ class FilterController extends BaseController
         $this->card = new CardController();
     }
 
-    public function dropdown()
+    public function dropdown($user_type = null)
     {
         $result = [];
 
@@ -54,7 +54,7 @@ class FilterController extends BaseController
         $contract_type = ContractType::get_active_contract_type();
         $developer = $this->tools->get_dev_group();
         $sort_type = SortType::get_all_sort_type();
-        $filter_type = $this->get_filter_type();
+        $filter_type = $this->get_filter_type($user_type);
 
         $result = [
             'notary' => $notary,
@@ -195,19 +195,21 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
     }
 
-    public function cancelled_cards()
+    public function cancelled_cards($user_type = null)
     {
+        if (!$user_type)
+            $user_type = auth()->user()->type;
         $query_cards = Card::whereIn('room_id', $this->rooms)
             ->where('date_time', '>=', $this->date->format('Y.m.d'))
             ->orderBy('date_time')
             ->where('cancelled', true);
 
-        if (auth()->user()->type == 'generator')
+        if ($user_type == 'generator')
             $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
 
         $cards = $query_cards->get();
 
-        if (auth()->user()->type != 'reception') {
+        if ($user_type != 'reception') {
             $result = $this->card->get_cards_in_generator_format($cards);
         }
         else {
@@ -217,16 +219,21 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Усі картки зі скасованими договорами');
     }
 
-    private function get_filter_type()
+    private function get_filter_type($user_type)
     {
         $result = [];
 
-        $filter_tyep = FilterType::select('alias', 'title')->where('active', true)->orderBy('sort_order')->get();
-//        dd($filter_tyep);
+        $filter_type = FilterType::select('alias', 'title')->where('active', true)->orderBy('sort_order')->get();
+//        dd($filter_type);
 
-        foreach ($filter_tyep as $key => $type) {
+        foreach ($filter_type as $key => $type) {
             $result[$key]['title'] = $type->title;
-            $result[$key]['type'] = $type->alias;
+
+            if ($user_type)
+                $result[$key]['type'] = $type->alias . "/" . $user_type;
+            else
+                $result[$key]['type'] = $type->alias;
+
             if (strpos($type->alias, 'total')) {
                 $result[$key]['count'] = $this->count_total_cards();
             } elseif (strpos($type->alias, 'ready')) {

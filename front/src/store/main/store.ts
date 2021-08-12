@@ -2,10 +2,16 @@ import { UserTypes } from '../../types';
 import { REDUX_ACTION } from '../types';
 import { ACTIONS } from './actions';
 
+type ExtraType = {
+  title: string;
+  type: UserTypes;
+}
+
 export type User = {
   type: UserTypes | null;
   token: null | string;
   id: number | null;
+  extra_type: ExtraType[];
 };
 
 export type ModalInfo = {
@@ -24,6 +30,7 @@ const initialState: MainState = {
     type: null,
     token: null,
     id: null,
+    extra_type: [],
   },
   modalInfo: {
     open: false,
@@ -38,6 +45,8 @@ const reducer = (state = initialState, action: REDUX_ACTION) => {
       return { ...state, user: { ...state.user, ...action.payload } };
     case ACTIONS.SET_MODAL_INFO:
       return { ...state, modalInfo: action.payload };
+    case ACTIONS.SET_USER_TYPE:
+      return { ...state, user: { ...state.user, type: action.payload } };
     default:
       return state;
   }

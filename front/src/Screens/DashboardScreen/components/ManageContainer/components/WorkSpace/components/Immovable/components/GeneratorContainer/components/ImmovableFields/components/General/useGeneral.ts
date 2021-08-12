@@ -12,8 +12,6 @@ type InitialData = {
   imm_number: string;
   registration_number: string;
   price_grn: string;
-  reserve_grn: string;
-  m2_grn: string;
   total_space: string;
   living_space: string;
   floor: string;
@@ -43,8 +41,6 @@ export const useGeneral = ({ initialData, id }: Props) => {
     imm_number: '',
     registration_number: '',
     price_grn: '',
-    reserve_grn: '',
-    m2_grn: '',
     total_space: '',
     living_space: '',
     floor: '',
@@ -59,8 +55,6 @@ export const useGeneral = ({ initialData, id }: Props) => {
       imm_number: '',
       registration_number: '',
       price_grn: '',
-      reserve_grn: '',
-      m2_grn: '',
       total_space: '',
       living_space: '',
       floor: '',
@@ -99,8 +93,6 @@ export const useGeneral = ({ initialData, id }: Props) => {
       imm_number: initialData?.imm_number || '',
       registration_number: initialData?.registration_number || '',
       price_grn: initialData?.price_grn || '',
-      reserve_grn: initialData?.reserve_grn || '',
-      m2_grn: initialData?.m2_grn || '',
       total_space: initialData?.total_space || '',
       living_space: initialData?.living_space || '',
       floor: initialData?.floor || '',

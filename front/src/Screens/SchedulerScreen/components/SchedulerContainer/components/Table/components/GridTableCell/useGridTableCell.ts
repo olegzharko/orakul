@@ -6,17 +6,28 @@ import moment from 'moment';
 import { State } from '../../../../../../../../store/types';
 import formatAppointmentDate from '../../utils/formatAppointmentDate';
 import { setSelectedNewAppointment } from '../../../../../../../../store/scheduler/actions';
+import { RoomWithBackground } from '../GridTable/useGridTable';
 
 export type Props = {
   rowsQuantity: number;
   raw: number;
   cell: number;
   selected: boolean;
+  roomsWithBackground: RoomWithBackground[];
 };
 
-export const useGridTableCell = ({ raw, cell }: Props) => {
+export const useGridTableCell = ({ raw, cell, roomsWithBackground }: Props) => {
   const { options } = useSelector((state: State) => state.scheduler);
   const dispatch = useDispatch();
+
+  const backGroundColor = useMemo(() => {
+    const hasBackGround = roomsWithBackground.find((room: any) => room.index === cell);
+    if (hasBackGround) {
+      return hasBackGround?.colour;
+    }
+
+    return '';
+  }, []);
 
   const rooms = useMemo(() => options?.rooms, [options]);
   const hours = useMemo(() => options?.work_time, [options]);
@@ -37,5 +48,5 @@ export const useGridTableCell = ({ raw, cell }: Props) => {
     }));
   }, [hours, rooms, days, raw, cell]);
 
-  return { onClick };
+  return { backGroundColor, onClick };
 };

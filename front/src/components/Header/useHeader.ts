@@ -34,5 +34,9 @@ export const useHeader = () => {
     history.push('/');
   }, []);
 
-  return { onSearch, onLogout, searchText };
+  return {
+    onSearch,
+    onLogout,
+    searchText,
+  };
 };

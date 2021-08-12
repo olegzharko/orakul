@@ -1,17 +1,20 @@
 import * as React from 'react';
 import './index.scss';
-import { Link } from 'react-router-dom';
 
 import { useHeader } from './useHeader';
+import UserSelect from './components/UserSelect';
+import PageNavigationControl from './components/PageNavigationControl';
 
 const Header = () => {
-  const { onSearch, onLogout, searchText } = useHeader();
+  const {
+    onSearch,
+    onLogout,
+    searchText,
+  } = useHeader();
 
   return (
     <div className="header container">
-      <Link to="/" className="header__logo">
-        <img src="/images/logo.svg" alt="logo" />
-      </Link>
+      <PageNavigationControl />
       <div className="header__search">
         <input
           type="text"
@@ -22,6 +25,7 @@ const Header = () => {
         <img src="/images/search.svg" alt="search" />
       </div>
       <div className="header__control">
+        <UserSelect />
         <img src="/images/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>

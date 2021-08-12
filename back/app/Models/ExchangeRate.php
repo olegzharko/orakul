@@ -20,6 +20,7 @@ class ExchangeRate extends Model
         'rate',
         'contract_buy',
         'contract_sell',
+        'nbu_ask',
         'updated_at',
     ];
 
@@ -28,10 +29,11 @@ class ExchangeRate extends Model
         return $this->belongsTo(Immovable::class, 'immovable_id');
     }
 
-    public static function get_rate_by_imm_id($card_id)
-    {
-        return ExchangeRate::where('card_id', $card_id)->value('rate');
-    }
+//    public static function get_rate_by_card_id($card_id)
+//    {
+////        return ExchangeRate::where('card_id', $card_id)->value('rate');
+//        return ExchangeRate::where('card_id', $card_id)->get();
+//    }
 
     public static function update_rate($card_id, $rate)
     {
