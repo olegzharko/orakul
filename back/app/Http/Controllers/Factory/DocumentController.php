@@ -118,6 +118,9 @@ class DocumentController extends GeneratorController
 
             $contract_clients = $this->get_contract_clients($this->contract);
 
+            if ($this->contract->type->alias == 'preliminary')
+                $this->change_font_size();
+
             $this->total_clients = count($contract_clients);
             if ($this->total_clients == 2)
                 $this->two_clients = true;
@@ -472,7 +475,10 @@ class DocumentController extends GeneratorController
             // Для Excel
             $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
             $sheet = $spreadsheet->getActiveSheet();
-            $this->set_taxes_data_for_excel($sheet);
+            if ($this->two_clients)
+                $this->set_excel_taxes_data_for_two_clients($sheet);
+            else
+                $this->set_excel_taxes_data_for_one_client($sheet);
             $writer = new Xlsx($spreadsheet);
             $file_name = $this->bank_taxes_generate_file;
             $writer->save($file_name);
@@ -700,7 +706,7 @@ class DocumentController extends GeneratorController
         $word->saveAs($template_generate_file);
 
 
-        if ($this->consent->widow) {
+        if ($this->consent && $this->consent->widow) {
             $word = new TemplateProcessor($template_generate_file);
             $widowhood = MainInfoType::where('alias', 'widow-date')->value('description');
             $word->setValue('ВДІВСТВО-ДАТА', $widowhood . ",$this->non_break_space");
@@ -730,7 +736,7 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних представника так покупця або чисто шаблон покупця
          * */
-        if ($this->client->representative) {
+        if ($this->client->representative && $this->client->representative->confidant_id) {
             $full_description = MainInfoType::where('alias', 'full-client-and-representative-confidant')->value('description');
             $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-client-and-representative-confidant')->value('description');
         }
@@ -1268,6 +1274,10 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
             $word->setValue('КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
 
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+
 //            $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ-ПІДПИС', $this->convert->get_full_name_n_for_sing_area($this->client));
@@ -1519,6 +1529,11 @@ class DocumentController extends GeneratorController
             $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
 
+//            $cr_gender_which_adjective = GenderWord::where('alias', "which")->value($this->client->gender);
+//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК', $cr_gender_which_adjective);
+//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК-UP', $this->mb_ucfirst($cr_gender_which_adjective));
+
+
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
 
@@ -1544,6 +1559,11 @@ class DocumentController extends GeneratorController
             $word->setValue('ПОД-ПІБ-Р', $this->convert->get_full_name_r($this->client->married->spouse));
             $word->setValue('ПОД-ПІБ-О', $this->convert->get_full_name_o($this->client->married->spouse));
             $word->setValue('ПОД-ДН', $this->display_date($this->client->married->spouse->birth_date));
+
+            $word->setValue('ПОД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
+            $word->setValue('ПОД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
+            $word->setValue('ПОД-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+
             /*
              * Подружжя клієнта - паспорт та код
              * */
@@ -2484,13 +2504,13 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
-    public function set_taxes_data_for_excel($sheet)
+    public function set_excel_taxes_data_for_one_client($sheet)
     {
         $developer = null;
+        $taxes = BankTaxesList::get();
 
         $price = sprintf("%.2f", $this->contract->immovable->grn/100);
         $sheet->setCellValue("J1", $price);
-        $taxes = BankTaxesList::get();
 
         $i = 2;
         foreach ($taxes as $tax) {
@@ -2500,9 +2520,7 @@ class DocumentController extends GeneratorController
                 $pay_buy_client = $this->client;
             }
 
-
             $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
-            $this->notification('Warning', $price * $percent . " " . $i);
             $sheet->setCellValue("A{$i}", $price * $percent);
             $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($pay_buy_client));
             $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
@@ -2532,15 +2550,80 @@ class DocumentController extends GeneratorController
         return $sheet;
     }
 
+    public function set_excel_taxes_data_for_two_clients($sheet)
+    {
+        $taxes = BankTaxesList::get();
+        $developer = $this->contract->dev_company->owner;
+        $first_client = $this->contract->clients[0];
+        $second_client = $this->contract->clients[1];
+
+        $price = sprintf("%.2f", $this->contract->immovable->grn/100);
+        $sheet->setCellValue("J1", $price);
+
+        $i = 2;
+        foreach ($taxes as $tax) {
+            $pay_buy_client = [];
+            if ($tax->type == 'developer') {
+                $pay_buy_client[] = $developer;
+            } else {
+                $pay_buy_client[] = $first_client;
+                $pay_buy_client[] = $second_client;
+            }
+
+            $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
+            foreach ($pay_buy_client as $client) {
+                if ($tax->type == 'developer')
+                    $sheet->setCellValue("A{$i}", $price * $percent);
+                else
+                    $sheet->setCellValue("A{$i}", $price * $percent / 2);
+                $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($client));
+                $sheet->setCellValue("C{$i}", $client->tax_code);
+                $full_tax_info = $tax->code_and_edrpoy . $client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($client);
+                $sheet->setCellValue("E{$i}", $full_tax_info);
+
+                $sheet->setCellValue("F{$i}", $tax->mfo);
+                $sheet->setCellValue("G{$i}", $tax->bank_account);
+                $sheet->setCellValue("H{$i}", $tax->name_recipient);
+                $sheet->setCellValue("I{$i}", $tax->okpo);
+                $i++;
+            }
+        }
+
+        $sheet->setCellValue("A9", "покупець 1");
+        $sheet->setCellValue("B9", $this->convert->get_full_name_n($first_client));
+        $sheet->setCellValue("C9", $first_client->tax_code);
+        $sheet->setCellValue("A10", "покупець 2");
+        $sheet->setCellValue("B10", $this->convert->get_full_name_n($second_client));
+        $sheet->setCellValue("C10", $second_client->tax_code);
+        $sheet->setCellValue("B11", "продавець");
+        $sheet->setCellValue("B11", $this->convert->get_full_name_n($developer));
+        $sheet->setCellValue("C11", $developer->tax_code);
+        $sheet->setCellValue("B12", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
+        $sheet->setCellValue("B13", $price);
+        $sheet->setCellValue("B15", $first_client->phone);
+        if ($this->contract->dev_representative) {
+            $sheet->setCellValue("E11", "через " . $this->contract->dev_representative->surname_n);
+        }
+
+        return $sheet;
+    }
+
     public function get_rate_by_company($card_id, $dev_company)
     {
-        $exchange_rate = ExchangeRate::where('card_id', $card_id)->first();
+        $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if ($dev_company->contract_rate == true) {
-            $rate = $exchange_rate->contract_buy;
-        } else {
-            $rate = $exchange_rate->rate;
-        }
+        if ($dev_company->ammount_rate)
+            $rate = $exchange->rate;
+        elseif ($dev_company->contract_rate)
+            $rate = $exchange->contract_buy;
+        elseif ($dev_company->nbu_rate)
+            $rate = $exchange->nbu_ask;
+
+//        if ($dev_company->contract_rate == true) {
+//            $rate = $exchange->contract_buy;
+//        } else {
+//            $rate = $exchange->rate;
+//        }
 
         return $rate;
     }
@@ -2601,5 +2684,12 @@ class DocumentController extends GeneratorController
         }
 
         return $result;
+    }
+
+    public function change_font_size()
+    {
+        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_end = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">";
     }
 }

@@ -15,7 +15,15 @@ class CreateVisitsTable extends Migration
     {
         Schema::create('visits', function (Blueprint $table) {
             $table->id();
+            $table->integer('card_id')->nullable();
+            $table->integer('room_id')->nullable();
+            $table->dateTime('arrival_time')->nullable();
+            $table->dateTime('waiting_time')->nullable();
+            $table->dateTime('total_time')->nullable();
+            $table->integer('number_of_people')->nullable();
+            $table->integer('children')->nullable();
             $table->timestamps();
+            $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
     }
 

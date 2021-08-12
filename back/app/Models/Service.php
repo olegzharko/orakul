@@ -48,7 +48,7 @@ class Service extends Model implements Sortable, HasMedia
 
     public function service_type()
     {
-        return $this->belongsToMany(ServiceType::class);
+        return $this->belongsToMany(NotaryService::class);
     }
 
     public function documents()

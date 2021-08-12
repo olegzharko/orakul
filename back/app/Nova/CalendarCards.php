@@ -23,7 +23,11 @@ class CalendarCards extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+
+    public function title()
+    {
+        return $this->date_time->format('d.m.Y') . " " . $this->room->title;
+    }
 
     /**
      * The columns that should be searched.

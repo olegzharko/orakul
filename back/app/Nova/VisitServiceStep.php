@@ -6,18 +6,17 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
 use Naif\Toggle\Toggle;
-use Laravel\Nova\Fields\Number;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class Visit extends Resource
+class VisitServiceStep extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Visit::class;
+    public static $model = \App\Models\VisitServiceStep::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -43,23 +42,17 @@ class Visit extends Resource
      */
     public function fields(Request $request)
     {
+//            $table->integer('visit_id')->nullable();
+//            $table->integer('service_step_id')->nullable();
+//            $table->integer('pass')->nullable();
+//            $table->dateTime('time')->nullable();
 
-//card_id
-//room_id
-//arrival_time
-//waiting_time
-//total_time
-//number_of_people
-//children
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Картка', 'card', 'App\Nova\CalendarCards'),
-            BelongsTo::make('Переговорна кімната', 'room', 'App\Nova\Room'),
-            DateTime::make('Клієнти прийшли в:', 'arrival_time')->timeFormat('HH:mm')->onlyOnForms(),
-            DateTime::make('Клієнти очікують', 'waiting_time')->timeFormat('HH:mm')->onlyOnForms(),
-            DateTime::make('Загальний час', 'total_time')->timeFormat('HH:mm')->onlyOnForms(),
-            Number::make('Кількість клієнтів', 'number_of_people')->rules('required'),
-            Toggle::make('Діти', 'children'),
+            BelongsTo::make('Візит', 'visit', 'App\Nova\Visit'),
+            BelongsTo::make('Етап', 'service_steps', 'App\Nova\ServiceSteps'),
+            Toggle::make('Готово', 'pass'),
+            DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm')->onlyOnForms(),
         ];
     }
 

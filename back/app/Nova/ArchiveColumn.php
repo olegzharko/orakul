@@ -3,21 +3,21 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use \Laravel\Nova\Fields\Text;
 use Naif\Toggle\Toggle;
-use Laravel\Nova\Fields\Number;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
-class Visit extends Resource
+class ArchiveColumn extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Visit::class;
+    public static $model = \App\Models\ArchiveColumn::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -25,6 +25,13 @@ class Visit extends Resource
      * @var string
      */
     public static $title = 'id';
+
+    public static $group = 'V2';
+
+    public static function label()
+    {
+        return "Архівні колонки";
+    }
 
     /**
      * The columns that should be searched.
@@ -43,23 +50,10 @@ class Visit extends Resource
      */
     public function fields(Request $request)
     {
-
-//card_id
-//room_id
-//arrival_time
-//waiting_time
-//total_time
-//number_of_people
-//children
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Картка', 'card', 'App\Nova\CalendarCards'),
-            BelongsTo::make('Переговорна кімната', 'room', 'App\Nova\Room'),
-            DateTime::make('Клієнти прийшли в:', 'arrival_time')->timeFormat('HH:mm')->onlyOnForms(),
-            DateTime::make('Клієнти очікують', 'waiting_time')->timeFormat('HH:mm')->onlyOnForms(),
-            DateTime::make('Загальний час', 'total_time')->timeFormat('HH:mm')->onlyOnForms(),
-            Number::make('Кількість клієнтів', 'number_of_people')->rules('required'),
-            Toggle::make('Діти', 'children'),
+            Text::make('Заголовок', 'title'),
+            Toggle::make('Активувати', 'active'),
         ];
     }
 
