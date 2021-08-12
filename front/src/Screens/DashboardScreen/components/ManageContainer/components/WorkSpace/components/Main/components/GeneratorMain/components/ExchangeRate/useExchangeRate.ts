@@ -64,7 +64,7 @@ export const useExchangeRate = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [contractBuy, contractSell, exchangeRate, token]);
+  }, [contractBuy, contractSell, exchangeRate, token, nbu]);
 
   const isSaveButtonDisable = useMemo(
     () => !contractBuy
