@@ -28,7 +28,7 @@ const Authorization = () => {
 
         <div className="mv12">
           <CustomInput
-            label="E-mail"
+            label="Логін"
             value={meta.email}
             onChange={meta.setEmail}
           />
