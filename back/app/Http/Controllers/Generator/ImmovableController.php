@@ -1081,6 +1081,7 @@ class ImmovableController extends BaseController
             'statement_template_id' => $r['statement_template_id'],
 
             'exchange_rate' => $r['exchange_rate'],
+            'nbu_ask' => $r['nbu_ask'],
 
             'sign_date' => $r['sign_date'] ? $r['sign_date']->format('Y.m.d') : null,
             'reg_num' => $r['reg_num'],
@@ -1123,6 +1124,7 @@ class ImmovableController extends BaseController
             'statement_template_id' => ['numeric', 'nullable'],
 
             'exchange_rate' => ['numeric', 'nullable'],
+            'nbu_ask' => ['numeric', 'nullable'],
 
             'sign_date' => ['date_format:Y.m.d', 'nullable'],
             'reg_num' => ['string', 'nullable'],
@@ -1164,6 +1166,7 @@ class ImmovableController extends BaseController
             'statement_template_id.numeric' => 'Необхідно передати ID шаблону заяви від забудовника в числовому форматі',
 
             'exchange_rate.numeric' => 'Необхідно передати курс долара в числовому форматі',
+            'nbu_ask.numeric' => 'Необхідно передати курс долара в числовому форматі',
         ]);
 
         $errors = $validator->errors()->messages();

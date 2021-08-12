@@ -20,6 +20,7 @@ class ExchangeRate extends Model
         'rate',
         'contract_buy',
         'contract_sell',
+        'nbu_ask',
         'updated_at',
     ];
 

@@ -10,10 +10,12 @@ const ExchangeRate = (props: Props) => {
   const {
     exchangeRate,
     contractBuy,
+    nbu,
     contractSell,
     setContractBuy,
     setContractSell,
     setExchangeRate,
+    setNbu,
     onClear,
     onSave,
     onRefreshRate,
@@ -37,6 +39,9 @@ const ExchangeRate = (props: Props) => {
           </div>
           <div className="exchange__field">
             <CustomInput required label="Курс для договорів - продаж" onChange={setContractSell} value={contractSell} />
+          </div>
+          <div className="exchange__field">
+            <CustomInput required label="Курс НБУ" onChange={setNbu} value={nbu} />
           </div>
         </div>
 

@@ -15,7 +15,7 @@ const ClientsDashboard = () => {
   return (
     <main className="clients">
       <div className="grid mb20">
-        <div className="clients__colorful-title blue">Клієнт</div>
+        <div className="clients__colorful-title blue">Покупець</div>
         <div className="clients__colorful-title yellow">Подружжя</div>
         <div className="clients__colorful-title green">Представник</div>
       </div>
