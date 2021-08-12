@@ -118,6 +118,9 @@ class DocumentController extends GeneratorController
 
             $contract_clients = $this->get_contract_clients($this->contract);
 
+            if ($this->contract->type->alias == 'preliminary')
+                $this->change_font_size();
+
             $this->total_clients = count($contract_clients);
             if ($this->total_clients == 2)
                 $this->two_clients = true;
@@ -2669,5 +2672,12 @@ class DocumentController extends GeneratorController
         }
 
         return $result;
+    }
+
+    public function change_font_size()
+    {
+        $this->style_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_color_and_bold = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/><w:highlight w:val=\"yellow\"/></w:rPr><w:t xml:space=\"preserve\">";
+        $this->style_end = "</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"Times New Rakul\" w:hAnsi=\"Times New Rakul\" w:cs=\"Times New Rakul\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">";
     }
 }

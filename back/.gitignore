@@ -6,6 +6,8 @@
 /public/static
 /public/Contract
 /public/Zip
+/public/images
+/public/favicon.ico
 /resources/views/*
 /storage/*.key
 /storage

@@ -365,6 +365,10 @@ class ImmovableController extends BaseController
         if (!$immovable = Immovable::find($immovable_id))
             return $this->sendError('', 'Нерухомість по ID:' . $immovable_id . ' не було знайдено.');
 
+        if ($immovable->price_grn) {
+            return $this->sendError('Відсутня ціна за нерухомість', '');
+        }
+
         $validator = $this->validate_imm_data($r);
 
         if (count($validator->errors()->getMessages())) {
