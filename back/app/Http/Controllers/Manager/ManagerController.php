@@ -187,7 +187,7 @@ class ManagerController extends BaseController
 
             $address = $this->convert->immovable_building_address($immovable);
 
-            $contract_type = $contract->type->alias;
+            $contract_type = $contract->type ? $contract->type->alias : null;
             $result[$key]['id'] = $immovable->id;
             $result[$key]['title'] = $address;
 

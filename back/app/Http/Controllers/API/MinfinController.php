@@ -16,7 +16,7 @@ class MinfinController extends BaseController
     public function __construct()
     {
         $this->client = new \GuzzleHttp\Client();
-        $this->api_key = "cbef9c587eb1110b0da451d3f8e99ac4e62b0f34";
+        $this->api_key = "d0624fa95581282989b572beaf26ea7eeb6323d1";
 //        $this->api_key = "cfe70aa913f63a82fee327cbe8672ba7e7a79049";
     }
 
