@@ -135,7 +135,7 @@ class GeneratorController extends BaseController
 
     public function start_generate_contract()
     {
-        if (count($this->pack_contract)) {
+        if (isset($this->pack_contract) && count($this->pack_contract)) {
             // Підготувати данні до обробки
             foreach ($this->pack_contract as $key => $this->contract) {
 

@@ -247,7 +247,8 @@ class DocumentController extends GeneratorController
                     $zip->close();
                 }
 
-                $result[] = $zip_folder_path_part .$fileName;
+                if (file_exists($zip_folder_path_part .$fileName))
+                    $result[] = $zip_folder_path_part .$fileName;
             }
         }
 
