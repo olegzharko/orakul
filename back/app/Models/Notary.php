@@ -37,6 +37,11 @@ class Notary extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
 //    public static function get_notary($notary_id)
 //    {
 //        $notary = Notary::where('id', $notary_id)->first();

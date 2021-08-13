@@ -146,6 +146,7 @@ class ImmovableController extends BaseController
         $immovable = Immovable::find($immovable_id);
 
         $currency_rate = $this->get_currency_rate($immovable);
+
         $price_dollar = round($r['price_grn']  / $currency_rate, 2);
 
         if ($immovable->contract->clients->count() == 2) {
@@ -380,7 +381,7 @@ class ImmovableController extends BaseController
 //        $r['sign_date'] = \DateTime::createFromFormat('d.m.Y', $r['sign_date']);
 //        $r['final_date'] = \DateTime::createFromFormat('d.m.Y', $r['final_date']);
 
-        $currency_rate = $this->get_currency_rate($immovable_id);
+        $currency_rate = $this->get_currency_rate($immovable);
 
         $first_part_dollar = round($r['first_part_grn']  / $currency_rate, 2);
         $last_part_dollar = round($r['last_part_grn'] / $currency_rate, 2);
@@ -1229,16 +1230,17 @@ class ImmovableController extends BaseController
 
     public function get_currency_rate($immovable)
     {
+        $rate = 1;
         $card_id = Contract::get_card_id_by_immovable_id($immovable->id);
 
         $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if ($immovable->developer_building->dev_company->ammount_rate)
-            $rate = $exchange->rate;
-        elseif ($immovable->developer_building->dev_company->contract_rate)
-            $rate = $exchange->contract_buy;
-        elseif ($immovable->developer_building->dev_company->nbu_rate)
-            $rate = $exchange->nbu_ask;
+        if ($immovable->developer_building->dev_company->ammount_rate && $exchange->rate)
+            $rate = $exchange->rate ?? 1;
+        elseif ($immovable->developer_building->dev_company->contract_rate && $exchange->contract_buy)
+            $rate = $exchange->contract_buy ?? 1;
+        elseif ($immovable->developer_building->dev_company->nbu_rate && $exchange->nbu_ask)
+            $rate = $exchange->nbu_ask ?? 1;
 
 //        if (!$rate) {
 //            $rate = Exchange::get_minfin_rate();

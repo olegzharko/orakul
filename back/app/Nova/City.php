@@ -32,9 +32,14 @@ class City extends Resource
     {
         $title = '';
 
-        if ($this->city_type)
+        if ($this->city_type) {
             $title .= $this->city_type->short . " ";
+        }
         $title .= $this->title;
+
+        if ($this->district) {
+            $title .= " (" . $this->district->title_n . ") ";
+        }
 
         return $title;
     }
