@@ -97,12 +97,14 @@ class Card extends Model
 
     public static function new_card($r)
     {
-        $work_city = \App\Models\City::where('notary', 1)->first();
+//        $work_city = \App\Models\City::where('notary', 1)->first();
+        $notary = Notary::where('city_id', $r['notary_id'])->first();
 
         $card = new Card();
         $card->notary_id = $r['notary_id'];
         $card->room_id = $r['room_id'];
-        $card->city_id = $work_city ? $work_city->id : null;
+//        $card->city_id = $work_city ? $work_city->id : null;
+        $card->city_id = $notary ? $notary->city_id : null;
         $card->date_time = \DateTime::createFromFormat('Y.m.d. H:i', $r['date_time']);
         $card->dev_group_id = $r['dev_company_id']; // DEV_GROUPE
         $card->dev_representative_id = $r['dev_representative_id'];
