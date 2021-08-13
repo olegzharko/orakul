@@ -80,6 +80,7 @@ class User extends Resource
                 ->creationRules('required', 'string', 'min:8')
                 ->updateRules('nullable', 'string', 'min:8'),
 
+            Toggle::make('Рецепція', 'reception'),
             Toggle::make('Менеджер', 'manager'),
             Toggle::make('Генератор', 'generator'),
             Toggle::make('Реєстратор', 'registrar'),

@@ -2610,14 +2610,15 @@ class DocumentController extends GeneratorController
 
     public function get_rate_by_company($card_id, $dev_company)
     {
+        $rate = 1;
         $exchange = ExchangeRate::where('card_id', $card_id)->first();
 
-        if ($dev_company->ammount_rate)
-            $rate = $exchange->rate;
-        elseif ($dev_company->contract_rate)
-            $rate = $exchange->contract_buy;
-        elseif ($dev_company->nbu_rate)
-            $rate = $exchange->nbu_ask;
+        if ($dev_company->ammount_rate && $exchange->rate)
+            $rate = $exchange->rate ?? 1;
+        elseif ($dev_company->contract_rate && $exchange->contract_buy)
+            $rate = $exchange->contract_buy ?? 1;
+        elseif ($dev_company->nbu_rate && $exchange->nbu_ask)
+            $rate = $exchange->nbu_ask ?? 1;
 
 //        if ($dev_company->contract_rate == true) {
 //            $rate = $exchange->contract_buy;
