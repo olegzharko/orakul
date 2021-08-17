@@ -846,7 +846,6 @@ class ConvertController extends GeneratorController
             $building_type = trim(KeyWord::where('key', 'building')->value('short'));
             $building_num = trim($c->building);
 
-
             $building_part = null;
             if ($c->building_part_id) {
                 $building_part = ", " . $c->building_part->short . $this->non_break_space . trim($c->building_part_num);
@@ -865,6 +864,8 @@ class ConvertController extends GeneratorController
 
         $full_address = "$region $district $city $address $building";
         $full_address = trim(str_replace("  ", " ", $full_address));
+
+
 
         return $full_address;
     }

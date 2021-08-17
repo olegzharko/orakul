@@ -2230,7 +2230,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_exchange_rate($word)
     {
-        if ($this->contract->immovable  && $this->company_rate) {
+        if ($this->contract->immovable  && $this->company_rate && $this->card->exchange_rate) {
             $word->setValue('КУРС-ДОЛАРА', $this->convert->exchange_price($this->card->exchange_rate->rate));
             if ($this->card->exchange_rate->contract_buy)
                 $word->setValue('КУРС-ДОЛАРА+5', $this->convert->exchange_price($this->card->exchange_rate->contract_buy + 5));
