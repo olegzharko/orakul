@@ -23,9 +23,9 @@ export const useUserSelect = () => {
 
   const handleUserType = useCallback((type: UserTypes) => {
     setIsOpen(false);
+    dispatch(setUserTypeAction(type));
     setTimeout(() => {
       history.push('/');
-      dispatch(setUserTypeAction(type));
     }, 100);
   }, []);
 

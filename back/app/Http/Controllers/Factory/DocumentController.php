@@ -1307,13 +1307,13 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ШЛ-РОЛЬ-О', KeyWord::where('key', $this->client->gender)->value('title_o'));
             $word->setValue('КЛ-ШЛ-РОЛЬ-О-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
 
-            if ($this->client->married)
+            if ($this->client->married && $this->client->married->spouse && $this->client->married->spouse->gender)
                 $cs_agree = GenderWord::where('alias', "agree")->value($this->client->married->spouse->gender);
             else
                 $cs_agree = null;
             $word->setValue('ПОД-ЗГОД', $cs_agree);
 
-            if ($this->client->married && $this->client->married->spouse)
+            if ($this->client->married && $this->client->married->spouse && $this->client->married->spouse->gender)
                 $cl_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
             else
                 $cl_gender_pronoun = null;
@@ -1552,7 +1552,7 @@ class DocumentController extends GeneratorController
      * */
     public function set_client_spouse($word)
     {
-        if ($this->client->married) {
+        if ($this->client->married && $this->client->married->spouse && $this->client->married->spouse->gender) {
             /*
              * Подружжя клієнта - ПІБ
              * */
@@ -1584,6 +1584,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПОД-ШЛ-РОЛЬ-О-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o')));
 
             $cs_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
+
             $word->setValue('ПОД-ЇХ', $cs_gender_pronoun);
             $word->setValue('ПОД-ЇХ-UP', $this->mb_ucfirst($cs_gender_pronoun));
 
