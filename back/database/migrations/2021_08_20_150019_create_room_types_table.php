@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBankFilesTable extends Migration
+class CreateRoomTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateBankFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('bank_files', function (Blueprint $table) {
+        Schema::create('room_types', function (Blueprint $table) {
             $table->id();
-            $table->integer('card_id')->nullable();
             $table->string('title')->nullable();
-            $table->string('file_path')->nullable();
+            $table->string('alias')->nullable();
+            $table->integer('active')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateBankFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bank_files');
+        Schema::dropIfExists('room_types');
     }
 }

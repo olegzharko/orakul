@@ -14,6 +14,7 @@ use App\Models\DevCompany;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
 use App\Models\SortType;
+use App\Models\Visit;
 use App\Models\WorkDay;
 use Illuminate\Http\Request;
 use App\Models\Client;
@@ -41,7 +42,8 @@ class CardController extends BaseController
     public function __construct()
     {
         $this->date = new \DateTime();
-        $this->rooms = Room::where('active', true)->pluck('id')->toArray();
+        $this->rooms = Room::where('rooms.active', true)->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->pluck('rooms.id')->toArray();
+        dd($this->rooms);
         $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->immovable = new ImmovableController();
         $this->contract = new ContractController();
@@ -93,7 +95,7 @@ class CardController extends BaseController
     /*
      * GET with param
      * */
-    public function show($id)
+    public function show($card_id)
     {
         $card = Card::select(
             'id',
@@ -105,10 +107,10 @@ class CardController extends BaseController
             'dev_manager_id',
             'generator_step',
             'ready',
-        )->find($id);
+        )->find($card_id);
 
         if (!$card) {
-            return $this->sendError("Картка по ID $id відсутня");
+            return $this->sendError("Картка по ID $card_id відсутня");
         }
 
         if ($card->date_time) {
@@ -118,18 +120,6 @@ class CardController extends BaseController
         } else {
             $card->date = null;
             $card->time = null;
-        }
-
-        if ($card->generator_step) {
-            $card->generator_step = true;
-        } else {
-            $card->generator_step = false;
-        }
-
-        if ($card->ready) {
-            $card->ready = true;
-        } else {
-            $card->ready = false;
         }
 
         $contracts = $card->has_contracts;
@@ -186,15 +176,22 @@ class CardController extends BaseController
             }
         }
 
+        $visit_info = Visit::select(
+            'number_of_people',
+            'children',
+            'room_id',
+        )->where('card_id', $card_id)->first();
+
         unset($card['has_contracts']);
+
         $result = [
             'card' => $card,
             'immovables' => $result_contract_immovable,
             'clients' => $result_clients,
+            'visit_info' => $visit_info,
         ];
 
-        return $this->sendResponse($result, 'Карта з ID:' . $id);
-
+        return $this->sendResponse($result, 'Карта з ID:' . $card_id);
     }
 
     /*
@@ -627,8 +624,8 @@ class CardController extends BaseController
                 $result[$key]['h'] = 1;
                 $result[$key]['color'] = $card->dev_group->color;
                 $result[$key]['title'] = $this->get_card_title($card);
-                $result[$key]['generator_step'] = $card->generator_step ? true : false;
-                $result[$key]['ready'] = $card->ready ? true : false;
+                $result[$key]['generator_step'] = $card->generator_step;
+                $result[$key]['ready'] = $card->ready;
                 $result[$key]['short_info'] = $this->get_card_short_info($card);
 
             }

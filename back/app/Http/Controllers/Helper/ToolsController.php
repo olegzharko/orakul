@@ -13,6 +13,8 @@ use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
 use App\Models\Text;
+use App\Models\Card;
+use App\Models\Contract;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use Illuminate\Http\Request;
@@ -219,5 +221,108 @@ class ToolsController extends Controller
         }
 
         return $result;
+    }
+
+    public function get_notary_id_and_title($notary_id)
+    {
+        $result = [];
+
+        if ($notary = Notary::where('id', $notary_id)->get()) {
+            foreach ($notary as $key => $value) {
+                $result[$key]['id'] = $notary_id;
+                $result[$key]['title'] = $this->convert->get_full_name($value);
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_staff_id_and_title($staff_id)
+    {
+        $result = [];
+
+        if ($staff = User::find($staff_id)) {
+            $result['id'] = $staff_id;
+            $result['title'] = $this->convert->get_staff_full_name($staff);
+        }
+
+        return $result;
+    }
+
+    public function get_staff_by_card($card_id, $staff_type)
+    {
+        $result = [];
+
+        if (Card::find($card_id)) {
+
+            if ($staff_type == 'reader') {
+                $staff_id = Contract::where('card_id', $card_id)->pluck('reader_id')->toArray();
+            } elseif ($staff_type == 'accompanying') {
+                $staff_id = Contract::where('card_id', $card_id)->pluck('accompanying_id')->toArray();
+            }
+
+            $staff = User::whereIn('id', $staff_id)->get();
+
+            if (isset($staff) && count($staff)) {
+                foreach ($staff as $key => $value) {
+                    $result[$key] = $this->get_staff_id_and_title($value->id);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_representative_by_card($card_id)
+    {
+        $result = [];
+
+        if ($card = Card::find($card_id)) {
+            $dev_representative = Client::where('id', $card->dev_representative_id)->get();
+            foreach ($dev_representative as $key => $value) {
+                $result[$key]['id'] = $value->id;
+                $result[$key]['title'] = $this->convert->get_full_name_n($value);
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_immovables_by_card($card_id)
+    {
+        $result  = [];
+
+        if ($card = Card::find($card_id)) {
+            $contracts = Contract::where('card_id', $card_id)->get();
+            foreach ($contracts as $key => $contract) {
+                $result[$key]['id'] = $contract->id;
+                $result[$key]['title'] = $this->convert->immovable_building_address($contract->immovable);
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_clients_by_card($card_id)
+    {
+        $result  = [];
+
+        if ($card = Card::find($card_id)) {
+            $contract = Contract::where('card_id', $card_id)->first();
+            $clients = $contract->clients;
+            foreach ($clients as $key => $value) {
+                $result[$key]['id'] = $value->id;
+                $result[$key]['title'] = $this->convert->get_full_name_n($value);
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_rooms()
+    {
+        $rooms = Room::select('rooms.id', 'rooms.title', 'room_types.alias')->where(['rooms.active' => true, 'rooms.location' => 'rakul'])->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->orderBy('rooms.sort_order')->get();
+
+        return $rooms;
     }
 }

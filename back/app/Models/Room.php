@@ -12,5 +12,11 @@ class Room extends Model
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'reception' => 'boolean',
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(RoomType::class, 'type_id');
+    }
 }

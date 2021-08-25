@@ -22,15 +22,14 @@ class ReceptionController extends BaseController
     {
         $this->convert = new ConvertController();
     }
+
     public function reception()
     {
-        $rooms = Room::select('id', 'title', 'sort_order', 'color')->where('active', true)->get();
-        
+        $rooms = Room::select('rooms.id', 'rooms.title', 'rooms.sort_order', 'rooms.color')->where(['rooms.active' => true, 'room_types.alias' => 'meeting_room'])->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->get();
+
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
         $work_days_and_date = $this->get_day_and_date();
         $form_date = $this->form_data();
-        
-        
 
         $result = [
             'rooms' => $rooms,

@@ -95,6 +95,7 @@ class Notary extends Resource
             Toggle::make('Ативувати', 'active')->color('#165153'),
 
             BelongsTo::make('Населений пункт', 'city', 'App\Nova\City'),
+            BelongsTo::make('Кімната', 'room', 'App\Nova\Room'),
 
             Heading::make("Називний: хто? що? - ластівк-а"),
             Heading::make("Родовий: кого?чого? - ластівк-и"),

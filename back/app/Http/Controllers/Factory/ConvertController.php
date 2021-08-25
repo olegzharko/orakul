@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Models\ApartmentType;
+use App\Models\Card;
 use App\Models\DayConvert;
 use App\Models\GenderWord;
 use App\Models\KeyWord;
 use App\Models\MonthConvert;
+use App\Models\Notary;
 use App\Models\Text;
+use App\Models\User;
 use App\Models\WorkDay;
 use App\Models\YearConvert;
+use App\Models\Contract;
+use App\Models\Client;
 
 class ConvertController extends GeneratorController
 {
@@ -1167,6 +1172,13 @@ class ConvertController extends GeneratorController
     {
         $full_name = "$client->surname_n $client->name_n $client->patronymic_n";
         $full_name = mb_strtoupper($full_name);
+
+        return trim($full_name);
+    }
+
+    public function get_staff_full_name($staff)
+    {
+        $full_name = "$staff->surname $staff->name $staff->patronymic";
 
         return trim($full_name);
     }

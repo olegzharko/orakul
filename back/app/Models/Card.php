@@ -26,6 +26,8 @@ class Card extends Model
         'date_time' => 'datetime',
         'deleted_at' => 'datetime',
         'updated_at' => 'datetime',
+        'generator_step' => 'boolean',
+        'ready' => 'boolean',
     ];
 
     public static function get_card_by_contract($contract_id)

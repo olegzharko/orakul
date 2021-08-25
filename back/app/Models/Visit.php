@@ -9,12 +9,25 @@ class Visit extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'card_id',
+        'number_of_people',
+        'children',
+        'room_id',
+        'in_progress',
+        'arrival_time',
+        'waiting_time',
+        'total_time',
+    ];
+
     protected $casts = [
         'arrival_time' => 'datetime',
         'waiting_time' => 'datetime',
         'total_time' => 'datetime',
         'deleted_at' => 'datetime',
         'updated_at' => 'datetime',
+        'children' => 'boolean',
+        'in_progress' => 'boolean',
     ];
 
     public function card()
