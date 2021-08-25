@@ -40,7 +40,6 @@ class DeveloperController extends BaseController
 
         $card = Card::find($card_id);
 
-        dd($card, 1);
         $dev_company_query = DevCompany::select(
                 'dev_companies.*'
             )
