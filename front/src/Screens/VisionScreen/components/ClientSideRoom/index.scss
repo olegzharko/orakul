@@ -1,0 +1,201 @@
+@import '../../../../constants.scss';
+
+.vision-client-side-room {
+
+  &__header {
+    padding: 10px 16px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
+    border-top-left-radius: $border_radius;
+    border-top-right-radius: $border_radius;
+
+    & > span {
+      color: $white;
+    }
+  }
+
+  &__body {
+    background-color: $white;
+    padding: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 25px;
+
+    & > div {
+      background-color: $grey_thin;
+      border-radius: $border_radius_hard;
+      padding: 25px 35px;
+      @include form_text;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+
+      & > img {
+        width: 18px;
+        margin-right: 10px;
+      }
+    }
+
+    .stages {
+
+      &__list {
+        padding-left: 25px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      &__stage {
+        position: relative;
+        margin-bottom: 10px;
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: -17px;
+          top: calc(50% - 2px);
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: black;
+        }
+
+        &-success {
+          color: $green;
+
+          &:before {
+            background-color: $green;
+          }
+        }
+      }
+    }
+
+    .payments {
+      display: flex;
+      flex-direction: column;
+
+      &__list {
+        padding-left: 25px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      &__part {
+        position: relative;
+        margin-bottom: 10px;
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: -17px;
+          top: calc(50% - 2px);
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: black;
+        }
+
+        & > b {
+          margin-left: 5px;
+        }
+      }
+
+      &__total {
+        margin: 10px 0;
+
+        & > b {
+          margin-left: 5px;
+        }
+      }
+
+      &__status {
+
+        & > b {
+          margin-left: 5px;
+        }
+
+        &-success {
+          color: $green;
+        }
+      }
+    }
+
+    .immovables, .help {
+
+      &__list {
+
+        & > span {
+          margin-bottom: 10px;
+        }
+      }
+    }
+
+    .complete-set {
+
+      &__list {
+        padding-left: 25px;
+        grid-gap: 10px;
+      }
+
+      &__item {
+        position: relative;
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: -17px;
+          top: calc(50% - 2px);
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: black;
+        }
+
+        &.success {
+          color: $green;
+
+          &:before {
+            background-color: $green;
+          }
+        }
+
+        &.failed {
+          color: $red;
+
+          &:before {
+            background-color: $red;
+          }
+        }
+      }
+    }
+
+    .other {
+
+      &__item {
+
+        .info {
+          display: flex;
+          flex-direction: column;
+
+          & > span {
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  &__info-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 25px;
+  }
+
+  &__title-text {
+    & > b {
+      margin-left: 5px;
+    }
+  }
+}

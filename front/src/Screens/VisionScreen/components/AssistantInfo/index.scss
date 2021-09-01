@@ -1,0 +1,53 @@
+@import '../../../../constants.scss';
+
+.vision-assistant-info {
+
+  .assistant-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__person {
+      display: flex;
+      align-items: center;
+      @include form_text;
+      font-weight: bold;
+
+      & > img {
+        margin-right: 24px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+    }
+
+    &__buttons {
+      display: flex;
+      height: max-content;
+      
+      & > button {
+        padding: 10px 40px;
+      }
+
+      & > button:first-child {
+        margin-right: 25px;
+      }
+    }
+  }
+  
+  .assistant-info-navigation {
+    margin: 25px 0;
+    flex-wrap: wrap;
+
+    .vision-navigation__link {
+      display: flex;
+      flex-grow: 1;
+      justify-content: center;
+      font-weight: 400;
+
+      &-active {
+        font-weight: bold;
+      }
+    }
+  }
+}

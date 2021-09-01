@@ -48,12 +48,15 @@ const CustomDatePicker = ({ selectedDate, onSelect, label, required, disabled }:
     <MuiThemeProvider theme={customTheme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
         <KeyboardDatePicker
+          animateYearScrolling
+          showTodayButton
           error={required && !value}
           margin="normal"
           label={label}
           format="dd/MM/yyyy"
           value={value}
           onChange={handleChange}
+          todayLabel="Сьогодні"
           cancelLabel="Закрити"
           okLabel="Зберегти"
           KeyboardButtonProps={{

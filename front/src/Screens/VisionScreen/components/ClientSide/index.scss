@@ -1,0 +1,295 @@
+
+@import '../../../../constants.scss';
+
+.vision-client-side {
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead.table__header {
+      height: 56px;
+      background-color: $grey_light;
+      
+
+      th {
+        text-align: center;
+        border-top-left-radius: $border_radius;
+        border-top-right-radius:  $border_radius;
+        @include partlet_title;
+        color: $primary;
+      }
+    }
+
+    tbody.table__body {
+
+      tr {
+        display: flex;
+        height: 56px;
+        border-bottom: 1px solid #EEEEEE;
+        background-color: $white;
+        
+        td {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-grow: 1;
+          @include form_text;
+          color: $primary;
+
+          &:first-child {
+            width: 8px;
+            flex-grow: 0;
+          }
+
+          img {
+            width: 18px;
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+
+    .table__clickable {
+      cursor: pointer;
+      transition: $transition_default;
+      
+      &:hover {
+        opacity: .5;
+      }
+    }
+
+    .table__info {
+      background-color: $white;
+      padding: 40px 0;
+    }
+
+    .table__textBlock {
+      display: flex;
+      flex-direction: column;
+
+      .title {
+        @include mini_title;
+      }
+
+      .info {
+        @include form_text;
+      }
+    }
+
+    .table__closeIcon {
+      display: flex;
+      justify-content: flex-end;
+
+      img {
+        margin-right: 10px;
+        cursor: pointer;
+        transition: $transition_default;
+
+        &:hover {
+          opacity: .5;
+        }
+      }
+    }
+
+    .table__buttonsGroup {
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 0 20%;
+
+      button {
+        margin: 0 12px;
+      }
+    }
+  }
+
+  .room-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 25px;
+    margin-top: 25px;
+  }
+
+  .room-card {
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 16px;
+      background-color: #FF3400;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
+      border-top-left-radius: $border_radius;
+      border-top-right-radius: $border_radius;
+
+      &-title {
+        @include form_text;
+        font-weight: 600;
+        color: $white;
+      }
+
+      &-button {
+        @include form_text;
+        color: $white;
+        font-size: 14px;
+        outline: none;
+        padding: 0 25px;
+        background-color: transparent;
+        border: 1px solid $white;
+        box-sizing: border-box;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: $transition_default;
+
+        &:hover {
+          opacity: .5;
+        }
+      }
+    }
+
+    &__body {
+      background-color: $white;
+      padding: 25px 35px;
+      background: #FFFFFF;
+      box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
+      border-radius: 4px;
+
+      .main-info {
+        display: flex;
+        flex-direction: column;
+
+        & > span {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          @include form_text;
+
+          & > b, & > span {
+            font-weight: 600;
+            margin-left: 5px;
+          }
+
+          img {
+            margin-right: 10px;
+            width: 18px;
+          }
+        }
+      }
+
+      .immovables {
+        margin: 25px 0;
+      }
+
+      .client {
+        margin-bottom: 15px;
+      }
+
+      .additional {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 15px;
+
+        &__item {
+          width: 50%;
+          margin-bottom: 25px;
+        }
+      }
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+
+      .title {
+        @include form_text;
+        display: flex;
+        align-items: center;
+        margin-bottom: 9px;
+        font-weight: bold;
+        color: $primary;
+
+        & > img {
+          margin-right: 10px;
+          width: 18px;
+        }
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        color: $dark;
+        
+        & > span {
+          margin-bottom: 9px;
+        }
+      }
+    }
+
+    &__buttons {
+      display: flex;
+      margin-top: 20px;
+
+      & > button {
+        margin: 0 10px;
+      }
+    }
+  }
+
+  .room-card-group {
+    display: flex;
+    flex-direction: column;
+    background-color: $white;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 15px;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
+      border-top-left-radius: $border_radius;
+      border-top-right-radius: $border_radius;
+
+      &-title {
+        @include form_text;
+        font-weight: 600;
+      }
+  
+      &-button {
+        @include form_text;
+        font-size: 14px;
+        outline: none;
+        padding: 0 25px;
+        background-color: transparent;
+        border: 1px solid #000000;
+        box-sizing: border-box;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: $transition_default;
+  
+        &:hover {
+          opacity: .5;
+        }
+      }
+    }
+
+
+    &__person {
+      display: flex;
+      box-shadow: inset 0px -1px 0px #EEEEEE;
+
+      .colour-mark {
+        width: 15px;
+        min-height: 100%;
+      }
+
+      .content-group {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-between;
+        padding: 15px 30px;
+        @include form_text;
+      }
+    }
+  }
+}

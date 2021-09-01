@@ -1,0 +1,42 @@
+@import '../../constants.scss';
+
+.vision {
+  min-height: calc(100vh - 100px);
+  background-color: $grey_thin;
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  &-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    box-shadow: inset 0px -1px 0px #EEEEEE;
+    background-color: $white;
+    border-radius: $border_radius;
+
+    &__link {
+      text-decoration: none;
+      color: $primary;
+      margin: 0 20px;
+      @include form_text;
+      font-weight: bold;
+      padding: 16px 0;
+      cursor: pointer;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &-active {
+        color: $red;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

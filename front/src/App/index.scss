@@ -66,6 +66,15 @@ body, p {
   align-items: flex-end;
 }
 
+.grid-center-trio {
+  padding: 0 15%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 25px;
+  grid-row-gap: 50px;
+  align-items: flex-end;
+}
+
 .section-title {
   @include form_text;
   font-weight: bold;
@@ -123,6 +132,11 @@ body, p {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
 }
 
 .MuiFormControl-marginNormal {
