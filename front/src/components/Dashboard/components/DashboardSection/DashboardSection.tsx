@@ -10,11 +10,11 @@ export type SectionCard = {
 }
 
 type Props = {
-  link: string;
   title: string,
   cards: SectionCard[],
   style: DashboardViewType;
   haveStatus?: boolean;
+  link?: string;
 }
 
 const DashboardSection = ({ link, title, cards, style, haveStatus }: Props) => (
@@ -27,6 +27,7 @@ const DashboardSection = ({ link, title, cards, style, haveStatus }: Props) => (
           key={card.id}
           title={card.title}
           headerColor={card.color}
+          disabled={!link}
           link={`/${link}/${card.id}`}
         >
           {card.content.map((item: string) => (

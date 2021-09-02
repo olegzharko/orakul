@@ -2,4 +2,8 @@
 
 .custom-checkBox {
   @include form_text;
+
+  .MuiCheckbox-root {
+    color: $primary;
+  }
 }

@@ -1,7 +1,15 @@
 @import '../../../../constants.scss';
 
 .vision-assistant-info {
+  // modifiers
+  .dashboard__main-section {
 
+    h2 {
+      @include primary_title_montserrat;
+    }
+  }
+
+  // components
   .assistant-info-header {
     display: flex;
     justify-content: space-between;
@@ -47,6 +55,67 @@
 
       &-active {
         font-weight: bold;
+      }
+    }
+  }
+
+  .assistant-info-setPage {
+    display: flex;
+
+    .controlPanel {
+      height: max-content;
+      border-radius: $border_radius;
+    }
+
+    .set-page{
+
+      &__dashboard {
+        flex-grow: 1;
+        margin-left: 40px;
+      }
+    }
+  }
+
+  .assistant-info-otherActionsPage {
+    .dashboard__main-section {
+      .cards {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  }
+
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .title {
+      @include primary_title_montserrat;
+      color: $primary;
+      padding: 30px 10px;
+      margin-bottom: 25px;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 50px;
+
+      & > label {
+        margin-bottom: 30px;
+      }
+    }
+
+    .buttons {
+      display: flex;
+
+      & > button {
+        padding: 10px 50px;
+
+        &:first-child {
+          margin-right: 25px;
+        }
       }
     }
   }
