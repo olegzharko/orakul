@@ -27,6 +27,7 @@ jobs:
         run: npm i
         
       - run: npm install react-router-dom
+      - run: npm install redux-thunk
 
       - name: Build Application 
         run: npm run build
