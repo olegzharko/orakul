@@ -30,6 +30,7 @@ jobs:
       - run: npm install redux-thunk
       - run: npm install react-slick
       - run: npm i --save-dev @types/react-router-dom
+      - run: npm i --save-dev @types/react-slick
 
       - name: Build Application 
         run: npm run build
