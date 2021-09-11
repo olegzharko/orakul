@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import main from './main/store';

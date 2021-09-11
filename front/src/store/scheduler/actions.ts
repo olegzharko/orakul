@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { Dispatch } from 'react';
 import { NewCard } from '../../types';
 import { State } from '../types';
