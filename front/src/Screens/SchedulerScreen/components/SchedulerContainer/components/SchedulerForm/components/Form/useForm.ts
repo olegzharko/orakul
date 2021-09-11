@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable arrow-body-style */
 import {
   useMemo,
   useState,
@@ -65,12 +63,10 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     developersInfo,
   ]);
 
-  const activeAddButton = useMemo(() => {
-    return Boolean(devCompanyId)
+  const activeAddButton = useMemo(() => Boolean(devCompanyId)
     && immovables.length
     && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
-    && selectedCard;
-  }, [devCompanyId, immovables, selectedCard]);
+    && selectedCard, [devCompanyId, immovables, selectedCard]);
 
   const isDeleteDisabled = useMemo(() => {
     const generator_step = initialValues?.card.generator_step;
@@ -214,12 +210,10 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   // Confirm Dialog Props
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
 
-  const confirmDialogContent = useMemo(() => {
-    return {
-      title: `Видалити картку ${selectedCard?.i}`,
-      message: 'Ви впевнені, що бажаєте видалити картку?'
-    };
-  }, [selectedCard]);
+  const confirmDialogContent = useMemo(() => ({
+    title: `Видалити картку ${selectedCard?.i}`,
+    message: 'Ви впевнені, що бажаєте видалити картку?'
+  }), [selectedCard]);
 
   const onDeleteCardClick = useCallback(() => {
     if (isDeleteDisabled) return;
