@@ -29,6 +29,7 @@ jobs:
       - run: npm install react-router-dom
       - run: npm install redux-thunk
       - run: npm install react-slick
+      - run: npm i --save-dev @types/react-router-dom
 
       - name: Build Application 
         run: npm run build
