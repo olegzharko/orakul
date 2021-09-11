@@ -28,6 +28,9 @@ jobs:
         
     - name: Move to Frontend Folder
       run: cd front
+      
+    - name: Log current folder
+      run: ls
 
     - name: Install dependencies
       run: npm install
