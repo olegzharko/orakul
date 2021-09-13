@@ -1279,5 +1279,16 @@ class ConvertController extends GeneratorController
 
         return $id;
     }
+
+    public function mb_ucfirst($string)
+    {
+        if ($string) {
+            $string = explode(" ", $string);
+            $string[0] = mb_convert_case($string[0], MB_CASE_TITLE, 'UTF-8');
+            $string = implode(" ", $string);
+        }
+
+        return $string;
+    }
 }
 

@@ -6,8 +6,8 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Card;
 use App\Models\RoomType;
-use App\Models\Visit;
-use App\Nova\Room;
+use App\Models\Deal;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
@@ -25,25 +25,25 @@ class SpaceController extends BaseController
 
     public function space()
     {
-        $visit_info = Visit::select(
-            'visits.id as visit_id',
+        $deal_info = Deal::select(
+            'deals.id as deal_id',
             'cards.id as card_id',
             'cards.notary_id as notary_id',
             'cards.date_time as start_time',
-            'visits.arrival_time',
-            'visits.waiting_time',
-            'visits.total_time',
-            'visits.number_of_people',
-            'visits.children',
-            'visits.in_progress',
-            'visits.room_id',
-        )->where('visits.ready', 0)
-        ->leftJoin('cards', 'cards.id', '=', 'visits.card_id')
+            'deals.arrival_time',
+            'deals.waiting_time',
+            'deals.total_time',
+            'deals.number_of_people',
+            'deals.children',
+            'deals.in_progress',
+            'deals.room_id',
+        )->where('deals.ready', 0)
+        ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
         ->get();
 
         $result = [];
 
-        foreach ($visit_info as $key => $info) {
+        foreach ($deal_info as $key => $info) {
             $info['notary'] = $this->tools->get_notary_id_and_title($info->notary_id);
             $info['reader'] = $this->tools->get_staff_by_card($info->card_id, 'reader');
             $info['accompanying'] = $this->tools->get_staff_by_card($info->card_id, 'accompanying');
@@ -55,6 +55,8 @@ class SpaceController extends BaseController
             } elseif ($info->room_id && $info->room->type->alias == 'reception') {
                 $result['reception'][$info->room_id] = $info;
             }
+
+            unset($info);
         }
 
         $result['rooms'] = $this->tools->get_rooms();
@@ -62,40 +64,37 @@ class SpaceController extends BaseController
         return $this->sendResponse($result, 'Дані для локацій');
     }
 
-    public function close($card_id)
+    public function close($deal_id)
     {
-        if ($card = Card::find($card_id)) {
-            if (Visit::where('card_id', $card_id)->update(['ready' => true]))
-                return $this->sendResponse('', "Угоду №$card_id завершено");
+        if (Deal::where('id', $deal_id)->update(['ready' => true])) {
+            return $this->sendResponse('', "Угоду №$deal_id завершено");
         } else {
-            return $this->sendResponse('', "Угоду №$card_id відсутня");
+            return $this->sendResponse('', "Угоду №$deal_id відсутня");
         }
     }
 
-    public function move_to_reception($card_id)
+    public function move_to_reception($deal_id)
     {
-        if ($card = Card::find($card_id)) {
-            $reception_type_id = RoomType::where('alias', 'reception')->value('id');
-            $reception = \App\Models\Room::where(['type_id' => $reception_type_id, 'location' => 'rakul'])->first();
-            if ($reception && Visit::where('card_id', $card_id)->update(['room_id' => $reception->id]))
-                return $this->sendResponse('', "Клієнти по угоді №$card_id перейшли до приймальні №" . $reception->id);
-            else
-                return $this->sendResponse('', "Приймальня відсутня");
-        } else {
-            return $this->sendResponse('', "Угоду №$card_id відсутня");
-        }
+        $reception_type_id = RoomType::where('alias', 'reception')->value('id');
+        if (!$reception = Room::where(['type_id' => $reception_type_id, 'location' => 'rakul'])->first())
+            return $this->sendResponse('', "Приймальня відсутня");
+        if (Deal::where('id', $deal_id)->update(['room_id' => $reception->id]))
+            return $this->sendResponse('', "Клієнти по угоді №$deal_id перейшли до " . $reception->title);
+        else
+            return $this->sendResponse('', "Угода відсутня");
     }
 
-    public function move_to_notary($card_id)
+    public function move_to_notary($deal_id)
     {
-        if ($card = Card::find($card_id)) {
+        if ($deal = Deal::find($deal_id)) {
+            $card = Card::find($deal->card_id);
             $room_id = $card->notary->room->id;
-            if (Visit::where(['room_id' => $room_id, 'ready' => false])->where('card_id', '!=', $card_id)->first())
-                return $this->sendResponse('', "Кімната зайнята");
-            elseif ($room_id && Visit::where('card_id', $card_id)->update(['room_id' => $room_id]))
-                return $this->sendResponse('', "Клієнти по угоді №$card_id перейшли до нотаріуса");
+            if (Deal::where(['room_id' => $room_id, 'ready' => false])->where('card_id', '!=', $card->id)->first())
+                return $this->sendResponse('', "Кабінет нотаріуса зайнятий");
+            elseif ($room_id && Deal::where('id', $deal_id)->update(['room_id' => $room_id]))
+                return $this->sendResponse('', "Клієнти по угоді №$deal_id перейшли до нотаріуса");
         } else {
-            return $this->sendResponse('', "Угоду №$card_id відсутня");
+            return $this->sendResponse('', "Угоду №$deal_id відсутня");
         }
     }
 }

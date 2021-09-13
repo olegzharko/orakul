@@ -194,4 +194,9 @@ class Contract extends Model implements Sortable
 
         return $dev_companies_id;
     }
+
+    public function notary_service()
+    {
+        return $this->belongsTo(NotaryService::class, 'notary_service_id');
+    }
 }

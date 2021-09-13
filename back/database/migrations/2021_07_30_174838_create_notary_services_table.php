@@ -17,7 +17,7 @@ class CreateNotaryServicesTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->integer('price')->nullable();
-            $table->dateTime('average_time')->nullable();
+            $table->integer('average_time')->nullable();
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });

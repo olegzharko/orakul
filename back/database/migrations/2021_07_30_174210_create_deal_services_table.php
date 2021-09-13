@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVisitServiceStepsTable extends Migration
+class CreateDealServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateVisitServiceStepsTable extends Migration
      */
     public function up()
     {
-        Schema::create('visit_service_steps', function (Blueprint $table) {
+        Schema::create('deal_services', function (Blueprint $table) {
             $table->id();
-            $table->integer('visit_id')->nullable();
-            $table->integer('service_step_id')->nullable();
-            $table->integer('pass')->nullable();
-            $table->dateTime('time')->nullable();
+            $table->integer('deal_id')->nullable();
+            $table->integer('notary_service_id')->nullable();
             $table->timestamps();
+            $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
     }
 
@@ -30,6 +29,6 @@ class CreateVisitServiceStepsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('visit_service_steps');
+        Schema::dropIfExists('deal_services');
     }
 }

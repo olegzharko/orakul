@@ -23,6 +23,6 @@ class ImmovableType extends Model implements Sortable
 
     public static function get_immovable_type()
     {
-        return ImmovableType::select('id', 'title_n as title')->get();;
+        return ImmovableType::select('id', 'title_n as title')->get();
     }
 }

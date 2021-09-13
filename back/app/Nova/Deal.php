@@ -6,15 +6,18 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
+use Naif\Toggle\Toggle;
+use Laravel\Nova\Fields\Number;
 
-class VisitService extends Resource
+class Deal extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\VisitService::class;
+    public static $model = \App\Models\Deal::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -40,13 +43,15 @@ class VisitService extends Resource
      */
     public function fields(Request $request)
     {
-
-//            $table->integer('visit_id')->nullable();
-//            $table->integer('service_id')->nullable();
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Візит', 'visit', 'App\Nova\Visit'),
-            BelongsTo::make('Послуга', 'notary_service', 'App\Nova\NotaryService'),
+            BelongsTo::make('Картка', 'card', 'App\Nova\CalendarCards'),
+            BelongsTo::make('Переговорна кімната', 'room', 'App\Nova\Room'),
+            DateTime::make('Клієнти прийшли в:', 'arrival_time')->timeFormat('HH:mm')->onlyOnForms(),
+            DateTime::make('Клієнти очікують', 'waiting_time')->timeFormat('HH:mm')->onlyOnForms(),
+            DateTime::make('Загальний час', 'total_time')->timeFormat('HH:mm')->onlyOnForms(),
+            Number::make('Кількість клієнтів', 'number_of_people')->rules('required'),
+            Toggle::make('Діти', 'children'),
         ];
     }
 

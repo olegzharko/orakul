@@ -87,8 +87,8 @@ class Contract extends Resource
             Toggle::make('Довіреність', 'proxy'),
             DateTime::make('Дата підписання договору', 'sign_date'),
             Toggle::make('Оброблений', 'ready'),
+            BelongsTo::make('Тип послуги', 'notary_service', 'App\Nova\NotaryService'),
             BelongsToMany::make('Клієнти', 'clients', 'App\Nova\Client'),
-
         ];
     }
 

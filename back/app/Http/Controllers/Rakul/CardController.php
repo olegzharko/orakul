@@ -14,7 +14,7 @@ use App\Models\DevCompany;
 use App\Models\ImmovableType;
 use App\Models\DeveloperBuilding;
 use App\Models\SortType;
-use App\Models\Visit;
+use App\Models\Deal;
 use App\Models\WorkDay;
 use Illuminate\Http\Request;
 use App\Models\Client;
@@ -43,7 +43,6 @@ class CardController extends BaseController
     {
         $this->date = new \DateTime();
         $this->rooms = Room::where('rooms.active', true)->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->pluck('rooms.id')->toArray();
-        dd($this->rooms);
         $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->immovable = new ImmovableController();
         $this->contract = new ContractController();
@@ -176,7 +175,7 @@ class CardController extends BaseController
             }
         }
 
-        $visit_info = Visit::select(
+        $visit_info = Deal::select(
             'number_of_people',
             'children',
             'room_id',

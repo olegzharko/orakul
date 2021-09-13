@@ -8,7 +8,9 @@ use App\Models\ClientCheckList;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevGroup;
 use App\Models\Room;
+use App\Models\ServiceSteps;
 use App\Models\User;
+use App\Models\DealServiceStep;
 use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
@@ -17,6 +19,7 @@ use App\Models\Card;
 use App\Models\Contract;
 use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
+use App\Models\Deal;
 use Illuminate\Http\Request;
 
 class ToolsController extends Controller
@@ -324,5 +327,67 @@ class ToolsController extends Controller
         $rooms = Room::select('rooms.id', 'rooms.title', 'room_types.alias')->where(['rooms.active' => true, 'rooms.location' => 'rakul'])->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->orderBy('rooms.sort_order')->get();
 
         return $rooms;
+    }
+
+    public function get_deal_time($deal)
+    {
+        $result = [];
+        $current_time = new \DateTime;
+
+        $card = Card::find($deal->card_id);
+        $date_time = $card->date_time;
+        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'start_time')->value('value'));
+        $result[0]['value'] = $date_time ? $date_time->format('H:i') : null;
+
+        $arrival_time = $deal->arrival_time;
+        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'arrival_time')->value('value'));
+        $result[1]['value'] = $arrival_time ? $arrival_time->format('H:i') : null;
+
+        $waiting_time = $deal->waiting_time;
+        $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'waiting_time')->value('value'));
+        $result[2]['value'] = $waiting_time ? $waiting_time->format('H:i') : null;
+
+        $start = $arrival_time ? $arrival_time->format('H:i') : null;
+        $end = $current_time ? $current_time->format('H:i') : null;
+        $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total_time')->value('value'));
+        $result[3]['value'] = $end && $start ? (strtotime($end) - strtotime($start)) / 60 : null;
+
+        return $result;
+    }
+
+    public function get_deal_info($card)
+    {
+        $result = [];
+
+        $number_of_people = Deal::where('card_id', $card->id)->value('number_of_people');
+        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'number_of_people')->value('value'));
+        $result[0]['value'] = $number_of_people;
+
+        $children = Deal::where('card_id', $card->id)->value('children');
+        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'children')->value('value'));
+        $result[1]['value'] = $children;
+
+        return $result;
+    }
+
+    public function get_deal_step_list($deal)
+    {
+        $result = [];
+
+        $card = Card::find($deal->card_id);
+
+        $contracts = $card->has_contracts;
+        foreach ($contracts as $c_key => $contract) {
+            $result[$c_key]['contract_id'] = $contract->id;
+            $steps = ServiceSteps::select('id', 'title')->where(['notary_service_id' => $contract->notary_service_id, 'active' => true])->orderBy('sort')->get()->toArray();
+            foreach ($steps as $s_key => $step) {
+                $pass_time = DealServiceStep::where('deal_id', $deal->id)->where('service_step_id', $step['id'])->value('pass');
+                $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
+            }
+
+            $result[$c_key]['steps'] = $steps;
+        }
+
+        return $result;
     }
 }

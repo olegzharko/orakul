@@ -37,15 +37,25 @@ class Immovable extends Resource
 
     public function title()
     {
-        return $this->immovable_type->title_n
-            . ": " . $this->developer_building->address_type->short
-            . " " . $this->developer_building->title
-            . " " . $this->developer_building->number
-            . ", " . $this->immovable_type->short
-            . " " . $this->immovable_number
-            . ". Реєстраційний номер:" . $this->registration_number
-            . " ";
+        $title = null;
 
+        if ($this->immovable_type)
+            $title = $this->immovable_type->title_n . ": ";
+            $title .= " " . $this->immovable_number . ", ";
+        if ($this->developer_building && $this->developer_building->address_type)
+            $title .= $this->developer_building->address_type->short;
+        if ($this->developer_building)
+            $title .= " " . $this->developer_building->title;
+        if ($this->developer_building)
+            $title .= " " . $this->developer_building->number;
+//        if ($this->immovable_type)
+//            $title .= ", " . $this->immovable_type->short;
+
+            $title .= ". Реєстраційний номер:";
+            $title .= $this->registration_number ?? ' - ';
+            $title .= " ";
+
+        return $title;
     }
 
     /**

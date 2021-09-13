@@ -43,7 +43,7 @@ class Immovable extends Model implements Sortable
 
     public function immovable_type()
     {
-        return $this->belongsTo(ImmovableType::class);
+        return $this->belongsTo(ImmovableType::class, 'immovable_type_id');
     }
 
     public function developer_building()

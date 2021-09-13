@@ -798,7 +798,7 @@ class DocumentController extends GeneratorController
          * */
         $cr_ntr_representative_client = MainInfoType::where('alias', 'cr-ntr-representative-client')->value('description');
 
-        $word->setValue('cr-ntr-representative-client-up', $this->mb_ucfirst($cr_ntr_representative_client));
+        $word->setValue('cr-ntr-representative-client-up', $this->convert->mb_ucfirst($cr_ntr_representative_client));
 
         // Підставка реквізититів в ПД з представника клієнта
         if ($this->client->representative) {
@@ -822,8 +822,8 @@ class DocumentController extends GeneratorController
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('ЗБД-ПАСПОРТ-Н', $this->contract->dev_company->owner->passport_type->description_n);
             $word->setValue('ЗБД-ПАСПОРТ-О', $this->contract->dev_company->owner->passport_type->description_o);
-            $word->setValue('ЗБД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
-            $word->setValue('ЗБД-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_o));
+            $word->setValue('ЗБД-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_n));
+            $word->setValue('ЗБД-ПАСПОРТ-О-UP', $this->convert->mb_ucfirst($this->contract->dev_company->owner->passport_type->description_o));
             $word->setValue('ЗБД-ПАСПОРТ-ID-КОД', $this->contract->dev_company->owner->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
@@ -844,7 +844,7 @@ class DocumentController extends GeneratorController
         if ($this->contract->dev_representative) {
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('ПІДПИС-ПАСПОРТ-ID-КОД', $this->contract->dev_representative->passport_type->short_info);
-            $word->setValue('ПІДПИС-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->contract->dev_representative->passport_type->description_n));
+            $word->setValue('ПІДПИС-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->contract->dev_representative->passport_type->description_n));
             $word->setValue('ПІДПИС-ПАСПОРТ-О', $this->contract->dev_representative->passport_type->description_o);
             $word->saveAs($template_generate_file);
 
@@ -865,8 +865,8 @@ class DocumentController extends GeneratorController
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('inv-pssprt-full-n', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n);
             $word->setValue('inv-pssprt-full-o', $this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_o);
-            $word->setValue('inv-pssprt-full-n-up', $this->mb_ucfirst($this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n));
-            $word->setValue('inv-pssprt-full-o-up', $this->mb_ucfirst($this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_o));
+            $word->setValue('inv-pssprt-full-n-up', $this->convert->mb_ucfirst($this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_n));
+            $word->setValue('inv-pssprt-full-o-up', $this->convert->mb_ucfirst($this->contract->immovable->developer_building->investment_agreement->investor->passport_type->description_o));
             $word->saveAs($template_generate_file);
 
             $word = new TemplateProcessor($template_generate_file);
@@ -886,13 +886,13 @@ class DocumentController extends GeneratorController
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('КЛ-ПАСПОРТ-Н', $this->client->passport_type->description_n);
             $word->setValue('КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
-            $word->setValue('КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
-            $word->setValue('КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->passport_type->description_o));
+            $word->setValue('КЛ-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->passport_type->description_n));
+            $word->setValue('КЛ-ПАСПОРТ-О-UP', $this->convert->mb_ucfirst($this->client->passport_type->description_o));
             $word->setValue('КЛ-ПАСПОРТ-ID-КОД', $this->client->passport_type ? $this->client->passport_type->short_info . " " : '');
             $word->setValue('КЛ-ДН', $this->display_date($this->client->birth_date));
             // для анкет на двох
             $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-Н', $this->client->passport_type->description_n);
-            $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->passport_type->description_n));
+            $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->passport_type->description_n));
             $word->setValue($this->total_clients . '-КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
             $word->setValue($this->total_clients . '-КЛ-ДН', $this->display_date($this->client->birth_date));
 
@@ -916,14 +916,14 @@ class DocumentController extends GeneratorController
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н', $this->client->representative->confidant->passport_type->description_n);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О', $this->client->representative->confidant->passport_type->description_o);
-            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
-            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О-UP', $this->convert->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПАСПОРТ-ID-КОД', $this->client->representative->confidant->passport_type ? $this->client->representative->confidant->passport_type->short_info . " " : '');
 
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н', $this->client->representative->confidant->passport_type->description_n);
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О', $this->client->representative->confidant->passport_type->description_o);
-            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
-            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
+            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->representative->confidant->passport_type->description_n));
+            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-О-UP', $this->convert->mb_ucfirst($this->client->representative->confidant->passport_type->description_o));
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ПАСПОРТ-ID-КОД', $this->client->representative->confidant->passport_type ? $this->client->representative->confidant->passport_type->short_info . " " : '');
 
             $word->saveAs($template_generate_file);
@@ -946,8 +946,8 @@ class DocumentController extends GeneratorController
             $word = new TemplateProcessor($template_generate_file);
             $word->setValue('ПОД-ПАСПОРТ-Н', $this->client->married->spouse->passport_type->description_n);
             $word->setValue('ПОД-ПАСПОРТ-О', $this->client->married->spouse->passport_type->description_o);
-            $word->setValue('ПОД-ПАСПОРТ-Н-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_n));
-            $word->setValue('ПОД-ПАСПОРТ-О-UP', $this->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
+            $word->setValue('ПОД-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->married->spouse->passport_type->description_n));
+            $word->setValue('ПОД-ПАСПОРТ-О-UP', $this->convert->mb_ucfirst($this->client->married->spouse->passport_type->description_o));
             $word->setValue('ПОД-ПАСПОРТ-ID-КОРОТКО', $this->client->married->spouse->passport_type->short_info);
             $word->saveAs($template_generate_file);
 
@@ -999,10 +999,10 @@ class DocumentController extends GeneratorController
             $word->setValue('НОТ-АКТ-Д', $notary->activity_d);
             $word->setValue('НОТ-АКТ-О', $notary->activity_o);
 
-            $word->setValue('НОТ-АКТ-Н-UP', $this->mb_ucfirst($notary->activity_n));
-            $word->setValue('НОТ-АКТ-Р-UP', $this->mb_ucfirst($notary->activity_r));
-            $word->setValue('НОТ-АКТ-Д-UP', $this->mb_ucfirst($notary->activity_d));
-            $word->setValue('НОТ-АКТ-О-UP', $this->mb_ucfirst($notary->activity_o));
+            $word->setValue('НОТ-АКТ-Н-UP', $this->convert->mb_ucfirst($notary->activity_n));
+            $word->setValue('НОТ-АКТ-Р-UP', $this->convert->mb_ucfirst($notary->activity_r));
+            $word->setValue('НОТ-АКТ-Д-UP', $this->convert->mb_ucfirst($notary->activity_d));
+            $word->setValue('НОТ-АКТ-О-UP', $this->convert->mb_ucfirst($notary->activity_o));
 
             $word->saveAs($template);
         } else {
@@ -1025,7 +1025,7 @@ class DocumentController extends GeneratorController
         }
 
         if ($document->str_day && $document->str_month && $document->str_year)
-            $word->setValue('ДАТА-СЛОВАМИ-UP', $this->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
+            $word->setValue('ДАТА-СЛОВАМИ-UP', $this->convert->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
         if ($document->str_day && $document->str_month && $document->str_year)
         $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
 
@@ -1071,7 +1071,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ЗБД-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_company->owner));
             $word->setValue('ЗБД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_company->owner));
-            $word->setValue('ЗБД-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_company->owner)));
+            $word->setValue('ЗБД-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_company->owner)));
             $word->setValue('ЗБД-ПРІЗВ-Н', $this->contract->dev_company->owner->surname_n);
             $word->setValue('ЗБД-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_company->owner->surname_n));
             $word->setValue('ЗБД-ІМЯ-Н', $this->contract->dev_company->owner->name_n);
@@ -1119,7 +1119,7 @@ class DocumentController extends GeneratorController
             if ($this->contract->dev_company->owner->married->spouse) {
 
                 $dev_spouse_type_by_gender = KeyWord::where('key', $this->contract->dev_company->owner->married->spouse->gender)->value('title_o');
-                $word->setValue('ЗГ-ПОДР-ЗБД-РОЛЬ-О-UP', $this->mb_ucfirst($dev_spouse_type_by_gender));
+                $word->setValue('ЗГ-ПОДР-ЗБД-РОЛЬ-О-UP', $this->convert->mb_ucfirst($dev_spouse_type_by_gender));
                 $word->setValue('ЗГ-ПОДР-ЗБД-ПІБ-О', $this->convert->get_full_name_o($this->contract->dev_company->owner->married->spouse));
 
                 $dev_spouse_gender_whose = GenderWord::where('alias', "whose")->value($this->contract->dev_company->owner->married->spouse->gender);
@@ -1206,7 +1206,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ПІДПИС-ГРОМАДЯН', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->contract->dev_representative));
             $word->setValue('ПІДПИС-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->contract->dev_representative));
-            $word->setValue('ПІДПИС-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_representative)));
+            $word->setValue('ПІДПИС-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($this->contract->dev_representative)));
             $word->setValue('ПІДПИС-ПРІЗВ-Н', $this->contract->dev_representative->surname_n);
             $word->setValue('ПІДПИС-ПРІЗВ-Н-UP', mb_strtoupper($this->contract->dev_representative->surname_n));
             $word->setValue('ПІДПИС-ІМЯ-Н', $this->contract->dev_representative->name_n);
@@ -1273,11 +1273,11 @@ class DocumentController extends GeneratorController
              * */
             $word->setValue('КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
             $word->setValue('КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
-            $word->setValue('КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+            $word->setValue('КЛ-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
 
             $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
             $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
-            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+            $word->setValue($this->total_clients . '-КЛ-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
 
 //            $word->setValue('cl-full-name-n', $this->convert->get_full_name_n($this->client));
             $word->setValue('КЛ-ПІБ', $this->convert->get_full_name_n($this->client));
@@ -1302,10 +1302,10 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->client)));
 
             $word->setValue('КЛ-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->gender)->value('title_r'));
-            $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
 
             $word->setValue('КЛ-ШЛ-РОЛЬ-О', KeyWord::where('key', $this->client->gender)->value('title_o'));
-            $word->setValue('КЛ-ШЛ-РОЛЬ-О-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
+            $word->setValue('КЛ-ШЛ-РОЛЬ-О-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_o')));
 
             if ($this->client->married && $this->client->married->spouse && $this->client->married->spouse->gender)
                 $cs_agree = GenderWord::where('alias', "agree")->value($this->client->married->spouse->gender);
@@ -1326,20 +1326,20 @@ class DocumentController extends GeneratorController
             $cl_gender_whose = GenderWord::where('alias', "whose")->value($this->client->gender);
 
             $word->setValue('КЛ-ЇХ', $cl_gender_whose);
-            $word->setValue('КЛ-ЇХ-UP', $this->mb_ucfirst($cl_gender_whose));
+            $word->setValue('КЛ-ЇХ-UP', $this->convert->mb_ucfirst($cl_gender_whose));
 
             $cl_gender_him_her = GenderWord::where('alias', "him-her")->value($this->client->gender);
 
             $word->setValue('КЛ-НИМ', $cl_gender_him_her);
-            $word->setValue('КЛ-НИМ-UP', $this->mb_ucfirst($cl_gender_him_her));
+            $word->setValue('КЛ-НИМ-UP', $this->convert->mb_ucfirst($cl_gender_him_her));
 
             $cl_gender_proved = GenderWord::where('alias', "proved")->value($this->client->gender);
             $word->setValue('КЛ-ДОВІВ', $cl_gender_proved);
-            $word->setValue('КЛ-ДОВІВ-UP', $this->mb_ucfirst($cl_gender_proved));
+            $word->setValue('КЛ-ДОВІВ-UP', $this->convert->mb_ucfirst($cl_gender_proved));
 
             $cl_gender_received = GenderWord::where('alias', "received")->value($this->client->gender);
             $word->setValue('КЛ-ОТРИМАТИ', $cl_gender_received);
-            $word->setValue('КЛ-ОТРИМАТИ', $this->mb_ucfirst($cl_gender_received));
+            $word->setValue('КЛ-ОТРИМАТИ', $this->convert->mb_ucfirst($cl_gender_received));
 
             if ($this->client->registration)
                 $cl_registration = GenderWord::where('alias', "registration")->value($this->client->gender);
@@ -1466,11 +1466,11 @@ class DocumentController extends GeneratorController
 
             $word->setValue('ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($confidant));
             $word->setValue('ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($confidant));
-            $word->setValue('ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($confidant)));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($confidant)));
 
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($confidant));
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($confidant));
-            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($confidant)));
+            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($confidant)));
 
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПІБ-Н', $this->convert->get_full_name_n($confidant));
             $word->setValue('ПРЕДСТАВНИК-КЛ-ПІБ-Р', $this->convert->get_full_name_r($confidant));
@@ -1528,15 +1528,15 @@ class DocumentController extends GeneratorController
             $cr_gender_whose = GenderWord::where('alias', "whose")->value($confidant->gender);
 
             $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
-            $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
+            $word->setValue('ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->convert->mb_ucfirst($cr_gender_whose));
 
 //            $cr_gender_which_adjective = GenderWord::where('alias', "which")->value($this->client->gender);
 //            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК', $cr_gender_which_adjective);
-//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК-UP', $this->mb_ucfirst($cr_gender_which_adjective));
+//            $word->setValue('ПРЕДСТАВНИК-КЛ-ЯК-UP', $this->$this->convert->mb_ucfirst($cr_gender_which_adjective));
 
 
             $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ', $cr_gender_whose);
-            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->mb_ucfirst($cr_gender_whose));
+            $word->setValue($this->total_clients . '-ПРЕДСТАВНИК-КЛ-ЇХ-UP', $this->convert->mb_ucfirst($cr_gender_whose));
 
             $cr_gender_acquainted = GenderWord::where('alias', "acquainted")->value($confidant->gender);
             $word->setValue('ПРЕДСТАВНИК-КЛ-ОЗНАЙ', $cr_gender_acquainted);
@@ -1563,7 +1563,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('ПОД-ГРОМАДЯН-Н', $this->convert->get_client_citizenship_n($this->client));
             $word->setValue('ПОД-ГРОМАДЯН-Р', $this->convert->get_client_citizenship_r($this->client));
-            $word->setValue('ПОД-ГРОМАДЯН-Р-UP', $this->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
+            $word->setValue('ПОД-ГРОМАДЯН-Р-UP', $this->convert->mb_ucfirst($this->convert->get_client_citizenship_r($this->client)));
 
             /*
              * Подружжя клієнта - паспорт та код
@@ -1581,18 +1581,18 @@ class DocumentController extends GeneratorController
              * */
 
             $word->setValue('ПОД-ШЛ-РОЛЬ-О', KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o'));
-            $word->setValue('ПОД-ШЛ-РОЛЬ-О-UP', $this->mb_ucfirst(KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o')));
+            $word->setValue('ПОД-ШЛ-РОЛЬ-О-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o')));
 
             $cs_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
 
             $word->setValue('ПОД-ЇХ', $cs_gender_pronoun);
-            $word->setValue('ПОД-ЇХ-UP', $this->mb_ucfirst($cs_gender_pronoun));
+            $word->setValue('ПОД-ЇХ-UP', $this->convert->mb_ucfirst($cs_gender_pronoun));
 
 
             $cs_gender_mine = GenderWord::where('alias', "mine")->value($this->client->gender);
 
             $word->setValue('ПОД-МОЄ', $cs_gender_mine);
-            $word->setValue('ПОД-МОЄ-UP', $this->mb_ucfirst($cs_gender_mine));
+            $word->setValue('ПОД-МОЄ-UP', $this->convert->mb_ucfirst($cs_gender_mine));
 
             if ($this->client->married->spouse->gender)
                 $cs_registration = GenderWord::where('alias', "registration")->value($this->client->married->spouse->gender);
@@ -1709,7 +1709,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('Н-ТИП-Н', $this->contract->immovable->immovable_type->title_n);
             $word->setValue('Н-ТИП-Р', $this->contract->immovable->immovable_type->title_r);
-            $word->setValue('Н-ТИП-Р-UP',  $this->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
+            $word->setValue('Н-ТИП-Р-UP',  $this->convert->mb_ucfirst($this->contract->immovable->immovable_type->title_r));
 
             $immovable_gender = GenderWord::where('alias', 'located')->value($this->contract->immovable->immovable_type->gender);
             $word->setValue('Н-РОЗТАШОВ', $immovable_gender);
@@ -2449,16 +2449,16 @@ class DocumentController extends GeneratorController
         return $title;
     }
 
-    private function mb_ucfirst($string)
-    {
-        if ($string) {
-            $string = explode(" ", $string);
-            $string[0] = mb_convert_case($string[0], MB_CASE_TITLE, 'UTF-8');
-            $string = implode(" ", $string);
-        }
-
-        return $string;
-    }
+//    private function mb_ucfirst($string)
+//    {
+//        if ($string) {
+//            $string = explode(" ", $string);
+//            $string[0] = mb_convert_case($string[0], MB_CASE_TITLE, 'UTF-8');
+//            $string = implode(" ", $string);
+//        }
+//
+//        return $string;
+//    }
 
     public function display_date($date)
     {

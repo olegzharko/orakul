@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VisitService extends Model
+class DealService extends Model
 {
     use HasFactory;
 
     public function visit()
     {
-        return $this->belongsTo(Visit::class, 'visit_id');
+        return $this->belongsTo(Deal::class, 'deal_id');
     }
 
     public function notary_service()

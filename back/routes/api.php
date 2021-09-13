@@ -18,7 +18,7 @@ use \App\Http\Controllers\Generator\ImmovableController;
 use \App\Http\Controllers\Rakul\InstallmentController;
 use \App\Http\Controllers\Generator\ClientController;
 use \App\Http\Controllers\API\MinfinController;
-use \App\Http\Controllers\Deal\VisitController;
+use \App\Http\Controllers\Deal\DealController;
 use \App\Http\Controllers\Location\SpaceController;
 
 /*
@@ -191,12 +191,12 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'deal'], function() {
-        Route::post('update/{card_id}', [VisitController::class, 'update_deal_info']);
+        Route::get('detail/{deal_id}', [DealController::class, 'get_deal_detail']);
+        Route::post('create', [DealController::class, 'create_deal_info']);
         Route::get('space', [SpaceController::class, 'space']);
-        Route::get('close/{card_id}', [SpaceController::class, 'close']);
-        Route::get('move/to/reception/{card_id}', [SpaceController::class, 'move_to_reception']);
-        Route::get('move/to/notary/{card_id}', [SpaceController::class, 'move_to_notary']);
-        Route::get('visit/detail/{card_id}', [VisitController::class, 'visit_detail']);
+        Route::get('close/{deal_id}', [SpaceController::class, 'close']);
+        Route::get('move/to/reception/{deal_id}', [SpaceController::class, 'move_to_reception']);
+        Route::get('move/to/notary/{deal_id}', [SpaceController::class, 'move_to_notary']);
     });
 });
 
