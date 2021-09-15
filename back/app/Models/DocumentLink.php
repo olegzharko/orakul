@@ -9,6 +9,13 @@ class DocumentLink extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+      'card_id',
+      'contract_id',
+      'type',
+      'link',
+    ];
+
     public static function set_document_link($card_id, $contract_id, $type,  $link)
     {
         DocumentLink::updateOrCreate(
