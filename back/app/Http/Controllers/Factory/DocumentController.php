@@ -256,8 +256,6 @@ class DocumentController extends GeneratorController
             }
         }
 
-        $this->save_file_link();
-
         return $result;
     }
 
