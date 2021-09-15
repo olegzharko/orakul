@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\Rakul\InstallmentController;
+use App\Http\Controllers\Helper\ToolsController;
 use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
 use App\Models\Client;
@@ -19,6 +20,7 @@ use App\Models\Card;
 use App\Models\MonthConvert;
 use App\Models\BankTaxesList;
 use App\Models\Text;
+use App\Models\DocumentLink;
 use App\Models\Service;
 use App\Nova\PropertyValuation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -33,6 +35,7 @@ class DocumentController extends GeneratorController
 {
     public $ff;
     public $convert;
+    public $tools;
     public $client;
     public $total_clients;
     public $two_clients;
@@ -79,6 +82,7 @@ class DocumentController extends GeneratorController
 //        $this->non_break_space = "</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>";
         $this->non_break_space = " ";
         $this->convert = new ConvertController($this->non_break_space);
+        $this->tools = new ToolsController();
         $this->installment = new InstallmentController();
         $this->consent = null;
         $this->bank_account_total_price = null;
@@ -252,6 +256,8 @@ class DocumentController extends GeneratorController
             }
         }
 
+        $this->save_file_link();
+
         return $result;
     }
 
@@ -280,6 +286,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->contract_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->contract_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'contract', $this->contract_generate_file);
 
         unset($word);
 
@@ -299,6 +306,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->questionnaire_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->questionnaire_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'questionnaire', $this->questionnaire_generate_file);
 
         unset($word);
     }
@@ -315,6 +323,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->developer_statement_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->developer_statement_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'developer_statement', $this->developer_statement_generate_file);
 
         unset($word);
     }
@@ -331,6 +340,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->developer_consent_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->developer_consent_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'developer_consent', $this->developer_consent_generate_file);
 
         unset($word);
     }
@@ -348,6 +358,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->communal_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->communal_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'communal', $this->communal_generate_file);
 
         unset($word);
     }
@@ -365,6 +376,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->processing_personal_data_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->processing_personal_data_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'processing_personal_data', $this->processing_personal_data_generate_file);
 
         unset($word);
     }
@@ -384,6 +396,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->termination_contract_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_contract_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'termination_contract', $this->termination_contract_generate_file);
 
         unset($word);
     }
@@ -403,6 +416,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->termination_refund_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_refund_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'termination_refund', $this->termination_refund_generate_file);
 
         unset($word);
     }
@@ -421,6 +435,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->consent_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->consent_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'consent', $this->consent_generate_file);
 
         unset($word);
     }
@@ -439,6 +454,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->termination_consent_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_consent_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'termination_consent', $this->termination_consent_generate_file);
 
         unset($word);
     }
@@ -457,6 +473,7 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->bank_account_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->bank_account_generate_file);
+        DocumentLink::set_document_link($this->card_id, $this->contract->id, 'bank_account', $this->bank_account_generate_file);
 
         unset($word);
     }
@@ -499,6 +516,8 @@ class DocumentController extends GeneratorController
 
             unset($word);
         }
+        if ($this->bank_taxes_generate_file)
+            DocumentLink::set_document_link($this->card_id, $this->contract->id, 'bank_taxes', $this->bank_taxes_generate_file);
     }
 
     public function add_pdf_file()
