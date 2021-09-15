@@ -18,6 +18,7 @@ class DocumentLink extends Model
 
     public static function set_document_link($card_id, $contract_id, $type,  $link)
     {
+
         DocumentLink::updateOrCreate(
             ['card_id' => $card_id, 'contract_id' => $contract_id, 'type' => $type],
             ['link' => $link]
