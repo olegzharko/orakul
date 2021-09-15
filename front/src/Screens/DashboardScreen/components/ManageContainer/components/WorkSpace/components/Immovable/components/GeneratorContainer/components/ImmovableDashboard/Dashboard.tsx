@@ -1,6 +1,10 @@
 import * as React from 'react';
+
 import Card from '../../../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
+
 import { useDashboard } from './useDashboard';
 
 const Dashboard = () => {
@@ -21,7 +25,7 @@ const Dashboard = () => {
           <Card
             key={immovable.id}
             title={immovable.title}
-            onClick={() => meta.onCardClick(`/immovables/${meta.id}/${immovable.id}`)}
+            onClick={() => meta.onCardClick(`${MANAGE_CONTAINER_LINK_PREFIX}/immovables/${meta.id}/${immovable.id}`)}
           >
             {immovable.list.map((item) => (
               <span>{item}</span>

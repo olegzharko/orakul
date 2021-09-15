@@ -1,8 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
+
 import { State } from '../../../../../../../../store/types';
 import { UserTypes } from '../../../../../../../../types';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../constants';
+
 import Dashboard from './components/Dashboard';
 import Fields from './components/Fields';
 
@@ -12,7 +16,7 @@ const SideNotary = () => {
   if (type === UserTypes.GENERATOR) {
     return (
       <Switch>
-        <Route path="/side-notaries/:clientId/:notaryId">
+        <Route path={`${MANAGE_CONTAINER_LINK_PREFIX}/side-notaries/:clientId/:notaryId`}>
           <Fields />
         </Route>
         <Dashboard />

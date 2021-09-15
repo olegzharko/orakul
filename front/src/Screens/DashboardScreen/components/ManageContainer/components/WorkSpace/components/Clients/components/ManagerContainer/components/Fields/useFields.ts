@@ -1,6 +1,9 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useCallback, useState, useMemo } from 'react';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
+
 import { SelectItem } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerClient from '../../../../../../../../../../../../services/manager/Clients/reqManagerClient';
@@ -128,7 +131,7 @@ export const useFields = () => {
       );
 
       if (res?.success && personId === 'create' && isNumber(res?.data.client_id)) {
-        history.push(`/clients/${clientId}/${res?.data.client_id}`);
+        history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/clients/${clientId}/${res?.data.client_id}`);
       }
     }
   }, [token, client, spouse, confidant, clientChecks, spouseChecks, confidantChecks]);

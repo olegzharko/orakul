@@ -1,14 +1,18 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useMemo, useEffect, useState, useCallback } from 'react';
+
 import { SelectItem } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import reqManagerImmovables from '../../../../../../../../../../../../services/manager/Immovables/reqManagerImmovables';
+import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
+
 import { ManagerGeneralData } from './components/General/General';
 import { ManagerResponsibleData } from './components/Responsible/Responsible';
 import { ManagerContractData } from './components/Contract/Contract';
 import { ManagerChecksData } from './components/Checks/Checks';
-import { setModalInfo } from '../../../../../../../../../../../../store/main/actions';
 
 export const useImmovableFields = () => {
   const history = useHistory();
@@ -66,7 +70,7 @@ export const useImmovableFields = () => {
       );
 
       if (res?.success && immovableId === 'create') {
-        history.push(`/immovables/${clientId}/${res?.data.immovable_id}`);
+        history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/immovables/${clientId}/${res?.data.immovable_id}`);
       }
     }
   }, [token, immovableId, general, responsible, contractType, checks]);

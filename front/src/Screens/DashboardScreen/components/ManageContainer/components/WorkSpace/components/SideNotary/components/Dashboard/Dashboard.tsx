@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+
 import Card from '../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../components/Loader/Loader';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../constants';
+
 import { useDashboard } from './useDashboard';
 
 const Dashboard = () => {
@@ -30,7 +34,10 @@ const Dashboard = () => {
           </Card>
         ))}
 
-        <Link to={`/side-notaries/${meta.id}/create`} className="add-item-card">
+        <Link
+          to={`${MANAGE_CONTAINER_LINK_PREFIX}/side-notaries/${meta.id}/create`}
+          className="add-item-card"
+        >
           <img src="/images/plus-big.svg" alt="create" />
         </Link>
       </div>

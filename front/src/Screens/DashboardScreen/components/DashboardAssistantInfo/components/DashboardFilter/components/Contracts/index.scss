@@ -1,0 +1,59 @@
+@import '../../../../../../../../constants.scss';
+
+.dashboard {
+
+  &__filter {
+
+    &-contracts {
+      margin-bottom: 15px;
+
+      .title {
+        @include filter_title;
+      }
+
+      .cards {
+
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px;
+          cursor: pointer;
+          transition: $transition_default;
+
+          &:hover {
+            opacity: .5;
+          }
+
+          &.selected {
+            background-color: $grey_light;
+            border-radius: $border_radius;
+            cursor: default;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+
+          &__left {
+            display: flex;
+            align-items: center;
+          }
+          
+          .name {
+            margin-left: 15px;
+            @include filter_title;
+            font-size: 14px;
+          }
+
+          .quantity {
+            background-color: $light_green;
+            color: $green;
+            padding: 4px;
+            border-radius: $border_radius;
+          }
+        }
+      }
+    }
+  }
+}

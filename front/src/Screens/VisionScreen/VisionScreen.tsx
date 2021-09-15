@@ -12,7 +12,6 @@ import ClientSideRoom from './components/ClientSideRoom';
 import Archive from './components/Archive';
 import Bank from './components/Bank';
 import Assistants from './components/Assistants';
-import AssistantInfo from './components/AssistantInfo';
 
 const VisionScreen = () => (
   <>
@@ -47,10 +46,6 @@ const VisionScreen = () => (
         <Route path={VisionNavigationLinks.clientSideRoom} exact>
           <VisionNavigation />
           <ClientSideRoom />
-        </Route>
-
-        <Route path={VisionNavigationLinks.assistantInfo}>
-          <AssistantInfo />
         </Route>
 
         <>

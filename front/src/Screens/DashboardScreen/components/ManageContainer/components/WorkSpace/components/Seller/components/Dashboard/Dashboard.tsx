@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+
 import Card from '../../../../../../../../../../components/Card';
 import CustomSelect from '../../../../../../../../../../components/CustomSelect';
 import Loader from '../../../../../../../../../../components/Loader/Loader';
 import PrimaryButton from '../../../../../../../../../../components/PrimaryButton';
 import SectionWithTitle from '../../../../../../../../../../components/SectionWithTitle';
 import TitleInfoDuet from '../../../../../../../../../../components/TitleInfoDuet';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../constants';
+
 import { useDashboard } from './useDashboard';
 
 const Dashboard = () => {
@@ -27,7 +31,7 @@ const Dashboard = () => {
             key={id}
             title={title}
             headerColor={color}
-            onClick={() => meta.onCardClick(`/seller/${meta.id}/${id}`)}
+            onClick={() => meta.onCardClick(`${MANAGE_CONTAINER_LINK_PREFIX}/seller/${meta.id}/${id}`)}
           >
             {info.map((item) => (
               <span>{item}</span>

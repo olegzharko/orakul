@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
 import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
+
 import './index.scss';
 import { useDashboard } from './useDashboard';
 
@@ -24,7 +27,7 @@ const Dashboard = () => {
             key={person.id}
             title={person.full_name}
             onClick={() => meta.onModalShow(person.id.toString())}
-            link={`/clients/${meta.id}/${person.id}`}
+            link={`${MANAGE_CONTAINER_LINK_PREFIX}/clients/${meta.id}/${person.id}`}
           >
             {(person.list || []).map((item: any) => (
               <span>{item}</span>
@@ -32,7 +35,7 @@ const Dashboard = () => {
           </CardWithClose>
         ))}
 
-        <Link to={`/clients/${meta.id}/create`} className="add-item-card">
+        <Link to={`${MANAGE_CONTAINER_LINK_PREFIX}/clients/${meta.id}/create`} className="add-item-card">
           <img src="/images/plus-big.svg" alt="create" />
         </Link>
       </div>

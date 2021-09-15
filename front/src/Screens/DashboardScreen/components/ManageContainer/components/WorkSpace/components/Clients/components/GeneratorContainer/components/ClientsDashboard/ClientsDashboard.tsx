@@ -2,6 +2,7 @@ import * as React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Card from '../../../../../../../../../../../../components/Card';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
 import './index.scss';
 import { useClientsDashboard } from './useClientsDashboard';
 
@@ -29,7 +30,7 @@ const ClientsDashboard = () => {
               <Card
                 key={person.id}
                 title={person.full_name}
-                onClick={() => meta.onCardClick(`/clients/${meta.id}/${person.id}`)}
+                onClick={() => meta.onCardClick(`${MANAGE_CONTAINER_LINK_PREFIX}/clients/${meta.id}/${person.id}`)}
               >
                 {(person.list || []).map((item: any) => (
                   <span>{item}</span>

@@ -9,11 +9,3 @@ export enum VisionNavigationLinks {
   clientSideRoom = '/client-side/:roomId',
   assistantInfo = '/assistants/:assistantId'
 }
-
-export enum AssistantInfoNavigationLinks {
-  set = 'set',
-  reading = 'reading',
-  issuance = 'issuance',
-  otherActions = 'other-actions',
-  workSchedule = 'work-schedule',
-}
