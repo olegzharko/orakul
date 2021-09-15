@@ -1,7 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-import { AssistantInfoNavigationLinks, VisionNavigationLinks } from '../../../../enums';
 
 type AssistantRoomCardProps = {
   color: string;
@@ -20,8 +17,7 @@ const AssistantRoomCard = ({
   reading,
   issuance,
 }: AssistantRoomCardProps) => (
-  <Link
-    to={`${VisionNavigationLinks.assistants}/1/${AssistantInfoNavigationLinks.set}`}
+  <div
     className="employee"
   >
     <div
@@ -57,7 +53,7 @@ const AssistantRoomCard = ({
         </div>
       </div>
     </div>
-  </Link>
+  </div>
 );
 
 export default AssistantRoomCard;

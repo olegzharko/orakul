@@ -33,14 +33,8 @@
         display: flex;
         border-radius: $border_radius_hard;
         background-color: $grey_thin;
-        cursor: pointer;
-        transition: $transition_default;
         text-decoration: none;
         color: $dark;
-
-        &:hover {
-          opacity: .5;
-        }
 
         &__mark {
           width: 20px;
