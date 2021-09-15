@@ -22,7 +22,7 @@ const Dashboard = () => {
           <Card
             key={notary.id}
             title={notary.title}
-            link={`/side-notaries/${meta.id}/${notary.id}`}
+            onClick={() => meta.onCardClick(`/side-notaries/${meta.id}/${notary.id}`)}
           >
             {notary.list.map((item) => (
               <span>{item}</span>

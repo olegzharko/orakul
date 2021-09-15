@@ -163,8 +163,8 @@ const AssistantInfoSetPage = () => (
     <Filter />
     <div className="set-page__dashboard">
       <Dashboard
-        sections={dashboardData}
         isChangeTypeButton
+        sections={dashboardData}
       />
     </div>
   </div>

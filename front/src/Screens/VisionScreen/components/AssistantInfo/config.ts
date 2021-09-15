@@ -17,8 +17,8 @@ export const assistant_info_navigation = [
     title: 'Інші нот. дії',
     link: AssistantInfoNavigationLinks.otherActions,
   },
-  {
-    title: 'Графік роботи',
-    link: AssistantInfoNavigationLinks.workSchedule,
-  }
+  // {
+  //   title: 'Графік роботи',
+  //   link: AssistantInfoNavigationLinks.workSchedule,
+  // }
 ];

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+
 import { SectionCard } from '../../components/Dashboard/components/DashboardSection/DashboardSection';
 import { fetchImmovables, fetchDevelopers } from '../../store/registrator/actions';
 import { State } from '../../store/types';
@@ -12,6 +14,8 @@ export enum RegistratorNavigationTypes {
 
 export const useRegistratorScreen = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const { isLoading, developers, immovables } = useSelector((state: State) => state.registrator);
   const [selectedNav, setSelectedNav] = useState(RegistratorNavigationTypes.DEVELOPER);
   const [selectedId, setSelectedId] = useState<any>();
@@ -48,6 +52,9 @@ export const useRegistratorScreen = () => {
         title: item.title,
         content: [`Дата: ${item.date}`, `Номер: ${item.number}`],
         color: item.color,
+        onClick: () => {
+          history.push(`/${selectedNav}/${item.id}`);
+        }
       }));
     } else if (selectedNav === RegistratorNavigationTypes.IMMOVABLE) {
       title = immovables?.date_info || '';
@@ -56,6 +63,9 @@ export const useRegistratorScreen = () => {
         title: item.title,
         content: [`Дата: ${item.date}`, `Номер: ${item.number}`],
         color: item.color,
+        onClick: () => {
+          history.push(`/${selectedNav}/${item.id}`);
+        }
       }));
     }
 
@@ -73,5 +83,12 @@ export const useRegistratorScreen = () => {
     }
   }, [trigger, selectedId]);
 
-  return { selectedNav, triggerNav, isLoading, sections, onChangeNav, selectedCardData };
+  return {
+    selectedNav,
+    isLoading,
+    sections,
+    selectedCardData,
+    triggerNav,
+    onChangeNav,
+  };
 };

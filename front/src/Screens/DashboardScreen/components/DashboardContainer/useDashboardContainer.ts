@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+
 import { fetchAppointments, clearAppointments } from '../../../../store/appointments/actions';
 import { State } from '../../../../store/types';
 
 export const useDashboardContainer = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { appointments, isLoading } = useSelector((state: State) => state.appointments);
   const { type } = useSelector((state: State) => state.main.user);
 
@@ -25,6 +28,9 @@ export const useDashboardContainer = () => {
       title: card.title,
       content: card.instructions,
       color: card.color,
+      onClick: () => {
+        history.push(`/main/${card.id}`);
+      }
     }))
   })), [appointments]);
 

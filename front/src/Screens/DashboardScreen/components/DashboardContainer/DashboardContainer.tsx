@@ -23,9 +23,8 @@ const DashboardContainer = () => {
       <Filter />
       <ContentPanel>
         <Dashboard
-          link="main"
-          sections={formatAppointments}
           isChangeTypeButton
+          sections={formatAppointments}
         />
       </ContentPanel>
       <Modal {...modalProps} />

@@ -6,10 +6,6 @@ export const navigation = [
     link: VisionNavigationLinks.clientSide,
   },
   {
-    title: 'Нотаріус',
-    link: VisionNavigationLinks.notary,
-  },
-  {
     title: 'Помічники',
     link: VisionNavigationLinks.assistants,
   },

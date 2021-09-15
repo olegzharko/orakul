@@ -21,7 +21,7 @@ const Dashboard = () => {
           <Card
             key={immovable.id}
             title={immovable.title}
-            link={`/immovables/${meta.id}/${immovable.id}`}
+            onClick={() => meta.onCardClick(`/immovables/${meta.id}/${immovable.id}`)}
           >
             {immovable.list.map((item) => (
               <span>{item}</span>

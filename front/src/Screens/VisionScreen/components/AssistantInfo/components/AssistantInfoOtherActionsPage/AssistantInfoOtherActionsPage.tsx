@@ -116,8 +116,8 @@ const dashboardData = [
 const AssistantInfoOtherActionsPage = () => (
   <div className="assistant-info-otherActionsPage">
     <Dashboard
-      sections={dashboardData}
       isChangeTypeButton
+      sections={dashboardData}
     />
   </div>
 );

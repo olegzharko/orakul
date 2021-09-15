@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useEffect, useCallback, useState } from 'react';
+
 import { State } from '../../../../../../../../../../store/types';
 import getSideNotaries from '../../../../../../../../../../services/generator/SideNotary/getSideNotaries';
 
@@ -11,11 +12,17 @@ type SideNotary = {
 }
 
 export const useDashboard = () => {
+  const history = useHistory();
+
   const { id } = useParams<{ id: string }>();
   const { token } = useSelector((state: State) => state.main.user);
 
   const [notaries, setNotaries] = useState<SideNotary[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>();
+
+  const onCardClick = useCallback((link: string) => {
+    history.push(link);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -36,5 +43,6 @@ export const useDashboard = () => {
     id,
     isLoading,
     notaries,
+    onCardClick,
   };
 };

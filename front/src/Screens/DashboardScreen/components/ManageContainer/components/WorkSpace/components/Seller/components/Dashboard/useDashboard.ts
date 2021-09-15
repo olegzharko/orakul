@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SelectItem } from '../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../store/types';
@@ -24,6 +24,8 @@ type RepresentativeData = {
 
 export const useDashboard = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const { id } = useParams<{ id: string }>();
   const { token } = useSelector((state: State) => state.main.user);
 
@@ -50,6 +52,10 @@ export const useDashboard = () => {
       );
     }
   }, [token, id, selectedRepresentative]);
+
+  const onCardClick = useCallback((link: string) => {
+    history.push(link);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -93,6 +99,7 @@ export const useDashboard = () => {
     representative,
     selectedRepresentative,
     representativeDoc,
+    onCardClick,
     setSelectedRepresentative,
     onSave,
   };

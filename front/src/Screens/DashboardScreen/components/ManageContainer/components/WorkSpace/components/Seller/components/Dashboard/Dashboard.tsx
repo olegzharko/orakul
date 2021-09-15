@@ -27,7 +27,7 @@ const Dashboard = () => {
             key={id}
             title={title}
             headerColor={color}
-            link={`/seller/${meta.id}/${id}`}
+            onClick={() => meta.onCardClick(`/seller/${meta.id}/${id}`)}
           >
             {info.map((item) => (
               <span>{item}</span>

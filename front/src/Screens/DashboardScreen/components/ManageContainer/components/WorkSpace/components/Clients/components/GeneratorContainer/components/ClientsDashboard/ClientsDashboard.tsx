@@ -29,8 +29,7 @@ const ClientsDashboard = () => {
               <Card
                 key={person.id}
                 title={person.full_name}
-                // onClick={() => meta.onModalShow(person.id.toString())}
-                link={`/clients/${meta.id}/${person.id}`}
+                onClick={() => meta.onCardClick(`/clients/${meta.id}/${person.id}`)}
               >
                 {(person.list || []).map((item: any) => (
                   <span>{item}</span>
