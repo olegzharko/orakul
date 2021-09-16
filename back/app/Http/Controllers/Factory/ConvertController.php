@@ -689,9 +689,8 @@ class ConvertController extends GeneratorController
     {
         $str = null;
 
-        if ($immovable)  {
-            if ($immovable->developer_building)
-                $str = $immovable->developer_building->address_type->short . $this->non_break_space . $immovable->developer_building->title . $this->non_break_space . $immovable->developer_building->number . ", " . $immovable->immovable_type->short . $this->non_break_space . $immovable->immovable_number;
+        if ($immovable->developer_building)  {
+            $str = $immovable->developer_building->address_type->short . $this->non_break_space . $immovable->developer_building->title . $this->non_break_space . $immovable->developer_building->number . ", " . $immovable->immovable_type->short . $this->non_break_space . $immovable->immovable_number;
         }
 
         return $str;
