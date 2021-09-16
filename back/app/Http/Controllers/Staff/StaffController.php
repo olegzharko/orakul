@@ -57,7 +57,7 @@ class StaffController extends BaseController
 
         $date = new \DateTime('today');
         $ready = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id, 'ready' => true])->count();
-        $total = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id, 'ready' => false])->count();
+        $total = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id])->count();
 
         $result['ready'] = $ready;
         $result['total'] = $total;
@@ -70,7 +70,7 @@ class StaffController extends BaseController
 
         $date = new \DateTime('today');
         $ready = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id, 'ready' => true])->count();
-        $total = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id, 'ready' => true])->count();
+        $total = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id])->count();
 
         $result['ready'] = $ready;
         $result['total'] = $total;
@@ -83,7 +83,7 @@ class StaffController extends BaseController
 
         $date = new \DateTime('today');
         $ready = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id, 'ready' => true])->count();
-        $total = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id, 'ready' => true])->count();
+        $total = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id])->count();
 
         $result['ready'] = $ready;
         $result['total'] = $total;

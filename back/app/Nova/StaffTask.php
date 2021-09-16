@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class StaffDeals extends Resource
+class StaffTask extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\StaffDeals::class;
+    public static $model = \App\Models\StaffTask::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

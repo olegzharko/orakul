@@ -31,6 +31,8 @@ Route::get('test_price_convert/{number}', [ConvertController::class, 'test_price
 
 Route::get('pdf_parser', [PDFParserController::class, 'start']);
 
+Route::get('set-database-current-date', [\App\Http\Controllers\Test\DatabaseController::class, 'set_database_current_date']);
+
 Route::get('clear', function () {
     Artisan::call('route:clear');
     Artisan::call('config:clear');

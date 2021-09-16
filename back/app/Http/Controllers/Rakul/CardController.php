@@ -677,7 +677,9 @@ class CardController extends BaseController
                 $group[$i]['cards'][] = $result;
             } else {
                 $i = $card->date_time->format('d.m.');
-                $group[$i]['day'] = $week[$card->date_time->format('w')];
+
+                $day_num = $card->date_time->format('w');
+                $group[$i]['day'] = $day_num ? $week[$day_num] : null;
                 $group[$i]['date'] = $card->date_time->format('d.m.');
                 if (!isset($group[$i]['cards']))
                     $group[$i]['cards'] = [];
@@ -789,7 +791,9 @@ class CardController extends BaseController
         $accompanying = [];
         foreach ($contracts as $contr) {
 
-            $immovable = $contr->immovable;
+            if (!$immovable = $contr->immovable)
+                continue ;
+
             $developer_company = $contr->immovable->developer_building->dev_company->title;
 //            $ready[] = 'ЗАБУДОВНИК: ';
             $ready[] = 'ЗАБУДОВНИК: ' . $developer_company;
@@ -806,13 +810,14 @@ class CardController extends BaseController
                 $ready[] = "ЧИТАЧ: -";
 
             if ($contr->accompanying)
-                $accompanying[] = $contr->accompanying;
+                $accompanying = $contr->accompanying;
         }
 
-        if  (count($accompanying))
-            $ready[] = "ВИДАВАЧ: " . $accompanying[0];
-        else
+        if  ($accompanying) {
+            $ready[] = "ВИДАВАЧ: " . $this->convert->get_staff_full_name($accompanying);
+        } else {
             $ready[] = "ВИДАВАЧ: -";
+        }
 
         return $ready;
     }
