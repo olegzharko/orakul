@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
@@ -69,6 +70,7 @@ class User extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            BelongsTo::make('Робоче місце', 'work_space', 'App\Nova\WorkSpace'),
             Text::make('Email')
                 ->sortable()
 //                ->rules('required', 'email', 'max:254')

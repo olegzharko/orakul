@@ -8,6 +8,7 @@ use App\Http\Controllers\Info\StepController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Models\Contract;
 use App\Models\ExchangeRate;
+use App\Models\StaffDeals;
 use Illuminate\Http\Request;
 use App\Models\Card;
 

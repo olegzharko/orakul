@@ -16,6 +16,11 @@ class DocumentLink extends Model
       'link',
     ];
 
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
+
     public static function set_document_link($card_id, $contract_id, $type,  $link)
     {
 

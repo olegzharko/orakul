@@ -682,6 +682,9 @@ class ConvertController extends GeneratorController
         return $str;
     }
 
+    /*
+     * вул. Миру 14, кв. 1
+     * */
     public function immovable_building_address($immovable)
     {
         $str = null;
@@ -875,6 +878,9 @@ class ConvertController extends GeneratorController
         return $full_address;
     }
 
+    /*
+     * вулиці Миру, 14 (чотирнадцять)
+     * */
     public function building_street_and_num($immovable)
     {
         $result = '';
@@ -890,6 +896,9 @@ class ConvertController extends GeneratorController
         return $result;
     }
 
+    /*
+     * вулиця Миру 14 (чотирнадцять), село Новосілки, Києво-Святошинський район, Київська область
+     * */
     public function building_full_address_by_type($immovable, $type = null)
     {
         $address = null;
@@ -938,6 +947,9 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
+    /*
+     * 14 (чотирнадцять) по вулиці Миру у селі Новосілки, Києво-Святошинського району Київської області
+     * */
     public function building_full_address_main($immovable)
     {
         $address = null;
@@ -978,6 +990,9 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
+    /*
+     * вул. Миру 14 (чотирнадцять), с. Новосілки, Києво-Святошинський р-н, Київська обл.
+     * */
     public function building_full_address_by_type_short($immovable, $type = null)
     {
         $address = null;
@@ -1026,6 +1041,10 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
+
+    /*
+     * Київська область, Києво-Святошинський район, село Новосілки, вул. Миру, буд. 14, кв. 1
+     * */
     public function building_full_address_with_imm_for_taxes($immovable)
     {
         $address = null;
@@ -1044,6 +1063,32 @@ class ConvertController extends GeneratorController
         $imm_num = $immovable->immovable_number;
 
         $address = "$imm_reg_title_n $imm_region_type_n, $imm_dis_title_n $imm_district_type_n, $imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title, $imm_building_type\xc2\xa0$imm_build_num, $imm_type_short\xc2\xa0$imm_num";
+
+        return $address;
+    }
+
+
+    /*
+     * с. Новосілки, вул. Миру, буд. 14, кв. 1
+     * */
+    public function building_city_address_number_immovable($immovable)
+    {
+        $address = null;
+
+//        $imm_reg_title_n = $immovable->developer_building->city->region->title_n;
+//        $imm_region_type_n = trim(KeyWord::where('key', 'region')->value('title_n'));
+//        $imm_dis_title_n = $immovable->developer_building->city->district->title_n;
+//        $imm_district_type_n = trim(KeyWord::where('key', 'district')->value('title_n'));
+        $imm_city_type_n = $immovable->developer_building->city->city_type->short;
+        $imm_city_title_n = $immovable->developer_building->city->title;
+        $imm_addr_short = $immovable->developer_building->address_type->short;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_building_type = trim(KeyWord::where('key', 'building')->value('short'));
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_type_short = $immovable->immovable_type->short;
+        $imm_num = $immovable->immovable_number;
+
+        $address = "$imm_city_type_n $imm_city_title_n, $imm_addr_short\xc2\xa0$imm_addr_title, $imm_building_type\xc2\xa0$imm_build_num, $imm_type_short\xc2\xa0$imm_num";
 
         return $address;
     }

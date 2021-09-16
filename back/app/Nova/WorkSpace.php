@@ -3,20 +3,18 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Naif\Toggle\Toggle;
 
-class Room extends Resource
+class WorkSpace extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Room::class;
+    public static $model = \App\Models\WorkSpace::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -32,13 +30,13 @@ class Room extends Resource
      */
     public static $search = [
         'id',
+        'title',
+        'alias',
     ];
-
-    public static $group = "Календар";
 
     public static function label()
     {
-        return "Переговорні кімната";
+        return "Офіс";
     }
 
     /**
@@ -51,11 +49,8 @@ class Room extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make('Кімната', 'title'),
-            BelongsTo::make('Тип кімнати', 'type', 'App\Nova\RoomType'),
-            Toggle::make('Активувати', 'active'),
-
-
+            Text::make('Алиас', 'alias'),
+            Text::make('Заголовок', 'title'),
         ];
     }
 

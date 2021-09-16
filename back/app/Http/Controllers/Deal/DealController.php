@@ -32,8 +32,12 @@ class DealController extends BaseController
         }
 
         $result['time'] = $this->tools->get_deal_time($deal);
-        $result['info'] = $this->tools->get_deal_info($deal);
+        $result['dev_representative'] = $this->tools->get_dev_representative_info($deal);
         $result['steps_list'] = $this->tools->get_deal_step_list($deal);
+        $result['payment'] = $this->tools->get_deal_payment($deal);
+        $result['immovable'] = $this->tools->get_deal_immovable($deal);
+//        $result['help'] = '';
+        $result['info'] = $this->tools->get_deal_info($deal);
 
         return $this->sendResponse($result, 'Дані угоди');
     }
@@ -55,16 +59,17 @@ class DealController extends BaseController
         }
 
 //        dd(Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first());
-        if (Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
+        if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
             return $this->sendResponse('', "В '" . $room->title . "' зайнято");
 
+        $date = new \DateTime();
         Deal::updateOrCreate(
             ['card_id' => $r['card_id']],
             [
                 'number_of_people' => $r['number_of_people'],
                 'children' => $r['children'],
                 'room_id' => $r['room_id'],
-                'arrival_time' => date('Y-m-d H:i:s'),
+                'arrival_time' => $date,
             ]
         );
 

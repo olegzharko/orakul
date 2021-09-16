@@ -2441,7 +2441,7 @@ class DocumentController extends GeneratorController
         $title = "«##» ###### ####";
 
         if ($date) {
-            $day = $date->format('d');
+            $day = $date->format('D');
             $month = MonthConvert::where('original', $date->format('m'))->orWhere('original', strval(intval($date->format('m'))))->value('title_r');
             $year = $date->format('Y');
 

@@ -20,6 +20,7 @@ use \App\Http\Controllers\Generator\ClientController;
 use \App\Http\Controllers\API\MinfinController;
 use \App\Http\Controllers\Deal\DealController;
 use \App\Http\Controllers\Location\SpaceController;
+use \App\Http\Controllers\Archive\ArchiveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -191,12 +192,30 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'deal'], function() {
-        Route::get('detail/{deal_id}', [DealController::class, 'get_deal_detail']);
         Route::post('create', [DealController::class, 'create_deal_info']);
         Route::get('space', [SpaceController::class, 'space']);
         Route::get('close/{deal_id}', [SpaceController::class, 'close']);
         Route::get('move/to/reception/{deal_id}', [SpaceController::class, 'move_to_reception']);
+        Route::get('move/to/room/{room_id}/{deal_id}', [SpaceController::class, 'move_to_room']);
         Route::get('move/to/notary/{deal_id}', [SpaceController::class, 'move_to_notary']);
+        Route::get('detail/{deal_id}', [DealController::class, 'get_deal_detail']);
+    });
+
+    Route::group(['prefix' => 'archive'], function() {
+        Route::get('data/{notary_id}', [ArchiveController::class, 'get_archive_data']);
+        Route::get('detail/{card_id}', [ArchiveController::class, 'get_archive_detail']);
+    });
+
+    Route::group(['prefix' => 'bank'], function() {
+        Route::get('data', [\App\Http\Controllers\Bank\BankController::class, 'get_bank_data']);
+    });
+
+    Route::group(['prefix' => 'developer'], function() {
+        Route::get('representative', [\App\Http\Controllers\Developer\RepresentativeController::class, 'get_data_for_developer']);
+    });
+
+    Route::group(['prefix' => 'staff'], function() {
+        Route::get('info', [\App\Http\Controllers\Staff\StaffController::class, 'get_staff_info']);
     });
 });
 

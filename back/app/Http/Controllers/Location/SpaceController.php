@@ -30,7 +30,7 @@ class SpaceController extends BaseController
             'cards.id as card_id',
             'cards.notary_id as notary_id',
             'cards.date_time as start_time',
-            'deals.arrival_time',
+            'deals.arrival_time as visit_time',
             'deals.waiting_time',
             'deals.total_time',
             'deals.number_of_people',
@@ -50,10 +50,13 @@ class SpaceController extends BaseController
             $info['representative'] = $this->tools->get_representative_by_card($info->card_id, 'accompanying');
             $info['immovable'] = $this->tools->get_immovables_by_card($info->card_id);
             $info['buyer'] = $this->tools->get_clients_by_card($info->card_id);
-            if ($info->room_id && $info->room->type->alias == 'meeting_room') {
+
+            $room_type = $info->room->type->alias;
+            unset($info->room);
+            if ($info->room_id && $room_type == 'meeting_room') {
                 $result['meeting_room'][$info->room_id] = $info;
-            } elseif ($info->room_id && $info->room->type->alias == 'reception') {
-                $result['reception'][$info->room_id] = $info;
+            } elseif ($info->room_id && $room_type == 'reception') {
+                $result['reception'][] = $info;
             }
 
             unset($info);
@@ -82,6 +85,19 @@ class SpaceController extends BaseController
             return $this->sendResponse('', "Клієнти по угоді №$deal_id перейшли до " . $reception->title);
         else
             return $this->sendResponse('', "Угода відсутня");
+    }
+
+    public function move_to_room($room_id, $deal_id)
+    {
+        if (!$room = Room::where(['id' => $room_id, 'location' => 'rakul'])->first())
+            return $this->sendResponse('', "Приймальня відсутня");
+
+        if (Deal::where('id', '!=', $deal_id)->where(['room_id' => $room->id, 'ready' => false])->first())
+            return $this->sendResponse('', "Кімната зайнята");
+
+        Deal::where(['id' => $deal_id])->update(['room_id' => $room->id, 'ready' => false]);
+
+        return $this->sendResponse('', "Угода з ID: $deal_id перейшла до $room->title");
     }
 
     public function move_to_notary($deal_id)

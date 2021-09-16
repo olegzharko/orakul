@@ -7,6 +7,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Models\ClientCheckList;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevGroup;
+use App\Models\DocumentLink;
 use App\Models\Room;
 use App\Models\ServiceSteps;
 use App\Models\User;
@@ -324,9 +325,20 @@ class ToolsController extends Controller
 
     public function get_rooms()
     {
-        $rooms = Room::select('rooms.id', 'rooms.title', 'room_types.alias')->where(['rooms.active' => true, 'rooms.location' => 'rakul'])->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->orderBy('rooms.sort_order')->get();
+        $result = [];
 
-        return $rooms;
+        $rooms = Room::select('rooms.id', 'rooms.title', 'room_types.alias')
+            ->where(['rooms.active' => true, 'rooms.location' => 'rakul'])
+            ->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')
+            ->orderBy('rooms.sort_order')
+            ->get();
+
+        foreach ($rooms as $key => $room) {
+            $result[$room->alias][$key]['id'] = $room->id;
+            $result[$room->alias][$key]['title'] = $room->title;
+        }
+
+        return $result;
     }
 
     public function get_deal_time($deal)
@@ -355,20 +367,41 @@ class ToolsController extends Controller
         return $result;
     }
 
-    public function get_deal_info($card)
+    public function get_dev_representative_info($deal)
     {
-        $result = [];
+        $representative = $deal->card->dev_representative;
 
-        $number_of_people = Deal::where('card_id', $card->id)->value('number_of_people');
-        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'number_of_people')->value('value'));
-        $result[0]['value'] = $number_of_people;
+        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'full_name')->value('value'));
+        $result[0]['value'] = $this->convert->get_full_name_n($representative);
 
-        $children = Deal::where('card_id', $card->id)->value('children');
-        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'children')->value('value'));
-        $result[1]['value'] = $children;
+        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'phone')->value('value'));
+        $result[1]['value'] = $representative->phone;
+
+        $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'date_of_birth')->value('value'));
+        $result[2]['value'] = $representative->birth_date ? $representative->birth_date->format('d.m.Y') : null;
+
+        $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'email')->value('value'));
+        $result[3]['value'] = $representative->email;
 
         return $result;
     }
+
+//    public function get_deal_info($card)
+//    {
+//        $result = [];
+//
+///*
+//        $number_of_people = Deal::where('card_id', $card->id)->value('number_of_people');
+//        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'number_of_people')->value('value'));
+//        $result[0]['value'] = $number_of_people;
+//
+//        $children = Deal::where('card_id', $card->id)->value('children');
+//        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'children')->value('value'));
+//        $result[1]['value'] = $children;
+//*/
+//
+//        return $result;
+//    }
 
     public function get_deal_step_list($deal)
     {
@@ -376,17 +409,79 @@ class ToolsController extends Controller
 
         $card = Card::find($deal->card_id);
 
-        $contracts = $card->has_contracts;
-        foreach ($contracts as $c_key => $contract) {
-            $result[$c_key]['contract_id'] = $contract->id;
-            $steps = ServiceSteps::select('id', 'title')->where(['notary_service_id' => $contract->notary_service_id, 'active' => true])->orderBy('sort')->get()->toArray();
-            foreach ($steps as $s_key => $step) {
-                $pass_time = DealServiceStep::where('deal_id', $deal->id)->where('service_step_id', $step['id'])->value('pass');
-                $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
-            }
-
-            $result[$c_key]['steps'] = $steps;
+        $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
+        $steps = ServiceSteps::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
+        foreach ($steps as $s_key => $step) {
+            $pass_time = DealServiceStep::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
+            $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
         }
+
+        $result = $steps;
+
+        return $result;
+    }
+
+    public function get_deal_payment($deal)
+    {
+        $result = [];
+        $total_price = null;
+        $card = Card::find($deal->card_id);
+
+        $contracts = $card->has_contracts;
+        foreach ($contracts as $key => $contract) {
+            $result['service_list'][$key]['title'] = $contract->notary_service->title;
+            $result['service_list'][$key]['value'] = $contract->notary_service->price / 100;
+            $total_price += $contract->notary_service->price / 100;
+        }
+
+        $result['total_price']['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total')->value('value'));
+        $result['total_price']['value'] = $total_price;
+
+        $result['status']['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'status')->value('value'));
+
+        /*
+        * STATIC VALUE
+        * */
+        if ($deal->payment_status)
+            $payment_status = Text::where('alias', 'paid')->value('value');
+        else
+            $payment_status = Text::where('alias', 'need_to_pay')->value('value');
+
+        $result['status']['value'] = $this->convert->mb_ucfirst($payment_status);
+
+        return $result;
+    }
+
+    public function get_deal_immovable($deal)
+    {
+        $result = [];
+        $total_price = null;
+        $card = Card::find($deal->card_id);
+
+        $contracts = $card->has_contracts;
+
+        foreach ($contracts as $key => $contract) {
+            $result[$key]['title'] = $this->convert->building_city_address_number_immovable($contract->immovable);
+        }
+
+        return $result;
+    }
+
+    public function get_deal_info($deal)
+    {
+        $result = [];
+
+        $result[0] = $this->get_notary_id_and_title($deal->card->notary_id);
+        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'notary')->value('value'));
+
+        $result[1] = $this->get_staff_by_card($deal->card_id, 'reader');
+        $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'reader')->value('value'));
+
+        $result[2] = $this->get_staff_by_card($deal->card_id, 'accompanying');
+        $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'accompanying')->value('value'));
+
+        $result[3] = $this->get_clients_by_card($deal->card_id);
+        $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'client')->value('value'));
 
         return $result;
     }

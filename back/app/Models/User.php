@@ -49,4 +49,9 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->hasMany(Post::class);
     }
+
+    public function work_space()
+    {
+        return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
 }

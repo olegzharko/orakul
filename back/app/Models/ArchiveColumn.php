@@ -16,4 +16,8 @@ class ArchiveColumn extends Model implements Sortable
         'order_column_name' => 'sort_order',
         'sort_when_creating' => true,
     ];
+
+    protected $casts = [
+      'active' => 'boolean',
+    ];
 }
