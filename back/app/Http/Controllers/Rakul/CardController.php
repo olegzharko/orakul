@@ -791,7 +791,7 @@ class CardController extends BaseController
         $accompanying = [];
         foreach ($contracts as $contr) {
 
-            if (!$immovable = $contr->immovable)
+            if (!$immovable = $contr->immovable && $contr->immovable->developer_building)
                 continue ;
 
             $developer_company = $contr->immovable->developer_building->dev_company->title;
