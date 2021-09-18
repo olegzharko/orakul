@@ -13,7 +13,7 @@ export default async function getClients(token: string, id: string, userType: Us
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

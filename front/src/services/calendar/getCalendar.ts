@@ -1,5 +1,5 @@
-import { DEFAULT_URL } from './Constants';
-import requestApi from './utils/requestApi';
+import { DEFAULT_URL } from '../Constants';
+import requestApi from '../utils/requestApi';
 
 export default async function getCalendar(token: string) {
   try {
@@ -11,7 +11,7 @@ export default async function getCalendar(token: string) {
     return data.data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

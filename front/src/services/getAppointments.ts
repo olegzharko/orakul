@@ -12,7 +12,7 @@ export default async function getAppointments(token: string, type: UserTypes) {
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

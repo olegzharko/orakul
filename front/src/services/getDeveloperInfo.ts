@@ -11,7 +11,7 @@ export default async function getDeveloperInfo(token: string, id: number) {
     return data.data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

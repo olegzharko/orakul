@@ -1,14 +1,12 @@
+import { NewCard } from '../../types';
 import { DEFAULT_URL } from '../Constants';
 import requestApi from '../utils/requestApi';
 
-type BodyData = {
-  email: string;
-};
-
-export default async function forgotPassword(bodyData: BodyData) {
+export default async function postStartIssuing(token: string, bodyData: NewCard) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/password/forgot`,
+      url: `${DEFAULT_URL}/api/deal/set/info`,
+      headers: { Authorization: `Bearer ${token}` },
       method: 'POST',
       bodyData,
     });

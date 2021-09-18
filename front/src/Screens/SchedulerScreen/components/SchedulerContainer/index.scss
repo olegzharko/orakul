@@ -13,13 +13,13 @@
     position: relative;
     height: calc(100vh - 100px);
     overflow-y: scroll;
-    width: 70%;
+    width: 80%;
     padding: 0 30px 48px;
     box-sizing: border-box;
   }
 
   &__form {
-    width: 30%;
+    width: 20%;
     height: calc(100vh - 100px);
     overflow-y: scroll;
     position: sticky;

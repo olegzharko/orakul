@@ -1,6 +1,6 @@
-import { NewCard } from '../types';
-import { DEFAULT_URL } from './Constants';
-import requestApi from './utils/requestApi';
+import { NewCard } from '../../types';
+import { DEFAULT_URL } from '../Constants';
+import requestApi from '../utils/requestApi';
 
 export default async function moveCalendarCard(
   token: string,
@@ -21,7 +21,7 @@ export default async function moveCalendarCard(
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

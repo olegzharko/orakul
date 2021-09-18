@@ -4,10 +4,9 @@ import {
   useCallback,
   useEffect
 } from 'react';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../../../../../../../../store/types';
 
+import { State } from '../../../../../../../../store/types';
 import {
   setDevelopersInfo,
   setSelectedNewAppointment,
@@ -16,9 +15,6 @@ import {
   fetchDeveloperInfo,
   removeCalendarCard
 } from '../../../../../../../../store/scheduler/actions';
-
-import { clientItem, immovableItem } from './types';
-
 import {
   ClientItem,
   ImmovableItem,
@@ -26,10 +22,32 @@ import {
   NewCard
 } from '../../../../../../../../types';
 
+import { clientItem, immovableItem } from './types';
+
 export type Props = {
   selectedCard: any,
   initialValues?: any,
   edit?: boolean,
+}
+
+// card process stage
+export enum ClientStages {
+  isGenerating,
+  isReadyToGenerating,
+  isEditable,
+}
+
+const EDIT_BUTTON_LABELS = {
+  [ClientStages.isGenerating]: 'Передано до генерації',
+  [ClientStages.isReadyToGenerating]: 'Почати видачу',
+  [ClientStages.isEditable]: 'Редагувати',
+};
+
+// form mode
+enum FormMode {
+  create,
+  edit,
+  view,
 }
 
 export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
@@ -38,13 +56,14 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const { options, developersInfo, isLoading } = useSelector(
     (state: State) => state.scheduler
   );
-  const [insideEdit, setEdit] = useState<boolean>(edit || false);
+  const [formMode, setFormMode] = useState<FormMode>(edit ? FormMode.view : FormMode.create);
 
   // Form State
   const [notary, setNotary] = useState<number | null>(initialValues?.card.notary_id || null);
   const [devCompanyId, setDevCompanyId] = useState<number | null>(null);
   const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
   const [devManagerId, setDevManagerId] = useState<number | null>(null);
+  const [peopleQuantity, setPeopleQuantity] = useState<number>(1);
   const [immovables, setImmovables] = useState<ImmovableItems>([immovableItem]);
   const [clients, setClients] = useState<ClientItem[]>([clientItem]);
 
@@ -68,26 +87,32 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
     && selectedCard, [devCompanyId, immovables, selectedCard]);
 
-  const isDeleteDisabled = useMemo(() => {
-    const generator_step = initialValues?.card.generator_step;
-    const ready = initialValues?.card.ready;
-    return generator_step || ready;
-  }, [initialValues]);
-
-  const editButtonLabel = useMemo(() => {
+  const clientStage = useMemo(() => {
     const generator_step = initialValues?.card.generator_step;
     const ready = initialValues?.card.ready;
 
     if (generator_step) {
-      return 'Передано до генерації';
+      return ClientStages.isGenerating;
     }
 
-    if (ready) {
-      return 'Почати видачу';
-    }
-
-    return 'Редагувати';
+    return ready ? ClientStages.isReadyToGenerating : ClientStages.isEditable;
   }, [initialValues]);
+
+  const editButtonLabel = useMemo(() => EDIT_BUTTON_LABELS[clientStage], [clientStage]);
+
+  const isGeneratingStage = useMemo(
+    () => clientStage === ClientStages.isGenerating, [clientStage]
+  );
+
+  const isFormEditDisabled = useMemo(() => formMode === FormMode.view, [formMode]);
+
+  const isFormDataChangeDisabled = useMemo(
+    () => formMode === FormMode.view || clientStage !== ClientStages.isEditable, [formMode]
+  );
+
+  const isReadyToGenerating = useMemo(
+    () => clientStage === ClientStages.isReadyToGenerating, [formMode]
+  );
 
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {
@@ -166,7 +191,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     setClients((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
   }, [clients]);
 
-  const onFormCreate = useCallback(() => {
+  const onFormCreate = useCallback(async () => {
     const date_time = `${selectedCard.year}.${selectedCard.date}. ${selectedCard.time}`;
 
     const formatImmovables = immovables.map((item: ImmovableItem) => ({
@@ -188,11 +213,11 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
     if (token) {
       if (edit) {
-        dispatch(editCalendarCard(data, selectedCard.i));
-        setEdit(true);
+        await dispatch(editCalendarCard(data, selectedCard.i));
+        setFormMode(FormMode.view);
       } else {
-        dispatch(createNewCard(data));
-        dispatch(setSelectedNewAppointment(null));
+        await dispatch(createNewCard(data));
+        await dispatch(setSelectedNewAppointment(null));
         onClearAll();
       }
     }
@@ -207,6 +232,11 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     selectedCard,
   ]);
 
+  const onStageButtonClick = useCallback(() => {
+    if (isGeneratingStage) return;
+    setFormMode(FormMode.edit);
+  }, [isGeneratingStage]);
+
   // Confirm Dialog Props
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
 
@@ -216,9 +246,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   }), [selectedCard]);
 
   const onDeleteCardClick = useCallback(() => {
-    if (isDeleteDisabled) return;
+    if (isGeneratingStage) return;
     setIsConfirmDialogOpen(true);
-  }, [isDeleteDisabled]);
+  }, [isGeneratingStage]);
 
   const onConfirmDialogClose = useCallback(() => {
     setIsConfirmDialogOpen(false);
@@ -230,7 +260,6 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   useEffect(() => {
     if (initialValues) {
-      setEdit(true);
       setNotary(initialValues.card.notary_id);
       setDevCompanyId(initialValues.card.dev_company_id);
       setDevRepresentativeId(initialValues.card.dev_representative_id);
@@ -261,11 +290,15 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     immovables,
     clients,
     activeAddButton,
-    insideEdit,
     isConfirmDialogOpen,
     confirmDialogContent,
-    isDeleteDisabled,
+    isGeneratingStage,
     editButtonLabel,
+    peopleQuantity,
+    clientStage,
+    isFormDataChangeDisabled,
+    isReadyToGenerating,
+    isFormEditDisabled,
     onDeleteCardClick,
     onConfirmDialogClose,
     onConfirmDialogAgreed,
@@ -281,7 +314,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     onAddClients,
     onClearAll,
     onFormCreate,
-    setEdit,
+    setPeopleQuantity,
+    setFormMode,
+    onStageButtonClick,
     selectedNotaryId: notary,
     selectedDeveloperId: devCompanyId,
     selectedDevRepresentativeId: devRepresentativeId,

@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import { FilterData, State } from '../types';
 import getAppointments from '../../services/getAppointments';
-import setSchedulerFilter from '../../services/setSchedulerFilter';
+import setSchedulerFilter from '../../services/calendar/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
 import getCardsByContractType from '../../services/generator/getCardsByContractType';
 

@@ -27,8 +27,8 @@ const App: React.FC = () => {
   if (type === UserTypes.RECEPTION) {
     return (
       <Suspense fallback={<Loader />}>
-        <VisionScreen />
-        {/* <Scheduler /> */}
+        {/* <VisionScreen /> */}
+        <Scheduler />
       </Suspense>
     );
   }

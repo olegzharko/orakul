@@ -1,7 +1,7 @@
-import { FilterData } from '../store/types';
-import { UserTypes } from '../types';
-import { DEFAULT_URL } from './Constants';
-import requestApi from './utils/requestApi';
+import { FilterData } from '../../store/types';
+import { UserTypes } from '../../types';
+import { DEFAULT_URL } from '../Constants';
+import requestApi from '../utils/requestApi';
 
 export default async function setSchedulerFilter(
   token: string,
@@ -18,7 +18,7 @@ export default async function setSchedulerFilter(
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

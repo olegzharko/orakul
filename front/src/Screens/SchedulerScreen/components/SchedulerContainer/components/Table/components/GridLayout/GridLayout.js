@@ -39,6 +39,8 @@ export default function GridLayout({
     return <span>Loading...</span>;
   }
 
+  console.log(appointments);
+
   return (
     <ReactGridLayout
       className="scheduler__dragAndDrop"
