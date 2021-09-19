@@ -114,7 +114,7 @@ const SchedulerForm = (props: Props) => {
           disabled={meta.isFormDataChangeDisabled}
         />
 
-        {meta.isReadyToGenerating && (
+        {meta.isReadyToGeneratingStage && (
           <>
             <div className="mv12">
               <CustomInput

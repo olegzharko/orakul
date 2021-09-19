@@ -13,7 +13,8 @@ import {
   createNewCard,
   editCalendarCard,
   fetchDeveloperInfo,
-  removeCalendarCard
+  removeCalendarCard,
+  startIssuing
 } from '../../../../../../../../store/scheduler/actions';
 import {
   ClientItem,
@@ -64,6 +65,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
   const [devManagerId, setDevManagerId] = useState<number | null>(null);
   const [peopleQuantity, setPeopleQuantity] = useState<number>(1);
+  const [withChildren, setWithChildren] = useState<boolean>(false);
   const [immovables, setImmovables] = useState<ImmovableItems>([immovableItem]);
   const [clients, setClients] = useState<ClientItem[]>([clientItem]);
 
@@ -110,7 +112,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     () => formMode === FormMode.view || clientStage !== ClientStages.isEditable, [formMode]
   );
 
-  const isReadyToGenerating = useMemo(
+  const isReadyToGeneratingStage = useMemo(
     () => clientStage === ClientStages.isReadyToGenerating, [formMode]
   );
 
@@ -234,8 +236,23 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const onStageButtonClick = useCallback(() => {
     if (isGeneratingStage) return;
+
+    if (isReadyToGeneratingStage) {
+      dispatch(startIssuing({
+        card_id: selectedCard.i,
+        number_of_people: peopleQuantity,
+        children: withChildren,
+        room_id: selectedCard.room,
+      }));
+    }
+
     setFormMode(FormMode.edit);
-  }, [isGeneratingStage]);
+  }, [
+    isGeneratingStage,
+    peopleQuantity,
+    withChildren,
+    selectedCard,
+  ]);
 
   // Confirm Dialog Props
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
@@ -297,8 +314,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     peopleQuantity,
     clientStage,
     isFormDataChangeDisabled,
-    isReadyToGenerating,
+    isReadyToGeneratingStage,
     isFormEditDisabled,
+    withChildren,
     onDeleteCardClick,
     onConfirmDialogClose,
     onConfirmDialogAgreed,
@@ -317,6 +335,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     setPeopleQuantity,
     setFormMode,
     onStageButtonClick,
+    setWithChildren,
     selectedNotaryId: notary,
     selectedDeveloperId: devCompanyId,
     selectedDevRepresentativeId: devRepresentativeId,

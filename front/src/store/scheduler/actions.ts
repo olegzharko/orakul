@@ -1,15 +1,18 @@
 import { Dispatch } from 'react';
+
 import { NewCard } from '../../types';
-import { State } from '../types';
 import createNewCardService from '../../services/calendar/createNewCard';
 import editCalendarCardService from '../../services/calendar/editCalendarCard';
 import getCalendarCard from '../../services/calendar/getCalendarCard';
 import getDeveloperInfo from '../../services/getDeveloperInfo';
 import getCalendar from '../../services/calendar/getCalendar';
 import moveCalendarCardService from '../../services/calendar/moveCalendarCard';
+import deleteCalendarCard from '../../services/calendar/deleteCalendarCard';
+
 import { setModalInfo } from '../main/actions';
 import { addNewAppointment, deleteAppointment, setEditAppointments } from '../appointments/actions';
-import deleteCalendarCard from '../../services/calendar/deleteCalendarCard';
+import { State } from '../types';
+import postStartIssuing, { PostStartIssuingProps } from '../../services/calendar/postStartIssuing';
 
 export const ACTIONS = {
   SET_OPTIONS: 'SET_OPTIONS',
@@ -192,5 +195,24 @@ export const createNewCard = (data: NewCard) => async (
     if (res.success) {
       dispatch(addNewAppointment(res.data));
     }
+  }
+};
+
+export const startIssuing = (data: PostStartIssuingProps) => async (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const { token } = getState().main.user;
+
+  if (token) {
+    const res = await postStartIssuing(token, data);
+
+    dispatch(
+      setModalInfo({
+        open: true,
+        success: res.success,
+        message: res.message,
+      })
+    );
   }
 };
