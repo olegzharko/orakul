@@ -24,6 +24,8 @@ class FilterType extends Resource
      */
     public static $title = 'id';
 
+    public static $group = "Типи";
+
     public static function label()
     {
         return "Фильтр";

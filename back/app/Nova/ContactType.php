@@ -32,6 +32,8 @@ class ContactType extends Resource
         'id',
     ];
 
+    public static $group = "Типи";
+
     public static function label()
     {
         return "Типи контактних осіб";

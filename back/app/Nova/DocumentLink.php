@@ -31,6 +31,14 @@ class DocumentLink extends Resource
         'id',
     ];
 
+
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Посилання на документи";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

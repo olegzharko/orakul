@@ -9,15 +9,17 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Text;
 use Naif\Toggle\Toggle;
+use OptimistDigital\NovaSortable\Traits\HasSortableRows;
 
-class ServiceSteps extends Resource
+class AccompanyingStep extends Resource
 {
+    use HasSortableRows;
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\ServiceSteps::class;
+    public static $model = \App\Models\AccompanyingStep::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -38,6 +40,18 @@ class ServiceSteps extends Resource
         'id',
     ];
 
+
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Видача - кроки";
+    }
+
+    public static function canSort(NovaRequest $request)
+    {
+        return true;
+    }
     /**
      * Get the fields displayed by the resource.
      *

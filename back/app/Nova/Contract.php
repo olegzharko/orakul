@@ -32,7 +32,7 @@ class Contract extends Resource
 
     public function title()
     {
-        if ($this->card->notary)
+        if ($this->card && $this->card->notary)
             $str_notary = $this->card->notary->surname_n . " " . $this->card->notary->short_name . " " . $this->card->notary->short_patronymic;
         else
             $str_notary = null;

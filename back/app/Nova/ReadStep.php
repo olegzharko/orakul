@@ -3,17 +3,20 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
+use Laravel\Nova\Fields\Text;
 
-class StaffTask extends Resource
+class ReadStep extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\StaffTask::class;
+    public static $model = \App\Models\ReadStep::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -31,6 +34,13 @@ class StaffTask extends Resource
         'id',
     ];
 
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Читка - кроки";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -41,6 +51,9 @@ class StaffTask extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+            BelongsTo::make('Послуга', 'notary_service', 'App\Nova\NotaryService'),
+            Text::make('Крок', 'title'),
+            Toggle::make('Активувати', 'active'),
         ];
     }
 

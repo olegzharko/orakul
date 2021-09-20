@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Contract;
+use App\Models\StaffTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
@@ -14,9 +15,11 @@ class StaffController extends BaseController
 {
     public $convert;
     public $tools;
+    public $free_color;
 
     public function __construct()
     {
+        $this->free_color = '#000000';
         $this->convert = new ConvertController();
         $this->tools = new ToolsController();
     }
@@ -35,7 +38,7 @@ class StaffController extends BaseController
                 continue ;
             $work_space = $user->work_space;
             $space[] = $work_space;
-            $info['color'] = 'FF0000';
+            $info['color'] = $this->get_task_color($user);
             $info['full_name'] = $this->convert->get_staff_full_name($user);
             $info['generate'] = $this->get_staff_generate_info($user);
             $info['read'] = $this->get_staff_read_info($user);
@@ -87,6 +90,16 @@ class StaffController extends BaseController
 
         $result['ready'] = $ready;
         $result['total'] = $total;
+
         return $result;
+    }
+
+    public function get_task_color($staff)
+    {
+        $staff_task = StaffTask::where('staff_id', $staff->id)->orderBy('id', 'desc')->first();
+        if ($staff_task && $staff_task->card && $staff_task->card->dev_group)
+            return $staff_task->card->dev_group->color;
+        else
+            return $this->free_color;
     }
 }

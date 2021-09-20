@@ -34,9 +34,11 @@ class WorkSpace extends Resource
         'alias',
     ];
 
+    public static $group = "V2";
+
     public static function label()
     {
-        return "Офіс";
+        return "Робочі зони";
     }
 
     /**

@@ -32,6 +32,8 @@ class SortType extends Resource
         'id',
     ];
 
+    public static $group = "V2";
+
     public static function label()
     {
         return "Сортування";

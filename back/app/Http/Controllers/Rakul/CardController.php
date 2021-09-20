@@ -42,7 +42,7 @@ class CardController extends BaseController
     public function __construct()
     {
         $this->date = new \DateTime();
-        $this->rooms = Room::where('rooms.active', true)->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->pluck('rooms.id')->toArray();
+        $this->rooms = Room::where(['rooms.active' => true, 'room_types.alias' => 'meeting_room'])->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->pluck('rooms.id')->toArray();
         $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->immovable = new ImmovableController();
         $this->contract = new ContractController();
