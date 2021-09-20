@@ -6,15 +6,17 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Naif\Toggle\Toggle;
+use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class DealService extends Resource
+class AccompanyingStepCheckList extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\DealService::class;
+    public static $model = \App\Models\AccompanyingStepChekcList::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -32,6 +34,13 @@ class DealService extends Resource
         'id',
     ];
 
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Видачі - пройдені кроки";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -40,13 +49,12 @@ class DealService extends Resource
      */
     public function fields(Request $request)
     {
-
-//            $table->integer('visit_id')->nullable();
-//            $table->integer('service_id')->nullable();
         return [
             ID::make(__('ID'), 'id')->sortable(),
             BelongsTo::make('Візит', 'visit', 'App\Nova\Deal'),
-            BelongsTo::make('Послуга', 'notary_service', 'App\Nova\NotaryService'),
+            BelongsTo::make('Етап', 'service_steps', 'App\Nova\AccompanyingStep'),
+            Toggle::make('Статус', 'status'),
+            DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm'),
         ];
     }
 

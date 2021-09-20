@@ -33,6 +33,13 @@ class BankFiles extends Resource
         'id',
     ];
 
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Розділ для банку";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

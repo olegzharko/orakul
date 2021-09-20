@@ -9,9 +9,9 @@ use App\Models\DevCompanyEmployer;
 use App\Models\DevGroup;
 use App\Models\DocumentLink;
 use App\Models\Room;
-use App\Models\ServiceSteps;
+use App\Models\AccompanyingStep;
 use App\Models\User;
-use App\Models\DealServiceStep;
+use App\Models\AccompanyingStepChekcList;
 use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
@@ -410,9 +410,9 @@ class ToolsController extends Controller
         $card = Card::find($deal->card_id);
 
         $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
-        $steps = ServiceSteps::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
+        $steps = AccompanyingStep::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
         foreach ($steps as $s_key => $step) {
-            $pass_time = DealServiceStep::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
+            $pass_time = AccompanyingStepChekcList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
             $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
         }
 

@@ -35,6 +35,14 @@ class NotaryService extends Resource
         'id',
     ];
 
+
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Послуги";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

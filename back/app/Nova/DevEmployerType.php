@@ -23,6 +23,8 @@ class DevEmployerType extends Resource
      */
     public static $title = 'title';
 
+    public static $group = "Типи";
+
     public static function label()
     {
         return "Ролі працівників забудовника";

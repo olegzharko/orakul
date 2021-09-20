@@ -12,6 +12,7 @@ use App\Models\Staff;
 use App\Models\StaffTask;
 use Illuminate\Http\Request;
 use App\Models\Card;
+use Illuminate\Support\Facades\Auth;
 
 class MainController extends BaseController
 {
@@ -37,7 +38,7 @@ class MainController extends BaseController
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
 
-        StaffTask::set_current_task($card_id);
+        StaffTask::set_current_task($card);
 
         $date_info = $this->tools->header_info($card);
         $instructions = $this->step->todo_list($card);

@@ -16,8 +16,8 @@ class MinfinController extends BaseController
     public function __construct()
     {
         $this->client = new \GuzzleHttp\Client();
-        $this->api_key = "d0624fa95581282989b572beaf26ea7eeb6323d1";
-//        $this->api_key = "cfe70aa913f63a82fee327cbe8672ba7e7a79049";
+//        $this->api_key = "d0624fa95581282989b572beaf26ea7eeb6323d1";
+        $this->api_key = "cfe70aa913f63a82fee327cbe8672ba7e7a79049";
     }
 
     public function get_rate_exchange()
@@ -83,12 +83,13 @@ class MinfinController extends BaseController
 
     public function get_nbu_ask()
     {
-        try {
-            $response = $this->client->request('GET', 'https://api.minfin.com.ua/nbu/' . $this->api_key . '/');
-        } catch (\Exception $e) {
-            return null;
-        }
 
+//        try {
+            $response = $this->client->request('GET', 'https://api.minfin.com.ua/nbu/' . $this->api_key . '/');
+//            $response = $this->client->request('GET', 'https://api.minfin.com.ua/nbu/cfe70aa913f63a82fee327cbe8672ba7e7a79049/');
+//        } catch (\Exception $e) {
+//            return null;
+//        }
         $api_data = json_decode($response->getBody());
 
         if (!$api_data->usd)

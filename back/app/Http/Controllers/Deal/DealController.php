@@ -63,6 +63,7 @@ class DealController extends BaseController
             return $this->sendResponse('', "В '" . $room->title . "' зайнято");
 
         $date = new \DateTime();
+
         Deal::updateOrCreate(
             ['card_id' => $r['card_id']],
             [

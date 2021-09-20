@@ -24,9 +24,11 @@ class RoomType extends Resource
      */
     public static $title = 'title';
 
+    public static $group = "V2";
+
     public static function label()
     {
-        return "Тип кімнат";
+        return "Тип офісних приміщень";
     }
 
     /**

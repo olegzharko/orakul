@@ -23,6 +23,10 @@ class SpaceController extends BaseController
         $this->tools = new ToolsController();
     }
 
+    /*
+     * Передає список кімнат - рецепція, кімнати ділових переговорів, кабінети нотаріусів
+     * Дані по угоді, що проходить в переговорній кімнаті або кабінеті нотаріуса
+     * */
     public function space()
     {
         $deal_info = Deal::select(
@@ -53,10 +57,12 @@ class SpaceController extends BaseController
 
             $room_type = $info->room->type->alias;
             unset($info->room);
-            if ($info->room_id && $room_type == 'meeting_room') {
-                $result['meeting_room'][$info->room_id] = $info;
-            } elseif ($info->room_id && $room_type == 'reception') {
+            if ($info->room_id && $room_type == 'reception') {
                 $result['reception'][] = $info;
+            } elseif ($info->room_id && $room_type == 'meeting_room') {
+                $result['meeting_room'][] = $info;
+            } elseif  ($info->room_id && $room_type == 'notary_cabinet') {
+                $result['notary_cabinet'][] = $info;
             }
 
             unset($info);

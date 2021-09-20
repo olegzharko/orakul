@@ -33,6 +33,7 @@ use App\Models\DeveloperBuilding;
 use App\Models\ContractType;
 use App\Models\Spouse;
 use App\Models\Text;
+use App\Models\User;
 use Validator;
 
 class ManagerController extends BaseController
@@ -104,7 +105,7 @@ class ManagerController extends BaseController
         $result['developer_id'] = $card->dev_group_id;
         $result['representative_id'] = $card->dev_representative_id;
         $result['manager_id'] = $card->dev_manager_id;
-        $result['generator_id'] = $card->staff_generator_id;
+        $result['generator_id'] = User::find($card->staff_generator_id) ? $card->staff_generator_id : null;
         $result['generation_ready'] = $card->generator_step ? true : false;
 
         return $this->sendResponse($result, 'Дані по карточкці ID:' . $card_id);

@@ -9,14 +9,14 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class DealServiceStep extends Resource
+class ReadStepsCheckList extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\DealServiceStep::class;
+    public static $model = \App\Models\ReadStepsCheckList::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -34,6 +34,13 @@ class DealServiceStep extends Resource
         'id',
     ];
 
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Читка - пройдені кроки";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -44,10 +51,10 @@ class DealServiceStep extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Візит', 'visit', 'App\Nova\Deal'),
-            BelongsTo::make('Етап', 'service_steps', 'App\Nova\ServiceSteps'),
-            Toggle::make('Готово', 'pass'),
-            DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm')->onlyOnForms(),
+            BelongsTo::make('Договір', 'contract', 'App\Nova\Contract'),
+            BelongsTo::make('Етап', 'read_step', 'App\Nova\ReadStep'),
+            Toggle::make('Статус', 'status'),
+            DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm'),
         ];
     }
 

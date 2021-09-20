@@ -23,9 +23,11 @@ class PositionType extends Resource
      */
     public static $title = 'title';
 
+    public static $group = 'Типи';
+
     public static function label()
     {
-        return "Типи працівників";
+        return "Працівників";
     }
 
     /**

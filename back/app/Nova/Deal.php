@@ -24,7 +24,10 @@ class Deal extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public function title()
+    {
+        return $this->card->date_time->format('d.m.Y') . " " . $this->card->room->title;
+    }
 
     /**
      * The columns that should be searched.
@@ -34,6 +37,14 @@ class Deal extends Resource
     public static $search = [
         'id',
     ];
+
+
+    public static $group = "V2";
+
+    public static function label()
+    {
+        return "Угоди";
+    }
 
     /**
      * Get the fields displayed by the resource.

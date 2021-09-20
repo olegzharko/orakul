@@ -25,7 +25,7 @@ class ReceptionController extends BaseController
 
     public function reception()
     {
-        $rooms = Room::select('rooms.id', 'rooms.title', 'rooms.sort_order', 'rooms.color')->where(['rooms.active' => true, 'room_types.alias' => 'meeting_room'])->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->get();
+        $rooms = $this->get_callendar_cell_header();
 
         $time = Time::select('time', 'sort_order')->where('active', true)->get();
         $work_days_and_date = $this->get_day_and_date();
@@ -90,5 +90,12 @@ class ReceptionController extends BaseController
         ];
 
         return $result;
+    }
+
+    public function get_callendar_cell_header()
+    {
+        $rooms = Room::select('rooms.id', 'rooms.sort_order', 'rooms.color')->where(['rooms.active' => true, 'room_types.alias' => 'meeting_room'])->orderBy('rooms.sort_order')->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')->get();
+
+        return $rooms;
     }
 }
