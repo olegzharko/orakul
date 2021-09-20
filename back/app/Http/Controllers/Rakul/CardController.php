@@ -174,6 +174,17 @@ class CardController extends BaseController
                 }
             }
         }
+        $bysy_meeting_room = Deal::where(['deals.ready' => false, 'room_types.alias' => 'meeting_room'])
+            ->leftJoin('rooms', 'rooms.id', '=', 'deals.room_id')
+            ->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')
+            ->pluck('deals.room_id');
+
+        $rooms = Room::select('rooms.id', 'rooms.title')
+                ->where(['rooms.active' => true, 'location' => 'rakul', 'room_types.alias' => 'reception'])
+                ->whereNotIn('rooms.id', $bysy_meeting_room)
+                ->orderBy('rooms.sort_order')
+                ->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')
+                ->get();
 
         $visit_info = Deal::select(
             'number_of_people',
@@ -187,6 +198,7 @@ class CardController extends BaseController
             'card' => $card,
             'immovables' => $result_contract_immovable,
             'clients' => $result_clients,
+            'rooms' => $rooms,
             'visit_info' => $visit_info,
         ];
 
