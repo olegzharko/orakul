@@ -6,37 +6,47 @@ import './index.scss';
 import WaitingRoomCard from './components/WaitingRoomClientCard';
 import WaitingRoomGroupCard from './components/WaitingRoomGroupCard';
 import WaitingRoomTable from './components/WaitingRoomTable';
+import { useClientSide } from './useClientSide';
+import Loader from '../../../../components/Loader/Loader';
 
-const ClientSide = () => (
-  <div className="vision-client-side">
-    <WaitingRoomTable />
+const ClientSide = () => {
+  const { isLoading, reception } = useClientSide();
 
-    <div className="room-cards">
-      <WaitingRoomCard
-        title="Кімната №1"
-        headerButtonTitle="Переглянути"
-        headerButtonLink={`${VisionNavigationLinks.clientSide}/1`}
-      />
+  if (isLoading) return <Loader />;
 
-      <WaitingRoomCard
-        title="Кімната №1"
-        headerButtonTitle="Переглянути"
-        headerButtonLink={`${VisionNavigationLinks.clientSide}/2`}
-      />
+  console.log(reception);
 
-      <WaitingRoomCard
-        title="Кімната №1"
-        headerButtonTitle="Переглянути"
-        headerButtonLink={`${VisionNavigationLinks.clientSide}/3`}
-      />
+  return (
+    <div className="vision-client-side">
+      <WaitingRoomTable clients={reception} />
 
-      <WaitingRoomGroupCard
-        title="Кімната №1"
-        headerButtonTitle="Запросити"
-        onHeaderButtonClick={() => console.log('test')}
-      />
+      <div className="room-cards">
+        <WaitingRoomCard
+          title="Кімната №1"
+          headerButtonTitle="Переглянути"
+          headerButtonLink={`${VisionNavigationLinks.clientSide}/1`}
+        />
+
+        <WaitingRoomCard
+          title="Кімната №1"
+          headerButtonTitle="Переглянути"
+          headerButtonLink={`${VisionNavigationLinks.clientSide}/2`}
+        />
+
+        <WaitingRoomCard
+          title="Кімната №1"
+          headerButtonTitle="Переглянути"
+          headerButtonLink={`${VisionNavigationLinks.clientSide}/3`}
+        />
+
+        <WaitingRoomGroupCard
+          title="Кімната №1"
+          headerButtonTitle="Запросити"
+          onHeaderButtonClick={() => console.log('test')}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default ClientSide;

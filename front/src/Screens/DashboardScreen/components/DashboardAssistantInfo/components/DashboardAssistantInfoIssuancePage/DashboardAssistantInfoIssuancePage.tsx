@@ -5,8 +5,6 @@ import CheckList from '../../../../../../components/CheckList';
 import Dashboard from '../../../../../../components/Dashboard';
 import { DashboardAssistantInfoNavigationLinks } from '../../../../enums';
 
-import Filter from '../../../DashboardContainer/components/FilterContainer';
-
 import { dashboardData } from '../../config';
 
 const DashboardAssistantInfoIssuancePage = () => {

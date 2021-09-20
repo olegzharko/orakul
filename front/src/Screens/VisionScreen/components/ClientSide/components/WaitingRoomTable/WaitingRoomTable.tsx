@@ -1,10 +1,16 @@
 import * as React from 'react';
 import { useState } from 'react';
+
 import { waitingRoomClientsTableHeader } from '../../config';
+import { VisionClient } from '../../types';
 
 import WaitingRoomClientItem from '../WaitingRoomClientTableItem';
 
-const WaitingRoomTable = () => {
+type WaitingRoomTableProps = {
+  clients: VisionClient[];
+}
+
+const WaitingRoomTable = ({ clients }: WaitingRoomTableProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const handleClick = (index: number) => {
@@ -30,23 +36,15 @@ const WaitingRoomTable = () => {
           ))}
         </tr>
 
-        <WaitingRoomClientItem
-          index={0}
-          height={selectedIndex === 0 ? 'auto' : 0}
-          onClick={handleClick}
-        />
-
-        <WaitingRoomClientItem
-          index={1}
-          height={selectedIndex === 1 ? 'auto' : 0}
-          onClick={handleClick}
-        />
-
-        <WaitingRoomClientItem
-          index={2}
-          height={selectedIndex === 2 ? 'auto' : 0}
-          onClick={handleClick}
-        />
+        {clients.map((client, index) => (
+          <WaitingRoomClientItem
+            key={client.id}
+            index={index}
+            height={selectedIndex === index ? 'auto' : 0}
+            onClick={handleClick}
+            client={client}
+          />
+        ))}
       </tbody>
     </table>
   );

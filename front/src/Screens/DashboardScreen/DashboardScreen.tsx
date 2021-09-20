@@ -8,7 +8,6 @@ import './index.scss';
 import ManageContainer from './components/ManageContainer';
 import DashboardAssistantInfo from './components/DashboardAssistantInfo';
 import { MANAGE_CONTAINER_LINK_PREFIX } from './constants';
-import { DashboardAssistantInfoNavigationLinks } from './enums';
 
 const DashboardScreen = () => (
   <div className="dashboard-screen">

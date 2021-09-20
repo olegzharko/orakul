@@ -1,19 +1,26 @@
 import React, { useCallback } from 'react';
 import AnimateHeight from 'react-animate-height';
+
 import PrimaryButton from '../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../components/SecondaryButton';
+
+import { VisionClient } from '../../types';
 
 type WaitingRoomClientTableItemProps = {
   height: number | string;
   index: number;
+  client: VisionClient
   onClick: (index: number) => void;
 }
 
 const DEFAULT_DURATION = 500;
 
-const WaitingRoomClientTableItem = (
-  { onClick, height, index }: WaitingRoomClientTableItemProps
-) => {
+const WaitingRoomClientTableItem = ({
+  height,
+  index,
+  client,
+  onClick,
+}: WaitingRoomClientTableItemProps) => {
   const handleClose = useCallback(() => {
     onClick(-1);
   }, []);
@@ -22,13 +29,13 @@ const WaitingRoomClientTableItem = (
     <>
       <tr className="table__clickable" onClick={() => onClick(index)}>
         <td style={{ backgroundColor: '#FF3400' }} />
-        <td>13:00</td>
-        <td>13:00</td>
-        <td>13:00</td>
-        <td>13:00</td>
-        <td>13:00</td>
-        <td>13:00</td>
-        <td>13:00</td>
+        <td>{client.start_time}</td>
+        <td>{client.visit_time}</td>
+        <td>{client.waiting_time}</td>
+        <td>{client.people}</td>
+        <td>{client.children}</td>
+        <td>{client.in_progress}</td>
+        <td>Добавить</td>
       </tr>
       <AnimateHeight
         duration={DEFAULT_DURATION}
@@ -38,58 +45,70 @@ const WaitingRoomClientTableItem = (
           <div className="table__closeIcon">
             <img src="/images/x.svg" alt="close" onClick={handleClose} />
           </div>
-          <div className="grid-center-trio">
+          <div className="grid-center-trio table__info-grid">
             <div className="table__textBlock">
               <span className="title">
                 Нотаріус
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.notary.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
 
             <div className="table__textBlock">
               <span className="title">
-                Нотаріус
+                Читач
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.reader.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
 
             <div className="table__textBlock">
               <span className="title">
-                Нотаріус
+                Видавач
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.accompanying.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
 
             <div className="table__textBlock">
               <span className="title">
-                Нотаріус
+                Підписант
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.representative.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
 
             <div className="table__textBlock">
               <span className="title">
-                Нотаріус
+                Нерухомість
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.immovable.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
 
             <div className="table__textBlock">
               <span className="title">
-                Нотаріус
+                Покупець
               </span>
               <span className="info">
-                Петрова Світлана Миколаївна
+                {client.buyer.map(({ title, id }) => (
+                  <span key={id}>{title}</span>
+                ))}
               </span>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import { DashboardAssistantInfoNavigationLinks } from '../../enums';
+import Loader from '../../../../components/Loader/Loader';
 
 import './index.scss';
 import DashboardAssistantInfoHeader from './components/DashboardAssistantInfoHeader';
@@ -22,9 +23,12 @@ const assistantInfoRoutes = {
 
 const DashboardAssistantInfo = () => {
   const {
+    clientCards,
     onFiltersChange,
     onContractsFiltersChange,
   } = useDashboardAssistantInfo();
+
+  if (!clientCards) return <Loader />;
 
   return (
     <div className="dashboard-assistant-info df">
@@ -48,7 +52,7 @@ const DashboardAssistantInfo = () => {
 
         <Switch>
           <Route path={assistantInfoRoutes.set} exact>
-            <DashboardAssistantInfoSetPage />
+            <DashboardAssistantInfoSetPage cards={clientCards} />
           </Route>
 
           <Route path={assistantInfoRoutes.reading}>
