@@ -419,11 +419,11 @@ class ToolsController extends Controller
             $accompanying_steps = AccompanyingStep::select('id', 'title')->where('notary_service_id', $contract->notary_service_id)->where('active', true)->orderBy('sort_order')->get();
             foreach ($accompanying_steps as $s_key => $step) {
                 $check_list = AccompanyingStepCheckList::where('contract_id', $contract->id)->where('accompanying_step_id', $step->id)->first();
-                $steps[$s_key]['time'] = $check_list ? $check_list->format('H:i') : null;
-                $steps[$s_key]['status'] = $check_list ? $check_list->status : false;
+                $accompanying_steps[$s_key]['time'] = $check_list ? $check_list->format('H:i') : null;
+                $accompanying_steps[$s_key]['status'] = $check_list ? $check_list->status : false;
             }
 
-            $result[] = $steps;
+            $result[] = $accompanying_steps;
         }
 
         return $result;
