@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\In;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -24,7 +25,16 @@ class NotaryService extends Resource
      *
      * @var string
      */
-    public static $title = 'title';
+    public function title()
+    {
+        $result = null;
+
+        $title = $this->title;
+
+        $dev_group =  $this->dev_group ? $this->dev_group->title : null;
+
+        return $title . " " . $dev_group;
+    }
 
     /**
      * The columns that should be searched.
@@ -54,6 +64,8 @@ class NotaryService extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('Назва послуги', 'title'),
+            BelongsTo::make('Тип договору', 'contract_type', 'App\Nova\ContractType')->required(),
+            BelongsTo::make('Група забудовника', 'dev_group', 'App\Nova\DevGroup')->required(),
             Money::make('price', 'UAH')->storedInMinorUnits()->hideFromIndex(),
             Number::make('Кількість хвили на послугу', 'average_time'),
         ];

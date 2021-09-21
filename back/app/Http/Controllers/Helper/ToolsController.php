@@ -22,14 +22,17 @@ use App\Models\DevCompany;
 use App\Models\DeveloperBuilding;
 use App\Models\Deal;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MediaController;
 
 class ToolsController extends Controller
 {
     public $convert;
+    public $media;
 
     public function __construct()
     {
         $this->convert = new ConvertController();
+        $this->media = new MediaController();
     }
 
     public function header_info($card)
@@ -484,5 +487,22 @@ class ToolsController extends Controller
         $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'client')->value('value'));
 
         return $result;
+    }
+
+    public function get_user_avatar($user)
+    {
+        if ($user = $user->getMedia('path')) {
+            if ($image = $user->first()) {
+
+                $user->image = $image->getUrl();
+
+                unset($user->media);
+            } else {
+                $user->image = "";
+            }
+        }
+
+        return $user->image;
+
     }
 }

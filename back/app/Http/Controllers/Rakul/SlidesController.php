@@ -28,6 +28,5 @@ class SlidesController extends BaseController
         } else {
             return $this->sendError("Слайди відсутні");
         }
-
     }
 }

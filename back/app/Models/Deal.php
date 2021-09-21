@@ -15,6 +15,7 @@ class Deal extends Model
         'children',
         'room_id',
         'in_progress',
+        'representative_arrived',
         'arrival_time',
         'waiting_time',
         'total_time',
@@ -28,6 +29,7 @@ class Deal extends Model
         'updated_at' => 'datetime',
         'children' => 'boolean',
         'in_progress' => 'boolean',
+        'representative_arrived' => 'boolean',
     ];
 
     public function card()

@@ -13,13 +13,13 @@ class AccompanyingStepCheckList extends Model
       'date_time' => 'datetime',
     ];
 
-    public function visit()
+    public function contract()
     {
-        return $this->belongsTo(Deal::class, 'deal_id');
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 
-    public function service_steps()
+    public function accompanying_step()
     {
-        return $this->belongsTo(AccompanyingStep::class, 'service_step_id');
+        return $this->belongsTo(AccompanyingStep::class, 'accompanying_step_id');
     }
 }

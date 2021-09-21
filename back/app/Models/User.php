@@ -9,10 +9,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Passport\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements CanResetPassword
+class User extends Authenticatable implements CanResetPassword, HasMedia
 {
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -53,5 +56,19 @@ class User extends Authenticatable implements CanResetPassword
     public function work_space()
     {
         return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(500)
+            ->height(330);
+
+        $this->addMediaConversion('mobile')
+            ->width(375);
+
+        $this->addMediaConversion('tablet')
+            ->width(768);
+
     }
 }
