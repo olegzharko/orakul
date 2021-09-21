@@ -163,11 +163,13 @@ Route::middleware('auth:api')->group(function () {
        });
 
        Route::group(['prefix' => 'read'], function() {
-           Route::get('checklist/{card_id}', [\App\Http\Controllers\Read\ReadController::class, 'get_read_check_list']); // postman
+           Route::get('main/{card_id}', [\App\Http\Controllers\Read\ReadController::class, 'main']); // postman
+           Route::get('checklist/{contract_id}', [\App\Http\Controllers\Read\ReadController::class, 'get_read_check_list']); // postman
        });
 
        Route::group(['prefix' => 'accompanying'], function() {
-           Route::get('checklist/{card_id}', [\App\Http\Controllers\Read\ReadController::class, 'get_accompanying_check_list']); // postman
+           Route::get('main/{card_id}', [\App\Http\Controllers\Accompanying\AccompanyingController::class, 'main']); // postman
+           Route::get('checklist/{contract_id}', [\App\Http\Controllers\Accompanying\AccompanyingController::class, 'get_accompanying_check_list']); // postman
        });
 
     });

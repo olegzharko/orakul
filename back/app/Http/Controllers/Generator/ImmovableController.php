@@ -437,7 +437,7 @@ class ImmovableController extends BaseController
 //        return $this->sendResponse($result, 'Курс долара оновлено через minfin.com.ua');
 //    }
 
-    private function get_immovables_by_card($card_id)
+    public function get_immovables_by_card($card_id)
     {
         $result = [];
         $contract = null;

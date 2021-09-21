@@ -7,9 +7,20 @@ use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Auth;
 use Session;
+use App\Http\Controllers\Factory\ConvertController;
+use App\Http\Controllers\Helper\ToolsController;
 
 class PassportAuthController extends BaseController
 {
+    public $convert;
+    public $tools;
+
+    public function __construct()
+    {
+        $this->convert = new ConvertController();
+        $this->tools = new ToolsController();
+    }
+
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -48,6 +59,8 @@ class PassportAuthController extends BaseController
                 'data' => [
                     'id' => auth()->user()->id,
                     'type' => auth()->user()->type,
+                    'user_name' => $this->convert->get_full_name(auth()->user()),
+                    'avatar' => $this->tools->get_user_avatar(auth()->user()),
                     'extra_type' => $this->get_extra_type(auth()->user()->type),
                     'token' => $token,
                 ],

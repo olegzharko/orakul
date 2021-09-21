@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Naif\Toggle\Toggle;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 
 class User extends Resource
 {
@@ -56,7 +57,8 @@ class User extends Resource
         return [
             ID::make()->sortable(),
 
-            Gravatar::make()->maxWidth(50),
+//            Gravatar::make()->maxWidth(50),
+            Images::make('Фото', 'path'),
 
             Text::make('Surname')
                 ->sortable()
@@ -70,7 +72,7 @@ class User extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            BelongsTo::make('Робоче місце', 'work_space', 'App\Nova\WorkSpace'),
+            BelongsTo::make('Робоче місце', 'work_space', 'App\Nova\WorkSpace')->nullable(),
             Text::make('Email')
                 ->sortable()
 //                ->rules('required', 'email', 'max:254')

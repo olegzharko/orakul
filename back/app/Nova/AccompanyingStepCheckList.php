@@ -51,8 +51,8 @@ class AccompanyingStepCheckList extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Візит', 'visit', 'App\Nova\Deal'),
-            BelongsTo::make('Етап', 'service_steps', 'App\Nova\AccompanyingStep'),
+            BelongsTo::make('Договір', 'contract', 'App\Nova\Contract'),
+            BelongsTo::make('Етап', 'accompanying_step', 'App\Nova\AccompanyingStep'),
             Toggle::make('Статус', 'status'),
             DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm'),
         ];
