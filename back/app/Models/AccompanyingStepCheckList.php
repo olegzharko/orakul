@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AccompanyingStepChekcList extends Model
+class AccompanyingStepCheckList extends Model
 {
     use HasFactory;
 

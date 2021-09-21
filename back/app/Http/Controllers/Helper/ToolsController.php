@@ -11,7 +11,7 @@ use App\Models\DocumentLink;
 use App\Models\Room;
 use App\Models\AccompanyingStep;
 use App\Models\User;
-use App\Models\AccompanyingStepChekcList;
+use App\Models\AccompanyingStepCheckList;
 use App\Models\WorkDay;
 use App\Models\Client;
 use App\Models\Notary;
@@ -412,7 +412,7 @@ class ToolsController extends Controller
         $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
         $steps = AccompanyingStep::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
         foreach ($steps as $s_key => $step) {
-            $pass_time = AccompanyingStepChekcList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
+            $pass_time = AccompanyingStepCheckList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
             $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
         }
 

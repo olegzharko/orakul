@@ -77,12 +77,28 @@ class CardController extends BaseController
             $cards = $cards_query->where('cancelled', false)->get();
             $result = $this->get_cards_in_reception_format($cards);
         } elseif ($user_type == 'generator') {
-            $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
+            // отримати картки для генерації договору
+            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
-            $result = $this->get_cards_in_generator_format($cards);
+            $result['generator'] = $this->get_cards_in_generator_format($cards_generator);
+
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
+            // отримати картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->get_cards_in_generator_format($cards_reader);
+
+            // отримати картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->get_cards_in_generator_format($cards_accompanying);
+
+            // $result = $this->get_cards_in_generator_format($cards);
         } elseif ($user_type == 'manager' || $user_type == 'assistant') {
             $cards = $cards_query->orderBy('date_time')->get();
-            $result = $this->get_cards_in_generator_format($cards);
+            $result = $this->get_cards_in_manager_format($cards);
         }
         else {
             return $this->sendError("Тип сторінки " . $user_type . " не підримується");
@@ -671,6 +687,45 @@ class CardController extends BaseController
         return $result;
     }
 
+    public function get_cards_in_manager_format($cards, $sort_type_id = null)
+    {
+        $group = [];
+        $result = [];
+        $week = WorkDay::where('active', true)->orderBy('num')->pluck('title', 'num')->toArray();
+        $i = 0;
+
+        foreach ($cards as $key => $card) {
+            $result['id'] = $card->id;
+            $result['color'] = $card->dev_group->color;
+            $result['title'] = $this->get_card_title($card);
+//            $result['short_info'] = $this->get_card_short_info($card);
+            $result['instructions'] = $this->get_card_instructions($card);
+            $test[] = $result;
+            if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
+                $group[$i]['cards'][] = $result;
+            } else {
+                $i = $card->date_time->format('d.m.');
+
+                $day_num = $card->date_time->format('w');
+                $group[$i]['day'] = $day_num ? $week[$day_num] : null;
+                $group[$i]['date'] = $card->date_time->format('d.m.');
+                if (!isset($group[$i]['cards']))
+                    $group[$i]['cards'] = [];
+                $group[$i]['cards'][] = $result;
+            }
+        }
+
+        if ($sort_type_id) {
+            $sort_type = SortType::where('id', $sort_type_id)->value('alias');
+
+            if ($sort_type == 'desc')
+                $group = array_values(array_reverse($group));
+        }
+
+        return $group;
+    }
+
+
     public function get_cards_in_generator_format($cards, $sort_type_id = null)
     {
         $group = [];
@@ -682,7 +737,7 @@ class CardController extends BaseController
             $result['id'] = $card->id;
             $result['color'] = $card->dev_group->color;
             $result['title'] = $this->get_card_title($card);
-            $result['short_info'] = $this->get_card_short_info($card);
+
             $result['instructions'] = $this->get_card_instructions($card);
             $test[] = $result;
             if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {

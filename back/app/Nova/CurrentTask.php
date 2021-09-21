@@ -3,20 +3,17 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Naif\Toggle\Toggle;
-use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class AccompanyingStepCheckList extends Resource
+class CurrentTask extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\AccompanyingStepCheckList::class;
+    public static $model = \App\Models\CurrentTask::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -34,13 +31,6 @@ class AccompanyingStepCheckList extends Resource
         'id',
     ];
 
-    public static $group = "V2";
-
-    public static function label()
-    {
-        return "Видачі - пройдені кроки";
-    }
-
     /**
      * Get the fields displayed by the resource.
      *
@@ -51,10 +41,6 @@ class AccompanyingStepCheckList extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Візит', 'visit', 'App\Nova\Deal'),
-            BelongsTo::make('Етап', 'service_steps', 'App\Nova\AccompanyingStep'),
-            Toggle::make('Статус', 'status'),
-            DateTime::make('Дата зустрічі', 'date_time')->timeFormat('HH:mm'),
         ];
     }
 
