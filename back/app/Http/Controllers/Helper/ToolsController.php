@@ -427,21 +427,6 @@ class ToolsController extends Controller
         }
 
         return $result;
-
-//        $result = [];
-//
-//        $card = Card::find($deal->card_id);
-//
-//        $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
-//        $steps = AccompanyingStep::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
-//        foreach ($steps as $s_key => $step) {
-//            $pass_time = AccompanyingStepCheckList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
-//            $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
-//        }
-//
-//        $result = $steps;
-//
-//        return $result;
     }
 
     public function get_deal_payment($deal)
