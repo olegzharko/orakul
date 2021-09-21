@@ -11,6 +11,7 @@ class AccompanyingStepCheckList extends Model
 
     protected $casts = [
       'date_time' => 'datetime',
+      'status' => 'boolean',
     ];
 
     public function contract()
