@@ -412,16 +412,36 @@ class ToolsController extends Controller
 
         $card = Card::find($deal->card_id);
 
-        $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
-        $steps = AccompanyingStep::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
-        foreach ($steps as $s_key => $step) {
-            $pass_time = AccompanyingStepCheckList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
-            $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
+        $contracts = $card->has_contracts;
+
+        foreach ($contracts as $contract) {
+
+            $accompanying_steps = AccompanyingStep::select('id', 'title')->where('notary_service_id', $contract->notary_service_id)->where('active', true)->orderBy('sort_order')->get();
+            foreach ($accompanying_steps as $s_key => $step) {
+                $check_list = AccompanyingStepCheckList::where('contract_id', $contract->id)->where('accompanying_step_id', $step->id)->first();
+                $steps[$s_key]['time'] = $check_list ? $check_list->format('H:i') : null;
+                $steps[$s_key]['status'] = $check_list ? $check_list->status : false;
+            }
+
+            $result[] = $steps;
         }
 
-        $result = $steps;
-
         return $result;
+
+//        $result = [];
+//
+//        $card = Card::find($deal->card_id);
+//
+//        $notary_service_ids = $card->has_contracts->pluck('notary_service_id');
+//        $steps = AccompanyingStep::select('id', 'title')->whereIn('notary_service_id', $notary_service_ids)->where('active', true)->orderBy('sort')->get();
+//        foreach ($steps as $s_key => $step) {
+//            $pass_time = AccompanyingStepCheckList::where('deal_id', $deal->id)->where('service_step_id', $step->id)->value('pass');
+//            $steps[$s_key]['value'] = $pass_time ? $pass_time->format('H:i') : null;
+//        }
+//
+//        $result = $steps;
+//
+//        return $result;
     }
 
     public function get_deal_payment($deal)
