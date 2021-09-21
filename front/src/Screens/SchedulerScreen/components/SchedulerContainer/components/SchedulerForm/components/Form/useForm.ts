@@ -84,6 +84,8 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     developersInfo,
   ]);
 
+  console.log(initialValues);
+
   const activeAddButton = useMemo(() => Boolean(devCompanyId)
     && immovables.length
     && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
@@ -93,11 +95,15 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     const generator_step = initialValues?.card.generator_step;
     const ready = initialValues?.card.ready;
 
-    if (generator_step) {
+    if (generator_step && !ready) {
       return ClientStages.isGenerating;
     }
 
-    return ready ? ClientStages.isReadyToGenerating : ClientStages.isEditable;
+    if (generator_step && ready) {
+      return ClientStages.isReadyToGenerating;
+    }
+
+    return ClientStages.isEditable;
   }, [initialValues]);
 
   const editButtonLabel = useMemo(() => EDIT_BUTTON_LABELS[clientStage], [clientStage]);
@@ -109,11 +115,12 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const isFormEditDisabled = useMemo(() => formMode === FormMode.view, [formMode]);
 
   const isFormDataChangeDisabled = useMemo(
-    () => formMode === FormMode.view || clientStage !== ClientStages.isEditable, [formMode]
+    () => formMode === FormMode.view || clientStage !== ClientStages.isEditable,
+    [formMode, clientStage]
   );
 
   const isReadyToGeneratingStage = useMemo(
-    () => clientStage === ClientStages.isReadyToGenerating, [formMode]
+    () => clientStage === ClientStages.isReadyToGenerating, [clientStage]
   );
 
   // Form onChange functions

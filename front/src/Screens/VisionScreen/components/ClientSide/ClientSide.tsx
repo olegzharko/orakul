@@ -10,40 +10,41 @@ import { useClientSide } from './useClientSide';
 import Loader from '../../../../components/Loader/Loader';
 
 const ClientSide = () => {
-  const { isLoading, reception } = useClientSide();
+  const {
+    isLoading,
+    reception,
+    meetingRooms,
+    notaryRooms,
+    emptyRoomClients,
+  } = useClientSide();
 
   if (isLoading) return <Loader />;
-
-  console.log(reception);
 
   return (
     <div className="vision-client-side">
       <WaitingRoomTable clients={reception} />
 
       <div className="room-cards">
-        <WaitingRoomCard
-          title="Кімната №1"
-          headerButtonTitle="Переглянути"
-          headerButtonLink={`${VisionNavigationLinks.clientSide}/1`}
-        />
+        {meetingRooms.map((room) => {
+          if (room.client) {
+            return (
+              <WaitingRoomCard
+                key={room.id}
+                title={room.title}
+                client={room.client}
+              />
+            );
+          }
 
-        <WaitingRoomCard
-          title="Кімната №1"
-          headerButtonTitle="Переглянути"
-          headerButtonLink={`${VisionNavigationLinks.clientSide}/2`}
-        />
-
-        <WaitingRoomCard
-          title="Кімната №1"
-          headerButtonTitle="Переглянути"
-          headerButtonLink={`${VisionNavigationLinks.clientSide}/3`}
-        />
-
-        <WaitingRoomGroupCard
-          title="Кімната №1"
-          headerButtonTitle="Запросити"
-          onHeaderButtonClick={() => console.log('test')}
-        />
+          return (
+            <WaitingRoomGroupCard
+              key={room.id}
+              title={room.title}
+              roomId={room.id}
+              clients={emptyRoomClients}
+            />
+          );
+        })}
       </div>
     </div>
   );

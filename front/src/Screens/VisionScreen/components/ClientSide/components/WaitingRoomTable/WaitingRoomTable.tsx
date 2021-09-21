@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { waitingRoomClientsTableHeader } from '../../config';
-import { VisionClient } from '../../types';
+import { VisionClientResponse } from '../../types';
 
 import WaitingRoomClientItem from '../WaitingRoomClientTableItem';
 
 type WaitingRoomTableProps = {
-  clients: VisionClient[];
+  clients: VisionClientResponse[];
 }
 
 const WaitingRoomTable = ({ clients }: WaitingRoomTableProps) => {
@@ -38,7 +38,7 @@ const WaitingRoomTable = ({ clients }: WaitingRoomTableProps) => {
 
         {clients.map((client, index) => (
           <WaitingRoomClientItem
-            key={client.id}
+            key={client.card_id}
             index={index}
             height={selectedIndex === index ? 'auto' : 0}
             onClick={handleClick}

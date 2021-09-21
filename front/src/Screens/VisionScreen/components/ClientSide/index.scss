@@ -57,6 +57,28 @@
       &:hover {
         opacity: .5;
       }
+
+      &.disabled {
+        cursor: default;
+      }
+
+      &.disabled:hover {
+        opacity: 1;
+      }
+
+      &-people {
+        margin: 0 15px;
+      }
+
+      td button {
+        cursor: pointer;
+      }
+
+      &-round {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+      }
     }
 
     .table__info {
@@ -228,6 +250,7 @@
         
         & > span {
           margin-bottom: 9px;
+          @include form_text;
         }
       }
     }
@@ -282,6 +305,21 @@
     &__person {
       display: flex;
       box-shadow: inset 0px -1px 0px #EEEEEE;
+      cursor: pointer;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &.selected {
+        background-color: $grey_light;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
 
       .colour-mark {
         width: 15px;
@@ -289,11 +327,17 @@
       }
 
       .content-group {
-        display: flex;
-        flex-grow: 1;
-        justify-content: space-between;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 2fr 1fr 3fr;
+        justify-content: center;
+        align-items: center;
         padding: 15px 30px;
         @include form_text;
+
+        span:last-child {
+          justify-self: flex-end;
+        }
       }
     }
   }

@@ -1,41 +1,69 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import PrimaryButton from '../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../components/SecondaryButton';
 
-import { VisionClient } from '../../types';
+import { formatClientTime } from '../../utils';
 
-type WaitingRoomClientTableItemProps = {
-  height: number | string;
-  index: number;
-  client: VisionClient
-  onClick: (index: number) => void;
-}
+import {
+  DEFAULT_DURATION,
+  RoundColor,
+  useWaitingRoomClientTableItem,
+  WaitingRoomClientTableItemProps
+} from './useWaitingRoomClientTableItem';
 
-const DEFAULT_DURATION = 500;
-
-const WaitingRoomClientTableItem = ({
-  height,
-  index,
-  client,
-  onClick,
-}: WaitingRoomClientTableItemProps) => {
-  const handleClose = useCallback(() => {
-    onClick(-1);
-  }, []);
+const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
+  const {
+    client,
+    height,
+    editSaveButtonTitle,
+    people,
+    edit,
+    onEditSaveClick,
+    handleClick,
+    handleClose,
+    onPeopleIncrease,
+    onPeopleDecrease,
+  } = useWaitingRoomClientTableItem(props);
 
   return (
     <>
-      <tr className="table__clickable" onClick={() => onClick(index)}>
+      <tr
+        className={`table__clickable ${edit ? 'disabled' : ''}`}
+        onClick={handleClick}
+      >
         <td style={{ backgroundColor: '#FF3400' }} />
-        <td>{client.start_time}</td>
-        <td>{client.visit_time}</td>
-        <td>{client.waiting_time}</td>
-        <td>{client.people}</td>
-        <td>{client.children}</td>
-        <td>{client.in_progress}</td>
-        <td>Добавить</td>
+        <td>{formatClientTime(client.start_time)}</td>
+        <td>{formatClientTime(client.visit_time)}</td>
+        <td>{formatClientTime(client.waiting_time)}</td>
+        <td>
+          {edit && (
+            <button onClick={onPeopleDecrease} type="button">-</button>
+          )}
+          <span className="table__clickable-people">{people}</span>
+          {edit && (
+            <button onClick={onPeopleIncrease} type="button">+</button>
+          )}
+        </td>
+        <td>
+          <span
+            className="table__clickable-round"
+            style={{ backgroundColor: RoundColor[`${client.children}`] }}
+          />
+        </td>
+        <td>
+          <span
+            className="table__clickable-round"
+            style={{ backgroundColor: RoundColor[`${client.in_progress}`] }}
+          />
+        </td>
+        <td>
+          <span
+            className="table__clickable-round"
+            style={{ backgroundColor: RoundColor[`${client.representative_arrived}`] }}
+          />
+        </td>
       </tr>
       <AnimateHeight
         duration={DEFAULT_DURATION}
@@ -115,8 +143,8 @@ const WaitingRoomClientTableItem = ({
 
           <div className="table__buttonsGroup">
             <SecondaryButton
-              label="Редагувати"
-              onClick={() => console.log('click')}
+              label={editSaveButtonTitle}
+              onClick={onEditSaveClick}
               disabled={false}
             />
             <SecondaryButton

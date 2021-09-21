@@ -33,10 +33,11 @@ export type VisionClientResponse = {
   buyer: VisionClientBuyer[];
   card_id: number;
   children: boolean;
+  representative_arrived: boolean;
   deal_id: number;
   immovable: VisionClientImmovable[];
   in_progress: boolean;
-  notary: VisionClientNotary;
+  notary: VisionClientNotary[];
   notary_id: number;
   number_of_people: number;
   reader: VisionClientReader[];
@@ -81,4 +82,15 @@ export type VisionClient = {
   accompanying: VisionLoadSpaceInfoRoom[],
   immovable: VisionLoadSpaceInfoRoom[],
   buyer: VisionLoadSpaceInfoRoom[],
+};
+
+export type VisionRoom = {
+  id: number,
+  title: string,
+}
+
+export type VisionMeetingRoom = {
+  id: number,
+  title: string,
+  client?: VisionClientResponse,
 };

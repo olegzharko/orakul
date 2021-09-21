@@ -1,10 +1,10 @@
-import { VisionClientResponse } from './types';
+import { VisionClientResponse, VisionRoom } from './types';
 
 const formatByLength = (
   time: number
 ): number | string => (time.toString().length === 1 ? `0${time}` : time);
 
-const formatClientTime = (time: string | null): string => {
+export const formatClientTime = (time: string | null): string => {
   if (!time) return '';
 
   const date = new Date(time);
@@ -30,4 +30,13 @@ export const formatReceptionData = (
   accompanying: reception.accompanying,
   immovable: reception.immovable,
   buyer: reception.buyer,
+}));
+
+export const formatRooms = (
+  clients: VisionClientResponse[],
+  rooms: VisionRoom[],
+) => rooms.map(({ id, title }) => ({
+  id,
+  title,
+  client: clients.find((client) => client.room_id === id),
 }));
