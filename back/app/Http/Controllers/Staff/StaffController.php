@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Contract;
-use App\Models\StaffTask;
+use App\Models\CurrentTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
@@ -96,7 +96,7 @@ class StaffController extends BaseController
 
     public function get_task_color($staff)
     {
-        $staff_task = StaffTask::where('staff_id', $staff->id)->orderBy('id', 'desc')->first();
+        $staff_task = CurrentTask::where('staff_id', $staff->id)->orderBy('id', 'desc')->first();
         if ($staff_task && $staff_task->card && $staff_task->card->dev_group)
             return $staff_task->card->dev_group->color;
         else

@@ -161,6 +161,15 @@ Route::middleware('auth:api')->group(function () {
 
             Route::delete('delete/{client_id}/{card_id}', [ClientController::class, 'destroy']); // DELETE REQUEST
        });
+
+       Route::group(['prefix' => 'read'], function() {
+           Route::get('checklist/{card_id}', [\App\Http\Controllers\Read\ReadController::class, 'get_read_check_list']); // postman
+       });
+
+       Route::group(['prefix' => 'accompanying'], function() {
+           Route::get('checklist/{card_id}', [\App\Http\Controllers\Read\ReadController::class, 'get_accompanying_check_list']); // postman
+       });
+
     });
 
     Route::group(['prefix' => 'manager'], function() {
