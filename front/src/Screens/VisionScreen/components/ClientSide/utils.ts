@@ -14,24 +14,6 @@ export const formatClientTime = (time: string | null): string => {
   return `${formatByLength(hours)}:${formatByLength(minutes)}`;
 };
 
-export const formatReceptionData = (
-  reception: VisionClientResponse[]
-) => reception.map((reception) => ({
-  id: reception.card_id,
-  start_time: formatClientTime(reception.start_time),
-  visit_time: formatClientTime(reception.visit_time),
-  waiting_time: formatClientTime(reception.waiting_time),
-  people: reception.number_of_people,
-  children: reception.children,
-  in_progress: reception.in_progress,
-  representative: reception.representative,
-  notary: reception.notary,
-  reader: reception.reader,
-  accompanying: reception.accompanying,
-  immovable: reception.immovable,
-  buyer: reception.buyer,
-}));
-
 export const formatRooms = (
   clients: VisionClientResponse[],
   rooms: VisionRoom[],

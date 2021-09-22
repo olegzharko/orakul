@@ -10,15 +10,6 @@
     thead.table__header {
       height: 56px;
       background-color: $grey_light;
-      
-
-      th {
-        text-align: center;
-        border-top-left-radius: $border_radius;
-        border-top-right-radius:  $border_radius;
-        @include partlet_title;
-        color: $primary;
-      }
     }
 
     tbody.table__body {
@@ -93,6 +84,7 @@
     .table__textBlock {
       display: flex;
       flex-direction: column;
+      width: max-content;
 
       .title {
         @include mini_title;
@@ -134,7 +126,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 25px;
-    margin-top: 25px;
+    margin: 25px 0;
   }
 
   .room-card {
@@ -145,7 +137,6 @@
       display: flex;
       justify-content: space-between;
       padding: 6px 16px;
-      background-color: #FF3400;
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
       border-top-left-radius: $border_radius;
       border-top-right-radius: $border_radius;
@@ -277,19 +268,22 @@
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
       border-top-left-radius: $border_radius;
       border-top-right-radius: $border_radius;
+      background-color: #546E7A;
 
       &-title {
         @include form_text;
         font-weight: 600;
+        color: $white
       }
   
       &-button {
         @include form_text;
+        color: $white;
         font-size: 14px;
         outline: none;
         padding: 0 25px;
         background-color: transparent;
-        border: 1px solid #000000;
+        border: 1px solid $white;
         box-sizing: border-box;
         border-radius: 4px;
         cursor: pointer;
@@ -299,6 +293,10 @@
           opacity: .5;
         }
       }
+    }
+
+    &__body {
+      padding: 20px 0;
     }
 
 
@@ -340,5 +338,17 @@
         }
       }
     }
+  }
+
+  .vision-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: $border_radius;
+    border-top-right-radius:  $border_radius;
+    @include partlet_title;
+    color: $primary;
+    height: 56px;
+    background-color: #E5E5E5;
   }
 }

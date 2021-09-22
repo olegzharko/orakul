@@ -6,6 +6,7 @@ type VisionClientBuyer = {
 type VisionClientImmovable = {
   id: number;
   title: string;
+  step: string;
 }
 
 type VisionClientNotary = {
@@ -26,6 +27,7 @@ type VisionClientReader = {
 type VisionClientRepresentative = {
   id: number;
   title: string;
+  color: string;
 }
 
 export type VisionClientResponse = {
@@ -47,11 +49,18 @@ export type VisionClientResponse = {
   total_time: string | null;
   visit_time: string | null;
   waiting_time: string | null;
+  color: string;
 };
 
 type VisionLoadSpaceInfoRoom = {
   id: number;
   title: string;
+}
+
+type VisionLoadNotaryRoom = {
+  id: number;
+  title: string;
+  notary_id: number;
 }
 
 export type VisionLoadSpaceInfo = {
@@ -62,7 +71,7 @@ export type VisionLoadSpaceInfo = {
       [id: number]: VisionLoadSpaceInfoRoom;
     };
     notary_cabinet: {
-      [id: number]: VisionLoadSpaceInfoRoom;
+      [id: number]: VisionLoadNotaryRoom;
     };
     reception: VisionLoadSpaceInfoRoom[];
   }
@@ -94,3 +103,20 @@ export type VisionMeetingRoom = {
   title: string,
   client?: VisionClientResponse,
 };
+
+export type VisionNotaryRoom = {
+  id: number,
+  title: string,
+  notary_id: number,
+  client?: VisionClientResponse,
+}
+
+export type WaitingRoomGroupCardClient = {
+  id: number;
+  time: string,
+  developer: string,
+  name: string,
+  color: string,
+  notary_id: number,
+  onCall: (roomId: number, isNotary?: boolean) => void;
+}

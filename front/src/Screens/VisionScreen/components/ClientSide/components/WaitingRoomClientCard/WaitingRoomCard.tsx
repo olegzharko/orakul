@@ -14,18 +14,45 @@ import WaitingRoomCardContent from '../WaitingRoomCardContent';
 type WaitingRoomCardProps = {
   title: string;
   client: VisionClientResponse;
+  roomId: number;
+  toReception: (roomId: number, client: VisionClientResponse) => void;
+  onFinish: (roomId: number) => void;
+  isNotary?: boolean;
+  toNotary?: (roomId: number, client: VisionClientResponse) => void;
 }
 
-const WaitingRoomCard = ({ title, client }: WaitingRoomCardProps) => {
+const WaitingRoomCard = ({
+  title,
+  client,
+  isNotary,
+  roomId,
+  toReception,
+  toNotary,
+  onFinish,
+}: WaitingRoomCardProps) => {
   const history = useHistory();
 
   const handleMoreClick = useCallback(() => {
     history.push(`${VisionNavigationLinks.clientSide}/${client.card_id}`);
-  }, []);
+  }, [client]);
+
+  const handleToReceptionClick = useCallback(() => {
+    toReception(roomId, client);
+  }, [toReception, roomId, client]);
+
+  const handleFinishClick = useCallback(() => {
+    onFinish(roomId);
+  }, [onFinish]);
+
+  const handleToNotaryClick = useCallback(() => {
+    if (!toNotary) return;
+
+    toNotary(roomId, client);
+  }, [toNotary, roomId, client]);
 
   return (
     <div className="room-card">
-      <div className="room-card__header">
+      <div className="room-card__header" style={{ backgroundColor: client.color }}>
         <span className="room-card__header-title">{title}</span>
         <button
           onClick={handleMoreClick}
@@ -60,14 +87,10 @@ const WaitingRoomCard = ({ title, client }: WaitingRoomCardProps) => {
           </span>
           <span>
             <img src="/images/user.svg" alt="user" />
-            Підписант: <span style={{ color: '#FF3400' }}>???????????</span>
-          </span>
-          <span>
-            <img src="/images/file.svg" alt="file" />
-            Етап:
-            <b>
-              ?????????????
-            </b>
+            Підписант:
+            <span style={{ color: client.representative[0]?.color }}>
+              {client.representative[0]?.title}
+            </span>
           </span>
         </div>
 
@@ -75,7 +98,7 @@ const WaitingRoomCard = ({ title, client }: WaitingRoomCardProps) => {
           <WaitingRoomCardContent
             title="Нерухомість:"
             icon="/images/navigation/immovable.svg"
-            info={(client.immovable || []).map(({ title }) => title)}
+            info={(client.immovable || []).map(({ title, step }) => `${title} - ${step}`)}
           />
         </div>
 
@@ -126,18 +149,20 @@ const WaitingRoomCard = ({ title, client }: WaitingRoomCardProps) => {
         <div className="room-card__buttons">
           <PrimaryButton
             label="До приймальні"
-            onClick={() => console.log('click')}
+            onClick={handleToReceptionClick}
           />
           <SecondaryButton
             label="Завершити послугу"
-            onClick={() => console.log('click')}
+            onClick={handleFinishClick}
             disabled={false}
           />
-          <SecondaryButton
-            label="До нотаріуса"
-            onClick={() => console.log('click')}
-            disabled={false}
-          />
+          {!isNotary && (
+            <SecondaryButton
+              label="До нотаріуса"
+              onClick={handleToNotaryClick}
+              disabled={false}
+            />
+          )}
         </div>
       </div>
     </div>

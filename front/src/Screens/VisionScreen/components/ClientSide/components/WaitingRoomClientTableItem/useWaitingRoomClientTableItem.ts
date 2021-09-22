@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory } from 'react-router';
+import { VisionNavigationLinks } from '../../../../enums';
 
 import { VisionClientResponse } from '../../types';
 
@@ -15,15 +17,45 @@ export type WaitingRoomClientTableItemProps = {
   index: number;
   client: VisionClientResponse;
   onClick: (index: number) => void;
+  onFinish: (cardId: number) => void;
 }
 
 export const useWaitingRoomClientTableItem = (
-  { index, client, height, onClick }: WaitingRoomClientTableItemProps
+  {
+    index,
+    client,
+    height,
+    onClick,
+    onFinish
+  }: WaitingRoomClientTableItemProps
 ) => {
+  const history = useHistory();
+
+  // State
   const [edit, setEdit] = useState<boolean>(false);
 
+  // Memo
   const editSaveButtonTitle = useMemo(() => (edit ? 'Зберегти' : 'Редагувати'), [edit]);
 
+  // People change
+  const [people, setPeople] = useState<number>(client.number_of_people);
+
+  const onPeopleIncrease = useCallback((e) => {
+    setPeople(people + 1);
+  }, [people]);
+
+  const onPeopleDecrease = useCallback(() => {
+    setPeople(people - 1);
+  }, [people]);
+
+  // Children change
+  const [children, setChildren] = useState<boolean>(client.children);
+
+  const onChildrenChange = useCallback(() => {
+    setChildren(!children);
+  }, [children]);
+
+  // Callbacks
   const handleClick = useCallback(() => {
     if (edit) return;
 
@@ -38,17 +70,15 @@ export const useWaitingRoomClientTableItem = (
     setEdit(!edit);
   }, [edit]);
 
-  // People change
-  const [people, setPeople] = useState<number>(client.number_of_people);
+  const onMoreClick = useCallback(() => {
+    history.push(`${VisionNavigationLinks.clientSide}/${client.card_id}`);
+  }, [client]);
 
-  const onPeopleIncrease = useCallback((e) => {
-    setPeople(people + 1);
-  }, [people]);
+  const onFinishClick = useCallback(() => {
+    onFinish(client.card_id);
+  }, []);
 
-  const onPeopleDecrease = useCallback(() => {
-    setPeople(people - 1);
-  }, [people]);
-
+  // Effects
   useEffect(() => {
     if (!height) {
       setEdit(false);
@@ -61,10 +91,14 @@ export const useWaitingRoomClientTableItem = (
     edit,
     editSaveButtonTitle,
     people,
+    children,
     handleClick,
     handleClose,
     onEditSaveClick,
     onPeopleIncrease,
     onPeopleDecrease,
+    onChildrenChange,
+    onMoreClick,
+    onFinishClick,
   };
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import AnimateHeight from 'react-animate-height';
+import CustomCheckBox from '../../../../../../components/CustomCheckBox';
 
 import PrimaryButton from '../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../components/SecondaryButton';
@@ -20,11 +21,15 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
     editSaveButtonTitle,
     people,
     edit,
+    children,
     onEditSaveClick,
     handleClick,
     handleClose,
     onPeopleIncrease,
     onPeopleDecrease,
+    onChildrenChange,
+    onMoreClick,
+    onFinishClick,
   } = useWaitingRoomClientTableItem(props);
 
   return (
@@ -33,7 +38,7 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
         className={`table__clickable ${edit ? 'disabled' : ''}`}
         onClick={handleClick}
       >
-        <td style={{ backgroundColor: '#FF3400' }} />
+        <td style={{ backgroundColor: client.color }} />
         <td>{formatClientTime(client.start_time)}</td>
         <td>{formatClientTime(client.visit_time)}</td>
         <td>{formatClientTime(client.waiting_time)}</td>
@@ -139,6 +144,15 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
                 ))}
               </span>
             </div>
+
+            <div className="table__textBlock">
+              <CustomCheckBox
+                disabled={!edit}
+                checked={client.children}
+                label="Діти"
+                onChange={onChildrenChange}
+              />
+            </div>
           </div>
 
           <div className="table__buttonsGroup">
@@ -149,12 +163,12 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
             />
             <SecondaryButton
               label="Переглянути"
-              onClick={() => console.log('click')}
+              onClick={onMoreClick}
               disabled={false}
             />
             <PrimaryButton
               label="Завершити послугу"
-              onClick={() => console.log('click')}
+              onClick={onFinishClick}
             />
           </div>
 
