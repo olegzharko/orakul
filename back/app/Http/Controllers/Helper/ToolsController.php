@@ -289,6 +289,7 @@ class ToolsController extends Controller
             foreach ($dev_representative as $key => $value) {
                 $result[$key]['id'] = $value->id;
                 $result[$key]['title'] = $this->convert->get_full_name_n($value);
+                $result[$key]['color'] = "FF0000";
             }
         }
 
