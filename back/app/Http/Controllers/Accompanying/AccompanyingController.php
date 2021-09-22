@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\AccompanyingStep;
 use App\Models\AccompanyingStepCheckList;
 use App\Models\Contract;
+use App\Models\Card;
 use App\Models\NotaryService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Factory\ConvertController;
@@ -28,20 +29,33 @@ class AccompanyingController extends BaseController
     {
         $result = $this->immovable->get_immovables_by_card($card_id);
 
+        $card = Card::find($card_id);
+        $dev_group = $card->dev_group;
+        $contracts = $card->has_contracts;
+        if ($dev_group && $contracts) {
+            foreach ($contracts as $contract) {
+                $notary_service = NotaryService::where(['dev_group_id' => $dev_group->id, 'contract_type_id' => $contract->type_id])->first();
+                $accompanying_step = AccompanyingStep::where('notary_service_id', $notary_service->id)->get();
+                foreach ($accompanying_step as $accompanying) {
+                    AccompanyingStepCheckList::firstOrCreate(['contract_id' => $contract->id, 'accompanying_step_id' => $accompanying->id]);
+                }
+            }
+        }
+
         return $this->sendResponse($result, "Нерухомість по карточці ID: $card_id");
     }
 
     public function get_accompanying_check_list($contract_id)
     {
-        $result = [];
-
-        $contract = Contract::where('id', $contract_id)->first();
-        $notary_service = NotaryService::where(['dev_group_id' => $contract->card->dev_group->id, 'contract_type_id' => $contract->type_id])->first();
-        if ($notary_service) {
-            $result['read_steps'] = AccompanyingStep::select('id', 'title')->where('notary_service_id', $notary_service->id)->orderBy('sort_order')->get();
-
-            $result['check_list'] = AccompanyingStepCheckList::select('id', 'date_time')->where('contract_id', $contract_id)->get();
-        }
+        $result = AccompanyingStep::select(
+            'accompanying_step_check_lists.id',
+            'accompanying_steps.title',
+            'accompanying_step_check_lists.status',
+            'accompanying_step_check_lists.date_time',
+        )
+        ->where('accompanying_step_check_lists.contract_id', $contract_id)
+        ->leftJoin('accompanying_step_check_lists', 'accompanying_step_check_lists.accompanying_step_id', '=', 'accompanying_steps.id')
+        ->get();
 
         return $this->sendResponse($result, "Список кроків для видачі договору");
     }

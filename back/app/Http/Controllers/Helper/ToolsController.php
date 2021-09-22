@@ -304,6 +304,7 @@ class ToolsController extends Controller
             foreach ($contracts as $key => $contract) {
                 $result[$key]['id'] = $contract->id;
                 $result[$key]['title'] = $this->convert->immovable_building_address($contract->immovable);
+                $result[$key]['step'] = $this->get_current_accompanying_step($card, $contract);
             }
         }
 
@@ -509,5 +510,19 @@ class ToolsController extends Controller
 
         return $user->image;
 
+    }
+
+    public function get_current_accompanying_step($card, $contract)
+    {
+        $result = null;
+
+        $accompanying_step = AccompanyingStep::select('accompanying_steps.title')->where(['accompanying_step_check_lists.contract_id' => $contract->id, 'accompanying_step_check_lists.status' => false])
+            ->leftJoin('accompanying_step_check_lists', 'accompanying_step_check_lists.accompanying_step_id', '=', 'accompanying_steps.id')
+            ->first();
+
+        if ($accompanying_step)
+            $result = $accompanying_step->title;
+
+        return $result;
     }
 }

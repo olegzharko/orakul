@@ -30,20 +30,33 @@ class ReadController extends BaseController
     {
         $result = $this->immovable->get_immovables_by_card($card_id);
 
+        $card = Card::find($card_id);
+        $dev_group = $card->dev_group;
+        $contracts = $card->has_contracts;
+        if ($dev_group && $contracts) {
+            foreach ($contracts as $contract) {
+                $notary_service = NotaryService::where(['dev_group_id' => $dev_group->id, 'contract_type_id' => $contract->type_id])->first();
+                $read_step = ReadStep::where('notary_service_id', $notary_service->id)->get();
+                foreach ($read_step as $read) {
+                    ReadStepsCheckList::firstOrCreate(['contract_id' => $contract->id, 'read_step_id' => $read->id]);
+                }
+            }
+        }
+
         return $this->sendResponse($result, "Нерухомість по карточці ID: $card_id");
     }
 
     public function get_read_check_list($contract_id)
     {
-        $result = [];
-
-        $contract = Contract::where('id', $contract_id)->first();
-        $notary_service = NotaryService::where(['dev_group_id' => $contract->card->dev_group->id, 'contract_type_id' => $contract->type_id])->first();
-        if ($notary_service) {
-            $result['read_steps'] = ReadStep::select('id', 'title')->where('notary_service_id', $notary_service->id)->orderBy('sort_order')->get();
-
-            $result['check_list'] = ReadStepsCheckList::select('id', 'date_time')->where('contract_id', $contract_id)->get();
-        }
+        $result = ReadStep::select(
+            'read_steps_check_lists.id',
+            'read_steps.title',
+            'read_steps_check_lists.status',
+            'read_steps_check_lists.date_time',
+        )
+        ->where('read_steps_check_lists.contract_id', $contract_id)
+        ->leftJoin('read_steps_check_lists', 'read_steps_check_lists.read_step_id', '=', 'read_steps.id')
+        ->get();
 
         return $this->sendResponse($result, "Список кроків для читки договору");
     }

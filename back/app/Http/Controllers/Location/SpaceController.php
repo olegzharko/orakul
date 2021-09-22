@@ -44,6 +44,7 @@ class SpaceController extends BaseController
             'deals.room_id',
         )->where('deals.ready', 0)
         ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
+        ->leftJoin('dev_groups', 'dev_groups.id', '=', 'cards.dev_group_id')
         ->get();
 
         $result = [];
