@@ -9,6 +9,13 @@ class AccompanyingStepCheckList extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'contract_id',
+        'accompanying_step_id',
+        'date_time',
+        'status',
+    ];
+
     protected $casts = [
       'date_time' => 'datetime',
       'status' => 'boolean',

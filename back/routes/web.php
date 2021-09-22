@@ -33,6 +33,7 @@ Route::get('pdf_parser', [PDFParserController::class, 'start']);
 
 Route::get('set-database-current-date', [\App\Http\Controllers\Test\DatabaseController::class, 'set_database_current_date']);
 Route::get('set_reader_and_accompanying_for_contracts', [\App\Http\Controllers\Test\DatabaseController::class, 'set_reader_and_accompanying_for_contracts']);
+Route::get('set_steps_for_contract', [\App\Http\Controllers\Test\DatabaseController::class, 'set_steps_for_contract']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');
