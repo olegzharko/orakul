@@ -42,6 +42,7 @@ class SpaceController extends BaseController
             'deals.in_progress',
             'deals.representative_arrived',
             'deals.room_id',
+            'dev_groups.color',
         )->where('deals.ready', 0)
         ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
         ->leftJoin('dev_groups', 'dev_groups.id', '=', 'cards.dev_group_id')
