@@ -339,8 +339,13 @@ class ToolsController extends Controller
             ->get();
 
         foreach ($rooms as $key => $room) {
-            $result[$room->alias][$key]['id'] = $room->id;
-            $result[$room->alias][$key]['title'] = $room->title;
+            $info['id'] = $room->id;
+            $info['title'] = $room->title;
+            if ($room->alias == 'notary_cabinet') {
+                $info['notary_id'] = Notary::where('room_id', $room->id)->value('id');
+            }
+
+            $result[$room->alias][] = $info;
         }
 
         return $result;
