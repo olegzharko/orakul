@@ -531,4 +531,16 @@ class ToolsController extends Controller
 
         return $result;
     }
+
+    public function get_invite_title($card_id)
+    {
+        $card = Card::find($card_id);
+
+        $dev_title = $card->dev_group->title;
+        $notary_full_name = $this->convert->get_surname_and_initials_n($card->notary);
+
+        $result = "$dev_title ($notary_full_name)";
+
+        return $result;
+    }
 }

@@ -51,6 +51,7 @@ class SpaceController extends BaseController
         $result = [];
 
         foreach ($deal_info as $key => $info) {
+            $info['invite_room_title'] = $this->tools->get_invite_title($info->card_id);
             $info['notary'] = $this->tools->get_notary_id_and_title($info->notary_id);
             $info['reader'] = $this->tools->get_staff_by_card($info->card_id, 'reader');
             $info['accompanying'] = $this->tools->get_staff_by_card($info->card_id, 'accompanying');
