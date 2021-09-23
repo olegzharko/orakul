@@ -205,10 +205,10 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => 'deal'], function() {
         Route::post('set/info', [DealController::class, 'create_deal_info']);
         Route::get('space', [SpaceController::class, 'space']);
-        Route::get('close/{deal_id}', [SpaceController::class, 'close']);
-        Route::get('move/to/reception/{deal_id}', [SpaceController::class, 'move_to_reception']);
-        Route::get('move/to/room/{room_id}/{deal_id}', [SpaceController::class, 'move_to_room']);
-        Route::get('move/to/notary/{deal_id}', [SpaceController::class, 'move_to_notary']);
+        Route::post('close/{deal_id}', [SpaceController::class, 'close']);
+        Route::post('move/to/reception/{deal_id}', [SpaceController::class, 'move_to_reception']);
+        Route::post('move/to/room/{room_id}/{deal_id}', [SpaceController::class, 'move_to_room']);
+        Route::post('move/to/notary/{deal_id}', [SpaceController::class, 'move_to_notary']);
         Route::get('detail/{deal_id}', [DealController::class, 'get_deal_detail']);
     });
 
