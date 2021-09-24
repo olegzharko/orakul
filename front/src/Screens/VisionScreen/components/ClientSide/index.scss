@@ -14,8 +14,12 @@
 
     tbody.table__body {
 
+      .table__body-grid {
+        display: grid;
+        grid-template-columns: 10px repeat(7, 1fr);
+      }
+
       tr {
-        display: flex;
         height: 56px;
         border-bottom: 1px solid #EEEEEE;
         background-color: $white;
@@ -42,6 +46,8 @@
     }
 
     .table__clickable {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
       cursor: pointer;
       transition: $transition_default;
       
@@ -125,6 +131,7 @@
   .room-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    align-items: stretch;
     grid-gap: 25px;
     margin: 25px 0;
   }
@@ -132,6 +139,8 @@
   .room-card {
     display: flex;
     flex-direction: column;
+    min-height: 600px;
+  
 
     &__header {
       display: flex;
@@ -169,7 +178,7 @@
 
     &__body {
       background-color: $white;
-      padding: 25px 35px;
+      padding: 35px;
       background: #FFFFFF;
       box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
       border-radius: 4px;
@@ -260,6 +269,8 @@
     display: flex;
     flex-direction: column;
     background-color: $white;
+    min-height: 600px;
+    box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
 
     &__header {
       display: flex;
@@ -327,7 +338,7 @@
       .content-group {
         width: 100%;
         display: grid;
-        grid-template-columns: 2fr 1fr 3fr;
+        grid-template-columns: 1fr 2fr 3fr;
         justify-content: center;
         align-items: center;
         padding: 15px 30px;

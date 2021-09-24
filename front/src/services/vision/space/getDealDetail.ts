@@ -1,10 +1,10 @@
-import { DEFAULT_URL } from '../Constants';
-import requestApi from '../utils/requestApi';
+import { DEFAULT_URL } from '../../Constants';
+import requestApi from '../../utils/requestApi';
 
-export default async function getSpaceInfo(token: string) {
+export default async function getDealDetail(token: string, dealId: string) {
   try {
     const data = await requestApi({
-      url: `${DEFAULT_URL}/api/deal/space`,
+      url: `${DEFAULT_URL}/api/deal/detail/${dealId}`,
       headers: { Authorization: `Bearer ${token}` },
     });
 

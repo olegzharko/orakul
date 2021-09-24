@@ -1,34 +1,15 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React from 'react';
 
-import { WaitingRoomGroupCardClient } from '../../types';
+import { useWaitingRoomGroupCard, WaitingRoomGroupCardProps } from './useWaitingRoomGroupCard';
 
-type WaitingRoomGroupCardProps = {
-  title: string;
-  roomId: number;
-  clients: WaitingRoomGroupCardClient[];
-  isNotary?: boolean;
-  notary_id?: number;
-}
-
-const WaitingRoomGroupCard = (
-  { title, clients, roomId, isNotary, notary_id }: WaitingRoomGroupCardProps
-) => {
-  const [selected, setSelected] = useState<number | undefined>();
-
-  const handleCall = useCallback(() => {
-    const selectedClient = clients.find(({ id }) => id === selected);
-    if (!selectedClient) throw new Error(`Can't find client with id: ${selected}`);
-
-    selectedClient.onCall(roomId, isNotary);
-  }, [clients, roomId, selected, isNotary]);
-
-  const filteredCards = useMemo(() => {
-    if (isNotary) {
-      return clients.filter((client) => client.notary_id === notary_id);
-    }
-
-    return clients;
-  }, [notary_id, clients, isNotary]);
+const WaitingRoomGroupCard = (props: WaitingRoomGroupCardProps) => {
+  const {
+    title,
+    filteredCards,
+    selected,
+    handleCall,
+    setSelected,
+  } = useWaitingRoomGroupCard(props);
 
   return (
     <div className="room-card-group">

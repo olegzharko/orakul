@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ErrorInfo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router';
+
+import { PostDealUpdate } from '../../../../../../services/vision/space/postDealUpdate';
+
 import { VisionNavigationLinks } from '../../../../enums';
 
 import { VisionClientResponse } from '../../types';
@@ -18,6 +21,7 @@ export type WaitingRoomClientTableItemProps = {
   client: VisionClientResponse;
   onClick: (index: number) => void;
   onFinish: (cardId: number) => void;
+  onSave: (updatedData: PostDealUpdate) => void;
 }
 
 export const useWaitingRoomClientTableItem = (
@@ -26,7 +30,8 @@ export const useWaitingRoomClientTableItem = (
     client,
     height,
     onClick,
-    onFinish
+    onFinish,
+    onSave,
   }: WaitingRoomClientTableItemProps
 ) => {
   const history = useHistory();
@@ -66,24 +71,38 @@ export const useWaitingRoomClientTableItem = (
     onClick(-1);
   }, [onClick]);
 
-  const onEditSaveClick = useCallback(() => {
-    setEdit(!edit);
-  }, [edit]);
+  const onEditSaveClick = useCallback(async () => {
+    try {
+      if (edit) {
+        await onSave({
+          card_id: client.card_id,
+          number_of_people: people,
+          children
+        });
+      }
+      setEdit(!edit);
+    } catch (e: any) {
+      alert(e.message);
+    }
+  }, [children, client.card_id, edit, onSave, people]);
 
   const onMoreClick = useCallback(() => {
-    history.push(`${VisionNavigationLinks.clientSide}/${client.card_id}`);
-  }, [client]);
+    history.push(`${VisionNavigationLinks.clientSide}/${client.deal_id}`);
+  }, [client.deal_id, history]);
 
   const onFinishClick = useCallback(() => {
-    onFinish(client.card_id);
-  }, []);
+    onFinish(client.deal_id);
+  }, [client.deal_id, onFinish]);
 
   // Effects
   useEffect(() => {
     if (!height) {
       setEdit(false);
     }
-  }, [height]);
+
+    setPeople(client.number_of_people);
+    setChildren(client.children);
+  }, [client.children, client.number_of_people, height]);
 
   return {
     client,

@@ -1,54 +1,24 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-import React, { useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React from 'react';
 
 import PrimaryButton from '../../../../../../components/PrimaryButton';
 import SecondaryButton from '../../../../../../components/SecondaryButton';
-import { VisionNavigationLinks } from '../../../../enums';
 
 import '../../../../index.scss';
-import { VisionClientResponse } from '../../types';
 import { formatClientTime } from '../../utils';
 import WaitingRoomCardContent from '../WaitingRoomCardContent';
+import { useWaitingRoomClientCard, WaitingRoomCardProps } from './useWaitingRoomClientCard';
 
-type WaitingRoomCardProps = {
-  title: string;
-  client: VisionClientResponse;
-  roomId: number;
-  toReception: (roomId: number, client: VisionClientResponse) => void;
-  onFinish: (roomId: number) => void;
-  isNotary?: boolean;
-  toNotary?: (roomId: number, client: VisionClientResponse) => void;
-}
-
-const WaitingRoomCard = ({
-  title,
-  client,
-  isNotary,
-  roomId,
-  toReception,
-  toNotary,
-  onFinish,
-}: WaitingRoomCardProps) => {
-  const history = useHistory();
-
-  const handleMoreClick = useCallback(() => {
-    history.push(`${VisionNavigationLinks.clientSide}/${client.card_id}`);
-  }, [client]);
-
-  const handleToReceptionClick = useCallback(() => {
-    toReception(roomId, client);
-  }, [toReception, roomId, client]);
-
-  const handleFinishClick = useCallback(() => {
-    onFinish(roomId);
-  }, [onFinish]);
-
-  const handleToNotaryClick = useCallback(() => {
-    if (!toNotary) return;
-
-    toNotary(roomId, client);
-  }, [toNotary, roomId, client]);
+const WaitingRoomCard = (props: WaitingRoomCardProps) => {
+  const {
+    title,
+    client,
+    isNotary,
+    representativeTitleColor,
+    handleMoreClick,
+    handleToReceptionClick,
+    handleFinishClick,
+    handleToNotaryClick,
+  } = useWaitingRoomClientCard(props);
 
   return (
     <div className="room-card">
@@ -88,8 +58,8 @@ const WaitingRoomCard = ({
           <span>
             <img src="/images/user.svg" alt="user" />
             Підписант:
-            <span style={{ color: client.representative[0]?.color }}>
-              {client.representative[0]?.title}
+            <span style={{ color: representativeTitleColor.color }}>
+              {representativeTitleColor.title}
             </span>
           </span>
         </div>

@@ -35,7 +35,7 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
   return (
     <>
       <tr
-        className={`table__clickable ${edit ? 'disabled' : ''}`}
+        className={`table__clickable table__body-grid ${edit ? 'disabled' : ''}`}
         onClick={handleClick}
       >
         <td style={{ backgroundColor: client.color }} />
@@ -145,14 +145,16 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
               </span>
             </div>
 
-            <div className="table__textBlock">
-              <CustomCheckBox
-                disabled={!edit}
-                checked={client.children}
-                label="Діти"
-                onChange={onChildrenChange}
-              />
-            </div>
+            {edit && (
+              <div className="table__textBlock">
+                <CustomCheckBox
+                  disabled={!edit}
+                  checked={children}
+                  label="Діти"
+                  onChange={onChildrenChange}
+                />
+              </div>
+            )}
           </div>
 
           <div className="table__buttonsGroup">

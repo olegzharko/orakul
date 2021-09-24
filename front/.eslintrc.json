@@ -18,9 +18,11 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "react-hooks"
     ],
     "rules": {
+        "react-hooks/exhaustive-deps": "warn",
         "jsx-a11y/no-static-element-interactions": "off",
         "react/destructuring-assignment": "off",
         "prettier/prettier": "off",

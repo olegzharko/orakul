@@ -50,6 +50,7 @@ export type VisionClientResponse = {
   visit_time: string | null;
   waiting_time: string | null;
   color: string;
+  invite_room_title: string;
 };
 
 type VisionLoadSpaceInfoRoom = {
@@ -76,22 +77,6 @@ export type VisionLoadSpaceInfo = {
     reception: VisionLoadSpaceInfoRoom[];
   }
 }
-
-export type VisionClient = {
-  id: number,
-  start_time: string,
-  visit_time: string,
-  waiting_time: string,
-  people: number,
-  children: boolean,
-  in_progress: boolean,
-  representative: VisionLoadSpaceInfoRoom[],
-  notary: VisionLoadSpaceInfoRoom[],
-  reader: VisionLoadSpaceInfoRoom[],
-  accompanying: VisionLoadSpaceInfoRoom[],
-  immovable: VisionLoadSpaceInfoRoom[],
-  buyer: VisionLoadSpaceInfoRoom[],
-};
 
 export type VisionRoom = {
   id: number,

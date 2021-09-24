@@ -1,4 +1,4 @@
-import { VisionClientResponse, VisionRoom } from './types';
+import { VisionClientResponse, VisionNotaryRoom, VisionRoom } from './types';
 
 const formatByLength = (
   time: number
@@ -20,5 +20,15 @@ export const formatRooms = (
 ) => rooms.map(({ id, title }) => ({
   id,
   title,
-  client: clients.find((client) => client.room_id === id),
+  client: (clients || []).find((client) => client.room_id === id),
+}));
+
+export const formatNotaryRooms = (
+  clients: VisionClientResponse[],
+  rooms: VisionNotaryRoom[],
+) => rooms.map(({ id, title, notary_id }) => ({
+  id,
+  title,
+  notary_id,
+  client: (clients || []).find((client) => client.room_id === id),
 }));

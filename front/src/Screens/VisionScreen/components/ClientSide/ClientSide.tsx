@@ -21,6 +21,7 @@ const ClientSide = () => {
     onRoomClientToNotary,
     onNotaryClientToReception,
     onNotaryClientFinish,
+    onReceptionDealUpdate,
   } = useClientSide();
 
   if (isLoading) return <Loader />;
@@ -30,6 +31,7 @@ const ClientSide = () => {
       <WaitingRoomTable
         clients={reception}
         onFinishClient={onReceptionClientFinish}
+        onUpdateClient={onReceptionDealUpdate}
       />
 
       <div className="room-cards">
