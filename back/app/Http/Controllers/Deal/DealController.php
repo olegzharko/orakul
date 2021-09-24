@@ -44,7 +44,6 @@ class DealController extends BaseController
 
     public function create_deal_info(Request $r)
     {
-
         if (!$card = Card::find($r['card_id'])) {
             return $this->sendError('', "Картка по ID: " . $r['card_id'] . " не знайдена");
         }
@@ -57,31 +56,47 @@ class DealController extends BaseController
 
         $date = new \DateTime();
 
-        if ($deal = Deal::where('card_id', $r['card_id'])->first()) {
-            Deal::where('card_id', $r['card_id'])->update([
+
+        if (!$room = Room::find($r['room_id'])) {
+            return $this->sendError('', "Кімната по ID: " . $r['room_id'] . " не знайдена");
+        }
+
+        if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
+            return $this->sendResponse('', "В '" . $room->title . "' зайнято");
+
+        Card::where('id', $r['card_id'])->update(['in_progress' => true]);
+
+        Deal::firstOrNew(
+            ['card_id' => $r['card_id']],
+            [
                 'number_of_people' => $r['number_of_people'],
                 'children' => $r['children'],
-            ]);
-        } else {
+                'room_id' => $r['room_id'],
+                'arrival_time' => $date,
+            ]
+        );
 
-            if (!$room = Room::find($r['room_id'])) {
-                return $this->sendError('', "Кімната по ID: " . $r['room_id'] . " не знайдена");
-            }
+        return $this->sendResponse('', 'Запрошення на угоду оновлено');
+    }
 
-            if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
-                return $this->sendResponse('', "В '" . $room->title . "' зайнято");
-
-            Card::where('id', $r['card_id'])->update(['in_progress' => true]);
-            Deal::updateOrCreate(
-                ['card_id' => $r['card_id']],
-                [
-                    'number_of_people' => $r['number_of_people'],
-                    'children' => $r['children'],
-                    'room_id' => $r['room_id'],
-                    'arrival_time' => $date,
-                ]
-            );
+    public function update_deal_info(Request $r)
+    {
+        if (!$card = Card::find($r['card_id'])) {
+            return $this->sendError('', "Картка по ID: " . $r['card_id'] . " не знайдена");
         }
+
+        $validator = $this->validate_imm_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        $date = new \DateTime();
+
+        Deal::where('card_id', $r['card_id'])->update([
+            'number_of_people' => $r['number_of_people'],
+            'children' => $r['children'],
+        ]);
 
         return $this->sendResponse('', 'Запрошення на угоду оновлено');
     }

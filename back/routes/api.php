@@ -204,7 +204,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::group(['prefix' => 'deal'], function() {
         Route::post('set/info', [DealController::class, 'create_deal_info']);
-        Route::put('update', [DealController::class, 'create_deal_info']);
+        Route::put('update', [DealController::class, 'update_deal_info']);
         Route::get('space', [SpaceController::class, 'space']);
         Route::post('close/{deal_id}', [SpaceController::class, 'close']);
         Route::post('move/to/reception/{deal_id}', [SpaceController::class, 'move_to_reception']);
