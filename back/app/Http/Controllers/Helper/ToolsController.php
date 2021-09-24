@@ -426,7 +426,7 @@ class ToolsController extends Controller
             $accompanying_steps = AccompanyingStep::select('id', 'title')->where('notary_service_id', $contract->notary_service_id)->where('active', true)->orderBy('sort_order')->get();
             foreach ($accompanying_steps as $s_key => $step) {
                 $check_list = AccompanyingStepCheckList::where('contract_id', $contract->id)->where('accompanying_step_id', $step->id)->first();
-                $accompanying_steps[$s_key]['time'] = $check_list ? $check_list->format('H:i') : null;
+                $accompanying_steps[$s_key]['time'] = $check_list && $check_list->date_time ? $check_list->date_time->format('H:i') : null;
                 $accompanying_steps[$s_key]['status'] = $check_list ? $check_list->status : false;
             }
 
@@ -444,9 +444,11 @@ class ToolsController extends Controller
 
         $contracts = $card->has_contracts;
         foreach ($contracts as $key => $contract) {
-            $result['service_list'][$key]['title'] = $contract->notary_service->title;
-            $result['service_list'][$key]['value'] = $contract->notary_service->price / 100;
-            $total_price += $contract->notary_service->price / 100;
+            if ($contract->notary_service) {
+                $result['service_list'][$key]['title'] = $contract->notary_service->title;
+                $result['service_list'][$key]['value'] = $contract->notary_service->price / 100;
+                $total_price += $contract->notary_service->price / 100;
+            }
         }
 
         $result['total_price']['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total')->value('value'));

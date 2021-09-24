@@ -100,4 +100,19 @@ class DatabaseController extends Controller
             }
         }
     }
+
+    public function set_notary_service()
+    {
+        $cards = Card::orderBy('id', 'desc')->get();
+        foreach ($cards as $card) {
+            $contracts = $card->has_contracts;
+            if ($contracts) {
+                foreach ($contracts as $contract) {
+                    $notary_service_id = NotaryService::where(['dev_group_id' => $card->dev_group->id, 'contract_type_id' => $contract->type_id])->value('id');
+                    if ($notary_service_id)
+                        Contract::where('id', $contract->id)->update(['notary_service_id' => $notary_service_id]);
+                }
+            }
+        }
+    }
 }
