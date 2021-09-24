@@ -44,6 +44,7 @@ class DealController extends BaseController
 
     public function create_deal_info(Request $r)
     {
+
         if (!$card = Card::find($r['card_id'])) {
             return $this->sendError('', "Картка по ID: " . $r['card_id'] . " не знайдена");
         }
@@ -71,7 +72,7 @@ class DealController extends BaseController
                 return $this->sendResponse('', "В '" . $room->title . "' зайнято");
 
             Card::where('id', $r['card_id'])->update(['in_progress' => true]);
-            Deal::firstOrNew(
+            Deal::updateOrCreate(
                 ['card_id' => $r['card_id']],
                 [
                     'number_of_people' => $r['number_of_people'],
