@@ -133,19 +133,22 @@ class DatabaseController extends Controller
         $cards_id = Card::get()->pluck('id');
 
         foreach ($cards_id as $card_id) {
+            $card = Card::find($card_id);
+            $contracts = $card->has_contracts;
+            $contract = $contracts[0];
             DocumentLink::updateOrCreate(
                 ['card_id' => $card_id, 'type' => 'contract'],
-                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+                ['contract_id' => $contract->id, 'link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
             );
 
             DocumentLink::updateOrCreate(
                 ['card_id' => $card_id, 'type' => 'bank_account'],
-                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+                ['contract_id' => $contract->id, 'link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
             );
 
             DocumentLink::updateOrCreate(
                 ['card_id' => $card_id, 'type' => 'consent'],
-                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+                ['contract_id' => $contract->id, 'link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
             );
         }
     }
