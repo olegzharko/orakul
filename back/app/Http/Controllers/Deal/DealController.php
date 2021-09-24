@@ -66,7 +66,7 @@ class DealController extends BaseController
 
         Card::where('id', $r['card_id'])->update(['in_progress' => true]);
 
-        Deal::firstOrNew(
+        Deal::updateOrCreate(
             ['card_id' => $r['card_id']],
             [
                 'number_of_people' => $r['number_of_people'],
