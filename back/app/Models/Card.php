@@ -15,6 +15,7 @@ class Card extends Model
     protected $fillable = [
         'notary_id',
         'generator_step',
+        'in_progress',
         'staff_generator_id',
         'dev_group_id',
         'dev_representative_id',
@@ -28,6 +29,7 @@ class Card extends Model
         'updated_at' => 'datetime',
         'generator_step' => 'boolean',
         'ready' => 'boolean',
+        'in_progress' => 'boolean',
     ];
 
     public static function get_card_by_contract($contract_id)

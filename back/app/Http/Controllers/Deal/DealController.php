@@ -70,6 +70,7 @@ class DealController extends BaseController
             if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
                 return $this->sendResponse('', "В '" . $room->title . "' зайнято");
 
+            Card::where('id', $r['card_id'])->update(['in_progress' => true]);
             Deal::firstOrNew(
                 ['card_id' => $r['card_id']],
                 [

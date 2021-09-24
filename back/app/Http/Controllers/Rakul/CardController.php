@@ -122,6 +122,7 @@ class CardController extends BaseController
             'dev_manager_id',
             'generator_step',
             'ready',
+            'in_progress',
         )->find($card_id);
 
         if (!$card) {
