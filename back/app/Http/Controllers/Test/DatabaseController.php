@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Test;
 
 use App\Http\Controllers\Controller;
+use App\Models\DocumentLink;
 use App\Models\NotaryService;
 use App\Models\AccompanyingStep;
 use App\Models\AccompanyingStepCheckList;
@@ -113,6 +114,39 @@ class DatabaseController extends Controller
                         Contract::where('id', $contract->id)->update(['notary_service_id' => $notary_service_id]);
                 }
             }
+        }
+    }
+
+    public function delete_cards_without_contracts()
+    {
+        $cards = Card::orderBy('id', 'desc')->get();
+        foreach ($cards as $card) {
+            $contracts = $card->has_contracts;
+            if (!$contracts) {
+                Card::where('id', $card->id)->delete();
+            }
+        }
+    }
+
+    public function set_bank_document_link()
+    {
+        $cards_id = Card::get()->pluck('id');
+
+        foreach ($cards_id as $card_id) {
+            DocumentLink::updateOrCreate(
+                ['card_id' => $card_id, 'type' => 'contract'],
+                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+            );
+
+            DocumentLink::updateOrCreate(
+                ['card_id' => $card_id, 'type' => 'bank_account'],
+                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+            );
+
+            DocumentLink::updateOrCreate(
+                ['card_id' => $card_id, 'type' => 'consent'],
+                ['link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
+            );
         }
     }
 }
