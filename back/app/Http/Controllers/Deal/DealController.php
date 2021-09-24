@@ -54,10 +54,6 @@ class DealController extends BaseController
             return $this->sendError('Форма передає помилкові дані', $validator->errors());
         }
 
-        if (!$room = Room::find($r['room_id'])) {
-            return $this->sendError('', "Кімната по ID: " . $r['room_id'] . " не знайдена");
-        }
-
 //        dd(Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first());
         if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
             return $this->sendResponse('', "В '" . $room->title . "' зайнято");
@@ -70,6 +66,11 @@ class DealController extends BaseController
                 'children' => $r['children'],
             ]);
         } else {
+
+            if (!$room = Room::find($r['room_id'])) {
+                return $this->sendError('', "Кімната по ID: " . $r['room_id'] . " не знайдена");
+            }
+
             Deal::firstOrNew(
                 ['card_id' => $r['card_id']],
                 [
