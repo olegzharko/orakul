@@ -40,7 +40,7 @@ class RepresentativeController extends BaseController
 
             $info['id'] = $card->id;
             foreach ($documents_link as $dl => $document) {
-                $info['immovables'][] = $this->convert->building_city_address_number_immovable($document->contract->immovable);
+                $info['immovables'][] = $document->contract ? $this->convert->building_city_address_number_immovable($document->contract->immovable) : null;
             }
 
             $info['clients'] = $this->get_buyer_info($card);
