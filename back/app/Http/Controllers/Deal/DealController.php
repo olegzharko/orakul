@@ -76,7 +76,7 @@ class DealController extends BaseController
             ]
         );
 
-        return $this->sendResponse('', 'Запрошення на угоду оновлено');
+        return $this->sendResponse('', 'Запрошення на угоду створено');
     }
 
     public function update_deal_info(Request $r)
