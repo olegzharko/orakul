@@ -23,14 +23,14 @@ class RepresentativeController extends BaseController
         $this->tools = new ToolsController();
     }
 
-    public function get_data_for_developer()
+    public function get_data_for_developer($dev_representative_id)
     {
         $result = [];
 
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
 
-        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->get();
+        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->get();
 //        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
 
         foreach ($cards as $key => $card){

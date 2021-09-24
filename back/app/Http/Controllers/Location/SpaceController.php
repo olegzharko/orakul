@@ -29,6 +29,7 @@ class SpaceController extends BaseController
      * */
     public function space()
     {
+        dd(1);
         $deal_info = Deal::select(
             'deals.id as deal_id',
             'cards.id as card_id',
