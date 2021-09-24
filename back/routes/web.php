@@ -35,6 +35,8 @@ Route::get('set-database-current-date', [\App\Http\Controllers\Test\DatabaseCont
 Route::get('set_reader_and_accompanying_for_contracts', [\App\Http\Controllers\Test\DatabaseController::class, 'set_reader_and_accompanying_for_contracts']);
 Route::get('set_steps_for_contract', [\App\Http\Controllers\Test\DatabaseController::class, 'set_steps_for_contract']);
 Route::get('set_notary_service', [\App\Http\Controllers\Test\DatabaseController::class, 'set_notary_service']);
+Route::get('delete_cards_without_contracts', [\App\Http\Controllers\Test\DatabaseController::class, 'delete_cards_without_contracts']);
+Route::get('set_bank_document_link', [\App\Http\Controllers\Test\DatabaseController::class, 'set_bank_document_link']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');

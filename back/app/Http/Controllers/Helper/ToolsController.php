@@ -421,7 +421,7 @@ class ToolsController extends Controller
 
         $contracts = $card->has_contracts;
 
-        foreach ($contracts as $contract) {
+        foreach ($contracts as $key => $contract) {
 
             $accompanying_steps = AccompanyingStep::select('id', 'title')->where('notary_service_id', $contract->notary_service_id)->where('active', true)->orderBy('sort_order')->get();
             foreach ($accompanying_steps as $s_key => $step) {
@@ -430,7 +430,8 @@ class ToolsController extends Controller
                 $accompanying_steps[$s_key]['status'] = $check_list ? $check_list->status : false;
             }
 
-            $result[] = $accompanying_steps;
+            $result[$key]['title'] = "вул. Ломоносова 40, кв. 101";
+            $result[$key]['step'] = $accompanying_steps;
         }
 
         return $result;
