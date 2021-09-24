@@ -64,15 +64,22 @@ class DealController extends BaseController
 
         $date = new \DateTime();
 
-        Deal::updateOrCreate(
-            ['card_id' => $r['card_id']],
-            [
+        if ($deal = Deal::where('card_id', $r['card_id'])->first()) {
+            Deal::where('card_id', $r['card_id'])->update([
                 'number_of_people' => $r['number_of_people'],
                 'children' => $r['children'],
-                'room_id' => $r['room_id'],
-                'arrival_time' => $date,
-            ]
-        );
+            ]);
+        } else {
+            Deal::firstOrNew(
+                ['card_id' => $r['card_id']],
+                [
+                    'number_of_people' => $r['number_of_people'],
+                    'children' => $r['children'],
+                    'room_id' => $r['room_id'],
+                    'arrival_time' => $date,
+                ]
+            );
+        }
 
         return $this->sendResponse('', 'Запрошення на угоду оновлено');
     }
