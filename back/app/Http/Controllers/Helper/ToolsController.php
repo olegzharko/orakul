@@ -358,7 +358,7 @@ class ToolsController extends Controller
 
         $card = Card::find($deal->card_id);
         $date_time = $card->date_time;
-        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'start_time')->value('value'));
+        $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'date_time')->value('value'));
         $result[0]['value'] = $date_time ? $date_time->format('H:i') : null;
 
         $arrival_time = $deal->arrival_time;
@@ -369,10 +369,14 @@ class ToolsController extends Controller
         $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'waiting_time')->value('value'));
         $result[2]['value'] = $waiting_time ? $waiting_time->format('H:i') : null;
 
+        $invite_time = $deal->invite_time;
+        $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'invite_time')->value('value'));
+        $result[3]['value'] = $invite_time ? $invite_time->format('H:i') : null;
+
         $start = $arrival_time ? $arrival_time->format('H:i') : null;
         $end = $current_time ? $current_time->format('H:i') : null;
-        $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total_time')->value('value'));
-        $result[3]['value'] = $end && $start ? (strtotime($end) - strtotime($start)) / 60 : null;
+        $result[4]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total_time')->value('value'));
+        $result[4]['value'] = null;
 
         return $result;
     }

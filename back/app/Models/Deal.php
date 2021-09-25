@@ -17,6 +17,7 @@ class Deal extends Model
         'in_progress',
         'representative_arrived',
         'arrival_time',
+        'invite_time',
         'waiting_time',
         'total_time',
     ];

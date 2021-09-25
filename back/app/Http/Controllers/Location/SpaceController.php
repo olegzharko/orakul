@@ -107,6 +107,12 @@ class SpaceController extends BaseController
 
         Deal::where(['id' => $deal_id])->update(['room_id' => $room->id, 'ready' => false]);
 
+        $deal = Deal::find($deal_id);
+        if (!$deal->invite_time) {
+            $now = new \DateTime();
+            Deal::where(['id' => $deal_id])->update(['invite_time' => $now]);
+        }
+
         return $this->sendResponse('', "Угода з ID: $deal_id перейшла до $room->title");
     }
 
@@ -117,8 +123,14 @@ class SpaceController extends BaseController
             $room_id = $card->notary->room->id;
             if (Deal::where(['room_id' => $room_id, 'ready' => false])->where('card_id', '!=', $card->id)->first())
                 return $this->sendResponse('', "Кабінет нотаріуса зайнятий");
-            elseif ($room_id && Deal::where('id', $deal_id)->update(['room_id' => $room_id]))
+            elseif ($room_id && Deal::where('id', $deal_id)->update(['room_id' => $room_id])) {
+                $deal = Deal::find($deal_id);
+                if (!$deal->invite_time) {
+                    $now = new \DateTime();
+                    Deal::where(['id' => $deal_id])->update(['invite_time' => $now]);
+                }
                 return $this->sendResponse('', "Клієнти по угоді №$deal_id перейшли до нотаріуса");
+            }
         } else {
             return $this->sendResponse('', "Угоду №$deal_id відсутня");
         }

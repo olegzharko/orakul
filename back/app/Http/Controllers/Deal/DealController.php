@@ -64,6 +64,12 @@ class DealController extends BaseController
         if ($room->type->alias != 'reception' && Deal::where(['room_id' => $r['room_id'], 'ready' => false])->where('card_id', '!=', $r['card_id'])->first())
             return $this->sendResponse('', "В '" . $room->title . "' зайнято");
 
+        if ($room->type->alias != 'reception') {
+            $invite_time = $date;
+        } else {
+            $invite_time = null;
+        }
+
         Card::where('id', $r['card_id'])->update(['in_progress' => true]);
 
         Deal::updateOrCreate(
@@ -73,8 +79,10 @@ class DealController extends BaseController
                 'children' => $r['children'],
                 'room_id' => $r['room_id'],
                 'arrival_time' => $date,
+                'invite_time' => $invite_time,
             ]
         );
+
 
         return $this->sendResponse('', 'Запрошення на угоду створено');
     }
