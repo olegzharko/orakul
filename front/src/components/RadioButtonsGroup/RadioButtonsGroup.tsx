@@ -28,7 +28,7 @@ export const RadioButtonsGroup = ({
   useEffect(() => {
     setSelectedValue(selected || buttons[0].id);
     onChange(selected || buttons[0].id);
-  }, [selected]);
+  }, [buttons, onChange, selected]);
 
   const handleChange = (id: number | string) => {
     setSelectedValue(id);

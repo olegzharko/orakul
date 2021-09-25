@@ -214,5 +214,7 @@ export const startIssuing = (data: PostStartIssuingProps) => async (
         message: res.message,
       })
     );
+
+    if (!res?.success) throw new Error();
   }
 };

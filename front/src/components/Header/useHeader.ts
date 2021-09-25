@@ -22,17 +22,17 @@ export const useHeader = () => {
     }
 
     dispatch(searchAppointments(debouncedValue));
-  }, [debouncedValue]);
+  }, [count, debouncedValue, dispatch]);
 
   const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-  }, [searchText]);
+  }, []);
 
   const onLogout = useCallback(() => {
     localStorage.clear();
     dispatch(setUser({ type: null, token: null }));
     history.push('/');
-  }, []);
+  }, [dispatch, history]);
 
   return {
     onSearch,

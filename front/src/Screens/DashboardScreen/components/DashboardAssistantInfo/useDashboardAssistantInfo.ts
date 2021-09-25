@@ -10,7 +10,11 @@ export const useDashboardAssistantInfo = () => {
 
   const { token } = useSelector((state: State) => state.main.user);
 
-  const [clientCards, setClientCards] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [accompanying, setAccompanying] = useState<any>();
+  const [generator, setGenerator] = useState<any>();
+  const [reader, setReader] = useState<any>();
+
   const [contractsFiltersUrl, setContractsFiltersUrl] = useState<string>('api/filter/total/generator');
   const [filters, setFilters] = useState<FilterData>({
     accompanying_id: null,
@@ -27,23 +31,29 @@ export const useDashboardAssistantInfo = () => {
   }, []);
 
   const onContractsFiltersChange = useCallback(async (url: string) => {
-    if (token) {
-      const res = await loadClientsCardsByContract(token, url, history);
-      setClientCards(res);
-    }
-  }, [token]);
+    if (!token) return;
+
+    const res = await loadClientsCardsByContract(token, url, history);
+    // setClientCards(res);
+  }, [history, token]);
 
   useEffect(() => {
     (async () => {
-      if (token) {
-        const res = await loadClientCards(token, history);
-        setClientCards(res);
-      }
+      if (!token) return;
+
+      const [accompanying, generator, reader] = await loadClientCards(token, history);
+      setAccompanying(accompanying);
+      setGenerator(generator);
+      setReader(reader);
+      setIsLoading(false);
     })();
-  }, [token]);
+  }, [history, token]);
 
   return {
-    clientCards,
+    isLoading,
+    accompanying,
+    reader,
+    generator,
     contractsFiltersUrl,
     filters,
     onFiltersChange,

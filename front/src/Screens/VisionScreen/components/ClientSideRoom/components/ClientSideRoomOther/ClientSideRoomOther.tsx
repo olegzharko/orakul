@@ -1,38 +1,31 @@
 import React from 'react';
 
-const ClientSideRoomOther = () => (
-  <div className="other vision-client-side-room__info-group">
-    <div className="other__item">
-      <div className="title">
-        <img src="/images/user.svg" alt="user" />
-        <span>Нотаріус:</span>
-      </div>
-      <div className="info">
-        <span>Петрова Світлана Миколаївна</span>
-      </div>
-    </div>
+import { ClientSideRoomOther } from '../../types';
 
-    <div className="other__item">
-      <div className="title">
-        <img src="/images/user.svg" alt="user" />
-        <span>Читач:</span>
-      </div>
-      <div className="info">
-        <span>Коберник Ігор</span>
-        <span>Корпенко Святослав</span>
-      </div>
-    </div>
+type ClientSideRoomOtherProps = {
+  other?: ClientSideRoomOther[];
+}
 
-    <div className="other__item">
-      <div className="title">
-        <img src="/images/user.svg" alt="user" />
-        <span>Видавач:</span>
-      </div>
-      <div className="info">
-        <span>Самойленко Максим</span>
-      </div>
-    </div>
-  </div>
-);
+const ClientSideRoomOtherView = ({ other }: ClientSideRoomOtherProps) => {
+  if (!other) return null;
 
-export default ClientSideRoomOther;
+  return (
+    <div className="other vision-client-side-room__info-group">
+      {other.map(({ title, info }) => (
+        <div className="other__item" key={title}>
+          <div className="title">
+            <img src="/images/user.svg" alt="user" />
+            <span>{title}</span>
+          </div>
+          <div className="info">
+            {info.map((person) => (
+              <span key={person.title}>{person.title}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ClientSideRoomOtherView;

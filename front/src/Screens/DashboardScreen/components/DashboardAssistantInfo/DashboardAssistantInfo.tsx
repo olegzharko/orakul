@@ -7,12 +7,10 @@ import Loader from '../../../../components/Loader/Loader';
 import './index.scss';
 import DashboardAssistantInfoHeader from './components/DashboardAssistantInfoHeader';
 import DashboardAssistantInfoNavigation from './components/DashboardAssistantInfoNavigation';
-import DashboardAssistantInfoSetPage from './components/DashboardAssistantInfoSetPage';
 import DashboardAssistantInfoOtherActionsPage from './components/DashboardAssistantInfoOtherActionsPage';
-import DashboardAssistantInfoReadingPage from './components/DashboardAssistantInfoReadingPage';
-import DashboardAssistantInfoIssuancePage from './components/DashboardAssistantInfoIssuancePage';
 import DashboardFilter from './components/DashboardFilter';
 import { useDashboardAssistantInfo } from './useDashboardAssistantInfo';
+import Dashboard from '../../../../components/Dashboard';
 
 const assistantInfoRoutes = {
   set: `${DashboardAssistantInfoNavigationLinks.set}`,
@@ -23,12 +21,15 @@ const assistantInfoRoutes = {
 
 const DashboardAssistantInfo = () => {
   const {
-    clientCards,
+    isLoading,
+    accompanying,
+    reader,
+    generator,
     onFiltersChange,
     onContractsFiltersChange,
   } = useDashboardAssistantInfo();
 
-  if (!clientCards) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <div className="dashboard-assistant-info df">
@@ -52,20 +53,26 @@ const DashboardAssistantInfo = () => {
 
         <Switch>
           <Route path={assistantInfoRoutes.set} exact>
-            <DashboardAssistantInfoSetPage cards={clientCards} />
+            <Dashboard
+              sections={accompanying}
+            />
           </Route>
 
           <Route path={assistantInfoRoutes.reading}>
-            <DashboardAssistantInfoReadingPage />
+            <Dashboard
+              sections={reader}
+            />
           </Route>
 
           <Route path={assistantInfoRoutes.issuance}>
-            <DashboardAssistantInfoIssuancePage />
+            <Dashboard
+              sections={generator}
+            />
           </Route>
 
-          <Route path={assistantInfoRoutes.otherActions} exact>
+          {/* <Route path={assistantInfoRoutes.otherActions} exact>
             <DashboardAssistantInfoOtherActionsPage />
-          </Route>
+          </Route> */}
         </Switch>
       </div>
     </div>

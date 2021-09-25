@@ -5,7 +5,7 @@ export type PostStartIssuingProps = {
   card_id: string;
   number_of_people: number;
   children: boolean;
-  room_id: number;
+  room_id: number | undefined;
 }
 
 export default async function postStartIssuing(token: string, bodyData: PostStartIssuingProps) {

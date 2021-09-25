@@ -3,35 +3,46 @@ import React from 'react';
 import Loader from '../../../../components/Loader/Loader';
 
 import './index.scss';
-import ClientSideRoomSubscriber from './components/ClientSideRoomSubscriber';
+import ClientSideRoomRepresentatives from './components/ClientSideRoomRepresentatives';
 import ClientSideRoomTime from './components/ClientSideRoomTime';
 import ClientSideRoomStages from './components/ClientSideRoomStages';
 import ClientSideRoomPayments from './components/ClientSideRoomPayments';
 import ClientSideRoomImmovables from './components/ClientSideRoomImmovables';
-import ClientSideRoomHelp from './components/ClientSideRoomHelp';
-import ClientSideRoomCompleteSet from './components/ClientSideRoomCompleteSet';
 import ClientSideRoomOther from './components/ClientSideRoomOther';
 import { useClientSideRoom } from './useClientSideRoom';
 
 const ClientSideRoom = () => {
-  const { isLoading } = useClientSideRoom();
+  const {
+    isLoading,
+    header,
+    time,
+    representative,
+    immovables,
+    payments,
+    stages,
+    other,
+  } = useClientSideRoom();
 
   if (isLoading) return <Loader />;
 
   return (
     <div className="vision-client-side-room">
-      <div className="vision-client-side-room__header" style={{ backgroundColor: '#04BC00' }}>
-        <span>Кімната №2</span>
+      <div className="vision-client-side-room__header" style={{ backgroundColor: header?.color }}>
+        <span>{header?.title}</span>
       </div>
       <div className="vision-client-side-room__body">
-        <ClientSideRoomTime />
-        <ClientSideRoomSubscriber />
-        <ClientSideRoomStages />
-        <ClientSideRoomPayments />
-        <ClientSideRoomImmovables />
-        <ClientSideRoomHelp />
-        <ClientSideRoomCompleteSet />
-        <ClientSideRoomOther />
+        <ClientSideRoomTime time={time} />
+        <ClientSideRoomRepresentatives representatives={representative} />
+        <ClientSideRoomImmovables immovables={immovables} />
+        <ClientSideRoomOther other={other} />
+        <ClientSideRoomPayments payments={payments} />
+
+        {stages.map((stage) => (
+          <ClientSideRoomStages
+            key={stage.title}
+            stage={stage}
+          />
+        ))}
       </div>
     </div>
   );

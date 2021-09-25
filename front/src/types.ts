@@ -60,3 +60,8 @@ export type ManagerAppointment = {
 };
 
 export type ManagerAppointments = ManagerAppointment[];
+
+export type DefaultContentItem = {
+  title: string;
+  value: string;
+}

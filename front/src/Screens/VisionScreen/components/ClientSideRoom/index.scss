@@ -3,6 +3,7 @@
 .vision-client-side-room {
 
   &__header {
+    background-color: #04BC00;
     padding: 10px 16px;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14);
     border-top-left-radius: $border_radius;
@@ -114,10 +115,6 @@
 
         & > b {
           margin-left: 5px;
-        }
-
-        &-success {
-          color: $green;
         }
       }
     }

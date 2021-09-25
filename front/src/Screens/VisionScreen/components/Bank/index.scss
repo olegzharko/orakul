@@ -43,8 +43,10 @@
       display: flex;
       flex-direction: column;
 
-      & > span {
+      & > a {
         margin-bottom: 5px;
+        text-decoration: none;
+        color: $primary;
       }
     }
   }

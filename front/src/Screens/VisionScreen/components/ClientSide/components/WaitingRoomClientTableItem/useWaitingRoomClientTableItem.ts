@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { PostDealUpdate } from '../../../../../../services/vision/space/postDealUpdate';
 
 import { VisionNavigationLinks } from '../../../../enums';
+import { getWaitingTime } from '../../../../utils';
 
 import { VisionClientResponse } from '../../types';
 
@@ -38,6 +39,7 @@ export const useWaitingRoomClientTableItem = (
 
   // State
   const [edit, setEdit] = useState<boolean>(false);
+  const [waitingTime, setWaitingTime] = useState<string>(getWaitingTime(client.visit_time));
 
   // Memo
   const editSaveButtonTitle = useMemo(() => (edit ? 'Зберегти' : 'Редагувати'), [edit]);
@@ -104,6 +106,10 @@ export const useWaitingRoomClientTableItem = (
     setChildren(client.children);
   }, [client.children, client.number_of_people, height]);
 
+  useEffect(() => {
+    setInterval(() => setWaitingTime(getWaitingTime(client.visit_time)), 1000);
+  }, [client.visit_time]);
+
   return {
     client,
     height,
@@ -111,6 +117,7 @@ export const useWaitingRoomClientTableItem = (
     editSaveButtonTitle,
     people,
     children,
+    waitingTime,
     handleClick,
     handleClose,
     onEditSaveClick,

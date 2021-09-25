@@ -1,9 +1,19 @@
-import { MANAGE_CONTAINER_LINK_PREFIX } from '../../constants';
+export type AssistantSection = {
+  title: string;
+  cards: {
+    id: number,
+    title: string,
+    content: string[],
+    color: string,
+    onClick: () => void,
+  }[];
+}
 
 export const formatClientsCards = (
   clients: any,
   history: any,
-) => Object.values(clients).map((client: any) => ({
+  baseLink: string,
+): AssistantSection[] => Object.values(clients).map((client: any) => ({
   title: `${client.day || ''} ${client.date || ''}`,
   cards: client.cards?.map((card: any) => ({
     id: card.id,
@@ -11,7 +21,7 @@ export const formatClientsCards = (
     content: card.instructions,
     color: card.color,
     onClick: () => {
-      history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/main/${card.id}`);
+      history.push(`${baseLink}/${card.id}`);
     }
   }))
 }));

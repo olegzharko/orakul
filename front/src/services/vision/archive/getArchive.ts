@@ -1,9 +1,9 @@
 import { DEFAULT_URL } from '../../Constants';
 import requestApi from '../../utils/requestApi';
 
-export default async function getDealDetail(token: string, dealId: string) {
+export default async function getArchive(token: string) {
   const res = await requestApi({
-    url: `${DEFAULT_URL}/api/deal/detail/${dealId}`,
+    url: `${DEFAULT_URL}/api/bank/data`,
     headers: { Authorization: `Bearer ${token}` },
   });
 

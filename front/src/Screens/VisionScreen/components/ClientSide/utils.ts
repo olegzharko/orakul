@@ -1,17 +1,11 @@
+import { format } from 'date-fns';
 import { VisionClientResponse, VisionNotaryRoom, VisionRoom } from './types';
-
-const formatByLength = (
-  time: number
-): number | string => (time.toString().length === 1 ? `0${time}` : time);
 
 export const formatClientTime = (time: string | null): string => {
   if (!time) return '';
-
   const date = new Date(time);
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
 
-  return `${formatByLength(hours)}:${formatByLength(minutes)}`;
+  return format(date, 'hh:mm');
 };
 
 export const formatRooms = (

@@ -19,7 +19,7 @@ export const useRequestModal = () => {
           })
         ),
     }),
-    [modalInfo]
+    [dispatch, modalInfo]
   );
 
   return modalProps;

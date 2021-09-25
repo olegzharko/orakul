@@ -35,12 +35,14 @@ export type Props = {
 export enum ClientStages {
   isGenerating,
   isReadyToGenerating,
+  isInProgress,
   isEditable,
 }
 
 const EDIT_BUTTON_LABELS = {
   [ClientStages.isGenerating]: 'Передано до генерації',
   [ClientStages.isReadyToGenerating]: 'Почати видачу',
+  [ClientStages.isInProgress]: 'Видача',
   [ClientStages.isEditable]: 'Редагувати',
 };
 
@@ -58,16 +60,21 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     (state: State) => state.scheduler
   );
   const [formMode, setFormMode] = useState<FormMode>(edit ? FormMode.view : FormMode.create);
+  const [formModeIsInProgress, setFormModeIsInProgress] = useState<boolean>(false);
 
   // Form State
   const [notary, setNotary] = useState<number | null>(initialValues?.card.notary_id || null);
   const [devCompanyId, setDevCompanyId] = useState<number | null>(null);
   const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
   const [devManagerId, setDevManagerId] = useState<number | null>(null);
-  const [peopleQuantity, setPeopleQuantity] = useState<number>(1);
-  const [withChildren, setWithChildren] = useState<boolean>(false);
   const [immovables, setImmovables] = useState<ImmovableItems>([immovableItem]);
   const [clients, setClients] = useState<ClientItem[]>([clientItem]);
+
+  // Ready to generating State
+  const [rooms, setRooms] = useState([]);
+  const [peopleQuantity, setPeopleQuantity] = useState<number>(1);
+  const [withChildren, setWithChildren] = useState<boolean>(false);
+  const [roomId, setRoomId] = useState<number>();
 
   // Form Memo Values
   const shouldLoad = useMemo(() => isLoading || !options, [options, isLoading]);
@@ -84,14 +91,16 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     developersInfo,
   ]);
 
-  console.log(initialValues);
-
   const activeAddButton = useMemo(() => Boolean(devCompanyId)
     && immovables.length
     && immovables.every((item: ImmovableItem) => item.building_id && item.imm_number)
     && selectedCard, [devCompanyId, immovables, selectedCard]);
 
   const clientStage = useMemo(() => {
+    if (formModeIsInProgress) {
+      return ClientStages.isInProgress;
+    }
+
     const generator_step = initialValues?.card.generator_step;
     const ready = initialValues?.card.ready;
 
@@ -104,7 +113,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     }
 
     return ClientStages.isEditable;
-  }, [initialValues]);
+  }, [formModeIsInProgress, initialValues?.card.generator_step, initialValues?.card.ready]);
 
   const editButtonLabel = useMemo(() => EDIT_BUTTON_LABELS[clientStage], [clientStage]);
 
@@ -122,6 +131,17 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const isReadyToGeneratingStage = useMemo(
     () => clientStage === ClientStages.isReadyToGenerating, [clientStage]
   );
+
+  const isInProgress = useMemo(() => clientStage === ClientStages.isInProgress, [clientStage]);
+
+  const isVisitInfoFormShow = useMemo(
+    () => isReadyToGeneratingStage || isInProgress,
+    [isInProgress, isReadyToGeneratingStage]
+  );
+
+  const isVisionInfoFormShowDisabled = useMemo(() => isInProgress, [isInProgress]);
+
+  const isStagingButtonDisabled = useMemo(() => isInProgress, [isInProgress]);
 
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {
@@ -148,14 +168,14 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     (value) => {
       setDevRepresentativeId(value);
     },
-    [devRepresentativeId]
+    []
   );
 
   const onManagerChange = useCallback(
     (value) => {
       setDevManagerId(value);
     },
-    [devManagerId]
+    []
   );
 
   const onImmovablesChange = useCallback(
@@ -190,7 +210,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const onRemoveImmovable = useCallback((index: number) => {
     setImmovables((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
-  }, [immovables]);
+  }, []);
 
   const onAddClients = useCallback(() => {
     setClients([...clients, clientItem]);
@@ -198,7 +218,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const onRemoveClient = useCallback((index: number) => {
     setClients((prev) => prev.filter((_, mapIndex) => mapIndex !== index));
-  }, [clients]);
+  }, []);
 
   const onFormCreate = useCallback(async () => {
     const date_time = `${selectedCard.year}.${selectedCard.date}. ${selectedCard.time}`;
@@ -231,34 +251,43 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
       }
     }
   }, [
+    selectedCard,
+    immovables,
+    clients,
     devCompanyId,
     devRepresentativeId,
     devManagerId,
     notary,
-    immovables,
-    clients,
+    notaries,
+    token,
+    options,
     edit,
-    selectedCard,
+    dispatch,
+    onClearAll,
   ]);
 
-  const onStageButtonClick = useCallback(() => {
+  const onStageButtonClick = useCallback(async () => {
     if (isGeneratingStage) return;
 
     if (isReadyToGeneratingStage) {
-      dispatch(startIssuing({
+      await dispatch(startIssuing({
         card_id: selectedCard.i,
         number_of_people: peopleQuantity,
         children: withChildren,
-        room_id: selectedCard.room,
+        room_id: roomId,
       }));
     }
 
-    setFormMode(FormMode.edit);
+    setFormModeIsInProgress(true);
+    setFormMode(FormMode.view);
   }, [
     isGeneratingStage,
+    isReadyToGeneratingStage,
+    dispatch,
+    selectedCard,
     peopleQuantity,
     withChildren,
-    selectedCard,
+    roomId,
   ]);
 
   // Confirm Dialog Props
@@ -280,14 +309,19 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const onConfirmDialogAgreed = useCallback(() => {
     dispatch(removeCalendarCard(selectedCard?.i));
-  }, [selectedCard, removeCalendarCard]);
+  }, [dispatch, selectedCard?.i]);
 
   useEffect(() => {
     if (initialValues) {
-      setNotary(initialValues.card.notary_id);
-      setDevCompanyId(initialValues.card.dev_company_id);
-      setDevRepresentativeId(initialValues.card.dev_representative_id);
-      setDevManagerId(initialValues.card.dev_manager_id);
+      setNotary(initialValues?.card.notary_id);
+      setDevCompanyId(initialValues?.card.dev_company_id);
+      setDevRepresentativeId(initialValues?.card.dev_representative_id);
+      setDevManagerId(initialValues?.card.dev_manager_id);
+      setWithChildren(initialValues?.visit_info?.children);
+      setPeopleQuantity(initialValues?.visit_info?.number_of_people);
+      setFormModeIsInProgress(initialValues?.card.in_progress);
+      setRoomId(initialValues?.visit_info?.room_id);
+      setRooms(initialValues?.rooms);
       setImmovables(
         initialValues.immovables.length === 0
           ? [immovableItem]
@@ -303,7 +337,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     if (initialValues?.card.dev_company_id) {
       dispatch(fetchDeveloperInfo(initialValues.card.dev_company_id));
     }
-  }, [initialValues]);
+  }, [dispatch, initialValues]);
 
   return {
     shouldLoad,
@@ -319,11 +353,15 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     isGeneratingStage,
     editButtonLabel,
     peopleQuantity,
+    withChildren,
+    rooms,
+    roomId,
     clientStage,
     isFormDataChangeDisabled,
-    isReadyToGeneratingStage,
+    isStagingButtonDisabled,
     isFormEditDisabled,
-    withChildren,
+    isVisitInfoFormShow,
+    isVisionInfoFormShowDisabled,
     onDeleteCardClick,
     onConfirmDialogClose,
     onConfirmDialogAgreed,
@@ -343,6 +381,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     setFormMode,
     onStageButtonClick,
     setWithChildren,
+    setRoomId,
     selectedNotaryId: notary,
     selectedDeveloperId: devCompanyId,
     selectedDevRepresentativeId: devRepresentativeId,

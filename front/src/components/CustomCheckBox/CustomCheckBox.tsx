@@ -26,7 +26,7 @@ const CustomCheckBox = ({
       setValue(e.target.checked);
       onChange(e.target.checked);
     },
-    [checked]
+    [onChange]
   );
 
   return (

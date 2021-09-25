@@ -4,18 +4,18 @@ type AssistantRoomCardProps = {
   color: string;
   name: string;
   startTime: string;
-  set: string;
-  reading: string;
-  issuance: string;
+  accompanying: string;
+  read: string;
+  generate: string;
 }
 
 const AssistantRoomCard = ({
   color,
   name,
   startTime,
-  set,
-  reading,
-  issuance,
+  accompanying,
+  read,
+  generate,
 }: AssistantRoomCardProps) => (
   <div
     className="employee"
@@ -39,17 +39,17 @@ const AssistantRoomCard = ({
 
         <div className="indicator">
           <img src="/images/file.svg" alt="file" />
-          <span>{set}</span>
+          <span>{accompanying}</span>
         </div>
 
         <div className="indicator">
           <img src="/images/pencil.svg" alt="pencil" />
-          <span>{reading}</span>
+          <span>{read}</span>
         </div>
 
         <div className="indicator">
           <img src="/images/table.svg" alt="table" />
-          <span>{issuance}</span>
+          <span>{generate}</span>
         </div>
       </div>
     </div>

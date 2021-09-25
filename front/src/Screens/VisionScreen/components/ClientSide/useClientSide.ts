@@ -70,8 +70,23 @@ export const useClientSide = () => {
   const onReceptionDealUpdate = useCallback(async (updatedData: PostDealUpdate) => {
     if (!token) return;
 
-    await postDealUpdate(token, updatedData);
-  }, [token]);
+    try {
+      await postDealUpdate(token, updatedData);
+
+      const currentClientIndex = reception.findIndex(
+        ({ card_id }) => card_id === updatedData.card_id
+      );
+
+      if (currentClientIndex < 0) throw new Error(`Can't find client with id: ${updatedData.card_id}`);
+
+      const currentClient = reception[currentClientIndex];
+      reception[currentClientIndex] = { ...currentClient, ...updatedData };
+      setReception([...reception]);
+    } catch (e: any) {
+      alert(e.message);
+      console.error(e);
+    }
+  }, [reception, token]);
 
   const onRoomClientToReception = useCallback(async (
     roomId: number,

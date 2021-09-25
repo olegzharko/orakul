@@ -22,6 +22,7 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
     people,
     edit,
     children,
+    waitingTime,
     onEditSaveClick,
     handleClick,
     handleClose,
@@ -41,7 +42,7 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
         <td style={{ backgroundColor: client.color }} />
         <td>{formatClientTime(client.start_time)}</td>
         <td>{formatClientTime(client.visit_time)}</td>
-        <td>{formatClientTime(client.waiting_time)}</td>
+        <td>{waitingTime}</td>
         <td>
           {edit && (
             <button onClick={onPeopleDecrease} type="button">-</button>

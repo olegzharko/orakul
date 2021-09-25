@@ -13,7 +13,7 @@ const DashboardScreen = () => (
   <div className="dashboard-screen">
     <Header />
     <Switch>
-      <Route path="/:process/:cardId/check-list" exact>
+      <Route path="/:process/check-list/:cardId" exact>
         <div className="flex-center dashboard-screen__check-list">
           <CheckList />
         </div>

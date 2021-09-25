@@ -1,6 +1,11 @@
 import React from 'react';
+import { ClientSideRoomImmovable } from '../../types';
 
-const ClientSideRoomImmovables = () => (
+type ClientSideRoomImmovablesProp = {
+  immovables: ClientSideRoomImmovable[];
+}
+
+const ClientSideRoomImmovables = ({ immovables }: ClientSideRoomImmovablesProp) => (
   <div className="immovables">
     <div className="title">
       <img src="/images/navigation/immovable.svg" alt="immovable" />
@@ -8,9 +13,11 @@ const ClientSideRoomImmovables = () => (
     </div>
 
     <div className="flex-column immovables__list">
-      <span>вул. Ломоносова 40, кв. 101</span>
-      <span>вул. Соборна 21, кв. 88</span>
+      {immovables.map(({ title }) => (
+        <span key={title}>{title}</span>
+      ))}
     </div>
+
   </div>
 );
 

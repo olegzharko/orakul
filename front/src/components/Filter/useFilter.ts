@@ -72,7 +72,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   // useEffects
   useEffect(() => {
     dispatch(fetchFilterData());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setSelectedRepresentative(null);
@@ -80,7 +80,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
       getDeveloperInfo(token, +selectedDeveloper)
         .then((data) => setRepresentative(data.representative || []));
     }
-  }, [selectedDeveloper]);
+  }, [selectedDeveloper, token]);
 
   useEffect(() => {
     if (!shouldRender) {
@@ -110,12 +110,15 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     selectedDeveloper,
     selectedRepresentative,
     selectedSortType,
+    shouldRender,
+    horizontal,
+    onFilterDataChange,
   ]);
 
   useEffect(() => {
     if (schedulerLock) return;
     clearAll();
-  }, [schedulerLock]);
+  }, [clearAll, schedulerLock]);
 
   return {
     shouldRenderFilter,

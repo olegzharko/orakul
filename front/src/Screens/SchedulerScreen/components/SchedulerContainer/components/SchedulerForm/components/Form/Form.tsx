@@ -114,7 +114,7 @@ const SchedulerForm = (props: Props) => {
           disabled={meta.isFormDataChangeDisabled}
         />
 
-        {meta.isReadyToGeneratingStage && (
+        {meta.isVisitInfoFormShow && (
           <>
             <div className="mv12">
               <CustomInput
@@ -122,23 +122,26 @@ const SchedulerForm = (props: Props) => {
                 value={meta.peopleQuantity}
                 type="number"
                 onChange={(e) => meta.setPeopleQuantity(+e)}
+                disabled={meta.isVisionInfoFormShowDisabled}
               />
             </div>
 
             <div className="mv12">
               <CustomSelect
-                onChange={(e) => console.log(e)}
-                data={[]}
-                label="Приймальня"
-                selectedValue=""
+                onChange={(e) => meta.setRoomId(+e)}
+                data={meta.rooms}
+                label="Кімната"
+                selectedValue={meta.roomId}
+                disabled={meta.isVisionInfoFormShowDisabled}
               />
             </div>
 
             <div className="mv12">
               <CustomSwitch
                 label="Діти"
-                onChange={(e) => console.log(e)}
-                selected={false}
+                onChange={(e) => meta.setWithChildren(e)}
+                selected={meta.withChildren}
+                disabled={meta.isVisionInfoFormShowDisabled}
               />
             </div>
           </>
@@ -149,7 +152,7 @@ const SchedulerForm = (props: Props) => {
             <PrimaryButton
               label={meta.editButtonLabel}
               onClick={meta.onStageButtonClick}
-              disabled={meta.isGeneratingStage}
+              disabled={meta.isStagingButtonDisabled}
               className="schedulerForm__editButton"
             />
           )}
