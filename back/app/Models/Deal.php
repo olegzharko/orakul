@@ -24,6 +24,7 @@ class Deal extends Model
 
     protected $casts = [
         'arrival_time' => 'datetime',
+        'invite_time' => 'datetime',
         'waiting_time' => 'datetime',
         'total_time' => 'datetime',
         'deleted_at' => 'datetime',
