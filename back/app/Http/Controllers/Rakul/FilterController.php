@@ -109,16 +109,20 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Додаткова інформація по забудовнику ID: ' . $id);
     }
 
-    public function ready_cards()
+    public function ready_cards($user_type = null)
     {
         $result = null;
+
+        if (!$user_type) {
+            $user_type = auth()->user()->type;
+        }
 
         $cards_query = Card::whereIn('cards.room_id', $this->rooms)
             ->where('cards.ready', true)
             ->orderBy('cards.date_time')
             ->where('cards.date_time', '>=', $this->date->format('Y.m.d'));
 
-        if (auth()->user()->type == 'generator') {
+        if ($user_type == 'generator') {
             // картки для генерації договору
             $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
@@ -154,16 +158,20 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
     }
 
-    public function process_cards()
+    public function process_cards($user_type = null)
     {
         $result = null;
+
+        if (!$user_type) {
+            $user_type = auth()->user()->type;
+        }
 
         $cards_query = Card::whereIn('cards.room_id', $this->rooms)
             ->where('cards.ready', false)
             ->orderBy('cards.date_time')
             ->where('cards.date_time', '>=', $this->date->format('Y.m.d'));
 
-        if (auth()->user()->type == 'generator') {
+        if ($user_type == 'generator') {
             // картки для генерації договору
             $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
@@ -199,10 +207,14 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
     }
 
-    public function cards_by_contract_type($contract_type)
+    public function cards_by_contract_type($contract_type, $user_type = null)
     {
         $result = null;
         $cards_id = [];
+
+        if (!$user_type) {
+            $user_type = auth()->user()->type;
+        }
 
         if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
             return $this->sendError("Данний ключ типу договору відсутній");
@@ -229,7 +241,7 @@ class FilterController extends BaseController
             ->orderBy('cards.date_time')
             ->distinct('cards.id');
 
-        if (auth()->user()->type == 'generator') {
+        if ($user_type == 'generator') {
             // картки для генерації договору
             $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
@@ -264,8 +276,10 @@ class FilterController extends BaseController
 
     public function cancelled_cards($user_type = null)
     {
-        if (!$user_type)
+        if (!$user_type) {
             $user_type = auth()->user()->type;
+        }
+
         $cards_query = Card::whereIn('cards.room_id', $this->rooms)
             ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
             ->orderBy('cards.date_time')
