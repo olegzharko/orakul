@@ -1,19 +1,19 @@
 import React from 'react';
+import { ArchiveToolsNotaryFormatted } from '../../types';
 
 type ArchiveTabBarProps = {
-  tabs: string[];
-  selectedIndex: number;
-  onClick: (index: number) => void;
+  notaries: ArchiveToolsNotaryFormatted[];
+  selectedNotary: number;
 }
 
-const ArchiveTabBar = ({ tabs, selectedIndex, onClick }: ArchiveTabBarProps) => (
+const ArchiveTabBar = ({ notaries, selectedNotary }: ArchiveTabBarProps) => (
   <div className="vision-archive__tabs">
-    {tabs.map((title, index) => (
+    {notaries.map(({ id, title, onClick }) => (
       <div
-        key={title}
-        className={`tab ${index === selectedIndex ? 'selected' : ''}`}
-        onClick={() => onClick(index)}
-        style={{ width: `${100 / tabs.length}%` }}
+        key={id}
+        className={`tab ${id === selectedNotary ? 'selected' : ''}`}
+        onClick={onClick}
+        style={{ width: `${100 / notaries.length}%` }}
       >
         {title}
       </div>

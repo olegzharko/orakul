@@ -1,30 +1,20 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
 
-import { DashboardAssistantInfoNavigationLinks } from '../../enums';
 import Loader from '../../../../components/Loader/Loader';
 
 import './index.scss';
 import DashboardAssistantInfoHeader from './components/DashboardAssistantInfoHeader';
 import DashboardAssistantInfoNavigation from './components/DashboardAssistantInfoNavigation';
-import DashboardAssistantInfoOtherActionsPage from './components/DashboardAssistantInfoOtherActionsPage';
 import DashboardFilter from './components/DashboardFilter';
 import { useDashboardAssistantInfo } from './useDashboardAssistantInfo';
 import Dashboard from '../../../../components/Dashboard';
 
-const assistantInfoRoutes = {
-  set: `${DashboardAssistantInfoNavigationLinks.set}`,
-  otherActions: `${DashboardAssistantInfoNavigationLinks.otherActions}`,
-  reading: `${DashboardAssistantInfoNavigationLinks.reading}`,
-  issuance: `${DashboardAssistantInfoNavigationLinks.issuance}`
-};
-
 const DashboardAssistantInfo = () => {
   const {
     isLoading,
-    accompanying,
-    reader,
-    generator,
+    cards,
+    isNavigationShow,
+    navigationValues,
     onFiltersChange,
     onContractsFiltersChange,
   } = useDashboardAssistantInfo();
@@ -33,11 +23,11 @@ const DashboardAssistantInfo = () => {
 
   return (
     <div className="dashboard-assistant-info df">
-      <Route
+      {/* <Route
         path={[
           assistantInfoRoutes.set,
           assistantInfoRoutes.reading,
-          assistantInfoRoutes.issuance
+          assistantInfoRoutes.accompanying
         ]}
         exact
       >
@@ -45,35 +35,32 @@ const DashboardAssistantInfo = () => {
           onFiltersChange={onFiltersChange}
           onContractsFiltersChange={onContractsFiltersChange}
         />
-      </Route>
+      </Route> */}
+
+      <DashboardFilter
+        onFiltersChange={onFiltersChange}
+        onContractsFiltersChange={onContractsFiltersChange}
+      />
 
       <div className="dashboard-assistant-info__dashboard">
         <DashboardAssistantInfoHeader />
-        <DashboardAssistantInfoNavigation />
 
-        <Switch>
-          <Route path={assistantInfoRoutes.set} exact>
-            <Dashboard
-              sections={accompanying}
-            />
-          </Route>
+        {isNavigationShow && (
+          <DashboardAssistantInfoNavigation
+            navigationValues={navigationValues}
+          />
+        )}
 
-          <Route path={assistantInfoRoutes.reading}>
-            <Dashboard
-              sections={reader}
-            />
-          </Route>
+        <Dashboard
+          isChangeTypeButton
+          sections={cards}
+        />
 
-          <Route path={assistantInfoRoutes.issuance}>
-            <Dashboard
-              sections={generator}
-            />
-          </Route>
-
-          {/* <Route path={assistantInfoRoutes.otherActions} exact>
+        {/* <Switch>
+          <Route path={assistantInfoRoutes.otherActions} exact>
             <DashboardAssistantInfoOtherActionsPage />
-          </Route> */}
-        </Switch>
+          </Route>
+        </Switch> */}
       </div>
     </div>
   );

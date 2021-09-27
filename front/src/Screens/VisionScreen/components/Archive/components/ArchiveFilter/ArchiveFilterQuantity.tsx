@@ -7,7 +7,7 @@ type ArchiveFilterQuantityProps = {
 const ArchiveFilterQuantity = ({ quantity }: ArchiveFilterQuantityProps) => (
   <div className="quantity">
     <span>
-      Знайдено &nbsp;
+      Знайдено: &nbsp;
       {quantity}
     </span>
   </div>

@@ -1,9 +1,10 @@
 import { Dispatch } from 'redux';
 import { FilterData, State } from '../types';
+
 import getAppointments from '../../services/getAppointments';
-import setSchedulerFilter from '../../services/calendar/setSchedulerFilter';
 import searchAppointmentsServices from '../../services/searchAppointments';
 import getCardsByContractType from '../../services/generator/getCardsByContractType';
+import postAppointmentsByFilter from '../../services/postAppointmentsByFilter';
 
 export const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
@@ -71,7 +72,7 @@ export const fetchAppointmentsByFilter = (bodyData: FilterData) => async (
   const { token, type } = getState().main.user;
 
   if (token && type) {
-    const res = await setSchedulerFilter(token, { ...bodyData, user_type: type });
+    const res = await postAppointmentsByFilter(token, { ...bodyData, user_type: type });
 
     if (res?.success) {
       const { data } = res;

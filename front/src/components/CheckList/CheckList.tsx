@@ -6,35 +6,41 @@ import SecondaryButton from '../SecondaryButton';
 
 import './index.scss';
 
-const CheckList = () => (
+export type CheckListItem = {
+  date_time: string;
+  id: number;
+  status: boolean;
+  title: string;
+  onChange: () => void;
+}
+
+type CheckListProps = {
+  checkList: CheckListItem[];
+  onSave: (item: CheckListItem) => void;
+  onCancel: () => void;
+}
+
+const CheckList = ({ checkList, onSave, onCancel }: CheckListProps) => (
   <div className="check-list">
     <div className="title">Чек-лист</div>
     <div className="list">
-      <CustomCheckBox
-        label="Аналіз документів"
-        onChange={() => console.log('change')}
-      />
-      <CustomCheckBox
-        label="Аналіз документів, що підтвержують особу"
-        onChange={() => console.log('change')}
-      />
-      <CustomCheckBox
-        label="Перевірка копій продавця"
-        onChange={() => console.log('change')}
-      />
-      <CustomCheckBox
-        label="Перевірка правовстановлюючих документів"
-        onChange={() => console.log('change')}
-      />
+      {checkList.map(({ id, status, title, onChange }) => (
+        <CustomCheckBox
+          key={id}
+          label={title}
+          checked={status}
+          onChange={onChange}
+        />
+      ))}
     </div>
     <div className="buttons">
       <PrimaryButton
-        label="Готово"
-        onClick={() => console.log('click')}
+        label="Зберегти"
+        onClick={onSave}
       />
       <SecondaryButton
-        label="Зауваження"
-        onClick={() => console.log('test')}
+        label="Закрити"
+        onClick={onCancel}
         disabled={false}
       />
     </div>

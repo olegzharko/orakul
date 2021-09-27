@@ -1,3 +1,7 @@
+import { UserTypes } from '../../../../types';
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../constants';
+import { DashboardAssistantInfoNavigationLinks } from '../../enums';
+
 export type AssistantSection = {
   title: string;
   cards: {
@@ -9,11 +13,11 @@ export type AssistantSection = {
   }[];
 }
 
-export const formatClientsCards = (
+const formatClientsCards = (
   clients: any,
   history: any,
   baseLink: string,
-): AssistantSection[] => Object.values(clients).map((client: any) => ({
+): AssistantSection[] => Object.values(clients || {}).map((client: any) => ({
   title: `${client.day || ''} ${client.date || ''}`,
   cards: client.cards?.map((card: any) => ({
     id: card.id,
@@ -25,3 +29,33 @@ export const formatClientsCards = (
     }
   }))
 }));
+
+export const formatAssistantData = (data: any, history: any, userType: UserTypes) => {
+  if (userType === UserTypes.GENERATOR) {
+    return [
+      formatClientsCards(data.generator, history, `${MANAGE_CONTAINER_LINK_PREFIX}/main`),
+      formatClientsCards(data.reader, history, `${DashboardAssistantInfoNavigationLinks.reading}`),
+      formatClientsCards(data.accompanying, history, `${DashboardAssistantInfoNavigationLinks.accompanying}`),
+    ];
+  }
+
+  return [formatClientsCards(data, history, `${MANAGE_CONTAINER_LINK_PREFIX}/main`)];
+};
+
+type AssistantInfoNavigationValuesRequest = {
+  generate: {ready: number, total: number},
+  read: {ready: number, total: number},
+  accompanying: {ready: number, total: number},
+}
+
+export const formatNavigationValues = (data: AssistantInfoNavigationValuesRequest): string[] => {
+  const generateStr = data?.generate ? `${data?.generate.ready}/${data?.generate.ready}` : '';
+  const readStr = data?.read ? `${data?.read.ready}/${data?.read.ready}` : '';
+  const accompanyingStr = data?.accompanying ? `${data?.accompanying.ready}/${data?.accompanying.ready}` : '';
+
+  return [
+    generateStr,
+    readStr,
+    accompanyingStr,
+  ];
+};

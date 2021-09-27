@@ -1,6 +1,6 @@
 export const changeMonthWitDate = (date: string): Date => new Date(date && date.replace(/(\d{2}).(\d{2}).(\d{4})/, '$2.$1.$3'));
 
-export const formatDate = (date: Date | null): string | null => {
+export const formatDate = (date: Date | null | undefined): string | null => {
   if (!date) return null;
 
   date = new Date(date);

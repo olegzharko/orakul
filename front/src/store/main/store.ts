@@ -12,6 +12,8 @@ export type User = {
   token: null | string;
   id: number | null;
   extra_type: ExtraType[];
+  user_name: string;
+  avatar: string;
 };
 
 export type ModalInfo = {
@@ -31,6 +33,8 @@ const initialState: MainState = {
     token: null,
     id: null,
     extra_type: [],
+    user_name: '',
+    avatar: '',
   },
   modalInfo: {
     open: false,

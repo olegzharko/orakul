@@ -11,7 +11,7 @@ export const assistant_info_navigation = [
   },
   {
     title: 'Видача: ',
-    link: DashboardAssistantInfoNavigationLinks.issuance,
+    link: DashboardAssistantInfoNavigationLinks.accompanying,
   },
   // {
   //   title: 'Інші нот. дії',

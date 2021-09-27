@@ -8,7 +8,7 @@ import { Section, Props, useDashboard } from './useDashboard';
 const Dashboard = (props: Props) => {
   const { selectedType, setSelectedType } = useDashboard(props);
 
-  if (!props.sections.length) return null;
+  if (!props.sections?.length) return null;
 
   return (
     <div className="dashboard">

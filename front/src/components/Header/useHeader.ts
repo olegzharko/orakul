@@ -17,7 +17,7 @@ export const useHeader = () => {
 
   useEffect(() => {
     if (!count) {
-      setCount((prev: number) => prev + 1);
+      setCount(count + 1);
       return;
     }
 

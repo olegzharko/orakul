@@ -1,9 +1,9 @@
-import { FilterData } from '../../store/types';
-import { UserTypes } from '../../types';
-import { DEFAULT_URL } from '../Constants';
-import requestApi from '../utils/requestApi';
+import { FilterData } from '../store/types';
+import { UserTypes } from '../types';
+import { DEFAULT_URL } from './Constants';
+import requestApi from './utils/requestApi';
 
-export default async function setSchedulerFilter(
+export default async function postAppointmentsByFilter(
   token: string,
   bodyData: FilterData & {user_type: UserTypes}
 ) {

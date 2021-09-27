@@ -4,9 +4,13 @@ import { DashboardAssistantInfoNavigationLinks } from '../../../../enums';
 
 import { assistant_info_navigation } from '../../config';
 
-const navigation_values = ['16/21', '9/14', '3/8'];
+type DashboardAssistantInfoNavigationProps = {
+  navigationValues: string[];
+}
 
-const DashboardAssistantInfoNavigation = () => (
+const DashboardAssistantInfoNavigation = ({
+  navigationValues,
+}: DashboardAssistantInfoNavigationProps) => (
   <div className="assistant-info-navigation vision-navigation">
     <NavLink
       key={assistant_info_navigation[0].link}
@@ -15,7 +19,7 @@ const DashboardAssistantInfoNavigation = () => (
       className="navigation__link"
       isActive={(_, { pathname }) => ['/', DashboardAssistantInfoNavigationLinks.set].includes(pathname)}
     >
-      {assistant_info_navigation[0].title + (navigation_values[0] || '')}
+      {assistant_info_navigation[0].title + (navigationValues[0])}
     </NavLink>
 
     {assistant_info_navigation.map(({ title, link }, index) => {
@@ -28,7 +32,7 @@ const DashboardAssistantInfoNavigation = () => (
           activeClassName="navigation__link-active"
           className="navigation__link"
         >
-          {title + (navigation_values[index] || '')}
+          {title + (navigationValues[index])}
         </NavLink>
       );
     })}
