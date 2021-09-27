@@ -10,6 +10,7 @@ use App\Models\Time;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use App\Http\Controllers\Staff\StaffController;
 
 class SortController extends BaseController
 {
@@ -17,6 +18,7 @@ class SortController extends BaseController
     public $rooms;
     public $times;
     public $card;
+    public $staff;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class SortController extends BaseController
         $this->rooms = Room::where('active', true)->pluck('id')->toArray();
         $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->card = new CardController();
+        $this->staff = new StaffController();
     }
 
     public function sort(Request $r)

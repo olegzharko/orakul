@@ -16,15 +16,17 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Validator;
 use Spatie\QueryBuilder\QueryBuilder;
-
+use App\Http\Controllers\Staff\StaffController;
 
 class SearchController extends BaseController
 {
     public $card;
+    public $staff;
 
     public function __construct()
     {
         $this->card = new CardController();
+        $this->staff = new StaffController();
     }
 
     public function search(Request $r)
