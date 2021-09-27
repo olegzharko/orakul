@@ -96,6 +96,8 @@
     box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
 
     &-header {
+      position: sticky;
+      top: 100px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -104,6 +106,7 @@
       border-top-right-radius: $border_radius;
       padding: 12px 0;
       border-bottom: 1px solid #E5E5E5;
+      z-index: 1;
 
       .cell {
         display: flex;
