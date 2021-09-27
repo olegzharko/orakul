@@ -62,11 +62,11 @@ Route::middleware('auth:api')->group(function () {
         Route::get('dropdown/{user_type?}', [FilterController::class, 'dropdown']); // postman
         Route::get('developer/info/{id}', [FilterController::class, 'developer_info']); // postman
         #######################
+        Route::get('total/{user_type?}', [CardController::class, 'index']); // postman
+        Route::get('contract/type/{contract_type}/{user_type?}', [FilterController::class, 'cards_by_contract_type']); // postman
         Route::get('ready/{user_type?}', [FilterController::class, 'ready_cards']); // postman
         Route::get('process/{user_type?}', [FilterController::class, 'process_cards']);
-        Route::get('contract/type/{contract_type}/{user_type?}', [FilterController::class, 'cards_by_contract_type']); // postman
         Route::get('cancelled/{user_type?}', [FilterController::class, 'cancelled_cards']); // postman
-        Route::get('total/{user_type?}', [CardController::class, 'index']); // postman
         #######################
         Route::post('sort', [SortController::class, 'sort']);
         Route::post('search', [SearchController::class, 'search']);
@@ -214,6 +214,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'archive'], function() {
+        Route::get('tools', [ArchiveController::class, 'get_tools']);
         Route::get('data/{notary_id}', [ArchiveController::class, 'get_archive_data']);
         Route::get('detail/{card_id}', [ArchiveController::class, 'get_archive_detail']);
     });

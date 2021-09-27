@@ -85,17 +85,34 @@ class SearchController extends BaseController
 
         $cards_id = array_values(array_unique($query->pluck('cards.id')->toArray()));
 
-        $cards_query = Card::whereIn('id', $cards_id)->whereIn('room_id', $rooms)
-                ->where('date_time', '>=', $date->format('Y.m.d'));
+        $cards_query = Card::whereIn('cards.id', $cards_id)->whereIn('cards.room_id', $rooms)
+                ->where('cards.date_time', '>=', $date->format('Y.m.d'));
 
         if (auth()->user()->type == 'reception') {
-            $cards = $cards_query->where('cancelled', false)->get();
+            $cards = $cards_query->where('cards.cancelled', false)->get();
             $result = $this->card->get_cards_in_reception_format($cards);
         }
         elseif (auth()->user()->type == 'generator') {
-            $cards = $cards_query->where('staff_generator_id', auth()->user()->id)
-                            ->where('generator_step', true)->get();
-            $result = $this->card->get_cards_in_generator_format($cards);
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('cards.staff_generator_id', auth()->user()->id)
+                ->where('cards.generator_step', true)->orderBy('cards.date_time')->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator);
+
+            // з'єднати договори картки з договорами
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
+
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
+
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
         }
 
         return $result;

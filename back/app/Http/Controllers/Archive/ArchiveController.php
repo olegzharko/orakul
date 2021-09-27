@@ -26,12 +26,20 @@ class ArchiveController extends BaseController
         $this->tools = new ToolsController();
     }
 
-    public function get_archive_data($notary_id)
+    public function get_tools()
     {
         $result = [];
 
         $result['column'] = $this->get_archive_column();
         $result['notary'] = $this->get_archive_notary();
+
+        return $this->sendResponse($result, 'Дані для колонок архіву');
+    }
+
+    public function get_archive_data($notary_id)
+    {
+        $result = [];
+
         $result['tools'] = $this->get_archive_tools($notary_id);
         $result['data'] = $this->get_archive_notary_info($notary_id);
 

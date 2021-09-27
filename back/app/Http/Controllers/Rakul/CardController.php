@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rakul;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
+use App\Http\Controllers\Staff\StaffController;
 use App\Models\Card;
 use App\Models\CardClient;
 //use App\Models\CardContract;
@@ -38,6 +39,7 @@ class CardController extends BaseController
     public $convert;
     public $tools;
     public $auth_user_type;
+    public $staff;
 
     public function __construct()
     {
@@ -49,6 +51,8 @@ class CardController extends BaseController
         $this->client = new ClientController();
         $this->convert = new ConvertController();
         $this->tools = new ToolsController();
+        $this->staff = new StaffController();
+
         if (auth() && auth()->user())
             $this->auth_user_type = auth()->user()->type;
         else
@@ -80,7 +84,7 @@ class CardController extends BaseController
             // отримати картки для генерації договору
             $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
-            $result['generator'] = $this->get_cards_in_generator_format($cards_generator);
+            $result['generator']['cards'] = $this->get_cards_in_generator_format($cards_generator);
 
             $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
             // отримати картки для читки договорів
@@ -94,6 +98,13 @@ class CardController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
 
             // $result = $this->get_cards_in_generator_format($cards);
         } elseif ($user_type == 'manager' || $user_type == 'assistant') {

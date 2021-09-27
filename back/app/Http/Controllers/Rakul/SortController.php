@@ -80,21 +80,37 @@ class SortController extends BaseController
         if ($query_cards_id)
             $cards_id = array_values(array_unique($query_cards_id->toArray()));
 
-        $cards_query = Card::whereIn('id', $cards_id)
-                        ->whereIn('room_id', $this->rooms)
-                        ->where('date_time', '>=', $this->date->format('Y.m.d'))
+        $cards_query = Card::whereIn('cards.id', $cards_id)
+                        ->whereIn('cards.room_id', $this->rooms)
+                        ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
                         ->orderBy('cards.date_time')
                         ;
 
         if ($user_type == 'reception') {
-            $cards = $cards_query->where('cancelled', false)->get();
+            $cards = $cards_query->where('cards.cancelled', false)->get();
             $result = $this->card->get_cards_in_reception_format($cards);
-        }
-        elseif ($user_type == 'generator') {
-            $cards = $cards_query->where('staff_generator_id', auth()->user()->id)->where('generator_step', true)->get();
-            $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
+        } elseif ($user_type == 'generator') {
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('cards.staff_generator_id', auth()->user()->id)
+                ->where('cards.generator_step', true)->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator, $r['sort_type']);
+
+            // з'єднати договори картки з договорами
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
+
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
+
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
         } elseif ($user_type == 'manager' || $user_type == 'assistant') {
-            $cards = $cards_query->orderBy('date_time')->get();
+            $cards = $cards_query->orderBy('cards.date_time')->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
         } else {
             return $this->sendError("Користувач не може завантажити даний розділ");

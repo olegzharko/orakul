@@ -70,6 +70,9 @@ class FilterController extends BaseController
         return $this->sendResponse($result, 'Фільтер dropdown data');
     }
 
+    /*
+     * Фільтр, що готує дані по забудовнику, в формі створення нової картки, з боку ресепшена
+     * */
     public function developer_info($id)
     {
         $result = [];
@@ -82,17 +85,6 @@ class FilterController extends BaseController
         $representative = null;
         $manager = null;
         $building = null;
-
-//        if (!$developer = DevCompany::find($id))
-//            return $this->sendError("Забудовника з ID: $id не було знайдено!");
-//        if ($developer) {
-//            $representative_type_id = ClientType::get_representative_type_id();
-//            $manager_type_id = ClientType::get_manager_type_id();
-//
-//            $representative = $this->tools->developer_employer_by_type($developer->id, $representative_type_id);
-//            $manager = $this->tools->developer_employer_by_type($developer->id, $manager_type_id);
-//            $building = $this->tools->developer_building($developer->id);
-//        }
 
         if (!$dev_groupe = DevGroup::find($id))
             return $this->sendError("Забудовника з ID: $id не було знайдено!");
@@ -119,17 +111,36 @@ class FilterController extends BaseController
     {
         $result = null;
 
-        $query_cards = Card::whereIn('room_id', $this->rooms)
-            ->where('ready', true)
-            ->orderBy('date_time')
-            ->where('date_time', '>=', $this->date->format('Y.m.d'));
+        $cards_query = Card::whereIn('cards.room_id', $this->rooms)
+            ->where('cards.ready', true)
+            ->orderBy('cards.date_time')
+            ->where('cards.date_time', '>=', $this->date->format('Y.m.d'));
 
-        if (auth()->user()->type == 'generator')
-            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+        if (auth()->user()->type == 'generator') {
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
+                ->where('generator_step', true)->orderBy('date_time')->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator);
 
-        $cards = $query_cards->get();
+            // з'єднати договори картки з договорами
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
 
-        $result = $this->card->get_cards_in_generator_format($cards);
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
+
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+        } else {
+            // картки для менеджера
+            $cards = $cards_query->get();
+            $result = $this->card->get_cards_in_generator_format($cards);
+        }
 
         return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
     }
@@ -138,17 +149,36 @@ class FilterController extends BaseController
     {
         $result = null;
 
-        $query_cards = Card::whereIn('room_id', $this->rooms)
-            ->where('ready', false)
-            ->orderBy('date_time')
-            ->where('date_time', '>=', $this->date->format('Y.m.d'));
+        $cards_query = Card::whereIn('cards.room_id', $this->rooms)
+            ->where('cards.ready', false)
+            ->orderBy('cards.date_time')
+            ->where('cards.date_time', '>=', $this->date->format('Y.m.d'));
 
-        if (auth()->user()->type == 'generator')
-            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+        if (auth()->user()->type == 'generator') {
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
+                ->where('generator_step', true)->orderBy('date_time')->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator);
 
-        $cards = $query_cards->get();
+            // з'єднати договори картки з договорами
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
 
-        $result = $this->card->get_cards_in_generator_format($cards);
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
+
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+        } else {
+            // картки для менеджера
+            $cards = $cards_query->get();
+            $result = $this->card->get_cards_in_generator_format($cards);
+        }
 
         return $this->sendResponse($result, 'Картки з договорами готовими до видачі');
     }
@@ -161,7 +191,7 @@ class FilterController extends BaseController
         if (!$contract_type_id = ContractType::where('alias', $contract_type)->value('id'))
             return $this->sendError("Данний ключ типу договору відсутній");
 
-        $query_cards = Card::select(
+        $cards_query = Card::select(
                 "cards.id",
                 "cards.notary_id",
                 "cards.room_id",
@@ -183,14 +213,28 @@ class FilterController extends BaseController
             ->orderBy('cards.date_time')
             ->distinct('cards.id');
 
-
         if (auth()->user()->type == 'generator') {
-            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
+                ->where('generator_step', true)->orderBy('date_time')->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator);
+
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
+
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+        } else {
+            // картки для менеджера
+            $cards = $cards_query->get();
+            $result = $this->card->get_cards_in_generator_format($cards);
         }
-
-        $cards = $query_cards->get();
-
-        $result = $this->card->get_cards_in_generator_format($cards);
 
         return $this->sendResponse($result, 'Картки в яких присутні основні договори');
     }
@@ -199,21 +243,34 @@ class FilterController extends BaseController
     {
         if (!$user_type)
             $user_type = auth()->user()->type;
-        $query_cards = Card::whereIn('room_id', $this->rooms)
-            ->where('date_time', '>=', $this->date->format('Y.m.d'))
-            ->orderBy('date_time')
-            ->where('cancelled', true);
+        $cards_query = Card::whereIn('cards.room_id', $this->rooms)
+            ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
+            ->orderBy('cards.date_time')
+            ->where('cards.cancelled', true);
 
-        if ($user_type == 'generator')
-            $query_cards = $query_cards->where('staff_generator_id', auth()->user()->id);
+        if ($user_type == 'generator') {
+            // картки для генерації договору
+            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
+                ->where('generator_step', true)->orderBy('date_time')->get();
+            $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator);
 
-        $cards = $query_cards->get();
+            // з'єднати договори картки з договорами
+            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
+            // картки для читки договорів
+            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
 
-        if ($user_type != 'reception') {
+            // картки для видачі договорів
+            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
+                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+        } else {
+            // картки для менеджера
+            $cards = $cards_query->get();
             $result = $this->card->get_cards_in_generator_format($cards);
-        }
-        else {
-            return $this->sendError("Тип сторінки $page не підримується");
         }
 
         return $this->sendResponse($result, 'Усі картки зі скасованими договорами');
