@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rakul;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
+use App\Http\Controllers\Staff\StaffController;
 use App\Models\Client;
 use App\Models\ClientType;
 use App\Models\ContractType;
@@ -41,6 +42,7 @@ class FilterController extends BaseController
         $this->tools = new ToolsController();
         $this->convert = new ConvertController();
         $this->card = new CardController();
+        $this->staff = new StaffController();
     }
 
     public function dropdown($user_type = null)
@@ -136,6 +138,13 @@ class FilterController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
         } else {
             // картки для менеджера
             $cards = $cards_query->get();
@@ -174,6 +183,13 @@ class FilterController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
         } else {
             // картки для менеджера
             $cards = $cards_query->get();
@@ -230,6 +246,13 @@ class FilterController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
         } else {
             // картки для менеджера
             $cards = $cards_query->get();
@@ -267,6 +290,13 @@ class FilterController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
         } else {
             // картки для менеджера
             $cards = $cards_query->get();

@@ -84,7 +84,7 @@ class CardController extends BaseController
             // отримати картки для генерації договору
             $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
                 ->where('generator_step', true)->orderBy('date_time')->get();
-            $result['generator']['cards'] = $this->get_cards_in_generator_format($cards_generator);
+            $result['generator'] = $this->get_cards_in_generator_format($cards_generator);
 
             $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
             // отримати картки для читки договорів

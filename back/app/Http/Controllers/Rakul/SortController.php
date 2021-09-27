@@ -109,6 +109,13 @@ class SortController extends BaseController
                 ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
             $cards_accompanying = Card::whereIn('id', $cards_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
+
+            $user = auth()->user();
+            $info['generate'] = $this->staff->get_staff_generate_info($user);
+            $info['read'] = $this->staff->get_staff_read_info($user);
+            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+
+            $result['info'] = $info;
         } elseif ($user_type == 'manager' || $user_type == 'assistant') {
             $cards = $cards_query->orderBy('cards.date_time')->get();
             $result = $this->card->get_cards_in_generator_format($cards, $r['sort_type']);
