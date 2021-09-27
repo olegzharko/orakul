@@ -48,7 +48,7 @@ class ArchiveController extends BaseController
 
     public function get_archive_column()
     {
-        return ArchiveColumn::where('active', true)->orderBy('sort_order')->pluck('title');
+        return ArchiveColumn::select('alias', 'title')->where('active', true)->orderBy('sort_order')->get()->toArray();
     }
 
     public function get_archive_notary()
