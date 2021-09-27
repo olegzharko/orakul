@@ -215,7 +215,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::group(['prefix' => 'archive'], function() {
         Route::get('tools', [ArchiveController::class, 'get_tools']);
-        Route::get('data/{notary_id}', [ArchiveController::class, 'get_archive_data']);
+        Route::post('data/{notary_id}', [ArchiveController::class, 'get_archive_data']);
         Route::get('detail/{card_id}', [ArchiveController::class, 'get_archive_detail']);
     });
 
