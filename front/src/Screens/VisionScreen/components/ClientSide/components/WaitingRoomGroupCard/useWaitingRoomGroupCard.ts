@@ -30,6 +30,7 @@ export const useWaitingRoomGroupCard = ({
   // Callbacks
   const handleCall = useCallback(() => {
     if (!selected) {
+      // eslint-disable-next-line no-alert
       alert('Виберіть клієнта, який знаходится в даній кімнаті');
       return;
     }
