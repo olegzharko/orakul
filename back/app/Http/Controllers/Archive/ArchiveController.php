@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Archive;
 use App\Http\Controllers\BaseController;
 use App\Models\ArchiveColumn;
 use App\Models\Client;
+use App\Models\ContractType;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevEmployerType;
 use App\Models\Notary;
@@ -15,6 +16,7 @@ use App\Models\ClientContract;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\DateTime;
 
 class ArchiveController extends BaseController
 {
@@ -37,12 +39,12 @@ class ArchiveController extends BaseController
         return $this->sendResponse($result, 'Дані для колонок архіву');
     }
 
-    public function get_archive_data($notary_id)
+    public function get_archive_data($notary_id, Request $r)
     {
         $result = [];
 
         $result['tools'] = $this->get_archive_tools($notary_id);
-        $result['data'] = $this->get_archive_notary_info($notary_id);
+        $result['data'] = $this->get_archive_notary_info($notary_id, $r);
 
         return $this->sendResponse($result, 'Дані для колонок архіву');
     }
@@ -96,7 +98,7 @@ class ArchiveController extends BaseController
         "marriage": "Шлюб",
         "volume": "Том"
      * */
-    public function get_archive_notary_info($notary_id, Request $r)
+    public function get_archive_notary_info($notary_id, $r)
     {
         $result = [];
 
@@ -113,18 +115,22 @@ class ArchiveController extends BaseController
             'deals.waiting_time',
             'deals.total_time',
             'deals.payment_status',
+            'cards.dev_group_id',
+            'cards.dev_representative_id',
+            'contracts.type_id',
         )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
             ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->orderBy('cards.id');
 
         if (isset($r['contract_type_id']) && !empty($r['contract_type_id']))
-            $deals_query = $deals_query->where('cards.contract_type_id', $r['contract_type_id']);
+            $deals_query = $deals_query->where('contracts.type_id', $r['contract_type_id']);
         if (isset($r['dev_group_id']) && !empty($r['dev_group_id']))
             $deals_query = $deals_query->where('cards.dev_group_id', $r['dev_group_id']);
         if (isset($r['dev_representative_id']) && !empty($r['dev_representative_id']))
             $deals_query = $deals_query->where('cards.dev_representative_id', $r['dev_representative_id']);
         if (isset($r['start_date']) && !empty($r['start_date']))
-            $deals_query = $deals_query->where('cards.date_time', '>=', $r['date_time']);
+            $deals_query = $deals_query->where('cards.date_time', '>=', $r['start_date']);
         if (isset($r['final_date']) && !empty($r['final_date']))
             $deals_query = $deals_query->where('cards.date_time', '<=', $r['final_date']);
 
