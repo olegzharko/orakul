@@ -1,7 +1,13 @@
 import React from 'react';
+import { Switch, Route } from 'react-router';
+import { Link } from 'react-router-dom';
+import ContentPanel from '../../../../components/ContentPanel';
+import ControlPanel from '../../../../components/ControlPanel';
 
-import Card from '../../../../components/Card';
 import Loader from '../../../../components/Loader/Loader';
+import { DashboardContractNavigation } from '../../useDashboardScreen';
+import ContractChecklist from './components/ContractChecklist';
+import ContractMainDashboard from './components/ContractMainDashboard';
 
 import { useContractsDashboard } from './useContractsDashboard';
 
@@ -9,28 +15,33 @@ const ContractsDashboard = () => {
   const {
     isLoading,
     formattedCards,
+    process,
+    cardId,
   } = useContractsDashboard();
 
   if (isLoading) return <Loader />;
 
   return (
-    <div className="container contract-dashboard">
-      <div className="dashboard-header section-title">Нерухомість</div>
+    <main className="manage df">
+      <ControlPanel>
+        <Link to={`/${process}/${cardId}`} className="navigation-button selected">
+          <img src="/images/navigation/book-open.svg" alt="main" />
+          Головна
+        </Link>
+      </ControlPanel>
 
-      <div className="grid">
-        {formattedCards.map(({ id, title, list, onClick }) => (
-          <Card
-            key={id}
-            title={title}
-            onClick={onClick}
-          >
-            {list.map((info) => (
-              <span key={info}>{info}</span>
-            ))}
-          </Card>
-        ))}
-      </div>
-    </div>
+      <ContentPanel>
+        <Switch>
+          <Route path="/:process/:cardId" exact>
+            <ContractMainDashboard cards={formattedCards} title="Нерухомість" />
+          </Route>
+
+          <Route path="/:process/:cardId/checklist/:contractId" exact>
+            <ContractChecklist />
+          </Route>
+        </Switch>
+      </ContentPanel>
+    </main>
   );
 };
 

@@ -14,6 +14,7 @@ export const useHeader = () => {
 
   const [searchText, setSearchText] = useState<string>('');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onDebouncedSearch = useCallback(
     _.debounce((e) => dispatch(searchAppointments(e)), 500), []
   );

@@ -2,11 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 
-import { CheckListItem } from '../../../../components/CheckList/CheckList';
-import getDashboardChecklist from '../../../../services/getDashboardChecklist';
-import { State } from '../../../../store/types';
+import { CheckListItem } from '../../../../../../components/CheckList/CheckList';
+import getDashboardChecklist from '../../../../../../services/assistant/getDashboardChecklist';
+import postDashboardChecklist from '../../../../../../services/assistant/postDashboardChecklist';
+import { State } from '../../../../../../store/types';
 
-export const useDashboardChecklist = () => {
+export const useContractChecklist = () => {
   const history = useHistory();
 
   const { token } = useSelector((state: State) => state.main.user);
@@ -31,9 +32,12 @@ export const useDashboardChecklist = () => {
     history.goBack();
   }, [history]);
 
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
+    if (!token) return;
+
+    await postDashboardChecklist(token, process, contractId, checkList);
     history.goBack();
-  }, [history]);
+  }, [checkList, contractId, history, process, token]);
 
   // Effects
   useEffect(() => {

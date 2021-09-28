@@ -83,7 +83,6 @@ body, p {
 }
 
 .navigation-button {
-
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -93,6 +92,9 @@ body, p {
   background-color: transparent;
   cursor: pointer;
   transition: $transition_default;
+  text-decoration: none;
+  color: $primary;
+  box-sizing: border-box;
 
   &:hover {
     opacity: .5;

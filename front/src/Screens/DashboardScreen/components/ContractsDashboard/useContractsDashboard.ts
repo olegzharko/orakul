@@ -47,5 +47,7 @@ export const useContractsDashboard = () => {
   return {
     isLoading,
     formattedCards,
+    process,
+    cardId,
   };
 };
