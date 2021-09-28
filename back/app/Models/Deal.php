@@ -20,6 +20,7 @@ class Deal extends Model
         'invite_time',
         'waiting_time',
         'total_time',
+        'payment_status',
     ];
 
     protected $casts = [
