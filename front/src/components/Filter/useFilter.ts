@@ -14,7 +14,7 @@ export type Props = {
 
 export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.main.user);
+  const { token, type } = useSelector((state: State) => state.main.user);
   const { filterInitialData } = useSelector((state: State) => state.filter);
   const { schedulerLock } = useSelector((state: State) => state.scheduler);
 
@@ -72,7 +72,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   // useEffects
   useEffect(() => {
     dispatch(fetchFilterData());
-  }, [dispatch]);
+  }, [dispatch, type]);
 
   useEffect(() => {
     setSelectedRepresentative(null);
