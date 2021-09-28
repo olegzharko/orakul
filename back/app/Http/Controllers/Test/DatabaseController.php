@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Deal;
 use App\Models\User;
+use App\Models\Deal;
 use App\Models\Contract;
 
 class DatabaseController extends Controller
@@ -154,9 +155,32 @@ class DatabaseController extends Controller
         }
     }
 
+
     public function reset_status()
     {
         Deal::where('id', '>', 0)->update(['ready' => 1]);
         Deal::where('id', '>', 0)->take(10)->update(['ready' => 0]);
+    }
+
+    public function set_deals_new_card()
+    {
+        $cards_id = Card::where('id', '>', '500')->take(100)->pluck('id');
+
+        foreach ($cards_id as $key => $card_id) {
+            Deal::updateOrCreate(
+                [
+                    'card_id' => $card_id],
+                [
+                    'number_of_people' => rand(1, 4),
+                    'children' => rand(0, 1),
+                    'in_progress' => true,
+                    'representative_arrived' => true,
+                    'arrival_time' => '2021-01-01 12:21',
+                    'invite_time' => '2021-01-01 12:51',
+                    'waiting_time' => '2021-01-01 13:02',
+                    'total_time' => '2021-01-01 13:13',
+                    'payment_status' => true,
+                ]);
+        }
     }
 }

@@ -101,9 +101,64 @@ class ArchiveController extends BaseController
 
         $archive_column = ArchiveColumn::select('active', 'alias')->where('active', true)->orderBy('sort_order')->pluck('active', 'alias')->toArray();
 
-        $cards = Card::where(['notary_id' => $notary_id, 'ready' => true, 'cancelled' => false])->orderBy('id')->paginate(15);
+//        $cards = Card::select(
+//            'cards.id',
+//            'cards.notary_id',
+//            'cards.room_id',
+//            'cards.date_time',
+//            'cards.city_id',
+//            'cards.dev_group_id',
+//            'cards.dev_representative_id',
+//            'cards.dev_manager_id',
+//            'cards.generator_step',
+//            'cards.staff_generator_id',
+//            'cards.ready',
+//            'cards.in_progress',
+//            'cards.cancelled',
+//            'deals.number_of_people',
+//            'deals.children',
+//            'deals.representative_arrived',
+//            'deals.arrival_time',
+//            'deals.invite_time',
+//            'deals.waiting_time',
+//            'deals.total_time',
+//            'deals.payment_status',
+//        )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
+//            ->leftJoin('deals', 'deals.card_id', '=', 'cards.id')->paginate(15);
+//
+//        dd($cards);
 
-        foreach ($cards as $key => $card) {
+        $deals = Deal::select(
+//            'cards.id',
+//            'cards.notary_id',
+//            'cards.room_id',
+//            'cards.date_time',
+//            'cards.city_id',
+//            'cards.dev_group_id',
+//            'cards.dev_representative_id',
+//            'cards.dev_manager_id',
+//            'cards.generator_step',
+//            'cards.staff_generator_id',
+//            'cards.ready',
+//            'cards.in_progress',
+//            'cards.cancelled',
+            'deals.id',
+            'deals.card_id',
+            'deals.number_of_people',
+            'deals.children',
+            'deals.representative_arrived',
+            'deals.arrival_time',
+            'deals.invite_time',
+            'deals.waiting_time',
+            'deals.total_time',
+            'deals.payment_status',
+        )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
+            ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
+            ->orderBy('cards.id')
+            ->paginate(15);
+
+        foreach ($deals as $key => $deal) {
+            $card = $deal->card;
             if ($archive_column['id'])
                 $result[$key]['id'] = $card->id;
             if ($archive_column['seller'])

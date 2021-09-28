@@ -38,6 +38,7 @@ Route::get('set_notary_service', [\App\Http\Controllers\Test\DatabaseController:
 Route::get('delete_cards_without_contracts', [\App\Http\Controllers\Test\DatabaseController::class, 'delete_cards_without_contracts']);
 Route::get('set_bank_document_link', [\App\Http\Controllers\Test\DatabaseController::class, 'set_bank_document_link']);
 Route::get('reset_status', [\App\Http\Controllers\Test\DatabaseController::class, 'reset_status']);
+Route::get('set_deals_new_card', [\App\Http\Controllers\Test\DatabaseController::class, 'set_deals_new_card']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');
