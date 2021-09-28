@@ -14,9 +14,18 @@ import {
   ClientSideRoomOther,
 } from './types';
 
-export const useClientSideRoom = () => {
+enum RoomName {
+  archive = 'archive',
+  clientSide = 'deal',
+}
+
+export type ClientSideAndArchiveRoomProps = {
+  archive?: boolean,
+}
+
+export const useClientSideAndArchiveRoom = ({ archive }:ClientSideAndArchiveRoomProps) => {
   const { token } = useSelector((state: State) => state.main.user);
-  const { dealId } = useParams<{dealId: string}>();
+  const { id } = useParams<{id: string}>();
 
   // State
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -36,7 +45,11 @@ export const useClientSideRoom = () => {
     (async () => {
       if (!token) return;
       try {
-        const res = await getDealDetail(token, dealId);
+        const res = await getDealDetail(
+          token,
+          archive ? RoomName.archive : RoomName.clientSide,
+          id,
+        );
 
         setTime(res?.time);
         setRepresentative(res?.dev_representative);
@@ -55,7 +68,7 @@ export const useClientSideRoom = () => {
         setIsLoading(false);
       }
     })();
-  }, [dealId, token]);
+  }, [archive, id, token]);
 
   return {
     isLoading,

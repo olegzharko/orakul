@@ -9,9 +9,9 @@ import ClientSideRoomStages from './components/ClientSideRoomStages';
 import ClientSideRoomPayments from './components/ClientSideRoomPayments';
 import ClientSideRoomImmovables from './components/ClientSideRoomImmovables';
 import ClientSideRoomOther from './components/ClientSideRoomOther';
-import { useClientSideRoom } from './useClientSideRoom';
+import { ClientSideAndArchiveRoomProps, useClientSideAndArchiveRoom } from './useClientSideAndArchiveRoom';
 
-const ClientSideRoom = () => {
+const ClientSideAndArchiveRoom = (props: ClientSideAndArchiveRoomProps) => {
   const {
     isLoading,
     header,
@@ -21,7 +21,7 @@ const ClientSideRoom = () => {
     payments,
     stages,
     other,
-  } = useClientSideRoom();
+  } = useClientSideAndArchiveRoom(props);
 
   if (isLoading) return <Loader />;
 
@@ -48,4 +48,4 @@ const ClientSideRoom = () => {
   );
 };
 
-export default ClientSideRoom;
+export default ClientSideAndArchiveRoom;

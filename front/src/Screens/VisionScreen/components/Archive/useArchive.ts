@@ -66,6 +66,10 @@ export const useArchive = () => {
   ),
   [tableHeader, tableRawsData]);
 
+  const isTableContentShow = useMemo(
+    () => formattedTableRawsData.length > 0, [formattedTableRawsData.length]
+  );
+
   // Effects
   useEffect(() => {
     if (!token) return;
@@ -80,8 +84,7 @@ export const useArchive = () => {
       .catch((e:any) => {
         alert(e.message);
         console.error(e);
-      })
-      .finally(() => setIsLoading(false));
+      });
   }, [token]);
 
   useEffect(() => {
@@ -100,6 +103,7 @@ export const useArchive = () => {
       setTotalPages(res?.tools.last_page);
       setTotalRaws(res?.tools.total_items);
       setFilterLoadOn(true);
+      setIsLoading(false);
     })();
   }, [
     filterLoadOn,
@@ -122,6 +126,7 @@ export const useArchive = () => {
     totalRaws,
     formattedTableRawsData,
     period,
+    isTableContentShow,
     onFilterChange,
     onPageChange,
     onPeriodChange,

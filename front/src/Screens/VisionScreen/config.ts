@@ -17,8 +17,8 @@ export const navigation = [
     title: 'Архів',
     link: VisionNavigationLinks.archive,
   },
-  {
-    title: 'ІНШІ НОТ ДІЇ +',
-    link: VisionNavigationLinks.otherNotaryActions,
-  },
+  // {
+  //   title: 'ІНШІ НОТ ДІЇ +',
+  //   link: VisionNavigationLinks.otherNotaryActions,
+  // },
 ];

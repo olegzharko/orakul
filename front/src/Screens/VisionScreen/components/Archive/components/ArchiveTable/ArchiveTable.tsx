@@ -22,7 +22,7 @@ const ArchiveTable = ({ headers, raws }: ArchiveTableProps) => (
         const id = raw[0][0];
 
         return (
-          <Link to={`${VisionNavigationLinks.clientSide}/${id}`} className="line" key={id}>
+          <Link to={`${VisionNavigationLinks.archive}/${id}`} className="line" key={id}>
             {raw.map((cell) => (
               <div style={{ width: `calc(100% / ${headers.length})` }} className="cell" key={uuid()}>
                 {cell.map((val: any) => (

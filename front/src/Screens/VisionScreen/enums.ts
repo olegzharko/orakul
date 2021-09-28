@@ -6,6 +6,7 @@ export enum VisionNavigationLinks {
   bank = '/bank',
   archive = '/archive',
   otherNotaryActions = '/other-notary-actions',
-  clientSideRoom = '/client-side/:dealId',
+  clientSideRoom = '/client-side/:id',
+  archiveRoom = '/archive/:id',
   assistantInfo = '/assistants/:assistantId'
 }

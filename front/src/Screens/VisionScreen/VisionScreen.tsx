@@ -8,7 +8,7 @@ import VisionNavigation from './components/VisionNavigation';
 import ClientSide from './components/ClientSide';
 
 import './index.scss';
-import ClientSideRoom from './components/ClientSideRoom';
+import ClientSideAndArchiveRoom from './components/ClientSideAndArchiveRoom';
 import Archive from './components/Archive';
 import Bank from './components/Bank';
 import Assistants from './components/Assistants';
@@ -38,15 +38,20 @@ const VisionScreen = () => (
           <Archive />
         </Route>
 
-        <Route path={VisionNavigationLinks.otherNotaryActions} exact>
-          <VisionNavigation />
-          <h1>Other Notary Actions</h1>
-        </Route>
-
         <Route path={VisionNavigationLinks.clientSideRoom} exact>
           <VisionNavigation />
-          <ClientSideRoom />
+          <ClientSideAndArchiveRoom />
         </Route>
+
+        <Route path={VisionNavigationLinks.archiveRoom} exact>
+          <VisionNavigation />
+          <ClientSideAndArchiveRoom archive />
+        </Route>
+
+        {/* <Route path={VisionNavigationLinks.otherNotaryActions} exact>
+          <VisionNavigation />
+          <h1>Other Notary Actions</h1>
+        </Route> */}
 
         <>
           <VisionNavigation />
