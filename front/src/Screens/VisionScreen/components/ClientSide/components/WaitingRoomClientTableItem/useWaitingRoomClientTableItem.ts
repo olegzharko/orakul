@@ -84,7 +84,7 @@ export const useWaitingRoomClientTableItem = (
       }
       setEdit(!edit);
     } catch (e: any) {
-      alert(e.message);
+      console.error(e);
     }
   }, [children, client.card_id, edit, onSave, people]);
 

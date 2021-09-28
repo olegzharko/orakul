@@ -45,7 +45,6 @@ export const useClientSide = () => {
           setNotaryRooms([...notaryRooms]);
           setReception(reception.filter(({ card_id }) => card_id !== client.card_id));
         } catch (e: any) {
-          alert(e.message);
           console.error(e);
         }
       } else {
@@ -59,7 +58,6 @@ export const useClientSide = () => {
           setMeetingRooms([...meetingRooms]);
           setReception(reception.filter(({ card_id }) => card_id !== client.card_id));
         } catch (e: any) {
-          alert(e.message);
           console.error(e);
         }
       }
@@ -83,7 +81,6 @@ export const useClientSide = () => {
       reception[currentClientIndex] = { ...currentClient, ...updatedData };
       setReception([...reception]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [reception, token]);
@@ -103,7 +100,6 @@ export const useClientSide = () => {
       setMeetingRooms([...meetingRooms]);
       setReception([...reception, client]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [token, meetingRooms, reception]);
@@ -133,7 +129,6 @@ export const useClientSide = () => {
       meetingRooms[currentMeetingRoomIndex].client = undefined;
       setMeetingRooms([...meetingRooms]);
     } catch (err: any) {
-      alert(err.message);
       console.error(err);
     }
   }, [meetingRooms, notaryRooms, token]);
@@ -153,7 +148,6 @@ export const useClientSide = () => {
       setNotaryRooms([...notaryRooms]);
       setReception([...reception, client]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [notaryRooms, reception, token]);
@@ -168,7 +162,6 @@ export const useClientSide = () => {
       reception.splice(cardIndex, 1);
       setReception([...reception]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [reception, token]);
@@ -183,7 +176,6 @@ export const useClientSide = () => {
       meetingRooms[roomIndex].client = undefined;
       setMeetingRooms([...meetingRooms]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [meetingRooms, token]);
@@ -198,7 +190,6 @@ export const useClientSide = () => {
       notaryRooms[roomIndex].client = undefined;
       setNotaryRooms([...notaryRooms]);
     } catch (e: any) {
-      alert(e.message);
       console.error(e);
     }
   }, [notaryRooms, token]);

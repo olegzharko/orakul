@@ -44,7 +44,6 @@ export const useDashboardChecklist = () => {
         const res = await getDashboardChecklist(token, process, contractId);
         setCheckList(res);
       } catch (e: any) {
-        alert(e.message);
         console.error(e);
       } finally {
         setIsLoading(false);

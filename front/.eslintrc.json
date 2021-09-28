@@ -23,6 +23,7 @@
     ],
     "rules": {
         "react-hooks/exhaustive-deps": "warn",
+        "no-console": ["error", { "allow": ["warn", "error"] }],
         "jsx-a11y/no-static-element-interactions": "off",
         "react/destructuring-assignment": "off",
         "prettier/prettier": "off",

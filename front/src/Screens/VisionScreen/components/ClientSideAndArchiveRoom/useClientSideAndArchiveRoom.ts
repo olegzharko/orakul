@@ -62,7 +62,6 @@ export const useClientSideAndArchiveRoom = ({ archive }:ClientSideAndArchiveRoom
           color: res?.color
         });
       } catch (e: any) {
-        alert(e.message);
         console.error(e);
       } finally {
         setIsLoading(false);

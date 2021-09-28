@@ -79,7 +79,6 @@ export const useArchive = () => {
         setFilterLoadOn(true);
       })
       .catch((e:any) => {
-        alert(e.message);
         console.error(e);
       });
   }, [token]);

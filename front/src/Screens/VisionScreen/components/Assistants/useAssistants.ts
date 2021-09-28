@@ -20,7 +20,6 @@ export const useAssistants = () => {
         const res = await getAssistantsByRooms(token);
         setWorkspace(res);
       } catch (e: any) {
-        alert(e.message);
         console.error(e);
       } finally {
         setIsLoading(false);

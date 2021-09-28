@@ -21,7 +21,6 @@ export const useBank = () => {
         const res = await getBank(token);
         setCards(res);
       } catch (e: any) {
-        alert(e.message);
         console.error(e);
       } finally {
         setIsLoading(false);

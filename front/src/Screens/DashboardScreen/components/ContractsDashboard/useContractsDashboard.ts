@@ -37,7 +37,6 @@ export const useContractsDashboard = () => {
         const res = await getContractsDashboardByProcess(token, process, cardId);
         setCards(res);
       } catch (e: any) {
-        alert(e.message);
         console.error(e);
       } finally {
         setIsLoading(false);
