@@ -38,6 +38,7 @@ class StaffController extends BaseController
                 continue ;
             $work_space = $user->work_space;
             $space[] = $work_space;
+            $info['time'] = $this->get_start_time();
             $info['color'] = $this->get_task_color($user);
             $info['full_name'] = $this->convert->get_staff_full_name($user);
             $info['generate'] = $this->get_staff_generate_info($user);
@@ -92,6 +93,11 @@ class StaffController extends BaseController
         $result['total'] = $total;
 
         return $result;
+    }
+
+    public function get_start_time()
+    {
+        return '08:45';
     }
 
     public function get_task_color($staff)

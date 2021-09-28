@@ -11,6 +11,7 @@ use App\Models\ReadStep;
 use App\Models\ReadStepsCheckList;
 use Illuminate\Http\Request;
 use App\Models\Card;
+use App\Models\Deal;
 use App\Models\User;
 use App\Models\Contract;
 
@@ -151,5 +152,11 @@ class DatabaseController extends Controller
                 ['contract_id' => $contract->id, 'link' => 'Contract/17.09.2021/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1___10/17.09 Попередній АТ «Бласкет» (Єрьоменко ) - Смірнова  вул. Миру 14 кв. 1.docx']
             );
         }
+    }
+
+    public function reset_status()
+    {
+        Deal::where('id', '>', 0)->update(['ready' => 1]);
+        Deal::where('id', '>', 0)->take(10)->update(['ready' => 0]);
     }
 }

@@ -23,7 +23,7 @@ class BankController extends BaseController
 
     public function get_bank_data()
     {
-        $result = [];
+        $data = [];
 
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
@@ -44,8 +44,16 @@ class BankController extends BaseController
                 $info['link'] = $document->link;
             }
 
-            $result[$time][] = $info;
+            $data[$time][] = $info;
         }
+
+        $result = [];
+        foreach ($data as $key => $value) {
+            $current_time['title'] = $key;
+            $current_time['info'] = $value;
+            $result[] = $current_time;
+        }
+
 
         return $this->sendResponse($result, 'Дані для колонок архіву');
     }

@@ -358,23 +358,28 @@ class ToolsController extends Controller
 
         $card = Card::find($deal->card_id);
         $date_time = $card->date_time;
+        $result[0]['alias'] = 'date_time';
         $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'date_time')->value('value'));
         $result[0]['value'] = $date_time ? $date_time->format('H:i') : null;
 
         $arrival_time = $deal->arrival_time;
+        $result[1]['alias'] = 'arrival_time';
         $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'arrival_time')->value('value'));
         $result[1]['value'] = $arrival_time ? $arrival_time->format('H:i') : null;
 
         $waiting_time = $deal->waiting_time;
+        $result[2]['alias'] = 'waiting_time';
         $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'waiting_time')->value('value'));
         $result[2]['value'] = $waiting_time ? $waiting_time->format('H:i') : null;
 
         $invite_time = $deal->invite_time;
+        $result[3]['alias'] = 'invite_time';
         $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'invite_time')->value('value'));
         $result[3]['value'] = $invite_time ? $invite_time->format('H:i') : null;
 
         $start = $arrival_time ? $arrival_time->format('H:i') : null;
         $end = $current_time ? $current_time->format('H:i') : null;
+        $result[4]['alias'] = 'total_time';
         $result[4]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'total_time')->value('value'));
         $result[4]['value'] = null;
 
@@ -493,17 +498,18 @@ class ToolsController extends Controller
     {
         $result = [];
 
-        $result[0] = $this->get_notary_id_and_title($deal->card->notary_id);
         $result[0]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'notary')->value('value'));
+        $result[0]['info'] = $this->get_notary_id_and_title($deal->card->notary_id);
 
-        $result[1] = $this->get_staff_by_card($deal->card_id, 'reader');
         $result[1]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'reader')->value('value'));
+        $result[1]['info'] = $this->get_staff_by_card($deal->card_id, 'reader');
 
-        $result[2] = $this->get_staff_by_card($deal->card_id, 'accompanying');
         $result[2]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'accompanying')->value('value'));
+        $result[2]['info'] = $this->get_staff_by_card($deal->card_id, 'accompanying');
 
-        $result[3] = $this->get_clients_by_card($deal->card_id);
         $result[3]['title'] = $this->convert->mb_ucfirst(Text::where('alias', 'client')->value('value'));
+        $result[3]['info'] = $this->get_clients_by_card($deal->card_id);
+        
 
         return $result;
     }
