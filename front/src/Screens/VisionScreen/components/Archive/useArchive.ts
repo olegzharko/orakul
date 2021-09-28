@@ -14,6 +14,7 @@ export const useArchive = () => {
 
   // State
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [filterLoadOn, setFilterLoadOn] = useState<boolean>(false);
   const [notaries, setNotaries] = useState<ArchiveToolsNotary[][]>([]);
 
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -27,39 +28,16 @@ export const useArchive = () => {
   const [tableHeader, setTableHeader] = useState<ArchiveToolsTableHeader[]>([]);
   const [tableRawsData, setTableRawsData] = useState([]);
 
-  const bodyData = useMemo(() => ({
-    ...filterSelectsData,
-    start_date: formatDate(period.start_date),
-    final_date: formatDate(period.final_date),
-    page: selectedPage,
-  }), [filterSelectsData, period, selectedPage]);
-
   // Callbacks
   const onNotaryChange = useCallback(async (notaryId: number) => {
     if (!token) return;
     setSelectedNotary(notaryId);
-
-    const res = await getArchiveTableData(token, notaryId, bodyData);
-
-    setTableRawsData(res?.data);
-    setTotalPages(res?.tools.last_page);
-    setTotalRaws(res?.tools.total_items);
-  }, [bodyData, token]);
+  }, [token]);
 
   const onFilterChange = useCallback(async (newFilter: ArchiveSelectsFilterData) => {
     if (!token) return;
     setFilterSelectsData(newFilter);
-
-    const res = await getArchiveTableData(
-      token,
-      selectedNotary,
-      { ...bodyData, ...newFilter },
-    );
-
-    setTableRawsData(res?.data);
-    setTotalPages(res?.tools.last_page);
-    setTotalRaws(res?.tools.total_items);
-  }, [bodyData, selectedNotary, token]);
+  }, [token]);
 
   const onPageChange = useCallback(async (_, page: number) => {
     if (!token) return;
@@ -68,28 +46,12 @@ export const useArchive = () => {
       behavior: 'smooth'
     });
     setSelectedPage(page);
-
-    const res = await getArchiveTableData(token, selectedNotary, { ...bodyData, page });
-
-    setTableRawsData(res?.data);
-    setTotalPages(res?.tools.last_page);
-    setTotalRaws(res?.tools.total_items);
-  }, [bodyData, selectedNotary, token]);
+  }, [token]);
 
   const onPeriodChange = useCallback(async (newPeriod: ArchivePeriod) => {
     if (!token) return;
     setPeriod(newPeriod);
-
-    const res = await getArchiveTableData(token, selectedNotary, {
-      ...bodyData,
-      start_date: formatDate(newPeriod.start_date),
-      final_date: formatDate(newPeriod.final_date),
-    });
-
-    setTableRawsData(res?.data);
-    setTotalPages(res?.tools.last_page);
-    setTotalRaws(res?.tools.total_items);
-  }, [bodyData, selectedNotary, token]);
+  }, [token]);
 
   // Memo
   const formattedNotaries = useMemo(() => notaries.map((notary) => ({
@@ -113,14 +75,7 @@ export const useArchive = () => {
         setNotaries(res?.notary || []);
         setTableHeader(res?.column || []);
         setSelectedNotary(res?.notary[0][0].id);
-
-        return { notaryId: res?.notary[0][0].id, bodyData: { page: 1 } };
-      })
-      .then(async ({ notaryId, bodyData }) => {
-        const res = await getArchiveTableData(token, notaryId, bodyData);
-        setTableRawsData(res?.data);
-        setTotalPages(res?.tools.last_page);
-        setTotalRaws(res?.tools.total_items);
+        setFilterLoadOn(true);
       })
       .catch((e:any) => {
         alert(e.message);
@@ -128,6 +83,33 @@ export const useArchive = () => {
       })
       .finally(() => setIsLoading(false));
   }, [token]);
+
+  useEffect(() => {
+    if (!filterLoadOn || !token) return;
+
+    (async () => {
+      const bodyData = {
+        ...filterSelectsData,
+        start_date: formatDate(period.start_date),
+        final_date: formatDate(period.final_date),
+        page: selectedPage,
+      };
+
+      const res = await getArchiveTableData(token, selectedNotary, bodyData);
+      setTableRawsData(res?.data);
+      setTotalPages(res?.tools.last_page);
+      setTotalRaws(res?.tools.total_items);
+      setFilterLoadOn(true);
+    })();
+  }, [
+    filterLoadOn,
+    filterSelectsData,
+    period.final_date,
+    period.start_date,
+    selectedNotary,
+    selectedPage,
+    token,
+  ]);
 
   return {
     isLoading,
