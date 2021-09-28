@@ -14,6 +14,7 @@ use App\Models\Text;
 use App\Models\ClientContract;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
+use Illuminate\Http\Request;
 
 class ArchiveController extends BaseController
 {
@@ -95,53 +96,13 @@ class ArchiveController extends BaseController
         "marriage": "Шлюб",
         "volume": "Том"
      * */
-    public function get_archive_notary_info($notary_id)
+    public function get_archive_notary_info($notary_id, Request $r)
     {
         $result = [];
 
         $archive_column = ArchiveColumn::select('active', 'alias')->where('active', true)->orderBy('sort_order')->pluck('active', 'alias')->toArray();
 
-//        $cards = Card::select(
-//            'cards.id',
-//            'cards.notary_id',
-//            'cards.room_id',
-//            'cards.date_time',
-//            'cards.city_id',
-//            'cards.dev_group_id',
-//            'cards.dev_representative_id',
-//            'cards.dev_manager_id',
-//            'cards.generator_step',
-//            'cards.staff_generator_id',
-//            'cards.ready',
-//            'cards.in_progress',
-//            'cards.cancelled',
-//            'deals.number_of_people',
-//            'deals.children',
-//            'deals.representative_arrived',
-//            'deals.arrival_time',
-//            'deals.invite_time',
-//            'deals.waiting_time',
-//            'deals.total_time',
-//            'deals.payment_status',
-//        )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
-//            ->leftJoin('deals', 'deals.card_id', '=', 'cards.id')->paginate(15);
-//
-//        dd($cards);
-
-        $deals = Deal::select(
-//            'cards.id',
-//            'cards.notary_id',
-//            'cards.room_id',
-//            'cards.date_time',
-//            'cards.city_id',
-//            'cards.dev_group_id',
-//            'cards.dev_representative_id',
-//            'cards.dev_manager_id',
-//            'cards.generator_step',
-//            'cards.staff_generator_id',
-//            'cards.ready',
-//            'cards.in_progress',
-//            'cards.cancelled',
+        $deals_query = Deal::select(
             'deals.id',
             'deals.card_id',
             'deals.number_of_people',
@@ -154,8 +115,20 @@ class ArchiveController extends BaseController
             'deals.payment_status',
         )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
             ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
-            ->orderBy('cards.id')
-            ->paginate(15);
+            ->orderBy('cards.id');
+
+        if (isset($r['contract_type_id']) && !empty($r['contract_type_id']))
+            $deals_query = $deals_query->where('cards.contract_type_id', $r['contract_type_id']);
+        if (isset($r['dev_group_id']) && !empty($r['dev_group_id']))
+            $deals_query = $deals_query->where('cards.dev_group_id', $r['dev_group_id']);
+        if (isset($r['dev_representative_id']) && !empty($r['dev_representative_id']))
+            $deals_query = $deals_query->where('cards.dev_representative_id', $r['dev_representative_id']);
+        if (isset($r['start_date']) && !empty($r['start_date']))
+            $deals_query = $deals_query->where('cards.date_time', '>=', $r['date_time']);
+        if (isset($r['final_date']) && !empty($r['final_date']))
+            $deals_query = $deals_query->where('cards.date_time', '<=', $r['final_date']);
+
+        $deals = $deals_query->paginate(15);
 
         foreach ($deals as $key => $deal) {
             $card = $deal->card;
