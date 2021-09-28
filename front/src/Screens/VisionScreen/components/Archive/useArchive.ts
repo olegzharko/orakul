@@ -1,10 +1,10 @@
+import { format } from 'date-fns';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import getArchiveTableData from '../../../../services/vision/archive/getArchiveTableData';
 
 import getArchiveTools from '../../../../services/vision/archive/getArchiveTools';
 import { State } from '../../../../store/types';
-import { formatDate } from '../../../../utils/formatDates';
 
 import { ArchivePeriod, ArchiveSelectsFilterData, ArchiveToolsNotary, ArchiveToolsTableHeader } from './types';
 import { formatArchiveTableRawValue } from './utils';
@@ -90,8 +90,8 @@ export const useArchive = () => {
     (async () => {
       const bodyData = {
         ...filterSelectsData,
-        start_date: formatDate(period.start_date),
-        final_date: formatDate(period.final_date),
+        start_date: period?.start_date ? format(new Date(period.start_date || ''), 'yyyy-MM-dd') : null,
+        final_date: period.final_date ? format(new Date(period.final_date || ''), 'yyyy-MM-dd') : null,
         page: selectedPage,
       };
 
