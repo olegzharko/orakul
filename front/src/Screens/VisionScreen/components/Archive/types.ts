@@ -11,7 +11,7 @@ export type ArchiveToolsNotaryFormatted = {
 
 export type ArchiveSelectsFilterData = {
   contract_type_id?: string;
-  dev_company_id?: string;
+  dev_group_id?: string;
   dev_representative_id?: string;
 }
 

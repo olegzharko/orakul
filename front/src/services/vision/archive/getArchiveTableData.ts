@@ -6,7 +6,7 @@ type BodyData = {
   start_date?: string | null;
   final_date?: string | null;
   contract_type_id?: string;
-  dev_company_id?: string;
+  dev_group_id?: string;
   dev_representative_id?: string;
 }
 

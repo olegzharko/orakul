@@ -22,7 +22,7 @@ const ArchiveFilterSelects = (props: ArchiveFilterSelectsProps) => {
       <div className="filters__select">
         <CustomSelect
           data={meta.devCompanies}
-          selectedValue={meta.filterData.dev_company_id}
+          selectedValue={meta.filterData.dev_group_id}
           onChange={meta.onDevCompanyChange}
           label="Забудовник"
         />

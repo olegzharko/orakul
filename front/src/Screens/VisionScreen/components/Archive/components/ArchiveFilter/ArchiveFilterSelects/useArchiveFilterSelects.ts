@@ -28,7 +28,7 @@ export const useArchiveFilterSelects = ({
   }, [filterData, onChange]);
 
   const onDevCompanyChange = useCallback(async (id: string) => {
-    onChange({ ...filterData, dev_company_id: id });
+    onChange({ ...filterData, dev_group_id: id });
 
     if (!token) return;
 
