@@ -14,7 +14,7 @@ const Contracts = ({ data, onChange }: Props) => {
     if (selected === type) return;
     setSelected(type);
     onChange(type);
-  }, [selected]);
+  }, [onChange, selected]);
 
   useEffect(() => {
     setSelected(data ? data[0].type : null);

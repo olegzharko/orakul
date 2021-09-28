@@ -37,7 +37,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         contract_type_id: id,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   const onBuildingChange = useCallback(
@@ -47,7 +47,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         building_id: +id,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   const onImmovableTypeChange = useCallback(
@@ -57,7 +57,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         imm_type_id: id,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   const onBankChange = useCallback(
@@ -67,7 +67,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         bank: val,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   const onProxyChange = useCallback(
@@ -77,7 +77,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         proxy: val,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   const onImmNumChange = useCallback(
@@ -87,7 +87,7 @@ export const useImmovableContainer = ({ immovables, onChange }: Props) => {
         imm_number: val,
       });
     },
-    [immovables]
+    [immovables, onChange]
   );
 
   return {

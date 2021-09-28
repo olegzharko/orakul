@@ -61,7 +61,7 @@ export const useSecurityPayment = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setClients(initialData?.clients || []);

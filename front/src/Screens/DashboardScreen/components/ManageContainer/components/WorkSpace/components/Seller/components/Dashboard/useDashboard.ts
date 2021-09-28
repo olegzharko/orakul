@@ -51,11 +51,11 @@ export const useDashboard = () => {
         })
       );
     }
-  }, [token, id, selectedRepresentative]);
+  }, [token, selectedRepresentative, id, dispatch]);
 
   const onCardClick = useCallback((link: string) => {
     history.push(link);
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     if (token) {

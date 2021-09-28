@@ -27,19 +27,19 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
 
   const onSave = useCallback(() => {
     dispatch(editImmovableStatus(id, { ...data, date: formatDate(data.date) }));
-  }, [data, id]);
+  }, [data, dispatch, id]);
 
   const onPrevButtonClick = useCallback(() => {
     if (!immovable.prev) return;
 
     history.push(`/immovable/${immovable.prev}`);
-  }, [immovable]);
+  }, [history, immovable.prev]);
 
   const onNextButtonClick = useCallback(() => {
     if (!immovable.next) return;
 
     history.push(`/immovable/${immovable.next}`);
-  }, [immovable]);
+  }, [history, immovable.next]);
 
   useEffect(() => {
     setData({
@@ -49,7 +49,7 @@ export const useImmovable = ({ onPathChange, immovable }: Props) => {
     });
   }, [immovable]);
 
-  useEffect(() => onPathChange(id, RegistratorNavigationTypes.IMMOVABLE), [id]);
+  useEffect(() => onPathChange(id, RegistratorNavigationTypes.IMMOVABLE), [id, onPathChange]);
 
   return {
     data,

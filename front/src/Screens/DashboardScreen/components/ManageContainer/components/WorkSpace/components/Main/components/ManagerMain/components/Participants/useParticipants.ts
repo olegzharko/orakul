@@ -50,7 +50,7 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
         })
       );
     }
-  }, [data, cardId, token]);
+  }, [token, cardId, data, dispatch]);
 
   useEffect(() => {
     if (firstRender) {
@@ -66,7 +66,7 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
         setManager(res.manager);
       })();
     }
-  }, [data.developer_id, token]);
+  }, [data, data.developer_id, firstRender, token]);
 
   return {
     data,

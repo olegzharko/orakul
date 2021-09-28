@@ -39,7 +39,7 @@ export const useRegistratorScreen = () => {
 
     return developers ? developers.developers
       .find((item: any) => item.id === Number(selectedId)) : null;
-  }, [selectedId, developers, immovables]);
+  }, [selectedNav, developers, immovables, selectedId]);
 
   const sections = useMemo(() => {
     let title = '';
@@ -73,7 +73,14 @@ export const useRegistratorScreen = () => {
       title,
       cards,
     }];
-  }, [selectedNav, immovables, developers]);
+  }, [
+    selectedNav,
+    developers?.date_info,
+    developers?.developers,
+    history,
+    immovables?.date_info,
+    immovables?.immovables,
+  ]);
 
   useEffect(() => {
     if (selectedNav === RegistratorNavigationTypes.DEVELOPER) {
@@ -81,7 +88,7 @@ export const useRegistratorScreen = () => {
     } else {
       dispatch(fetchImmovables());
     }
-  }, [trigger, selectedId]);
+  }, [trigger, selectedId, selectedNav, dispatch]);
 
   return {
     selectedNav,

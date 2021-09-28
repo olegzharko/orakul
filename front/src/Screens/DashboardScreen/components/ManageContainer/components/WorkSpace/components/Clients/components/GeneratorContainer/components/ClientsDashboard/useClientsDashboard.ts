@@ -54,11 +54,11 @@ export const useClientsDashboard = () => {
 
   const onCardClick = useCallback((link: string) => {
     history.push(link);
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     dispatch(fetchClients(id, UserTypes.GENERATOR));
-  }, [id]);
+  }, [dispatch, id]);
 
   return {
     id,

@@ -134,7 +134,19 @@ export const useFields = () => {
         history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/clients/${clientId}/${res?.data.client_id}`);
       }
     }
-  }, [token, client, spouse, confidant, clientChecks, spouseChecks, confidantChecks]);
+  }, [
+    token,
+    clientChecks,
+    spouseChecks,
+    confidantChecks,
+    client,
+    spouse,
+    confidant,
+    clientId,
+    personId,
+    dispatch,
+    history,
+  ]);
 
   const isSaveButtonDisabled = useMemo(() => !client.name
     || !client.surname
@@ -175,7 +187,7 @@ export const useFields = () => {
         }
       })();
     }
-  }, [token, personId]);
+  }, [token, personId, clientId]);
 
   return {
     clientId,

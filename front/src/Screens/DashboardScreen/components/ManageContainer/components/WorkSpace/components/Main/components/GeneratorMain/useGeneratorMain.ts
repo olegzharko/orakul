@@ -39,7 +39,7 @@ export const useGeneratorMain = () => {
         });
       }
     }
-  }, [token, id]);
+  }, [token, id, dispatch]);
 
   useEffect(() => {
     if (token) {

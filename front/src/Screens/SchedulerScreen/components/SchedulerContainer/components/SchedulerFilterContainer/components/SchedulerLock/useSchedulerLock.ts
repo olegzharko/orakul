@@ -9,7 +9,7 @@ export const useSchedulerLock = () => {
 
   const onClick = useCallback(() => {
     dispatch(setSchedulerLock(!schedulerLock));
-  }, [schedulerLock]);
+  }, [dispatch, schedulerLock]);
 
   return { onClick, schedulerLock };
 };

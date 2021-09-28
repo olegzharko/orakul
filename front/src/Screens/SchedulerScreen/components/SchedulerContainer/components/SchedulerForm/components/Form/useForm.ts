@@ -161,7 +161,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
       dispatch(fetchDeveloperInfo(value));
     },
-    []
+    [dispatch]
   );
 
   const onRepresentativeChange = useCallback(

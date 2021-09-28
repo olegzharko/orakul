@@ -36,7 +36,7 @@ export const useManageContainer = () => {
     if (!isNumber(id)) {
       history.push('/');
     }
-  }, [id]);
+  }, [history, id]);
 
   return {
     contractData,

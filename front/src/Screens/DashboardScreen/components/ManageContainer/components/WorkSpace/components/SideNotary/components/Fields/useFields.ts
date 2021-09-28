@@ -67,7 +67,7 @@ export const useFields = () => {
         }
       }
     })();
-  }, [token, notaryId]);
+  }, [token, notaryId, shouldLoadData]);
 
   const onDenominativeClear = useCallback(() => {
     setDenominate({
@@ -106,7 +106,16 @@ export const useFields = () => {
         history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/side-notaries/${clientId}/${res?.data.notary_id}`);
       }
     }
-  }, [denominative, ablative, token]);
+  }, [
+    denominative,
+    ablative,
+    shouldLoadData,
+    notaryId,
+    token,
+    clientId,
+    dispatch,
+    history,
+  ]);
 
   const isButtonDisabled = useMemo(() => Object.values(denominative).some((item) => !item)
     || Object.values(ablative).some((item) => !item), [denominative, ablative]);

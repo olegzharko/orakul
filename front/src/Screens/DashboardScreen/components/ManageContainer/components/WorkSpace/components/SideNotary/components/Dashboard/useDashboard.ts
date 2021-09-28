@@ -22,7 +22,7 @@ export const useDashboard = () => {
 
   const onCardClick = useCallback((link: string) => {
     history.push(link);
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     if (token) {

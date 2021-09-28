@@ -119,7 +119,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setContractType(initialData?.contract_type || []);

@@ -48,7 +48,7 @@ export const useContracts = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   return {
     data,

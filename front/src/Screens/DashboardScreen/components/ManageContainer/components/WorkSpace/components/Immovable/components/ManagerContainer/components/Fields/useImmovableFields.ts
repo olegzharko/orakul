@@ -73,7 +73,17 @@ export const useImmovableFields = () => {
         history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/immovables/${clientId}/${res?.data.immovable_id}`);
       }
     }
-  }, [token, immovableId, general, responsible, contractType, checks]);
+  }, [
+    general,
+    responsible,
+    contractType,
+    checks,
+    token,
+    clientId,
+    immovableId,
+    dispatch,
+    history,
+  ]);
 
   useEffect(() => {
     if (token) {
@@ -111,7 +121,7 @@ export const useImmovableFields = () => {
         }
       })();
     }
-  }, [token]);
+  }, [clientId, immovableId, token]);
 
   return {
     title,

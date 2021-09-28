@@ -14,7 +14,7 @@ export const useApp = () => {
     if (localUser) {
       dispatch(setUser(JSON.parse(localUser)));
     }
-  }, []);
+  }, [dispatch]);
 
   return { type: user.type };
 };

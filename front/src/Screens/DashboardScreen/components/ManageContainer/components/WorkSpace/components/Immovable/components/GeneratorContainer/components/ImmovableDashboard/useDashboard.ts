@@ -15,13 +15,13 @@ export const useDashboard = () => {
 
   const onCardClick = useCallback((link: string) => {
     history.push(link);
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     dispatch(fetchImmovables(id, UserTypes.GENERATOR));
 
     return () => { dispatch(setImmovables([])); };
-  }, []);
+  }, [dispatch, id]);
 
   return {
     id,

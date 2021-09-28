@@ -57,7 +57,7 @@ export const useRating = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setValuation(initialData?.property_valuation || []);

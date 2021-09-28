@@ -124,7 +124,7 @@ export const useStatement = ({ initialData, clientId, personId }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [clientId, data, dispatch, personId, token]);
 
   return {
     data,

@@ -42,7 +42,7 @@ export const useCitizenship = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [selected, token]);
+  }, [dispatch, id, selected, token]);
 
   return {
     data,

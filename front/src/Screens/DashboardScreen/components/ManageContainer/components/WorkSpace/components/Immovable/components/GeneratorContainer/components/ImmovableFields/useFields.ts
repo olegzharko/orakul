@@ -91,7 +91,7 @@ export const useFields = () => {
         }
       })();
     }
-  }, [token, isCorrectId]);
+  }, [token, isCorrectId, immovableId]);
 
   return {
     general,
