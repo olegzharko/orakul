@@ -32,6 +32,7 @@ export const useArchive = () => {
   const onNotaryChange = useCallback(async (notaryId: number) => {
     if (!token) return;
     setSelectedNotary(notaryId);
+    setSelectedPage(1);
   }, [token]);
 
   const onFilterChange = useCallback(async (newFilter: ArchiveSelectsFilterData) => {
