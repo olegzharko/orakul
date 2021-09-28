@@ -102,6 +102,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     }
 
     onFilterDataChange(data);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedNotary,
     selectedReader,
@@ -110,7 +111,6 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     selectedDeveloper,
     selectedRepresentative,
     selectedSortType,
-    shouldRender,
     horizontal,
     onFilterDataChange,
   ]);
