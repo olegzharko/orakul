@@ -66,10 +66,6 @@ export const useArchive = () => {
   ),
   [tableHeader, tableRawsData]);
 
-  const isTableContentShow = useMemo(
-    () => formattedTableRawsData.length > 0, [formattedTableRawsData.length]
-  );
-
   // Effects
   useEffect(() => {
     if (!token) return;
@@ -126,7 +122,6 @@ export const useArchive = () => {
     totalRaws,
     formattedTableRawsData,
     period,
-    isTableContentShow,
     onFilterChange,
     onPageChange,
     onPeriodChange,

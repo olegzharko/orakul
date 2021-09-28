@@ -25,7 +25,6 @@ const Archive = () => {
     selectedPage,
     totalPages,
     period,
-    isTableContentShow,
     onFilterChange,
     onPageChange,
     onPeriodChange,
@@ -56,19 +55,17 @@ const Archive = () => {
         />
       </div>
 
-      {isTableContentShow && (
-        <div className="vision-archive__table">
-          <ArchiveTable
-            headers={tableHeader}
-            raws={formattedTableRawsData}
-          />
-          <ArchivePagination
-            page={selectedPage}
-            pagesCount={totalPages}
-            onChange={onPageChange}
-          />
-        </div>
-      )}
+      <div className="vision-archive__table">
+        <ArchiveTable
+          headers={tableHeader}
+          raws={formattedTableRawsData}
+        />
+        <ArchivePagination
+          page={selectedPage}
+          pagesCount={totalPages}
+          onChange={onPageChange}
+        />
+      </div>
     </div>
   );
 };
