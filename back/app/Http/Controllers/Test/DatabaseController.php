@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use App\Models\Card;
 use App\Models\Deal;
 use App\Models\User;
-use App\Models\Deal;
 use App\Models\Contract;
 
 class DatabaseController extends Controller
@@ -180,6 +179,7 @@ class DatabaseController extends Controller
                     'waiting_time' => '2021-01-01 13:02',
                     'total_time' => '2021-01-01 13:13',
                     'payment_status' => true,
+                    'ready' => true,
                 ]);
         }
     }

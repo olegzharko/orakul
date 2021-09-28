@@ -21,6 +21,7 @@ class Deal extends Model
         'waiting_time',
         'total_time',
         'payment_status',
+        'ready',
     ];
 
     protected $casts = [
