@@ -10,6 +10,7 @@ use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
 use App\Models\Card;
 use App\Models\Client;
+use App\Models\WorkDay;
 use App\Models\ClientContract;
 use App\Models\DocumentLink;
 
@@ -26,8 +27,10 @@ class RepresentativeController extends BaseController
 
     public function get_data_for_developer()
     {
+        $group = [];
         $result = [];
-        $data = [];
+        $week = WorkDay::where('active', true)->orderBy('num')->pluck('title', 'num')->toArray();
+        $i = 0;
 
         $user_id = auth()->user()->id;
         $dev_representative_id = UserDeveloper::where('user_id', $user_id)->value('client_id');
@@ -39,30 +42,46 @@ class RepresentativeController extends BaseController
 //        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
 
         foreach ($cards as $key => $card){
-            $time = $card->date_time->format('H:i');
-            $info = [];
             $contracts = $card->has_contracts;
 
-            $info['id'] = $card->id;
-            $info['immovables'] = [];
+            $result['id'] = $card->id;
+            $result['immovables'] =  $this->get_card_contracts($contracts);
+            $result['clients'] = $this->get_buyer_info($card);
 
-            foreach ($contracts as $dl => $contract) {
-                $info['immovables'][] = $contract ? $this->convert->building_city_address_number_immovable($contract->immovable) : null;
+            if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
+                $group[$i]['cards'][] = $result;
+            } else {
+                $i = $card->date_time->format('d.m.');
+
+                $day_num = $card->date_time->format('w');
+                $group[$i]['day'] = $day_num ? $week[$day_num] : null;
+                $group[$i]['date'] = $card->date_time->format('d.m.');
+                if (!isset($group[$i]['cards']))
+                    $group[$i]['cards'] = [];
+                $group[$i]['cards'][] = $result;
             }
-
-            $info['clients'] = $this->get_buyer_info($card);
-
-            $data[$time][] = $info;
         }
 
+//        $result = [];
+//        foreach ($data as $key => $value) {
+//            $current_time['title'] = $key;
+//            $current_time['info'] = $value;
+//            $result[] = $current_time;
+//        }
+
+        return $this->sendResponse($group, 'Дані для забудовника');
+    }
+
+    public function get_card_contracts($contracts)
+    {
         $result = [];
-        foreach ($data as $key => $value) {
-            $current_time['title'] = $key;
-            $current_time['info'] = $value;
-            $result[] = $current_time;
+
+        foreach ($contracts as $dl => $contract) {
+            if ($contract)
+                $result[] = $this->convert->building_city_address_number_immovable($contract->immovable);
         }
 
-        return $this->sendResponse($result, 'Дані для забудовника');
+        return $result;
     }
 
     public function get_buyer_info($card)
