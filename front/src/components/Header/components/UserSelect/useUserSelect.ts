@@ -27,7 +27,7 @@ export const useUserSelect = () => {
     setTimeout(() => {
       history.push('/');
     }, 100);
-  }, []);
+  }, [dispatch, history]);
 
   const userTypeButtons = useMemo(() => (
     extra_type
@@ -36,7 +36,7 @@ export const useUserSelect = () => {
         label: title,
         onClick: () => handleUserType(type),
       }))
-  ), [extra_type, userType]);
+  ), [extra_type, handleUserType, userType]);
 
   return {
     isOpen,

@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+
 import { UserTypes } from '../../../../../../../../../../../../types';
 import { State } from '../../../../../../../../../../../../store/types';
 import { fetchClients } from '../../../../../../../../../../../../store/clients/actions';
@@ -8,6 +9,7 @@ import { fetchClients } from '../../../../../../../../../../../../store/clients/
 export const useClientsDashboard = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { clients, isLoading } = useSelector((state: State) => state.clients);
 
@@ -50,14 +52,19 @@ export const useClientsDashboard = () => {
   //   setPersonNeedToRemove(undefined);
   // }, []);
 
+  const onCardClick = useCallback((link: string) => {
+    history.push(link);
+  }, [history]);
+
   useEffect(() => {
     dispatch(fetchClients(id, UserTypes.GENERATOR));
-  }, [id]);
+  }, [dispatch, id]);
 
   return {
     id,
     isLoading,
     clients,
+    onCardClick,
     // showModal,
     // onModalCancel,
     // onModalConfirm,

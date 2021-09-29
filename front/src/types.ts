@@ -37,6 +37,7 @@ export enum UserTypes {
   MANAGER = 'manager',
   ASSISTANT = 'assistant',
   REGISTRATOR = 'registrator',
+  VISION = 'vision',
 }
 
 export type ManagerAppointmentCard = {
@@ -59,3 +60,8 @@ export type ManagerAppointment = {
 };
 
 export type ManagerAppointments = ManagerAppointment[];
+
+export type DefaultContentItem = {
+  title: string;
+  value: string;
+}

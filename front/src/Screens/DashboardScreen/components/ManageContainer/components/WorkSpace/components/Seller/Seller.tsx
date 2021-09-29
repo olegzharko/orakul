@@ -1,6 +1,9 @@
 import * as React from 'react';
-import './index.scss';
 import { Switch, Route } from 'react-router-dom';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../constants';
+
+import './index.scss';
 import { useSeller } from './useSeller';
 import Dashboard from './components/Dashboard';
 import Fields from './components/Fields';
@@ -11,7 +14,7 @@ const Seller = () => {
   return (
     <main className="manage__seller seller">
       <Switch>
-        <Route path="/seller/:clientId/:developerId">
+        <Route path={`${MANAGE_CONTAINER_LINK_PREFIX}/seller/:clientId/:developerId`}>
           <Fields />
         </Route>
         <Dashboard />

@@ -11,7 +11,7 @@ export default async function getCardsByContractType(token: string, url: string)
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

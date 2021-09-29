@@ -16,7 +16,7 @@ export default async function deleteImmovable(
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

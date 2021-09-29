@@ -27,19 +27,19 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
 
   const onSave = useCallback(() => {
     dispatch(editDeveloperStatus(id, { ...data, date: formatDate(data.date) }));
-  }, [data, id]);
+  }, [data, dispatch, id]);
 
   const onPrevButtonClick = useCallback(() => {
     if (!developer.prev) return;
 
     history.push(`/developer/${developer.prev}`);
-  }, [developer]);
+  }, [developer.prev, history]);
 
   const onNextButtonClick = useCallback(() => {
     if (!developer.next) return;
 
     history.push(`/developer/${developer.next}`);
-  }, [developer]);
+  }, [developer.next, history]);
 
   useEffect(() => {
     setData({
@@ -49,7 +49,7 @@ export const useDeveloper = ({ onPathChange, developer }: Props) => {
     });
   }, [developer]);
 
-  useEffect(() => onPathChange(id, RegistratorNavigationTypes.DEVELOPER), [id]);
+  useEffect(() => onPathChange(id, RegistratorNavigationTypes.DEVELOPER), [id, onPathChange]);
 
   return {
     data,

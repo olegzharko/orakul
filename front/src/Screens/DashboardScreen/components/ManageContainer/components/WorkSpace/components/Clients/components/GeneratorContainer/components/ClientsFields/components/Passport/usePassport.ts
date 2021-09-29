@@ -85,7 +85,7 @@ export const usePassport = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setPassportTypes(initialData?.passport_types || []);

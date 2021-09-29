@@ -93,7 +93,7 @@ export const useManagerMain = () => {
         setIsLoading(false);
       })();
     }
-  }, [token, id]);
+  }, [token, id, history]);
 
   return {
     id,

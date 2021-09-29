@@ -80,7 +80,7 @@ export const useAssistantMain = () => {
 
       return item;
     }));
-  }, [immovables]);
+  }, []);
 
   const onSave = useCallback(async () => {
     const bodyData = {
@@ -99,7 +99,7 @@ export const useAssistantMain = () => {
         })
       );
     }
-  }, [token, general, immovables]);
+  }, [general, immovables, token, id, dispatch]);
 
   const isSaveButtonDisabled = useMemo(() => !general.developer_id
     || !general.notary_id, [general.developer_id, general.notary_id]);
@@ -155,7 +155,7 @@ export const useAssistantMain = () => {
         setManager(res.manager);
       })();
     }
-  }, [general.developer_id, token]);
+  }, [firstRender, general, general.developer_id, token]);
 
   return {
     title,

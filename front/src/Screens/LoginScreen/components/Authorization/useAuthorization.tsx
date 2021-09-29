@@ -16,7 +16,7 @@ export const useAuthorization = () => {
       e.preventDefault();
       dispatch(sendLogin({ email, password }, remember));
     },
-    [password, email, remember]
+    [dispatch, email, password, remember]
   );
 
   const disabledButton = useMemo(() => !email || !password, [email, password]);

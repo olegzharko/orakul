@@ -21,7 +21,7 @@ export const useSchedulerForm = () => {
   const onCloseTab = useCallback(() => {
     dispatch(setSelectedOldAppointment(null));
     dispatch(setEditAppointmentData(null));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setSelectedTab(editAppointmentData ? 1 : 0);

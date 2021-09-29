@@ -6,9 +6,15 @@ type Props = {
   onChange: (value: boolean) => void;
   label: string;
   checked?: boolean;
+  disabled?: boolean;
 };
 
-const CustomCheckBox = ({ onChange, label, checked = false }: Props) => {
+const CustomCheckBox = ({
+  onChange,
+  label,
+  checked = false,
+  disabled = false
+}: Props) => {
   const [value, setValue] = useState<boolean>(checked);
 
   useEffect(() => {
@@ -20,11 +26,12 @@ const CustomCheckBox = ({ onChange, label, checked = false }: Props) => {
       setValue(e.target.checked);
       onChange(e.target.checked);
     },
-    [checked]
+    [onChange]
   );
 
   return (
     <FormControlLabel
+      disabled={disabled}
       control={
         <Checkbox checked={value} onChange={handleChange} color="default" />
       }

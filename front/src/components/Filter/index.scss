@@ -2,6 +2,7 @@
 
 .filter {
   display: flex;
+  align-items: center;
   flex-direction: column;
   flex-wrap: wrap;
 
@@ -58,7 +59,7 @@
     }
 
     .filter__select {
-      margin: 0 3px;
+      margin: 10px 3px;
     }
   }
 }

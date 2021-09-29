@@ -8,9 +8,19 @@
   transition: $transition_default;
   text-decoration: none;
   color: black;
+  box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
+  font-family: 'Montserrat', serif;
 
   &:hover {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  }
+
+  &.disabled {
+    cursor: default;
+
+    &:hover {
+      filter: none;
+    }
   }
   
   &__header {

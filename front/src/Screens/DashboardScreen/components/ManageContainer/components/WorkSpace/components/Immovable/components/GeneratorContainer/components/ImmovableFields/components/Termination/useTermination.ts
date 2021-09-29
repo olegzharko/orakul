@@ -67,7 +67,7 @@ export const useTermination = ({ id, initialData }: Props) => {
         })
       );
     }
-  }, [data]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setNotaries(initialData?.notary || []);

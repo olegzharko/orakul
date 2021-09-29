@@ -63,7 +63,7 @@ export const usePersons = ({ initialData, cardId }: Props) => {
         })
       );
     }
-  }, [data, cardId, token]);
+  }, [token, cardId, data, dispatch]);
 
   return {
     data,

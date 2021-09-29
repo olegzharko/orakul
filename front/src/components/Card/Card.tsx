@@ -1,17 +1,16 @@
 import * as React from 'react';
 import './index.scss';
-import { Link } from 'react-router-dom';
 import ReactHtmlParser from 'react-html-parser';
 
 type Props = {
   title: string;
   children: React.ReactNode;
-  link: string
   headerColor?: string;
   haveStatus?: boolean;
+  onClick?: () => void;
 }
 
-const Card = ({ title, headerColor, children, link, haveStatus }: Props) => {
+const Card = ({ title, headerColor, children, haveStatus, onClick }: Props) => {
   const getTextColor = () => {
     if (haveStatus) return 'black';
     if (headerColor) return 'white';
@@ -27,7 +26,7 @@ const Card = ({ title, headerColor, children, link, haveStatus }: Props) => {
   };
 
   return (
-    <Link to={link} className="card">
+    <div className={`card ${onClick ? '' : 'disabled'}`} onClick={onClick}>
       <div className="card__header" style={{ backgroundColor: getTitleBackgroundColor() }}>
         <span style={{ color: getTextColor() }}>{ReactHtmlParser(title)}</span>
         {haveStatus && (
@@ -37,7 +36,7 @@ const Card = ({ title, headerColor, children, link, haveStatus }: Props) => {
       <div className="card__main">
         {children}
       </div>
-    </Link>
+    </div>
   );
 };
 

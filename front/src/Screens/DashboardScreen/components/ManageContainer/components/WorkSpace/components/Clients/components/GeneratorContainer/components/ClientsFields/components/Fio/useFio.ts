@@ -88,7 +88,7 @@ export const useFio = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   return {
     data,

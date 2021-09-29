@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { UserTypes } from '../../../../../../types';
 import { State } from '../../../../../../store/types';
 import { DashboardContractNavigation } from '../../../../useDashboardScreen';
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../constants';
 
 export const useNavigation = () => {
   const history = useHistory();
@@ -11,7 +12,7 @@ export const useNavigation = () => {
   const { user } = useSelector((state: State) => state.main);
 
   const handleClick = (type: DashboardContractNavigation) => {
-    history.push(`/${type}/${id}`);
+    history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/${type}/${id}`);
   };
 
   const shouldShowSeller = useMemo(() => user.type === UserTypes.GENERATOR, [user.type]);

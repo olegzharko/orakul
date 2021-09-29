@@ -27,7 +27,7 @@ export const useGridTableCell = ({ raw, cell, roomsWithBackground }: Props) => {
     }
 
     return '';
-  }, []);
+  }, [cell, roomsWithBackground]);
 
   const rooms = useMemo(() => options?.rooms, [options]);
   const hours = useMemo(() => options?.work_time, [options]);
@@ -46,7 +46,7 @@ export const useGridTableCell = ({ raw, cell, roomsWithBackground }: Props) => {
       cell,
       date: payload.date
     }));
-  }, [hours, rooms, days, raw, cell]);
+  }, [hours, rooms, days, raw, cell, dispatch]);
 
   return { backGroundColor, onClick };
 };

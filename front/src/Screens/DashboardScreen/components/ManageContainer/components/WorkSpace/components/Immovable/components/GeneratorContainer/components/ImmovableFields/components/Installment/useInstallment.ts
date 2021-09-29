@@ -53,7 +53,7 @@ export const useInstallment = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   const onClear = useCallback(() => {
     setData({

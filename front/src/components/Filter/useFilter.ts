@@ -14,7 +14,7 @@ export type Props = {
 
 export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state: State) => state.main.user);
+  const { token, type } = useSelector((state: State) => state.main.user);
   const { filterInitialData } = useSelector((state: State) => state.filter);
   const { schedulerLock } = useSelector((state: State) => state.scheduler);
 
@@ -72,7 +72,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
   // useEffects
   useEffect(() => {
     dispatch(fetchFilterData());
-  }, []);
+  }, [dispatch, type]);
 
   useEffect(() => {
     setSelectedRepresentative(null);
@@ -80,7 +80,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
       getDeveloperInfo(token, +selectedDeveloper)
         .then((data) => setRepresentative(data.representative || []));
     }
-  }, [selectedDeveloper]);
+  }, [selectedDeveloper, token]);
 
   useEffect(() => {
     if (!shouldRender) {
@@ -102,6 +102,7 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     }
 
     onFilterDataChange(data);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedNotary,
     selectedReader,
@@ -110,12 +111,14 @@ export const useFilter = ({ onFilterDataChange, horizontal }: Props) => {
     selectedDeveloper,
     selectedRepresentative,
     selectedSortType,
+    horizontal,
+    onFilterDataChange,
   ]);
 
   useEffect(() => {
     if (schedulerLock) return;
     clearAll();
-  }, [schedulerLock]);
+  }, [clearAll, schedulerLock]);
 
   return {
     shouldRenderFilter,

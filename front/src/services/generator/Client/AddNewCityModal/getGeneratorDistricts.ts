@@ -15,7 +15,7 @@ export default async function getGeneratorDistricts(
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }

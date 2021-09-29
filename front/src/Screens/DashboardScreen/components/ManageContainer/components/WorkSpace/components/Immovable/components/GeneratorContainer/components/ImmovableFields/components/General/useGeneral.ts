@@ -73,7 +73,7 @@ export const useGeneral = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   const isSaveButtonDisable = useMemo(
     () => !data.building_id

@@ -34,7 +34,7 @@ export const useDashboard = () => {
         }
       }
     })();
-  }, [token, immovableNeedToRemove, id]);
+  }, [token, id, dispatch]);
 
   const onModalShow = useCallback((personId: string) => {
     setShowModal(true);
@@ -55,7 +55,7 @@ export const useDashboard = () => {
     dispatch(fetchImmovables(id, UserTypes.MANAGER));
 
     return () => { dispatch(setImmovables([])); };
-  }, []);
+  }, [dispatch, id]);
 
   return {
     id,

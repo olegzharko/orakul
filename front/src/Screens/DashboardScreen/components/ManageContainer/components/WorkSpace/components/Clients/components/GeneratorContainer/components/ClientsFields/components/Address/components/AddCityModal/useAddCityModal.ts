@@ -28,7 +28,7 @@ export const useAddCityModal = ({ onClose }: Props) => {
 
   const handleClose = useCallback(() => {
     onClose(false);
-  }, []);
+  }, [onClose]);
 
   const onClear = useCallback(() => {
     setAllData({
@@ -55,7 +55,7 @@ export const useAddCityModal = ({ onClose }: Props) => {
         })
       );
     }
-  }, [allData, token, personId]);
+  }, [token, personId, allData, dispatch, handleClose]);
 
   useEffect(() => {
     if (token && allData.region_id) {
@@ -67,7 +67,7 @@ export const useAddCityModal = ({ onClose }: Props) => {
         }
       })();
     }
-  }, [allData.region_id]);
+  }, [allData.region_id, token]);
 
   useEffect(() => {
     if (token && personId) {

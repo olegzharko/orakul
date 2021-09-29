@@ -8,7 +8,7 @@ export const useSchedulerFilter = () => {
 
   const onFilterDataChange = useCallback((data: FilterData) => {
     dispatch(fetchAppointmentsByFilter(data));
-  }, []);
+  }, [dispatch]);
 
   return { onFilterDataChange };
 };

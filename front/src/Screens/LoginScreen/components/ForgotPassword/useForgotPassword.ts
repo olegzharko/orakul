@@ -13,7 +13,7 @@ export const useForgotPassword = () => {
       e.preventDefault();
       dispatch(forgotPassword({ email }));
     },
-    [email]
+    [dispatch, email]
   );
 
   const disabledButton = useMemo(() => !email, [email]);

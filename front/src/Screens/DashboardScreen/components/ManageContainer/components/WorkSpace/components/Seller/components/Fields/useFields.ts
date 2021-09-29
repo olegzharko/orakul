@@ -33,7 +33,7 @@ export const useFields = () => {
         }
       })();
     }
-  }, [token]);
+  }, [clientId, developerId, token]);
 
   return {
     developer,

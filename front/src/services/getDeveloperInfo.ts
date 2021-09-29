@@ -1,7 +1,7 @@
 import { DEFAULT_URL } from './Constants';
 import requestApi from './utils/requestApi';
 
-export default async function getDeveloperInfo(token: string, id: number) {
+export default async function getDeveloperInfo(token: string, id: number | string) {
   try {
     const data = await requestApi({
       url: `${DEFAULT_URL}/api/filter/developer/info/${id}`,
@@ -11,7 +11,7 @@ export default async function getDeveloperInfo(token: string, id: number) {
     return data.data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }
