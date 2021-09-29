@@ -46,7 +46,8 @@ class RepresentativeController extends BaseController
             $contracts = $card->has_contracts;
 
             $result['id'] = $card->id;
-            $result['immovables'] =  $this->get_card_contracts($contracts);
+            $result['time'] = $card->date_time->format('H.i');
+            $result['immovables'] = $this->get_card_contracts($contracts);
             $result['clients'] = $this->get_buyer_info($card);
 
             if (count($group) && $group[$i]['date'] == $card->date_time->format('d.m.')) {
