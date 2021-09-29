@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Rakul;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Helper\ToolsController;
 use App\Models\Card;
 use App\Models\Room;
 use App\Models\SortType;
@@ -10,7 +11,6 @@ use App\Models\Time;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
-use App\Http\Controllers\Staff\StaffController;
 
 class SortController extends BaseController
 {
@@ -18,15 +18,15 @@ class SortController extends BaseController
     public $rooms;
     public $times;
     public $card;
-    public $staff;
+    public $tools;
 
     public function __construct()
     {
-        $this->date = new \DateTime();
+        $this->date = new \DateTime('today');
         $this->rooms = Room::where('active', true)->pluck('id')->toArray();
         $this->times = Time::where('active', true)->pluck('time')->toArray();
         $this->card = new CardController();
-        $this->staff = new StaffController();
+        $this->tools = new ToolsController();
     }
 
     public function sort(Request $r)
@@ -83,8 +83,10 @@ class SortController extends BaseController
         if ($query_cards_id)
             $cards_id = array_values(array_unique($query_cards_id->toArray()));
 
+        // объеденить запрос с запросом,что выше для значений фильтра
         $cards_query = Card::whereIn('cards.id', $cards_id)
                         ->whereIn('cards.room_id', $this->rooms)
+                        ->where('cards.cancelled', false)
                         ->where('cards.date_time', '>=', $this->date->format('Y.m.d'))
                         ->orderBy('cards.date_time')
                         ;
@@ -94,29 +96,30 @@ class SortController extends BaseController
             $result = $this->card->get_cards_in_reception_format($cards);
         } elseif ($user_type == 'generator') {
             // картки для генерації договору
-            $cards_generator = $cards_query->where('cards.staff_generator_id', auth()->user()->id)
-                ->where('cards.generator_step', true)->get();
+            $cards_generator_query = clone $cards_query;
+            $cards_generator_id = $cards_generator_query->where('cards.staff_generator_id', auth()->user()->id)->where('cards.generator_step', true)->pluck('cards.id');
+            $cards_generator = $cards_query->where('cards.staff_generator_id', auth()->user()->id)->where('cards.generator_step', true)->get();
+//
             $result['generator'] = $this->card->get_cards_in_generator_format($cards_generator, $r['sort_type']);
-
             // з'єднати договори картки з договорами
-            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
+            $cards_query->where('contracts.ready', true)->orderBy('cards.date_time')
+                ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
 
             // картки для читки договорів
-            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
-                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
-            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            $cards_reader_query = clone $cards_query;
+            $cards_read_id = $cards_reader_query->where('contracts.reader_id', auth()->user()->id)->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_read_id)->get();
             $result['reader'] = $this->card->get_cards_in_generator_format($cards_reader);
 
             // картки для видачі договорів
-            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
-                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
-            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            $cards_accompanying_query = clone $cards_query;
+            $cards_accompanying_id = $cards_accompanying_query->where('contracts.accompanying_id', auth()->user()->id)->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_accompanying_id)->get();
             $result['accompanying'] = $this->card->get_cards_in_generator_format($cards_accompanying);
 
-            $user = auth()->user();
-            $info['generate'] = $this->staff->get_staff_generate_info($user);
-            $info['read'] = $this->staff->get_staff_read_info($user);
-            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+            $info['generate'] = $this->tools->count_generate_cards($cards_generator_id);
+            $info['read'] = $this->tools->count_read_cards($cards_read_id);
+            $info['accompanying'] = $this->tools->count_accompanying_cards($cards_accompanying_id);
 
             $result['info'] = $info;
         } elseif ($user_type == 'manager' || $user_type == 'assistant') {
@@ -159,5 +162,4 @@ class SortController extends BaseController
 
         return $validator;
     }
-
 }

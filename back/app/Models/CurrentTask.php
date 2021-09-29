@@ -9,6 +9,17 @@ class CurrentTask extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'staff_id',
+        'card_id',
+        'date_time',
+    ];
+
+    public function card()
+    {
+        return $this->belongsTo(Card::class, 'card_id');
+    }
+
     public static function set_current_task($card)
     {
         $current_task = new CurrentTask();

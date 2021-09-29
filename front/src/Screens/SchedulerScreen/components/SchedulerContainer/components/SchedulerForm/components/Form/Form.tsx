@@ -118,6 +118,7 @@ const SchedulerForm = (props: Props) => {
           <>
             <div className="mv12">
               <CustomInput
+                required
                 label="Кількість людей"
                 value={meta.peopleQuantity}
                 type="number"
@@ -128,6 +129,7 @@ const SchedulerForm = (props: Props) => {
 
             <div className="mv12">
               <CustomSelect
+                required
                 onChange={(e) => meta.setRoomId(+e)}
                 data={meta.rooms}
                 label="Кімната"

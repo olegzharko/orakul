@@ -39,6 +39,8 @@ Route::get('delete_cards_without_contracts', [\App\Http\Controllers\Test\Databas
 Route::get('set_bank_document_link', [\App\Http\Controllers\Test\DatabaseController::class, 'set_bank_document_link']);
 Route::get('reset_status', [\App\Http\Controllers\Test\DatabaseController::class, 'reset_status']);
 Route::get('set_deals_new_card', [\App\Http\Controllers\Test\DatabaseController::class, 'set_deals_new_card']);
+Route::get('set_current_task', [\App\Http\Controllers\Test\DatabaseController::class, 'set_current_task']);
+Route::get('set_current_task_for_staff', [\App\Http\Controllers\Test\DatabaseController::class, 'set_current_task_for_staff']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');
