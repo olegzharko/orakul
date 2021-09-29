@@ -27,6 +27,7 @@ class RepresentativeController extends BaseController
     public function get_data_for_developer()
     {
         $result = [];
+        $data = [];
 
         $user_id = auth()->user()->id;
         $dev_representative_id = UserDeveloper::where('user_id', $user_id)->value('client_id');
@@ -34,23 +35,31 @@ class RepresentativeController extends BaseController
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
 
-        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->get();
+        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
 //        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
 
         foreach ($cards as $key => $card){
             $time = $card->date_time->format('H:i');
-            $documents_link = DocumentLink::where('card_id', $card->id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
             $info = [];
+            $contracts = $card->has_contracts;
 
             $info['id'] = $card->id;
             $info['immovables'] = [];
-            foreach ($documents_link as $dl => $document) {
-                $info['immovables'][] = $document->contract ? $this->convert->building_city_address_number_immovable($document->contract->immovable) : null;
+
+            foreach ($contracts as $dl => $contract) {
+                $info['immovables'][] = $contract ? $this->convert->building_city_address_number_immovable($contract->immovable) : null;
             }
 
             $info['clients'] = $this->get_buyer_info($card);
 
-            $result[$time][] = $info;
+            $data[$time][] = $info;
+        }
+
+        $result = [];
+        foreach ($data as $key => $value) {
+            $current_time['title'] = $key;
+            $current_time['info'] = $value;
+            $result[] = $current_time;
         }
 
         return $this->sendResponse($result, 'Дані для забудовника');
