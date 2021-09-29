@@ -36,7 +36,7 @@ export const useDashboard = () => {
         }
       }
     })();
-  }, [token, personNeedToRemove]);
+  }, [token, id, dispatch]);
 
   const onModalShow = useCallback((personId: string) => {
     setShowModal(true);
@@ -46,7 +46,7 @@ export const useDashboard = () => {
   const onModalConfirm = useCallback(() => {
     setShowModal(false);
     clientRemove(personNeedToRemove);
-  }, [personNeedToRemove]);
+  }, [clientRemove, personNeedToRemove]);
 
   const onModalCancel = useCallback(() => {
     setShowModal(false);
@@ -57,7 +57,7 @@ export const useDashboard = () => {
     dispatch(fetchClients(id, UserTypes.MANAGER));
 
     return () => { dispatch(setClients([])); };
-  }, [id]);
+  }, [dispatch, id]);
 
   return {
     id,

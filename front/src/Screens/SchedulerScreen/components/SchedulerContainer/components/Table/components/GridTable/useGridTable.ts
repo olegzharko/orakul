@@ -28,7 +28,7 @@ export const useGridTable = (props: Props) => {
     });
 
     return separatedRooms;
-  }, []);
+  }, [props.rooms]);
 
   return { newSelectedAppointment, roomsWithBackground };
 };

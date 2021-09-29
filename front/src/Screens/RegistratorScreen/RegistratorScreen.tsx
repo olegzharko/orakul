@@ -32,8 +32,7 @@ const RegistratorScreen = () => {
             </Route>
 
             {meta.isLoading && <Loader />}
-            {!meta.isLoading
-              && <Dashboard link={meta.selectedNav} sections={meta.sections} haveStatus />}
+            {!meta.isLoading && <Dashboard sections={meta.sections} haveStatus />}
           </Switch>
         </ContentPanel>
       </main>

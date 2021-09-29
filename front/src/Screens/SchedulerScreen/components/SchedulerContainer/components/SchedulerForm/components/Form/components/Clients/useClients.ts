@@ -18,7 +18,7 @@ export const useClients = ({ onChange, clients }: Props) => {
         phone: value,
       });
     },
-    [clients]
+    [clients, onChange]
   );
 
   const onNameChange = useCallback(
@@ -28,7 +28,7 @@ export const useClients = ({ onChange, clients }: Props) => {
         full_name: value,
       });
     },
-    [clients]
+    [clients, onChange]
   );
 
   return { onPhoneChange, onNameChange };

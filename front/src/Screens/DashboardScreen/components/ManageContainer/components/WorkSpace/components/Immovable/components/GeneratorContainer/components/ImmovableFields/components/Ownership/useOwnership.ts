@@ -61,7 +61,7 @@ export const useOwnership = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, token]);
+  }, [data, dispatch, id, token]);
 
   useEffect(() => {
     setData({

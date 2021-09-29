@@ -1,17 +1,19 @@
 /* eslint-disable indent */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { memo } from 'react';
+
 import RadioButtonsGroup from '../../../../../../../../components/RadioButtonsGroup';
 import CustomSelect from '../../../../../../../../components/CustomSelect';
-import './index.scss';
-import Clients from './components/Clients/Clients';
 import PrimaryButton from '../../../../../../../../components/PrimaryButton';
 import Loader from '../../../../../../../../components/Loader/Loader';
-import ImmovableContainer from './components/ImmovableContainer';
-import { useForm, Props } from './useForm';
 import ConfirmDialog from '../../../../../../../../components/ConfirmDialog';
+import CustomInput from '../../../../../../../../components/CustomInput/CustomInput';
+import CustomSwitch from '../../../../../../../../components/CustomSwitch';
+
+import ImmovableContainer from './components/ImmovableContainer';
+import Clients from './components/Clients/Clients';
+
+import './index.scss';
+import { useForm, Props, ClientStages } from './useForm';
 
 const SchedulerForm = (props: Props) => {
   const meta = useForm(props);
@@ -29,15 +31,15 @@ const SchedulerForm = (props: Props) => {
       <div className="schedulerForm__forms">
         <div className="schedulerForm__header">
           <p className="title">
-            {meta.insideEdit || props.edit
+            {meta.isFormDataChangeDisabled
               ? `Запис № ${props.selectedCard.i}`
               : 'Новий запис'}
           </p>
-          {meta.insideEdit ? (
+          {meta.isFormDataChangeDisabled ? (
             <img
               src="/images/delete.svg"
               alt="delete"
-              className={`clear-icon ${meta.isDeleteDisabled ? 'disabled' : ''}`}
+              className={`clear-icon ${meta.isGeneratingStage ? 'disabled' : ''}`}
               onClick={meta.onDeleteCardClick}
             />
           ) : (
@@ -53,7 +55,7 @@ const SchedulerForm = (props: Props) => {
         <div className="mv12">
           <RadioButtonsGroup
             buttons={
-              meta.insideEdit
+              meta.isFormDataChangeDisabled
                 ? meta.notaries.filter(
                     ({ id }: any) => id === meta.selectedNotaryId
                   )
@@ -72,7 +74,7 @@ const SchedulerForm = (props: Props) => {
             data={meta.developers}
             onChange={meta.onDeveloperChange}
             selectedValue={meta.selectedDeveloperId}
-            disabled={meta.insideEdit || false}
+            disabled={meta.isFormDataChangeDisabled}
           />
         </div>
 
@@ -82,7 +84,7 @@ const SchedulerForm = (props: Props) => {
             data={meta.representative}
             label="Підписант"
             selectedValue={meta.selectedDevRepresentativeId}
-            disabled={meta.insideEdit || false}
+            disabled={meta.isFormDataChangeDisabled}
           />
         </div>
 
@@ -92,7 +94,7 @@ const SchedulerForm = (props: Props) => {
             data={meta.manager}
             label="Менеджер"
             selectedValue={meta.selectedDevManagerId}
-            disabled={meta.insideEdit || false}
+            disabled={meta.isFormDataChangeDisabled}
           />
         </div>
 
@@ -101,7 +103,7 @@ const SchedulerForm = (props: Props) => {
           onChange={meta.onImmovablesChange}
           onAdd={meta.onAddImmovables}
           onRemove={meta.onRemoveImmovable}
-          disabled={meta.insideEdit || false}
+          disabled={meta.isFormDataChangeDisabled}
         />
 
         <Clients
@@ -109,20 +111,53 @@ const SchedulerForm = (props: Props) => {
           onChange={meta.onClientsChange}
           onAdd={meta.onAddClients}
           onRemove={meta.onRemoveClient}
-          disabled={meta.insideEdit || false}
+          disabled={meta.isFormDataChangeDisabled}
         />
 
+        {meta.isVisitInfoFormShow && (
+          <>
+            <div className="mv12">
+              <CustomInput
+                label="Кількість людей"
+                value={meta.peopleQuantity}
+                type="number"
+                onChange={(e) => meta.setPeopleQuantity(+e)}
+                disabled={meta.isVisionInfoFormShowDisabled}
+              />
+            </div>
+
+            <div className="mv12">
+              <CustomSelect
+                onChange={(e) => meta.setRoomId(+e)}
+                data={meta.rooms}
+                label="Кімната"
+                selectedValue={meta.roomId}
+                disabled={meta.isVisionInfoFormShowDisabled}
+              />
+            </div>
+
+            <div className="mv12">
+              <CustomSwitch
+                label="Діти"
+                onChange={(e) => meta.setWithChildren(e)}
+                selected={meta.withChildren}
+                disabled={meta.isVisionInfoFormShowDisabled}
+              />
+            </div>
+          </>
+        )}
+
         <div className="mv12">
-          {meta.insideEdit && (
+          {meta.isFormEditDisabled && (
             <PrimaryButton
               label={meta.editButtonLabel}
-              onClick={() => meta.setEdit(false)}
-              disabled={meta.isDeleteDisabled}
+              onClick={meta.onStageButtonClick}
+              disabled={meta.isStagingButtonDisabled}
               className="schedulerForm__editButton"
             />
           )}
 
-          {!meta.insideEdit && (
+          {!meta.isFormEditDisabled && (
             <PrimaryButton
               label={`${props.edit ? 'Зберегти' : 'Створити'}`}
               onClick={meta.onFormCreate}

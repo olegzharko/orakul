@@ -86,6 +86,7 @@ const Filter = (props: Props) => {
       {!props.horizontal && (
         <div
           className="filter__select"
+          style={{ width: '100%' }}
         >
           <CustomSelect
             data={meta.sortType}
@@ -98,12 +99,11 @@ const Filter = (props: Props) => {
       )}
 
       {props.horizontal && (
-        <div className=" df">
+        <div className="df filter__clear">
           <img
             src="/images/clear-form.svg"
             alt="clear form"
             onClick={meta.clearAll}
-            className="filter__clear"
           />
         </div>
       )}

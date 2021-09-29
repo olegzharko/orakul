@@ -1,0 +1,100 @@
+@import '../../../../constants.scss';
+
+.dashboard-assistant-info {
+  width: 100%;
+  // modifiers
+  .dashboard__main-section {
+
+    h2 {
+      @include primary_title_montserrat;
+    }
+  }
+
+  // components
+  .assistant-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+
+    &__person {
+      display: flex;
+      align-items: center;
+      @include form_text;
+      font-weight: bold;
+
+      & > img {
+        margin-right: 24px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+    }
+
+    &__buttons {
+      display: flex;
+      height: max-content;
+      
+      & > button {
+        padding: 10px 40px;
+      }
+
+      & > button:first-child {
+        margin-right: 25px;
+      }
+    }
+  }
+  
+  .assistant-info-navigation {
+    margin: 25px 0;
+    flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    box-shadow: inset 0px -1px 0px #EEEEEE;
+    background-color: $white;
+    border-radius: $border_radius;
+
+    .navigation__link {
+      text-decoration: none;
+      color: $primary;
+      margin: 0 20px;
+      @include form_text;
+      font-weight: bold;
+      padding: 16px 0;
+      cursor: pointer;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &-active {
+        color: $red;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .assistant-info-otherActionsPage {
+    .dashboard__main-section {
+      .cards {
+        grid-template-columns: repeat(4, 1fr);
+
+        &.table {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+
+  &__dashboard {
+    width: 80%;
+    padding: 25px;
+  }
+}

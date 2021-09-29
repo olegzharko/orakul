@@ -6,7 +6,7 @@ export const usePageNavigationControl = () => {
 
   const onLogoClick = useCallback(() => {
     history.push('/');
-  }, []);
+  }, [history]);
 
   const onReloadButtonClick = useCallback(() => {
     window.location.reload();
@@ -15,11 +15,11 @@ export const usePageNavigationControl = () => {
   const onBackButtonClick = useCallback(() => {
     if (history.location.pathname === '/') return;
     history.goBack();
-  }, []);
+  }, [history]);
 
   const onForwardButtonClick = useCallback(() => {
     history.goForward();
-  }, []);
+  }, [history]);
 
   return {
     onLogoClick,

@@ -8,6 +8,8 @@ import { Section, Props, useDashboard } from './useDashboard';
 const Dashboard = (props: Props) => {
   const { selectedType, setSelectedType } = useDashboard(props);
 
+  if (!props.sections?.length) return null;
+
   return (
     <div className="dashboard">
       {props.isChangeTypeButton
@@ -17,7 +19,6 @@ const Dashboard = (props: Props) => {
           {props.sections.map((section: Section) => (
             <DashboardSection
               key={uuidv4()}
-              link={props.link}
               title={section.title}
               style={selectedType}
               cards={section.cards}

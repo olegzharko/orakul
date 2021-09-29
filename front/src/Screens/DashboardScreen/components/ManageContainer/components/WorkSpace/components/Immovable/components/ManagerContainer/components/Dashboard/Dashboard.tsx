@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+
 import CardWithClose from '../../../../../../../../../../../../components/CardWithClose';
 import ConfirmDialog from '../../../../../../../../../../../../components/ConfirmDialog';
 import Loader from '../../../../../../../../../../../../components/Loader/Loader';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../../../constants';
+
 import { useDashboard } from './useDashboard';
 
 const Dashboard = () => {
@@ -24,7 +28,7 @@ const Dashboard = () => {
             key={immovable.id}
             title={immovable.title}
             onClick={() => meta.onModalShow(immovable.id.toString())}
-            link={`/immovables/${meta.id}/${immovable.id}`}
+            link={`${MANAGE_CONTAINER_LINK_PREFIX}/immovables/${meta.id}/${immovable.id}`}
           >
             {immovable.list.map((item) => (
               <span>{item}</span>
@@ -32,7 +36,7 @@ const Dashboard = () => {
           </CardWithClose>
         ))}
 
-        <Link to={`/immovables/${meta.id}/create`} className="add-item-card">
+        <Link to={`${MANAGE_CONTAINER_LINK_PREFIX}/immovables/${meta.id}/create`} className="add-item-card">
           <img src="/images/plus-big.svg" alt="create" />
         </Link>
       </div>

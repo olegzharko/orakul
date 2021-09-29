@@ -1,0 +1,36 @@
+@import '../../constants.scss';
+
+.check-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .title {
+    @include primary_title_montserrat;
+    color: $primary;
+    margin-bottom: 30px;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+
+    & > label {
+      margin-bottom: 30px;
+    }
+  }
+
+  .buttons {
+    display: flex;
+
+    & > button {
+      padding: 10px 50px;
+
+      &:first-child {
+        margin-right: 25px;
+      }
+    }
+  }
+}

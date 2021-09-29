@@ -1,0 +1,193 @@
+@import '../../../../constants.scss';
+
+.vision-archive {
+
+  &__tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+
+    .tab {
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      padding: 15px 0;
+      background: #FFFFFF;
+      box-shadow: inset 0px -1px 0px #EEEEEE;
+      color: $primary;
+      @include form_text;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &.selected {
+        cursor: default;
+        font-weight: bold;
+        background-color: $grey_light;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      &:first-child {
+        border-top-left-radius: $border_radius;
+        border-bottom-left-radius: $border_radius;
+      }
+
+      &:last-child {
+        border-top-right-radius: $border_radius;
+        border-bottom-right-radius: $border_radius;
+      }
+    }
+  }
+
+  &__filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+
+    &-left {
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .filters {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+
+      &__select {
+        display: flex;
+        flex-grow: 1;
+        margin: 0 10px;
+      }
+
+      & > span {
+        margin-right: 12px;
+        white-space: nowrap;
+      }
+    }
+
+    .quantity {
+      white-space: nowrap;
+    }
+
+    .period {
+      display: flex;
+
+      &__picker {
+        max-width: 150px;
+
+        &:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+
+  &__table {
+    background: #FFFFFF;
+    box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
+
+    &-header {
+      position: sticky;
+      top: 100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: $white;
+      border-top-left-radius: $border_radius;
+      border-top-right-radius: $border_radius;
+      padding: 12px 0;
+      border-bottom: 1px solid #E5E5E5;
+      z-index: 1;
+
+      .cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      & > span {
+        flex-grow: 1;
+        text-align: center;
+      }
+    }
+
+    &-body {
+
+      .line {
+        display: flex;
+        align-items: center;
+        background-color: $grey_thin;
+        border-bottom: 1px solid #E5E5E5;
+        cursor: pointer;
+        transition: $transition_default;
+        padding: 10px 0;
+        text-decoration: none;
+        color: rgb(5, 4, 4);
+
+        .cell {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          span {
+            text-align: center;
+            position: relative;
+
+            &:not(:last-child) {
+              margin-bottom: 10px;
+
+              &:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -5px;
+                height: 1px;
+                width: 100%;
+                background-color: $grey_light;
+              }
+            }
+          }
+        }
+
+        &:hover {
+          opacity: .5;
+        }
+      }
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+
+    .MuiPaginationItem-outlined {
+      border: none;
+    }
+
+    .MuiPaginationItem-page.Mui-selected {
+      background-color: $primary;
+      color: $white;
+
+      &:hover {
+        cursor: default;
+      }
+    }
+
+    .MuiPaginationItem-page.Mui-selected:hover,
+    .MuiPaginationItem-page.Mui-selected.Mui-focusVisible {
+      background-color: $primary;
+    }
+  }
+}

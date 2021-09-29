@@ -26,7 +26,7 @@ export const useUpdatePassword = () => {
 
       dispatch(resetPassword(data));
     },
-    [password, repeatPassword, email]
+    [email, password, token, repeatPassword, dispatch]
   );
 
   const disabledButton = useMemo(

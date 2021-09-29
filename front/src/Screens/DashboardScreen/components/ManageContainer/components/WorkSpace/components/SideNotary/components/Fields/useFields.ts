@@ -1,10 +1,13 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useCallback, useState, useEffect, useMemo } from 'react';
+
 import { State } from '../../../../../../../../../../store/types';
 import reqNotaryData from '../../../../../../../../../../services/generator/SideNotary/reqNotaryData';
 import { setModalInfo } from '../../../../../../../../../../store/main/actions';
 import { isNumber } from '../../../../../../../../../../utils/numbers';
+
+import { MANAGE_CONTAINER_LINK_PREFIX } from '../../../../../../../../constants';
 
 type SideNotaryDenominativeData = {
   surname_n: string,
@@ -64,7 +67,7 @@ export const useFields = () => {
         }
       }
     })();
-  }, [token, notaryId]);
+  }, [token, notaryId, shouldLoadData]);
 
   const onDenominativeClear = useCallback(() => {
     setDenominate({
@@ -100,10 +103,19 @@ export const useFields = () => {
       );
 
       if (res?.success && notaryId === 'create' && isNumber(res?.data.notary_id)) {
-        history.push(`/side-notaries/${clientId}/${res?.data.notary_id}`);
+        history.push(`${MANAGE_CONTAINER_LINK_PREFIX}/side-notaries/${clientId}/${res?.data.notary_id}`);
       }
     }
-  }, [denominative, ablative, token]);
+  }, [
+    denominative,
+    ablative,
+    shouldLoadData,
+    notaryId,
+    token,
+    clientId,
+    dispatch,
+    history,
+  ]);
 
   const isButtonDisabled = useMemo(() => Object.values(denominative).some((item) => !item)
     || Object.values(ablative).some((item) => !item), [denominative, ablative]);

@@ -142,7 +142,7 @@ export const useAddress = ({ initialData, id }: Props) => {
         })
       );
     }
-  }, [data, actualData, actual, registration, token]);
+  }, [token, data, actualData, actual, registration, id, dispatch]);
 
   const onRegionChange = useCallback((value) => {
     setData({ ...data, region_id: value, district_id: null, city_id: null });

@@ -1,10 +1,13 @@
 import React, { Suspense } from 'react';
-import './index.scss';
-import { useApp } from './useApp';
+
 import { UserTypes } from '../types';
 import Loader from '../components/Loader/Loader';
 
+import './index.scss';
+import { useApp } from './useApp';
+
 // Lazy
+const VisionScreen = React.lazy(() => import('../Screens/VisionScreen'));
 const RegistratorScreen = React.lazy(() => import('../Screens/RegistratorScreen'));
 const Dashboard = React.lazy(() => import('../Screens/DashboardScreen'));
 const Scheduler = React.lazy(() => import('../Screens/SchedulerScreen'));
@@ -13,10 +16,10 @@ const Login = React.lazy(() => import('../Screens/LoginScreen'));
 const App: React.FC = () => {
   const { type } = useApp();
 
-  if (!type) {
+  if (type === UserTypes.VISION) {
     return (
       <Suspense fallback={<Loader />}>
-        <Login />
+        <VisionScreen />
       </Suspense>
     );
   }
@@ -48,7 +51,11 @@ const App: React.FC = () => {
     );
   }
 
-  return <h1>You have not access</h1>;
+  return (
+    <Suspense fallback={<Loader />}>
+      <Login />
+    </Suspense>
+  );
 };
 
 export default App;

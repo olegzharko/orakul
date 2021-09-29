@@ -18,24 +18,18 @@ export const useSchedulerTable = () => {
   const { appointments } = useSelector((state: State) => state.appointments);
 
   useEffect(() => {
-    if (!isLoading) {
-      dispatch(fetchSchedulerSettings());
-      dispatch(fetchAppointments());
-    }
+    dispatch(fetchSchedulerSettings());
+    dispatch(fetchAppointments());
 
     return () => {
       dispatch(clearAppointments());
     };
-  }, [token]);
+  }, [dispatch, token]);
 
   const rooms = useMemo(() => options?.rooms, [options]);
   const hours = useMemo(() => options?.work_time, [options]);
 
-  const shouldLoad = useMemo(() => isLoading || !options, [
-    isLoading,
-    rooms,
-    hours,
-  ]);
+  const shouldLoad = useMemo(() => isLoading || !options, [isLoading, options]);
 
   const tableColumns = useMemo(() => new Array(rooms?.length || 0).fill(1), [
     rooms,
@@ -45,7 +39,7 @@ export const useSchedulerTable = () => {
 
   const tableRows = useMemo(
     () => new Array(hours?.length * days?.length || 0).fill(1),
-    [hours]
+    [days?.length, hours?.length]
   );
 
   const handleAppointmentDrag = useCallback(
@@ -67,7 +61,7 @@ export const useSchedulerTable = () => {
 
       dispatch(moveCalendarCard(data, appointment.i));
     },
-    [hours, days, rooms, days]
+    [hours, rooms, days, dispatch]
   );
 
   const onAppointmentClick = useCallback(
@@ -86,7 +80,7 @@ export const useSchedulerTable = () => {
         })
       );
     },
-    [hours, rooms, days]
+    [hours, rooms, days, dispatch]
   );
 
   return {

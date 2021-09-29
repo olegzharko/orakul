@@ -41,9 +41,9 @@ const SchedulerForm = () => {
 
       {meta.selectedTab === 1 && meta.editAppointmentData && meta.oldSelectedAppointment && (
         <Form
+          edit
           selectedCard={meta.oldSelectedAppointment}
           initialValues={meta.editAppointmentData}
-          edit
         />
       )}
     </div>

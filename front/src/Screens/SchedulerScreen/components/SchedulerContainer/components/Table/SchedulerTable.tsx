@@ -38,9 +38,9 @@ const SchedulerTable = () => {
           <table>
             <tbody>
               <tr>
-                {rooms.map(({ title }: any) => (
+                {rooms.map(({ title, id }: any) => (
                   <td
-                    key={title}
+                    key={id}
                     style={{ width: `calc(100% / ${rooms.length})` }}
                   >
                     {title}

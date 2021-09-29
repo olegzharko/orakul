@@ -13,7 +13,7 @@ export type Section = {
 }
 
 export type Props = {
-  link: string,
+  link?: string,
   sections: Section[],
   isChangeTypeButton?: boolean,
   style?: DashboardViewType,

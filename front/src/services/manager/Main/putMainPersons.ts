@@ -13,7 +13,7 @@ export default async function putMainPersons(token: string, id: string, bodyData
     return data;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(err);
+    console.error(err);
     return null;
   }
 }
