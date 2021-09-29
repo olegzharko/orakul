@@ -53,7 +53,7 @@ class RepresentativeController extends BaseController
             $result[$time][] = $info;
         }
 
-        return $this->sendResponse($result, 'Дані для колонок архіву');
+        return $this->sendResponse($result, 'Дані для забудовника');
     }
 
     public function get_buyer_info($card)
