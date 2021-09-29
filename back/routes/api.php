@@ -226,7 +226,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => 'developer'], function() {
-        Route::get('representative/{dev_representative_id}', [\App\Http\Controllers\Developer\RepresentativeController::class, 'get_data_for_developer']);
+        Route::get('representative', [\App\Http\Controllers\Developer\RepresentativeController::class, 'get_data_for_developer']);
     });
 
     Route::group(['prefix' => 'staff'], function() {

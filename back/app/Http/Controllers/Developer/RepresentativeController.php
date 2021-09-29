@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Developer;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Models\UserDeveloper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
@@ -23,9 +24,12 @@ class RepresentativeController extends BaseController
         $this->tools = new ToolsController();
     }
 
-    public function get_data_for_developer($dev_representative_id)
+    public function get_data_for_developer()
     {
         $result = [];
+
+        $user_id = auth()->user()->id;
+        $dev_representative_id = UserDeveloper::where('user_id', $user_id)->value('client_id');
 
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
