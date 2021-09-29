@@ -1,0 +1,98 @@
+@import '../../constants.scss';
+
+.developer {
+
+  &__nodata {
+    height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__body {
+    height: calc(100vh - 100px);
+    box-sizing: border-box;
+    padding: 30px;
+    background-color: $grey_thin;
+  }
+
+  &__dashboard {
+    min-height: 100%;
+    background-color: $white;
+    box-sizing: border-box;
+    padding: 30px 20px;
+    box-shadow: 0px 0px 0px rgba(63, 63, 68, 0.05), 0px 1px 2px rgba(63, 63, 68, 0.15);
+    border-radius: 4px;
+
+    .section {
+
+      &__header {
+        margin-bottom: 30px;
+
+        .title {
+          @include primary_title_montserrat;
+          color: $primary;
+        }
+      }
+
+      &__body {
+
+        @media screen and (max-width: 1199px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      
+        @media screen and (max-width: 799px) {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding: 20px;
+          background: #FAFAFA;
+          border-radius: 20px;
+          margin-bottom: 50px;
+
+          &__title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+      
+            & > img {
+              margin-right: 5px;
+            }
+      
+            & > span {
+              display: flex;
+              align-items: center;
+              @include primary_title_montserrat;
+              color: $dark;
+            }
+          }
+
+          .info-block {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+  
+            span {
+              max-width: max-content;
+              position: relative;
+              @include form_text;
+              margin-bottom: 5px;
+              color: $primary;
+  
+              &::after {
+                content: '';
+                position: absolute;
+                height: 1px;
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                background-color: $grey_light;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

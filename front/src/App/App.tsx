@@ -12,6 +12,7 @@ const RegistratorScreen = React.lazy(() => import('../Screens/RegistratorScreen'
 const Dashboard = React.lazy(() => import('../Screens/DashboardScreen'));
 const Scheduler = React.lazy(() => import('../Screens/SchedulerScreen'));
 const BankUser = React.lazy(() => import('../Screens/BankUserScreen'));
+const DeveloperUserScreen = React.lazy(() => import('../Screens/DeveloperUserScreen'));
 const Login = React.lazy(() => import('../Screens/LoginScreen'));
 
 const App: React.FC = () => {
@@ -56,6 +57,14 @@ const App: React.FC = () => {
     return (
       <Suspense fallback={<Loader />}>
         <BankUser />
+      </Suspense>
+    );
+  }
+
+  if (type === UserTypes.DEVELOPER) {
+    return (
+      <Suspense fallback={<Loader />}>
+        <DeveloperUserScreen />
       </Suspense>
     );
   }
