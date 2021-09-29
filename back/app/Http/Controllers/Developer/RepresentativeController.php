@@ -43,6 +43,7 @@ class RepresentativeController extends BaseController
             $info = [];
 
             $info['id'] = $card->id;
+            $info['immovables'] = [];
             foreach ($documents_link as $dl => $document) {
                 $info['immovables'][] = $document->contract ? $this->convert->building_city_address_number_immovable($document->contract->immovable) : null;
             }
