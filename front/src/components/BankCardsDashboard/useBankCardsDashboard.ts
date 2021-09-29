@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import getBank from '../../../../services/vision/bank/getBank';
-import { State } from '../../../../store/types';
+import getBank from '../../services/vision/bank/getBank';
+import { State } from '../../store/types';
 import { BankCard } from './types';
 
-export const useBank = () => {
+export const useBankCardsDashboard = () => {
   const { token } = useSelector((state: State) => state.main.user);
 
   // State

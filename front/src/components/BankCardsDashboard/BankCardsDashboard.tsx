@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Loader from '../../../../components/Loader/Loader';
+import Loader from '../Loader/Loader';
 
 import './index.scss';
-import { useBank } from './useBank';
+import { useBankCardsDashboard } from './useBankCardsDashboard';
 
-const Bank = () => {
-  const { isLoading, cards } = useBank();
+const BankCardsDashboard = () => {
+  const { isLoading, cards } = useBankCardsDashboard();
 
   if (isLoading) return <Loader />;
 
@@ -31,4 +31,4 @@ const Bank = () => {
   );
 };
 
-export default Bank;
+export default BankCardsDashboard;
