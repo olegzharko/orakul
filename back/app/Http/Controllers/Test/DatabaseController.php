@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Test;
 
 use App\Http\Controllers\Controller;
+use App\Models\CurrentTask;
 use App\Models\DocumentLink;
 use App\Models\NotaryService;
 use App\Models\AccompanyingStep;
@@ -181,6 +182,62 @@ class DatabaseController extends Controller
                     'payment_status' => true,
                     'ready' => true,
                 ]);
+        }
+    }
+
+    public function set_current_task()
+    {
+        $cards = Card::get();
+
+        foreach ($cards as $card) {
+            $date = new \DateTime();
+            if ($card->staff_generator_id) {
+                CurrentTask::updateOrCreate(
+                    ['card_id' => $card->id],
+                    [
+                        'staff_id' => $card->staff_generator_id,
+                        'date_time' => $date,
+                    ]
+                );
+            }
+        }
+
+        $contracts = Contract::get();
+
+        foreach ($contracts as $contract) {
+            $date = new \DateTime();
+            if ($contract->accompanying_id) {
+                CurrentTask::updateOrCreate(
+                    ['card_id' => $contract->card_id],
+                    [
+                        'staff_id' => $contract->accompanying_id,
+                        'date_time' => $date,
+                    ]
+                );
+            }
+
+            if ($contract->accompanying_id) {
+                CurrentTask::updateOrCreate(
+                    ['card_id' => $contract->card_id],
+                    [
+                        'staff_id' => $contract->reader_id,
+                        'date_time' => $date,
+                    ]
+                );
+            }
+        }
+    }
+
+    public function set_current_task_for_staff()
+    {
+        $staffs_id = User::pluck('id');
+        $step = 1;
+        $limit = 80;
+
+        foreach ($staffs_id as $staff_id) {
+            CurrentTask::where('card_id', '>', $step)->where('card_id', '<', $limit)->update(['staff_id' => $staff_id]);
+            $step = $step + 80;
+            $limit = $limit + $step;
         }
     }
 }

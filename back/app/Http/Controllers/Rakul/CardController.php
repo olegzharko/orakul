@@ -81,28 +81,31 @@ class CardController extends BaseController
             $cards = $cards_query->where('cancelled', false)->get();
             $result = $this->get_cards_in_reception_format($cards);
         } elseif ($user_type == 'generator') {
-            // отримати картки для генерації договору
-            $cards_generator = $cards_query->where('staff_generator_id', auth()->user()->id)
-                ->where('generator_step', true)->orderBy('date_time')->get();
+            // картки для генерації договору
+            $cards_generator_query = clone $cards_query;
+            $cards_generator_id = $cards_generator_query->where('cards.staff_generator_id', auth()->user()->id)->where('cards.generator_step', true)->pluck('cards.id');
+            $cards_generator = $cards_query->where('cards.staff_generator_id', auth()->user()->id)->where('cards.generator_step', true)->get();
+//
             $result['generator'] = $this->get_cards_in_generator_format($cards_generator);
+            // з'єднати договори картки з договорами
+            $cards_query->where('contracts.ready', true)->orderBy('cards.date_time')
+                ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
 
-            $cards_query->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id');
-            // отримати картки для читки договорів
-            $cards_id = $cards_query->where('contracts.reader_id', auth()->user()->id)
-                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
-            $cards_reader = Card::whereIn('id', $cards_id)->get();
+            // картки для читки договорів
+            $cards_reader_query = clone $cards_query;
+            $cards_read_id = $cards_reader_query->where('contracts.reader_id', auth()->user()->id)->pluck('cards.id');
+            $cards_reader = Card::whereIn('id', $cards_read_id)->get();
             $result['reader'] = $this->get_cards_in_generator_format($cards_reader);
 
-            // отримати картки для видачі договорів
-            $cards_id = $cards_query->where('contracts.accompanying_id', auth()->user()->id)
-                ->where('contracts.ready', true)->orderBy('cards.date_time')->pluck('cards.id');
-            $cards_accompanying = Card::whereIn('id', $cards_id)->get();
+            // картки для видачі договорів
+            $cards_accompanying_query = clone $cards_query;
+            $cards_accompanying_id = $cards_accompanying_query->where('contracts.accompanying_id', auth()->user()->id)->pluck('cards.id');
+            $cards_accompanying = Card::whereIn('id', $cards_accompanying_id)->get();
             $result['accompanying'] = $this->get_cards_in_generator_format($cards_accompanying);
 
-            $user = auth()->user();
-            $info['generate'] = $this->staff->get_staff_generate_info($user);
-            $info['read'] = $this->staff->get_staff_read_info($user);
-            $info['accompanying'] = $this->staff->get_staff_generate_info($user);
+            $info['generate'] = $this->tools->count_generate_cards($cards_generator_id);
+            $info['read'] = $this->tools->count_read_cards($cards_read_id);
+            $info['accompanying'] = $this->tools->count_accompanying_cards($cards_accompanying_id);
 
             $result['info'] = $info;
 

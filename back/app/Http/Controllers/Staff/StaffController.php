@@ -37,7 +37,7 @@ class StaffController extends BaseController
             if (!$user->work_space)
                 continue ;
             $work_space = $user->work_space;
-            $space[] = $work_space;
+            $space[$work_space->alias] = $work_space;
             $info['time'] = $this->get_start_time();
             $info['color'] = $this->get_task_color($user);
             $info['full_name'] = $this->convert->get_staff_full_name($user);
@@ -47,6 +47,7 @@ class StaffController extends BaseController
             $group[$work_space->alias][] = $info;
         }
 
+        $space = array_values($space);
         foreach ($space as $key => $value) {
             $result[$key]['title'] = $value->title;
             $result[$key]['staff'] = $group[$value->alias];
@@ -60,8 +61,9 @@ class StaffController extends BaseController
         $result = [];
 
         $date = new \DateTime('today');
-        $ready = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id, 'ready' => true])->count();
-        $total = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id])->count();
+
+        $ready = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id, 'ready' => true, 'cancelled' => false])->count();
+        $total = Card::where('date_time', '>', $date)->where(['generator_step' => true, 'staff_generator_id' => $user->id, 'cancelled' => false])->count();
 
         $result['ready'] = $ready;
         $result['total'] = $total;
@@ -73,11 +75,26 @@ class StaffController extends BaseController
         $result = [];
 
         $date = new \DateTime('today');
-        $ready = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id, 'ready' => true])->count();
-        $total = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id])->count();
+
+
+//        $ready = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id, 'ready' => true])->count();
+//        $total = Contract::where('sign_date', '>', $date)->where(['reader_id' => $user->id])->count();
+        $ready = Card::where('cards.date_time', '>=', $date)
+            ->where(['contracts.reader_id' => $user->id, 'cards.ready' => true, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id')
+            ->count();
+
+        $total = Card::where('cards.date_time', '>=', $date)
+            ->where(['contracts.reader_id' => $user->id, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id')
+            ->count();
+
 
         $result['ready'] = $ready;
         $result['total'] = $total;
+
         return $result;
     }
 
@@ -86,8 +103,20 @@ class StaffController extends BaseController
         $result = [];
 
         $date = new \DateTime('today');
-        $ready = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id, 'ready' => true])->count();
-        $total = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id])->count();
+
+//        $ready = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id, 'ready' => true])->count();
+//        $total = Contract::where('sign_date', '>', $date)->where(['accompanying_id' => $user->id])->count();
+        $ready = Card::where('cards.date_time', '>=', $date)
+            ->where(['contracts.accompanying_id' => $user->id, 'cards.ready' => true, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id')
+            ->count();
+
+        $total = Card::where('cards.date_time', '>=', $date)
+            ->where(['contracts.accompanying_id' => $user->id, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id')
+            ->count();
 
         $result['ready'] = $ready;
         $result['total'] = $total;
@@ -103,6 +132,7 @@ class StaffController extends BaseController
     public function get_task_color($staff)
     {
         $staff_task = CurrentTask::where('staff_id', $staff->id)->orderBy('id', 'desc')->first();
+
         if ($staff_task && $staff_task->card && $staff_task->card->dev_group)
             return $staff_task->card->dev_group->color;
         else

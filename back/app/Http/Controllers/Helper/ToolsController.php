@@ -28,11 +28,13 @@ class ToolsController extends Controller
 {
     public $convert;
     public $media;
+    public $date;
 
     public function __construct()
     {
         $this->convert = new ConvertController();
         $this->media = new MediaController();
+        $this->date = new \DateTime('today');
     }
 
     public function header_info($card)
@@ -553,6 +555,55 @@ class ToolsController extends Controller
         $notary_full_name = $this->convert->get_surname_and_initials_n($card->notary);
 
         $result = "$dev_title ($notary_full_name)";
+
+        return $result;
+    }
+
+    public function count_generate_cards($cards_id)
+    {
+        $result = [];
+
+        $ready = Card::whereIn('id', $cards_id)->where('date_time', '>', $this->date)->where(['generator_step' => true, 'staff_generator_id' => auth()->user()->id, 'cancelled' => false, 'ready' => true])->count();
+        $total = Card::whereIn('id', $cards_id)->where('date_time', '>', $this->date)->where(['generator_step' => true, 'staff_generator_id' => auth()->user()->id, 'cancelled' => false])->count();
+
+        $result['ready'] = $ready;
+        $result['total'] = $total;
+
+        return $result;
+    }
+
+    public function count_read_cards($cards_id)
+    {
+        $result = [];
+
+        $cards_query = Card::whereIn('cards.id', $cards_id)->where('cards.date_time', '>=', $this->date)
+            ->where(['contracts.reader_id' => auth()->user()->id, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id');
+
+        $ready = $cards_query->where(['cards.ready' => true])->count();
+        $total = $cards_query->count();
+
+        $result['ready'] = $ready;
+        $result['total'] = $total;
+
+        return $result;
+    }
+
+    public function count_accompanying_cards($cards_id)
+    {
+        $result = [];
+
+        $cards_query = Card::whereIn('cards.id', $cards_id)->where('cards.date_time', '>=', $this->date)
+            ->where(['contracts.accompanying_id' => auth()->user()->id, 'cards.cancelled' => false])
+            ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
+            ->pluck('cards.id');
+
+        $ready = $cards_query->where(['cards.ready' => true])->count();
+        $total = $cards_query->count();
+
+        $result['ready'] = $ready;
+        $result['total'] = $total;
 
         return $result;
     }

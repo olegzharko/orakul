@@ -22,11 +22,13 @@ class ArchiveController extends BaseController
 {
     public $convert;
     public $tools;
+    public $deals;
 
     public function __construct()
     {
         $this->convert = new ConvertController();
         $this->tools = new ToolsController();
+        $this->deals = null;
     }
 
     public function get_tools()
@@ -43,8 +45,8 @@ class ArchiveController extends BaseController
     {
         $result = [];
 
-        $result['tools'] = $this->get_archive_tools($notary_id);
         $result['data'] = $this->get_archive_notary_info($notary_id, $r);
+        $result['tools'] = $this->get_archive_tools($notary_id);
 
         return $this->sendResponse($result, 'Дані для колонок архіву');
     }
@@ -71,7 +73,9 @@ class ArchiveController extends BaseController
     {
         $result = [];
 
-        $cards = Card::where(['notary_id' => $notary_id, 'ready' => true, 'cancelled' => false])->paginate(15);
+//        $cards = Card::where(['notary_id' => $notary_id, 'ready' => true, 'cancelled' => false])->paginate(15);
+
+        $cards = $this->deals;
 
         $result['total_items'] = $cards->total();
         $result['hasPages'] = $cards->hasPages();
@@ -121,7 +125,7 @@ class ArchiveController extends BaseController
         )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
             ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
             ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
-            ->orderBy('cards.id');
+            ->distinct('deals.id');
 
         if (isset($r['contract_type_id']) && !empty($r['contract_type_id']))
             $deals_query = $deals_query->where('contracts.type_id', $r['contract_type_id']);
@@ -135,6 +139,8 @@ class ArchiveController extends BaseController
             $deals_query = $deals_query->where('cards.date_time', '<=', $r['final_date']);
 
         $deals = $deals_query->paginate(15);
+
+        $this->deals = $deals;
 
         foreach ($deals as $key => $deal) {
             $card = $deal->card;
@@ -167,8 +173,9 @@ class ArchiveController extends BaseController
     {
         $dev_employer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
         if ($dev_owner = DevCompanyEmployer::where(['dev_company_id' => $dev_group->id, 'type_id' => $dev_employer_type_id])->first()) {
-            $dev_group_owner_full_name = $this->convert->get_full_name_n(Client::find($dev_owner->employer_id));
-            $dev_company_title = "$dev_group_owner_full_name ($dev_group->title)";
+//            $dev_group_owner_full_name = $this->convert->get_initials_and_surname_n(Client::find($dev_owner->employer_id));
+//            $dev_company_title = "$dev_group_owner_full_name ($dev_group->title)";
+            $dev_company_title = $dev_group->title;
         }
 
         return $dev_company_title;
@@ -182,7 +189,8 @@ class ArchiveController extends BaseController
         $clients = Client::whereIn('id', $clients_id)->get();
 
         foreach ($clients as $key => $client) {
-            $result[$key] = $this->convert->get_full_name_n($client);
+//            $result[$key] = $this->convert->get_full_name_n($client);
+            $result[$key] = $this->convert->get_initials_and_surname_n($client);
         }
 
         return $result;
@@ -195,7 +203,7 @@ class ArchiveController extends BaseController
 
         foreach ($contracts as $key => $contract) {
             if ($contract->notary_service)
-                $result[$key] = $contract->notary_service->title;
+                $result[$key] = $contract->notary_service->short;
         }
 
         return $result;
@@ -231,8 +239,10 @@ class ArchiveController extends BaseController
         $contracts = $card->has_contracts;
 
         foreach ($contracts as $key => $contract) {
-            if ($contract->notary_service)
-                $result[$key] = $contract->notary_service->price;
+            if ($contract->notary_service) {
+//                $result[$key] = $contract->notary_service->price;
+                $result[$key] = number_format($contract->notary_service->price, 0, ".",  " " );
+            }
         }
 
         return $result;
@@ -243,7 +253,7 @@ class ArchiveController extends BaseController
         $dev_representative = null;
 
         if ($card->dev_representative)
-            $dev_representative = $this->convert->get_full_name_n($card->dev_representative);
+            $dev_representative = $this->convert->get_initials_and_surname_n($card->dev_representative);
 
         return $dev_representative;
     }
@@ -270,6 +280,8 @@ class ArchiveController extends BaseController
             return $this->sendError('', "Картка по ID: $card_id не знайдена");
         }
 
+        $result['color'] = $deal->card->dev_group->color;
+        $result['room'] = $this->convert->get_id_in_pad_format($deal->id);
         $result['time'] = $this->tools->get_deal_time($deal);
         $result['dev_representative'] = $this->tools->get_dev_representative_info($deal);
         $result['steps_list'] = $this->tools->get_deal_step_list($deal);

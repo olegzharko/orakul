@@ -71,4 +71,17 @@ class ReadController extends BaseController
 
         return $this->sendResponse('', "Крок успішно пройдено");
     }
+
+    public function set_read_check_list($contact_id, Request $r)
+    {
+        $read_steps = $r->toArray();
+        $now = new \DateTime();
+
+        foreach ($read_steps as $read_step) {
+            ReadStepsCheckList::updateOrCreate(
+                ['contract_id' => $contact_id, 'read_step_id' => $read_step->id],
+                ['date_tiem' => $now]
+            );
+        }
+    }
 }

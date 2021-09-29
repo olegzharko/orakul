@@ -70,4 +70,17 @@ class AccompanyingController extends BaseController
 
         return $this->sendResponse('', "Крок успішно пройдено");
     }
+
+    public function set_accompanying_check_list($contact_id, Request $r)
+    {
+        $accompanying_steps = $r->toArray();
+        $now = new \DateTime();
+
+        foreach ($accompanying_steps as $accompanying_step) {
+            AccompanyingStepCheckList::updateOrCreate(
+                ['contract_id' => $contact_id, 'accompanying_step_id' => $accompanying_step->id],
+                ['date_tiem' => $now]
+            );
+        }
+    }
 }
