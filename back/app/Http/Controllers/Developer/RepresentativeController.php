@@ -38,7 +38,8 @@ class RepresentativeController extends BaseController
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
 
-        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
+//        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
+        $cards = Card::where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
 //        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
 
         foreach ($cards as $key => $card){
