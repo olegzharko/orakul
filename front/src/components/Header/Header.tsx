@@ -7,25 +7,32 @@ import PageNavigationControl from './components/PageNavigationControl';
 
 const Header = () => {
   const {
+    searchText,
+    isNotCompanyUser,
     onSearch,
     onLogout,
-    searchText,
   } = useHeader();
 
   return (
     <div className="header container">
       <PageNavigationControl />
-      <div className="header__search">
-        <input
-          type="text"
-          placeholder="Пошук..."
-          onChange={onSearch}
-          value={searchText}
-        />
-        <img src="/images/search.svg" alt="search" />
-      </div>
+      {!isNotCompanyUser && (
+        <div className="header__search">
+          <input
+            type="text"
+            placeholder="Пошук..."
+            onChange={onSearch}
+            value={searchText}
+          />
+          <img src="/images/search.svg" alt="search" />
+        </div>
+      )}
+
       <div className="header__control">
-        <UserSelect />
+        {!isNotCompanyUser && (
+          <UserSelect />
+        )}
+
         <img src="/images/log-out.svg" alt="logout" onClick={onLogout} />
       </div>
     </div>

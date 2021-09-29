@@ -1,0 +1,55 @@
+@import '../../constants.scss';
+
+.vision-bank {
+  height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 25px;
+  padding: 25px;
+  background-color: $white;
+  box-shadow: 0px 0px 0px #3f3f440d, 0px 1px 2px rgba(63, 63, 68, 0.15);
+  border-radius: $border_radius;
+
+  @media screen and (max-width: 1199px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 799px) {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-card {
+    background-color: $grey_thin;
+    padding: 25px 35px;
+    border-radius: $border_radius_hard;
+
+    &__title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+
+      & > img {
+        margin-right: 5px;
+      }
+
+      & > span {
+        display: flex;
+        align-items: center;
+        @include primary_title_montserrat;
+        color: $dark;
+      }
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+
+      & > a {
+        margin-bottom: 5px;
+        text-decoration: none;
+        color: $primary;
+      }
+    }
+  }
+}

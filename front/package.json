@@ -97,5 +97,5 @@
       "pre-commit": "npm run eslint"
     }
   },
-  "proxy": "http://localhost:8000"
+  "proxy": "https://app.synction.space/"
 }

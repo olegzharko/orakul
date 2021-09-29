@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Header from '../../components/Header';
+import BankCardsDashboard from '../../components/BankCardsDashboard';
 
 import { VisionNavigationLinks } from './enums';
 import VisionNavigation from './components/VisionNavigation';
@@ -10,7 +11,7 @@ import ClientSide from './components/ClientSide';
 import './index.scss';
 import ClientSideAndArchiveRoom from './components/ClientSideAndArchiveRoom';
 import Archive from './components/Archive';
-import Bank from './components/Bank';
+
 import Assistants from './components/Assistants';
 
 const VisionScreen = () => (
@@ -30,7 +31,7 @@ const VisionScreen = () => (
 
         <Route path={VisionNavigationLinks.bank} exact>
           <VisionNavigation />
-          <Bank />
+          <BankCardsDashboard />
         </Route>
 
         <Route path={VisionNavigationLinks.archive} exact>

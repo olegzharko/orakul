@@ -38,6 +38,8 @@ export enum UserTypes {
   ASSISTANT = 'assistant',
   REGISTRATOR = 'registrator',
   VISION = 'vision',
+  BANK = 'bank',
+  DEVELOPER = 'developer',
 }
 
 export type ManagerAppointmentCard = {
