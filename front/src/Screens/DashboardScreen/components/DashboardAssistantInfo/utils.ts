@@ -49,9 +49,9 @@ type AssistantInfoNavigationValuesRequest = {
 }
 
 export const formatNavigationValues = (data: AssistantInfoNavigationValuesRequest): string[] => {
-  const generateStr = data?.generate ? `${data?.generate.ready}/${data?.generate.ready}` : '';
-  const readStr = data?.read ? `${data?.read.ready}/${data?.read.ready}` : '';
-  const accompanyingStr = data?.accompanying ? `${data?.accompanying.ready}/${data?.accompanying.ready}` : '';
+  const generateStr = data?.generate ? `${data?.generate.ready}/${data?.generate.total}` : '';
+  const readStr = data?.read ? `${data?.read.ready}/${data?.read.total}` : '';
+  const accompanyingStr = data?.accompanying ? `${data?.accompanying.ready}/${data?.accompanying.total}` : '';
 
   return [
     generateStr,
