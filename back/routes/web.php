@@ -41,6 +41,7 @@ Route::get('reset_status', [\App\Http\Controllers\Test\DatabaseController::class
 Route::get('set_deals_new_card', [\App\Http\Controllers\Test\DatabaseController::class, 'set_deals_new_card']);
 Route::get('set_current_task', [\App\Http\Controllers\Test\DatabaseController::class, 'set_current_task']);
 Route::get('set_current_task_for_staff', [\App\Http\Controllers\Test\DatabaseController::class, 'set_current_task_for_staff']);
+Route::get('set_cookie', [\App\Http\Controllers\Test\CookieController::class, 'set_cookie']);
 
 Route::get('clear', function () {
     Artisan::call('route:clear');

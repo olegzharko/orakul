@@ -46,7 +46,11 @@ Route::post('password/forgot', [PassportAuthController::class, 'password_forgot'
 Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 Route::post('password/update', [PassportAuthController::class, 'password_update'])->name('password.reset');
 
+
+
 Route::middleware('auth:api')->group(function () {
+
+    Route::get('get_user_data', [\App\Http\Controllers\UserDataController::class, 'get_user_data']); // postman
 
     Route::get('extra_logout', [PassportAuthController::class, 'extra_logout']);
     Route::get('logout', [PassportAuthController::class, 'logout']);

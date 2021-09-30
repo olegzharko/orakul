@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-//use App\Models\UserPositionType;
+
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
@@ -9,6 +9,7 @@ use Auth;
 use Session;
 use App\Http\Controllers\Factory\ConvertController;
 use App\Http\Controllers\Helper\ToolsController;
+use Illuminate\Support\Facades\Crypt;
 
 class PassportAuthController extends BaseController
 {
@@ -54,6 +55,13 @@ class PassportAuthController extends BaseController
         if (auth()->attempt($data)) {
             Session::put('user', auth()->user()->id);
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+
+            // set cookie
+            $cookie['token'] = $token;
+            $cookie['user_id'] = auth()->user()->id;
+            $cookie = Crypt::encryptString(json_encode($cookie));
+            // end set cookie
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -65,7 +73,7 @@ class PassportAuthController extends BaseController
                     'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
-            ], 200);
+            ], 200)->withCookie(cookie('user', $cookie, 60));
         } else {
             return response()->json([
                 'success' => false,
