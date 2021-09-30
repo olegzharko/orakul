@@ -56,11 +56,8 @@ class PassportAuthController extends BaseController
             Session::put('user', auth()->user()->id);
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
 
-            // set cookie
-            $cookie['token'] = $token;
-            $cookie['user_id'] = auth()->user()->id;
-            $cookie = Crypt::encryptString(json_encode($cookie));
-            // end set cookie
+            // create cookie
+            $cookie = $this->set_cookie($token);
 
             return response()->json([
                 'success' => true,
@@ -73,7 +70,7 @@ class PassportAuthController extends BaseController
                     'token' => $token,
                 ],
                 'message' => 'Авторизація прошла успішно'
-            ], 200)->withCookie(cookie('user', $cookie, 60));
+            ], 200)->withCookie(cookie('user', $cookie, 60)); // set cookie to response
         } else {
             return response()->json([
                 'success' => false,
@@ -198,5 +195,15 @@ class PassportAuthController extends BaseController
             $result[] = ['title' => 'Ресепшн', 'type' => 'reception'];
 
         return $result;
+    }
+
+    public function set_cookie($token)
+    {
+        $cookie = [];
+
+        $cookie['token'] = $token;
+        $cookie = Crypt::encryptString(json_encode($cookie));
+
+        return $cookie;
     }
 }

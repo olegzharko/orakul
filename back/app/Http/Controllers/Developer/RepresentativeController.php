@@ -36,11 +36,8 @@ class RepresentativeController extends BaseController
         $dev_representative_id = UserDeveloper::where('user_id', $user_id)->value('client_id');
 
         $today = new \DateTime('today');
-        $tomorrow = new \DateTime('tomorrow');
 
-//        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
-        $cards = Card::where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
-//        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
+        $cards = Card::where('date_time', '>', $today)->where('dev_representative_id', $dev_representative_id)->orderBy('date_time')->get();
 
         foreach ($cards as $key => $card){
             $contracts = $card->has_contracts;
@@ -63,13 +60,6 @@ class RepresentativeController extends BaseController
                 $group[$i]['cards'][] = $result;
             }
         }
-
-//        $result = [];
-//        foreach ($data as $key => $value) {
-//            $current_time['title'] = $key;
-//            $current_time['info'] = $value;
-//            $result[] = $current_time;
-//        }
 
         return $this->sendResponse($group, 'Дані для забудовника');
     }
