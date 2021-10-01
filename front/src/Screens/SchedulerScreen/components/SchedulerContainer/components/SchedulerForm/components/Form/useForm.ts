@@ -141,7 +141,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const isVisionInfoFormShowDisabled = useMemo(() => isInProgress, [isInProgress]);
 
-  const isStagingButtonDisabled = useMemo(() => isInProgress || !roomId, [isInProgress, roomId]);
+  const isStagingButtonDisabled = useMemo(
+    () => isInProgress || !roomId || peopleQuantity < 0, [isInProgress, peopleQuantity, roomId]
+  );
 
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {

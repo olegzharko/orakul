@@ -7,14 +7,28 @@
   height: 100vh;
 
   &__authorization {
-    height: 500px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    justify-items: stretch;
+    grid-gap: 25px;
+    width: 100%;
+    max-width: 1000px;
+
+    @media screen and (max-width: 999px) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
   }
 
   &__carousel {
     position: relative;
     height: 100%;
-    width: 630px;
+
+    @media screen and (max-width: 999px) {
+      display: none;
+    }
   }
 
   &__form {
@@ -23,10 +37,8 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 450px;
     border-radius: $border_radius;
     background-color: $grey_light;
-    margin-left: 24px;
     padding: 65px 40px;
     box-sizing: border-box;
 
@@ -34,6 +46,11 @@
       width: 100%;
       display: flex;
       justify-content: center;
+    }
+
+    & > img {
+      max-width: 260px;
+      width: 100%;
     }
   }
 

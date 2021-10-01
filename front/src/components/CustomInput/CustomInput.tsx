@@ -11,6 +11,7 @@ type Props = {
   type?: string;
   disabled?: boolean;
   required?: boolean;
+  inputProps?: any;
 };
 
 const CustomInput = ({
@@ -20,6 +21,7 @@ const CustomInput = ({
   type = 'string',
   disabled,
   required,
+  inputProps,
 }: Props) => {
   const [text, setText] = useState(value || '');
 
@@ -36,6 +38,7 @@ const CustomInput = ({
     <TextField
       error={required && !text}
       label={label}
+      InputProps={{ inputProps }}
       variant="outlined"
       value={text}
       onChange={handleChange}

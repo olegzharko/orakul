@@ -45,7 +45,13 @@ const WaitingRoomClientTableItem = (props: WaitingRoomClientTableItemProps) => {
         <td>{waitingTime}</td>
         <td>
           {edit && (
-            <button onClick={onPeopleDecrease} type="button">-</button>
+            <button
+              onClick={onPeopleDecrease}
+              type="button"
+              disabled={people === 0}
+            >
+              -
+            </button>
           )}
           <span className="table__clickable-people">{people}</span>
           {edit && (

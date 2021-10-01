@@ -18,18 +18,16 @@ const Carousel = ({ images }: Props) => {
 
   return (
     <div className="carousel">
-      <div className="container">
-        <Slider {...settings}>
-          {images.map((item: string) => (
-            <img
-              src={item}
-              alt={item}
-              key={item}
-              className="officeMapMain__image"
-            />
-          ))}
-        </Slider>
-      </div>
+      <Slider {...settings}>
+        {images.map((item: string) => (
+          <img
+            src={item}
+            alt={item}
+            key={item}
+            className="officeMapMain__image"
+          />
+        ))}
+      </Slider>
     </div>
   );
 };

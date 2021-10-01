@@ -122,6 +122,7 @@ const SchedulerForm = (props: Props) => {
                 label="Кількість людей"
                 value={meta.peopleQuantity}
                 type="number"
+                inputProps={{ min: 0 }}
                 onChange={(e) => meta.setPeopleQuantity(+e)}
                 disabled={meta.isVisionInfoFormShowDisabled}
               />

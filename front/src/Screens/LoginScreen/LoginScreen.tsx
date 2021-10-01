@@ -11,7 +11,7 @@ const LoginScreen = () => {
   const modalProps = useRequestModal();
 
   return (
-    <main className="login">
+    <main className="login container">
       <Switch>
         <Route path="/forgot" exact>
           <ForgotPassword />
