@@ -15,7 +15,6 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: State) => state.main.user);
 
-  const [firstRender, setFirstRender] = useState(true);
   const [representatives, setRepresentatives] = useState(initialData?.representative || []);
   const [manager, setManager] = useState(initialData?.manager || []);
   const [data, setData] = useState({
@@ -53,20 +52,16 @@ export const useParticipants = ({ initialData, cardId }: Props) => {
   }, [token, cardId, data, dispatch]);
 
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false);
-      return;
-    }
-
-    if (token && data.developer_id) {
-      (async () => {
+    (async () => {
+      if (token && data.developer_id) {
         const res = await getDeveloperInfo(token, Number(data.developer_id));
-        setData({ ...data, representative_id: null, manager_id: null });
+
+        setData((prev) => ({ ...prev, representative_id: null, manager_id: null }));
         setRepresentatives(res.representative);
         setManager(res.manager);
-      })();
-    }
-  }, [data, data.developer_id, firstRender, token]);
+      }
+    })();
+  }, [data.developer_id, token]);
 
   return {
     data,

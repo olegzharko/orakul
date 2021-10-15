@@ -59,7 +59,10 @@ export const useManagerMain = () => {
   const [participantsData, setParticipantsData] = useState<ManagerParticipantsData>();
   const [personsData, setPersonsData] = useState<ContactPersonInfo[]>();
 
-  const mainTitle = useMemo(() => `${data?.date_info.day} ${data?.date_info.date} ${data?.date_info.time} ${data?.date_info.room}`, [data]);
+  const mainTitle = useMemo(
+    () => `${data?.date_info.day || ''} ${data?.date_info.date || ''} ${data?.date_info.time || ''} ${data?.date_info.room || ''}`,
+    [data]
+  );
 
   useEffect(() => {
     if (!isNumber(id)) {

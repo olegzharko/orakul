@@ -27,7 +27,6 @@ export const useAssistantMain = () => {
   const { token } = useSelector((state: State) => state.main.user);
   const { id } = useParams<{id: string}>();
 
-  const [firstRender, setFirstRender] = useState(0);
   const [title, setTitle] = useState('');
 
   // selects
@@ -139,23 +138,18 @@ export const useAssistantMain = () => {
   }, [token, id]);
 
   useEffect(() => {
-    if (firstRender < 2) {
-      setFirstRender((prev) => prev + 1);
-      return;
-    }
-
     setRepresentative([]);
     setManager([]);
 
     if (token && general.developer_id) {
       (async () => {
         const res = await getDeveloperInfo(token, Number(general.developer_id));
-        setGeneral({ ...general, representative_id: null, manager_id: null });
+        setGeneral((prev) => ({ ...prev, representative_id: null, manager_id: null }));
         setRepresentative(res.representative);
         setManager(res.manager);
       })();
     }
-  }, [firstRender, general, general.developer_id, token]);
+  }, [general.developer_id, token]);
 
   return {
     title,
