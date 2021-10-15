@@ -13,7 +13,7 @@ const DashboardScreen = () => (
   <div className="dashboard-screen">
     <Header />
     <Switch>
-      <Route path={`${MANAGE_PROCESS_LINK_PREFIX}/:process/:cardId`} exact>
+      <Route path={`${MANAGE_PROCESS_LINK_PREFIX}/:process/:cardId`}>
         <ContractsDashboard />
       </Route>
 

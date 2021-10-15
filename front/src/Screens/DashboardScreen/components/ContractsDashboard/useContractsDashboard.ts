@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import getContractsDashboardByProcess from '../../../../services/getContractsDashboardByProcess';
 import { State } from '../../../../store/types';
+import { MANAGE_PROCESS_LINK_PREFIX } from '../../constants';
 
 export type ContractCard = {
   id: number;
@@ -25,7 +26,7 @@ export const useContractsDashboard = () => {
   // Memo
   const formattedCards = useMemo(() => cards.map((card) => ({
     ...card,
-    onClick: () => history.push(`/${process}/${cardId}/checklist/${card.id}`),
+    onClick: () => history.push(`${MANAGE_PROCESS_LINK_PREFIX}/${process}/${cardId}/checklist/${card.id}`),
   })), [cardId, cards, history, process]);
 
   // Effects
