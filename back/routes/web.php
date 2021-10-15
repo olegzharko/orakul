@@ -23,7 +23,7 @@ use App\Http\Controllers\PassportAuthController;
 // Route::get('password/reset/{token}', [PassportAuthController::class, 'password_reset'])->name('password.request');
 
 
-Route::get('start_dzubuk', [\App\Http\Controllers\GiftController::class, 'start_dzubuk']);
+Route::get('start_multiple_contract', [\App\Http\Controllers\GiftController::class, 'start']);
 Route::get('get_excel', [\App\Http\Controllers\GiftController::class, 'get_excel']);
 
 Route::get('price', [ConvertController::class, 'convert_price_int_part_to_string']);

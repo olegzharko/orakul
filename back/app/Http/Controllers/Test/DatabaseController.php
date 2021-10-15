@@ -164,7 +164,7 @@ class DatabaseController extends Controller
 
     public function set_deals_new_card()
     {
-        $cards_id = Card::where('id', '>', '500')->take(100)->pluck('id');
+        $cards_id = Card::where('id', '>', '600')->where('id', '<', '700')->take(100)->pluck('id');
 
         foreach ($cards_id as $key => $card_id) {
             Deal::updateOrCreate(
