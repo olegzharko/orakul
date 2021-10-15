@@ -6,19 +6,19 @@ import Header from '../../components/Header';
 import './index.scss';
 import ManageContainer from './components/ManageContainer';
 import DashboardAssistantInfo from './components/DashboardAssistantInfo';
-import { MANAGE_CONTAINER_LINK_PREFIX } from './constants';
+import { MANAGE_CONTAINER_LINK_PREFIX, MANAGE_PROCESS_LINK_PREFIX } from './constants';
 import ContractsDashboard from './components/ContractsDashboard/ContractsDashboard';
 
 const DashboardScreen = () => (
   <div className="dashboard-screen">
     <Header />
     <Switch>
-      <Route path={`${MANAGE_CONTAINER_LINK_PREFIX}/:section/:id`} exact>
-        <ManageContainer />
+      <Route path={`${MANAGE_PROCESS_LINK_PREFIX}/:process/:cardId`} exact>
+        <ContractsDashboard />
       </Route>
 
-      <Route path="/:process/:cardId">
-        <ContractsDashboard />
+      <Route path={`${MANAGE_CONTAINER_LINK_PREFIX}/:section/:id`}>
+        <ManageContainer />
       </Route>
 
       <DashboardAssistantInfo />

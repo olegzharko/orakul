@@ -1,5 +1,5 @@
 import { UserTypes } from '../../../../types';
-import { MANAGE_CONTAINER_LINK_PREFIX } from '../../constants';
+import { MANAGE_CONTAINER_LINK_PREFIX, MANAGE_PROCESS_LINK_PREFIX } from '../../constants';
 import { DashboardAssistantInfoNavigationLinks } from '../../enums';
 
 export type AssistantSection = {
@@ -34,8 +34,16 @@ export const formatAssistantData = (data: any, history: any, userType: UserTypes
   if (userType === UserTypes.GENERATOR) {
     return [
       formatClientsCards(data.generator, history, `${MANAGE_CONTAINER_LINK_PREFIX}/main`),
-      formatClientsCards(data.reader, history, `${DashboardAssistantInfoNavigationLinks.reading}`),
-      formatClientsCards(data.accompanying, history, `${DashboardAssistantInfoNavigationLinks.accompanying}`),
+      formatClientsCards(
+        data.reader,
+        history,
+        `${MANAGE_PROCESS_LINK_PREFIX}${DashboardAssistantInfoNavigationLinks.reading}`
+      ),
+      formatClientsCards(
+        data.accompanying,
+        history,
+        `${MANAGE_PROCESS_LINK_PREFIX}${DashboardAssistantInfoNavigationLinks.accompanying}`
+      ),
     ];
   }
 
