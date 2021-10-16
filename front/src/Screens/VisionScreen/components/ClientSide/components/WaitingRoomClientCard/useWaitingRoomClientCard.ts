@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router';
 
-import { VisionNavigationLinks } from '../../../../enums';
+import routes from '../../../../../../routes';
 
 import { VisionClientResponse } from '../../types';
 
@@ -41,7 +41,7 @@ export const useWaitingRoomClientCard = ({
 
   // Callbacks
   const handleMoreClick = useCallback(() => {
-    history.push(`${VisionNavigationLinks.clientSide}/${client.deal_id}`);
+    history.push(routes.vision.clientSideRoom.linkTo(client.deal_id));
   }, [client.deal_id, history]);
 
   const handleToReceptionClick = useCallback(() => {

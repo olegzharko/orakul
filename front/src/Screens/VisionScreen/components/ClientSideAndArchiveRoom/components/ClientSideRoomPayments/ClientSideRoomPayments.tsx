@@ -17,7 +17,7 @@ const ClientSideRoomPayments = ({ payments }: ClientSideRoomPaymentsProps) => {
       </div>
 
       <div className="payments__list">
-        {payments.service_list.map(({ title, value }) => (
+        {payments?.service_list?.map(({ title, value }) => (
           <span className="payments__part" key={title}>
             {title}
             {' '}

@@ -9,7 +9,7 @@ import { useApp } from './useApp';
 // Lazy
 const VisionScreen = React.lazy(() => import('../Screens/VisionScreen'));
 const RegistratorScreen = React.lazy(() => import('../Screens/RegistratorScreen'));
-const Dashboard = React.lazy(() => import('../Screens/DashboardScreen'));
+const FactoryScreen = React.lazy(() => import('../Screens/FactoryScreen'));
 const Scheduler = React.lazy(() => import('../Screens/SchedulerScreen'));
 const BankUser = React.lazy(() => import('../Screens/BankUserScreen'));
 const DeveloperUserScreen = React.lazy(() => import('../Screens/DeveloperUserScreen'));
@@ -48,7 +48,7 @@ const App: React.FC = () => {
   ) {
     return (
       <Suspense fallback={<Loader />}>
-        <Dashboard />
+        <FactoryScreen />
       </Suspense>
     );
   }
