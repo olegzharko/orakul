@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import routes from '../../../../routes';
+
 import '../../index.scss';
 import { navigation } from '../../config';
-import { VisionNavigationLinks } from '../../enums';
 
 const VisionNavigation = () => (
   <div className="vision-navigation">
@@ -12,7 +13,7 @@ const VisionNavigation = () => (
       to={navigation[0].link}
       activeClassName="vision-navigation__link-active"
       className="vision-navigation__link"
-      isActive={(_, { pathname }) => ['/', VisionNavigationLinks.clientSide].includes(pathname)}
+      isActive={(_, { pathname }) => ['/', routes.vision.clientSide].includes(pathname)}
     >
       {navigation[0].title}
     </NavLink>

@@ -1,24 +1,20 @@
-import { VisionNavigationLinks } from './enums';
+import routes from '../../routes';
 
 export const navigation = [
   {
     title: 'Клієнтський простір',
-    link: VisionNavigationLinks.clientSide,
+    link: routes.vision.clientSide.linkTo,
   },
   {
     title: 'Помічники',
-    link: VisionNavigationLinks.assistants,
+    link: routes.vision.assistants.linkTo,
   },
   {
     title: 'Банк',
-    link: VisionNavigationLinks.bank,
+    link: routes.vision.bank.linkTo,
   },
   {
     title: 'Архів',
-    link: VisionNavigationLinks.archive,
+    link: routes.vision.archive.linkTo,
   },
-  // {
-  //   title: 'ІНШІ НОТ ДІЇ +',
-  //   link: VisionNavigationLinks.otherNotaryActions,
-  // },
 ];

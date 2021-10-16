@@ -1,23 +1,21 @@
 import * as React from 'react';
 import './index.scss';
-import { Link, useHistory } from 'react-router-dom';
 
 type Props = {
   title: string;
   children: React.ReactNode;
-  link: string
-  onClick: (id: string | undefined) => void;
-  id?: string;
+  onClick: () => void;
+  onRemove: (id?: string) => void;
 }
 
-const CardWithClose = ({ id, title, children, link, onClick }: Props) => {
+const CardWithClose = ({ title, children, onClick, onRemove }: Props) => {
   const handleClick = (e: any) => {
     e.preventDefault();
-    onClick(id);
+    onRemove();
   };
 
   return (
-    <Link to={link} className="card-close">
+    <div className="card-close" onClick={onClick}>
       <div className="card-close__header">
         <span>{title}</span>
         <button
@@ -31,7 +29,7 @@ const CardWithClose = ({ id, title, children, link, onClick }: Props) => {
       <div className="card-close__main">
         {children}
       </div>
-    </Link>
+    </div>
   );
 };
 

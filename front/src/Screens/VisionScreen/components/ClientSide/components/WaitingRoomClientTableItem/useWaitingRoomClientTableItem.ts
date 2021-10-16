@@ -1,9 +1,9 @@
-import { ErrorInfo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router';
 
+import routes from '../../../../../../routes';
 import { PostDealUpdate } from '../../../../../../services/vision/space/postDealUpdate';
 
-import { VisionNavigationLinks } from '../../../../enums';
 import { getWaitingTime } from '../../../../utils';
 
 import { VisionClientResponse } from '../../types';
@@ -89,7 +89,7 @@ export const useWaitingRoomClientTableItem = (
   }, [children, client.card_id, edit, onSave, people]);
 
   const onMoreClick = useCallback(() => {
-    history.push(`${VisionNavigationLinks.clientSide}/${client.deal_id}`);
+    history.push(routes.vision.clientSideRoom.linkTo(client.deal_id));
   }, [client.deal_id, history]);
 
   const onFinishClick = useCallback(() => {

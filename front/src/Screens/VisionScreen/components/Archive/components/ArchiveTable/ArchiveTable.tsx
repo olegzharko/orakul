@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import routes from '../../../../../../routes';
 
-import { VisionNavigationLinks } from '../../../../enums';
 import { ArchiveToolsTableHeader } from '../../types';
 
 type ArchiveTableProps = {
@@ -22,7 +22,11 @@ const ArchiveTable = ({ headers, raws }: ArchiveTableProps) => (
         const id = raw[0][0];
 
         return (
-          <Link to={`${VisionNavigationLinks.archive}/${id}`} className="line" key={id}>
+          <Link
+            to={routes.vision.archiveRoom.linkTo(id)}
+            className="line"
+            key={id}
+          >
             {raw.map((cell) => (
               <div style={{ width: `calc(100% / ${headers.length})` }} className="cell" key={uuid()}>
                 {cell.map((val: any) => (

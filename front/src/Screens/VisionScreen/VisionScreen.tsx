@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import Header from '../../components/Header';
 import BankCardsDashboard from '../../components/BankCardsDashboard';
 
-import { VisionNavigationLinks } from './enums';
 import VisionNavigation from './components/VisionNavigation';
 import ClientSide from './components/ClientSide';
 
@@ -13,46 +12,42 @@ import ClientSideAndArchiveRoom from './components/ClientSideAndArchiveRoom';
 import Archive from './components/Archive';
 
 import Assistants from './components/Assistants';
+import routes from '../../routes';
 
 const VisionScreen = () => (
   <>
     <Header />
     <div className="vision container">
       <Switch>
-        <Route path={VisionNavigationLinks.notary} exact>
+        <Route {...routes.vision.notary}>
           <VisionNavigation />
           <h1>Notary</h1>
         </Route>
 
-        <Route path={VisionNavigationLinks.assistants} exact>
+        <Route {...routes.vision.assistants}>
           <VisionNavigation />
           <Assistants />
         </Route>
 
-        <Route path={VisionNavigationLinks.bank} exact>
+        <Route {...routes.vision.bank}>
           <VisionNavigation />
           <BankCardsDashboard />
         </Route>
 
-        <Route path={VisionNavigationLinks.archive} exact>
+        <Route {...routes.vision.archive}>
           <VisionNavigation />
           <Archive />
         </Route>
 
-        <Route path={VisionNavigationLinks.clientSideRoom} exact>
+        <Route {...routes.vision.clientSideRoom}>
           <VisionNavigation />
           <ClientSideAndArchiveRoom />
         </Route>
 
-        <Route path={VisionNavigationLinks.archiveRoom} exact>
+        <Route {...routes.vision.archiveRoom}>
           <VisionNavigation />
           <ClientSideAndArchiveRoom archive />
         </Route>
-
-        {/* <Route path={VisionNavigationLinks.otherNotaryActions} exact>
-          <VisionNavigation />
-          <h1>Other Notary Actions</h1>
-        </Route> */}
 
         <>
           <VisionNavigation />
