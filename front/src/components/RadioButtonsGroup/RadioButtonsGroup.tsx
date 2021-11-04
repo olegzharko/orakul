@@ -1,7 +1,4 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unused-prop-types */
-import React, { useState, memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import './index.scss';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,10 +20,7 @@ export const RadioButtonsGroup = ({
   selected,
   unicId,
 }: Props) => {
-  const [selectedValue, setSelectedValue] = useState(selected || buttons[0].id);
-
   const handleChange = (id: number | string) => {
-    setSelectedValue(id);
     onChange(id);
   };
 
@@ -43,7 +37,7 @@ export const RadioButtonsGroup = ({
             type="radio"
             id={unicId + title}
             value={id}
-            checked={selectedValue === id}
+            checked={selected === id}
             onChange={() => handleChange(id)}
             className="input"
           />

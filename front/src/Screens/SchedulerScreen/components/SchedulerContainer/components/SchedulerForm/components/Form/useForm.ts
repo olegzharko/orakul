@@ -63,7 +63,9 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const [formModeIsInProgress, setFormModeIsInProgress] = useState<boolean>(false);
 
   // Form State
-  const [notary, setNotary] = useState<number | null>(initialValues?.card.notary_id || null);
+  const [notary, setNotary] = useState<number | null>(
+    initialValues?.card.notary_id || null
+  );
   const [devCompanyId, setDevCompanyId] = useState<number | null>(null);
   const [devRepresentativeId, setDevRepresentativeId] = useState<number | null>(null);
   const [devManagerId, setDevManagerId] = useState<number | null>(null);
@@ -142,7 +144,7 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   const isVisionInfoFormShowDisabled = useMemo(() => isInProgress, [isInProgress]);
 
   const isStagingButtonDisabled = useMemo(
-    () => isInProgress || !roomId || peopleQuantity < 0, [isInProgress, peopleQuantity, roomId]
+    () => (isInProgress && !roomId) || peopleQuantity < 0, [isInProgress, peopleQuantity, roomId]
   );
 
   // Form onChange functions
