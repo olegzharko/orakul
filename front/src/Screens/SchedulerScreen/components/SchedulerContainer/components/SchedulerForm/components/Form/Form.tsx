@@ -26,8 +26,6 @@ const SchedulerForm = (props: Props) => {
     );
   }
 
-  console.log('meta.selectedNotaryId', meta.selectedNotaryId);
-
   return (
     <div className="schedulerForm">
       <div className="schedulerForm__forms">
