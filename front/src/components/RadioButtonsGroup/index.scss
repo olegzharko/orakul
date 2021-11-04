@@ -8,12 +8,8 @@
   &__element {
     flex-grow: 1;
 
-    &:first-child {
+    &:not(last-child) {
       margin-right: 6px;
-    }
-
-    &:last-child {
-      margin-left: 6px;
     }
 
     &.edit {

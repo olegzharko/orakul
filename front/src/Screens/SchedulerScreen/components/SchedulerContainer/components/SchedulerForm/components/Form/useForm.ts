@@ -134,6 +134,11 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
     () => clientStage === ClientStages.isReadyToGenerating, [clientStage]
   );
 
+  const isEditableStage = useMemo(
+    () => clientStage === ClientStages.isEditable,
+    [clientStage],
+  );
+
   const isInProgress = useMemo(() => clientStage === ClientStages.isInProgress, [clientStage]);
 
   const isVisitInfoFormShow = useMemo(
@@ -143,9 +148,11 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
 
   const isVisionInfoFormShowDisabled = useMemo(() => isInProgress, [isInProgress]);
 
-  const isStagingButtonDisabled = useMemo(
-    () => (isInProgress && !roomId) || peopleQuantity < 0, [isInProgress, peopleQuantity, roomId]
-  );
+  const isStagingButtonDisabled = useMemo(() => {
+    if (isEditableStage) return false;
+    if (isInProgress || !roomId || peopleQuantity < 0) return true;
+    return false;
+  }, [isEditableStage, isInProgress, peopleQuantity, roomId]);
 
   // Form onChange functions
   const onNotaryChange = useCallback((value) => {
@@ -271,22 +278,27 @@ export const useForm = ({ selectedCard, initialValues, edit }: Props) => {
   ]);
 
   const onStageButtonClick = useCallback(async () => {
-    if (isGeneratingStage) return;
-
     if (isReadyToGeneratingStage) {
-      await dispatch(startIssuing({
-        card_id: selectedCard.i,
-        number_of_people: peopleQuantity,
-        children: withChildren,
-        room_id: roomId,
-      }));
+      try {
+        await dispatch(startIssuing({
+          card_id: selectedCard.i,
+          number_of_people: peopleQuantity,
+          children: withChildren,
+          room_id: roomId,
+        }));
+
+        setFormModeIsInProgress(true);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    setFormModeIsInProgress(true);
-    setFormMode(FormMode.view);
+    if (isGeneratingStage) return;
+    isEditableStage && setFormMode(FormMode.edit);
   }, [
-    isGeneratingStage,
     isReadyToGeneratingStage,
+    isGeneratingStage,
+    isEditableStage,
     dispatch,
     selectedCard,
     peopleQuantity,
