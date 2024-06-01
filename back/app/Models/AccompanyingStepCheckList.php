@@ -10,6 +10,7 @@ class AccompanyingStepCheckList extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'contract_id',
         'accompanying_step_id',
         'date_time',

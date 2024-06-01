@@ -9,6 +9,7 @@ class ViewController extends Controller
 {
     public function index()
     {
+//        phpinfo();die;
         return view('index', []);
     }
 }

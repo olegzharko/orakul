@@ -441,11 +441,32 @@ class ToolsController extends Controller
                 $accompanying_steps[$s_key]['status'] = $check_list ? $check_list->status : false;
             }
 
-            $result[$key]['title'] = "вул. Ломоносова 40, кв. 101";
+            $result[$key]['title'] = $this->convert->building_city_address_number_immovable($contract->immovable);
             $result[$key]['step'] = $accompanying_steps;
         }
 
         return $result;
+
+        // $result = [];
+
+        // $card = Card::find($deal->card_id);
+
+        // $contracts = $card->has_contracts;
+
+        // foreach ($contracts as $key => $contract) {
+
+        //     $accompanying_steps = AccompanyingStep::select('id', 'title')->where('notary_service_id', $contract->notary_service_id)->where('active', true)->orderBy('sort_order')->get();
+        //     foreach ($accompanying_steps as $s_key => $step) {
+        //         $check_list = AccompanyingStepCheckList::where('contract_id', $contract->immovable_id)->where('accompanying_step_id', $step->id)->first();
+        //         $accompanying_steps[$s_key]['time'] = $check_list && $check_list->date_time ? $check_list->date_time->format('H:i') : null;
+        //         $accompanying_steps[$s_key]['status'] = $check_list ? $check_list->status : false;
+        //     }
+
+        //     $result[$key]['title'] = $this->convert->building_city_address_number_immovable($contract->immovable);
+        //     $result[$key]['step'] = $accompanying_steps;
+        // }
+
+        // return $result;
     }
 
     public function get_deal_payment($deal)
@@ -458,8 +479,10 @@ class ToolsController extends Controller
         foreach ($contracts as $key => $contract) {
             if ($contract->notary_service) {
                 $result['service_list'][$key]['title'] = $contract->notary_service->title;
-                $result['service_list'][$key]['value'] = $contract->notary_service->price / 100;
-                $total_price += $contract->notary_service->price / 100;
+//                $result['service_list'][$key]['value'] = $contract->notary_service->price / 100;
+//                $total_price += $contract->notary_service->price / 100;
+                $result['service_list'][$key]['value'] = 'Оплата в ';
+                $total_price = '';
             }
         }
 
@@ -535,7 +558,7 @@ class ToolsController extends Controller
 
     public function get_current_accompanying_step($card, $contract)
     {
-        $result = null;
+        $result = '';
 
         $accompanying_step = AccompanyingStep::select('accompanying_steps.title')->where(['accompanying_step_check_lists.contract_id' => $contract->id, 'accompanying_step_check_lists.status' => false])
             ->leftJoin('accompanying_step_check_lists', 'accompanying_step_check_lists.accompanying_step_id', '=', 'accompanying_steps.id')

@@ -205,14 +205,15 @@ class CardController extends BaseController
                 }
             }
         }
-        $bysy_meeting_room = Deal::where(['deals.ready' => false, 'room_types.alias' => 'meeting_room'])
+        $busy_meeting_room = Deal::where(['deals.ready' => false, 'room_types.alias' => 'meeting_room']) //
+            ->whereNotIn('deals.card_id', [$card_id])
             ->leftJoin('rooms', 'rooms.id', '=', 'deals.room_id')
             ->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')
             ->pluck('deals.room_id');
-
+        
         $rooms = Room::select('rooms.id', 'rooms.title')
-                ->where(['rooms.active' => true, 'location' => 'rakul', 'room_types.alias' => 'reception'])
-                ->whereNotIn('rooms.id', $bysy_meeting_room)
+                ->where(['rooms.active' => true, 'location' => 'rakul'])
+                ->whereNotIn('rooms.id', $busy_meeting_room)
                 ->orderBy('rooms.sort_order')
                 ->leftJoin('room_types', 'room_types.id', '=', 'rooms.type_id')
                 ->get();
@@ -664,7 +665,7 @@ class CardController extends BaseController
                     $result[$key]['y'] = $time_height;
                 $result[$key]['w'] = 1;
                 $result[$key]['h'] = 1;
-                $result[$key]['color'] = $card->dev_group->color;
+                $result[$key]['color'] = $card->dev_group ? $card->dev_group->color : null;
                 $result[$key]['title'] = $this->get_card_title($card);
                 $result[$key]['generator_step'] = $card->generator_step;
                 $result[$key]['ready'] = $card->ready;
@@ -694,7 +695,7 @@ class CardController extends BaseController
                 $result['y'] = $time_height;
             $result['w'] = 1;
             $result['h'] = 1;
-            $result['color'] = $card->dev_group->color;
+            $result['color'] = $card->dev_group ? $card->dev_group->color : null;
             $result['title'] = $this->get_card_title($card);
             $result['short_info'] = $this->get_card_short_info($card);
         }
@@ -711,7 +712,7 @@ class CardController extends BaseController
 
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
-            $result['color'] = $card->dev_group->color;
+            $result['color'] = $card->dev_group ? $card->dev_group->color : null;;
             $result['title'] = $this->get_card_title($card);
 //            $result['short_info'] = $this->get_card_short_info($card);
             $result['instructions'] = $this->get_card_instructions($card);
@@ -750,7 +751,7 @@ class CardController extends BaseController
 
         foreach ($cards as $key => $card) {
             $result['id'] = $card->id;
-            $result['color'] = $card->dev_group->color;
+            $result['color'] = $card->dev_group ? $card->dev_group->color : null;
             $result['title'] = $this->get_card_title($card);
 
             $result['instructions'] = $this->get_card_instructions($card);

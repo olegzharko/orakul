@@ -146,7 +146,9 @@ class GeneratorController extends BaseController
                 $this->set_data_contract();
 
             }
+
             $this->client = $this->contract->client_contract;
+
             $this->word = new DocumentController($this->client, $this->pack_contract, $this->consents_id, $this->card_id);
             $result = $this->word->creat_files();
         } else {

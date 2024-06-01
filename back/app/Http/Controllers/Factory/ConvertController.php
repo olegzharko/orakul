@@ -659,6 +659,27 @@ class ConvertController extends GeneratorController
         return $str;
     }
 
+    public function get_client_surname_and_initials_n($person)
+    {
+        $str = null;
+
+        if ($person) {
+            if (isset($person->surname_n)) {
+                if ($person->short_name) {
+                    $str = $person->short_name . $person->short_patronymic . $this->non_break_space . $person->surname_n;
+                } else {
+                    $str .= $person->surname_n . $this->non_break_space;
+                    if ($person->name_n)
+                        $str .= mb_substr($person->name_n, 0, 1) . ".";
+                    if ($person->patronymic_n)
+                        $str .= mb_substr($person->patronymic_n, 0, 1) . ".";
+                }
+            }
+        }
+
+        return $str;
+    }
+
     public function get_initials_and_surname_o($person)
     {
         $str = null;
@@ -830,7 +851,7 @@ class ConvertController extends GeneratorController
         }
 
         // при старом может быть главным городом, при новом надо выводить с районом BUG
-        if($c->district_id && $c->district && $c->city->district_root == false) {
+        if($c->district_id && $c->district && $c->city && $c->city->district_root == false) {
             $district_title = trim($c->district->title_n);
             $district_type = trim(KeyWord::where('key', 'district')->value('short'));
             $district = "$district_title $district_type,";
@@ -943,6 +964,34 @@ class ConvertController extends GeneratorController
                 . "$building_type $imm_build_num ($imm_build_num_str)"
                 . "";
         }
+
+        return $address;
+    }
+
+    public function building_street_type_and_title_n($immovable)
+    {
+        $address = null;
+        
+        $imm_addr_type_n = $immovable->developer_building->address_type->title_n;
+        $imm_addr_title = $immovable->developer_building->title;
+
+        $address = "$imm_addr_type_n $imm_addr_title";
+
+        // 2-Б (два літера «Б») по вулиці Миру у селі Новосілки, Києво-Святошинського району Київської області
+
+        return $address;
+    }
+    
+    public function building_street_type_and_title_r($immovable)
+    {
+        $address = null;
+        
+        $imm_addr_type_r = $immovable->developer_building->address_type->title_r;
+        $imm_addr_title = $immovable->developer_building->title;
+
+        $address = "$imm_addr_type_r $imm_addr_title";
+
+        // 2-Б (два літера «Б») по вулиці Миру у селі Новосілки, Києво-Святошинського району Київської області
 
         return $address;
     }

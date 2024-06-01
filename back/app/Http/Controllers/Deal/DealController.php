@@ -72,7 +72,7 @@ class DealController extends BaseController
                 'children' => $r['children'],
             ]);
         } else {
-            Deal::firstOrNew(
+            Deal::updateOrCreate(
                 ['card_id' => $r['card_id']],
                 [
                     'number_of_people' => $r['number_of_people'],
@@ -81,6 +81,8 @@ class DealController extends BaseController
                     'arrival_time' => $date,
                 ]
             );
+
+            Card::find($r['card_id'])->update(['in_progress' => true]);
         }
 
         return $this->sendResponse('', 'Запрошення на угоду оновлено');
