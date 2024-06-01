@@ -36,6 +36,13 @@ type InitialData = {
   processing_personal_data_templates?: SelectItem[],
   notary?: SelectItem[],
   contract_templates?: any,
+  contractNumber: number | null,
+  full_settlement_application_templates?: SelectItem[],
+  full_settlement_application_date: any,
+  full_settlement_application_template_id: number | null,
+  full_settlement_application_notary_id: string | null,
+  full_settlement_application_reg_date: any,
+  full_settlement_application_reg_number: string | null,
 }
 
 export type Props = {
@@ -59,6 +66,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
   const [terminationRefunds, setTerminationRefunds] = useState<SelectItem[]>([]);
   const [processingPersonalTemplates, setProcessingPersonalTemplates] = useState<SelectItem[]>([]);
   const [notaries, setNotaries] = useState<SelectItem[]>([]);
+  const [fullSettlementApplication, setFullSettlementApplication] = useState<SelectItem[]>([]);
 
   const [data, setData] = useState<InitialData>({
     type_id: null,
@@ -78,6 +86,12 @@ export const useTemplates = ({ initialData, id }: Props) => {
     termination_refund_reg_number: null,
     termination_refund_notary_id: null,
     processing_personal_data_template_id: null,
+    contractNumber: null,
+    full_settlement_application_date: null,
+    full_settlement_application_template_id: null,
+    full_settlement_application_notary_id: null,
+    full_settlement_application_reg_date: null,
+    full_settlement_application_reg_number: null,
   });
 
   const onClear = useCallback(() => {
@@ -99,6 +113,12 @@ export const useTemplates = ({ initialData, id }: Props) => {
       termination_refund_reg_number: null,
       termination_refund_notary_id: null,
       processing_personal_data_template_id: null,
+      contractNumber: null,
+      full_settlement_application_date: null,
+      full_settlement_application_template_id: null,
+      full_settlement_application_notary_id: null,
+      full_settlement_application_reg_date: null,
+      full_settlement_application_reg_number: null,
     });
   }, []);
 
@@ -108,7 +128,9 @@ export const useTemplates = ({ initialData, id }: Props) => {
         ...data,
         sign_date: formatDate(data.sign_date),
         final_sign_date: formatDate(data.final_sign_date),
-        termination_refund_reg_date: formatDate(data.termination_refund_reg_date)
+        termination_refund_reg_date: formatDate(data.termination_refund_reg_date),
+        full_settlement_application_date: formatDate(data.full_settlement_application_date),
+        full_settlement_application_reg_date: formatDate(data.full_settlement_application_reg_date),
       };
 
       const { success, message } = await reqImmovableTemplate(token, id, 'PUT', reqData);
@@ -134,6 +156,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     setTerminationRefunds(initialData?.termination_refunds || []);
     setProcessingPersonalTemplates(initialData?.processing_personal_data_templates || []);
     setNotaries(initialData?.notary || []);
+    setFullSettlementApplication(initialData?.full_settlement_application_templates || []);
     setData({
       type_id: initialData?.type_id || null,
       contract_template_id: initialData?.contract_template_id || null,
@@ -156,6 +179,20 @@ export const useTemplates = ({ initialData, id }: Props) => {
         ? changeMonthWitDate(initialData?.final_sign_date) : null,
       termination_refund_reg_date: initialData?.termination_refund_reg_date
         ? changeMonthWitDate(initialData?.termination_refund_reg_date) : null,
+      contractNumber: initialData?.contractNumber || null,
+      full_settlement_application_date: initialData?.full_settlement_application_date
+        ? changeMonthWitDate(initialData.full_settlement_application_date)
+        : null,
+      full_settlement_application_template_id: initialData?.full_settlement_application_template_id
+        ? initialData?.full_settlement_application_template_id
+        : null,
+      full_settlement_application_notary_id:
+        initialData?.full_settlement_application_notary_id || null,
+      full_settlement_application_reg_date: initialData?.full_settlement_application_reg_date
+        ? changeMonthWitDate(initialData.full_settlement_application_reg_date)
+        : null,
+      full_settlement_application_reg_number:
+        initialData?.full_settlement_application_reg_number || null
     });
   }, [initialData]);
 
@@ -179,6 +216,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     terminationRefunds,
     processingPersonalTemplates,
     notaries,
+    fullSettlementApplication,
     setData,
     onClear,
     onSave,

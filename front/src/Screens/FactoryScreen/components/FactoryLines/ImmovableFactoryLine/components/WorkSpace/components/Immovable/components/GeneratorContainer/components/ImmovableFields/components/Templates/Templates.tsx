@@ -44,11 +44,26 @@ const Templates = (props: Props) => {
             onSelect={(e) => meta.setData({ ...meta.data, final_sign_date: e })}
             selectedDate={meta.data.final_sign_date}
           />
+
+          {/* <CustomInput
+            type="number"
+            label="Реєстровий номер"
+            onChange={(e) => meta.setData({ ...meta.data, contractNumber: +e })}
+            value={meta.data.contractNumber}
+          /> */}
+
+          <CustomDatePicker
+            label="ОД - дата відстрочення"
+            onSelect={(e) => meta.setData({ ...meta.data, full_settlement_application_date: e })}
+            selectedDate={meta.data.full_settlement_application_date}
+          />
+
           <CustomSwitch
             label="Усний переклад"
             onChange={(e) => meta.setData({ ...meta.data, translate: e })}
             selected={meta.data.translate}
           />
+
         </div>
       </SectionWithTitle>
 
@@ -164,6 +179,48 @@ const Templates = (props: Props) => {
             label="Реєстровий номер"
             onChange={(e) => meta.setData({ ...meta.data, termination_refund_reg_number: e })}
             value={meta.data.termination_refund_reg_number}
+          />
+        </div>
+      </SectionWithTitle>
+
+      <SectionWithTitle title="Заява про повний розрахунок">
+        <div className="grid-center-duet">
+          <CustomSelect
+            label="Шаблон заяви"
+            data={meta.fullSettlementApplication}
+            onChange={(e) => meta.setData({
+              ...meta.data,
+              full_settlement_application_template_id: +e
+            })}
+            selectedValue={meta.data.full_settlement_application_template_id}
+          />
+
+          <CustomSelect
+            label="Нотаріус"
+            data={meta.notaries}
+            onChange={(e) => meta.setData({
+              ...meta.data,
+              full_settlement_application_notary_id: e
+            })}
+            selectedValue={meta.data.full_settlement_application_notary_id}
+          />
+
+          <CustomDatePicker
+            label="Дата посвідчення"
+            onSelect={(e) => meta.setData({
+              ...meta.data,
+              full_settlement_application_reg_date: e
+            })}
+            selectedDate={meta.data.full_settlement_application_reg_date}
+          />
+
+          <CustomInput
+            label="Реєстровий номер"
+            onChange={(e) => meta.setData({
+              ...meta.data,
+              full_settlement_application_reg_number: e
+            })}
+            value={meta.data.full_settlement_application_reg_number}
           />
         </div>
       </SectionWithTitle>

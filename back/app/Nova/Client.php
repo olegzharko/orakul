@@ -34,7 +34,12 @@ class Client extends Resource
      */
     public function title()
     {
-        return $this->surname_n . " " . $this->name_n . " " . $this->patronymic_n  . " " . $this->tax_code;
+        $title = null;
+
+        $title = $this->surname_n . " " . $this->name_n . " " . $this->patronymic_n  . " " . $this->tax_code;
+        if ($this->city && $this->city->district)
+            $title .= " (" . $this->city->district->title_n . ")";
+        return $title;
     }
 
     /**

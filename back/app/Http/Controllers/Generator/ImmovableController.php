@@ -29,6 +29,8 @@ use App\Models\DevEmployerType;
 use App\Models\Exchange;
 use App\Models\ExchangeRate;
 use App\Models\FinalSignDate;
+use App\Models\FullSettlementApplication;
+use App\Models\FullSettlementApplicationTemplate;
 use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
@@ -787,6 +789,8 @@ class ImmovableController extends BaseController
         $termination_contract_templates = TerminationContractTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
 
+        $full_settlement_application_templates = FullSettlementApplicationTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
         $bank = BankAccountPayment::where('contract_id', $contract->id)->first();
@@ -798,6 +802,7 @@ class ImmovableController extends BaseController
         $final_sing_date = FinalSignDate::where('contract_id', $contract->id)->first();
         $termination_contract = TerminationContract::where('contract_id', $contract->id)->first();
         $termination_refund = TerminationRefund::where('contract_id', $contract->id)->first();
+        $fullSettlementApplication = FullSettlementApplication::where('contract_id', $contract->id)->first();
 
         $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
@@ -809,6 +814,7 @@ class ImmovableController extends BaseController
         $result['processing_personal_data_templates'] = $processing_personal_data_templates;
         $result['termination_contracts'] = $termination_contract_templates;
         $result['termination_refunds'] = $termination_refund_templates;
+        $result['full_settlement_application_templates'] = $full_settlement_application_templates;
 
         if ($final_sing_date && $final_sing_date->sign_date > $this->date)
             $final_sing_date = $final_sing_date->sign_date->format('d.m.Y');
@@ -863,6 +869,14 @@ class ImmovableController extends BaseController
             $result['termination_refund_notary_id'] = $termination_refund->notary_id;
             $result['termination_refund_reg_date'] = $termination_refund->reg_date ? $termination_refund->reg_date->format('d.m.Y') : null;
             $result['termination_refund_reg_number'] = $termination_refund->reg_num;
+        }
+
+        if ($fullSettlementApplication) {
+            $result['full_settlement_application_date'] = $fullSettlementApplication->full_settlement_date ? $fullSettlementApplication->full_settlement_date->format('d.m.Y') : null;
+            $result['full_settlement_application_template_id'] = $fullSettlementApplication->template_id;
+            $result['full_settlement_application_notary_id'] = $fullSettlementApplication->notary_id;
+            $result['full_settlement_application_reg_date'] = $fullSettlementApplication->reg_date ? $fullSettlementApplication->reg_date->format('d.m.Y') : null;
+            $result['full_settlement_application_reg_number'] = $fullSettlementApplication->reg_number;
         }
 
         return  $this->sendResponse($result, 'Дані по шаблонам');
@@ -987,6 +1001,19 @@ class ImmovableController extends BaseController
             TerminationRefund::where('contract_id', $contract_id)->delete();
         }
 
+        if ($r['full_settlement_application_id'] || $r['full_settlement_application_date']) {
+            FullSettlementApplication::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['full_settlement_application_template_id'] ?? null,
+                    'notary_id' => $r['full_settlement_application_notary_id'] ?? null,
+                    'full_settlement_date' => $r['full_settlement_application_date'],
+                    'reg_date' => $r['full_settlement_application_reg_date'] ?? null,
+                    'reg_number' => $r['full_settlement_application_reg_number'] ?? null,
+                ]
+            );
+        }
+
         if ($immovable->developer_building->dev_company) {
             $developer_type_id = DevEmployerType::where('alias', 'developer')->value('id');
             $dev_company_id = $immovable->developer_building->dev_company->id;
@@ -1043,7 +1070,10 @@ class ImmovableController extends BaseController
             $r['final_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_date']);
         if (isset($r['final_sign_date']) && !empty($r['final_sign_date']))
             $r['final_sign_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['final_sign_date']);
+        if (isset($r['full_settlement_application_date']) && !empty($r['full_settlement_application_date']))
+            $r['full_settlement_application_date'] = \DateTime::createFromFormat('d.m.Y H:i', $r['full_settlement_application_date']);
 
+//        dd(isset($r['sign_date'], $r['full_settlement_application_date']);
         $r['price_grn'] = $r['price_grn'] ? floatval(str_replace(",", ".", $r['price_grn'])) : null;
         $r['price_dollar'] = $r['price_dollar'] ? floatval(str_replace(",", ".", $r['price_dollar'])) : null;
         $r['reserve_grn'] = $r['reserve_grn'] ? floatval(str_replace(",", ".", $r['reserve_grn'])) : null;
@@ -1093,6 +1123,7 @@ class ImmovableController extends BaseController
             'last_part_dollar' => $r['last_part_dollar'],
             'final_date' => $r['final_date'] ? $r['final_date']->format('Y.m.d') : null,
             'final_sign_date' => $r['final_sign_date'] ? $r['final_sign_date']->format('Y.m.d') : null,
+            'full_settlement_application_date' => $r['full_settlement_application_date'] ? $r['full_settlement_application_date']->format('Y.m.d') : null,
         ], [
             'imm_type_id' => ['numeric', 'nullable'],
             'building_id' => ['numeric', 'nullable'],
@@ -1135,6 +1166,7 @@ class ImmovableController extends BaseController
             'last_part_dollar' => ['numeric', 'nullable'],
             'final_date' => ['date_format:Y.m.d', 'nullable'],
             'final_sign_date' => ['date_format:Y.m.d', 'nullable'],
+            'full_settlement_application_date' => ['date_format:Y.m.d', 'nullable'],
         ], [
             'imm_type_id.numeric' => 'Необхідно передати ID в числовому форматі',
             'building_id.numeric' => 'Необхідно передати ID в числовому форматі',
@@ -1167,6 +1199,7 @@ class ImmovableController extends BaseController
             'statement_template_id.numeric' => 'Необхідно передати ID шаблону заяви від забудовника в числовому форматі',
 
             'exchange_rate.numeric' => 'Необхідно передати курс долара в числовому форматі',
+            'full_settlement_application_date.date_format' => 'Необхідно передати дату у форматі Y.m.d. Приклад: ' . date('Y.m.d.'),
         ]);
 
         $errors = $validator->errors()->messages();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Factory;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\KeyWord;
 //use MongoDB\Driver\Session;
@@ -33,6 +34,7 @@ class FolderFileController extends Controller
     public $termination_contract;
     public $questionnaires;
     public $bank_account_payment;
+    public $full_settlement_application;
     public $bank_taxes_payment;
     public $spouses_male;
     public $file_type_docx;
@@ -62,6 +64,7 @@ class FolderFileController extends Controller
         $this->developer_statement = null;
         $this->questionnaires = null;
         $this->bank_account_payment = null;
+        $this->full_settlement_application = null;
         $this->bank_taxes_payment = null;
         $this->termination_contract = null;
         $this->spouses_male = null;
@@ -149,25 +152,12 @@ class FolderFileController extends Controller
         if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template) {
             $this->bank_taxes_payment = $this->contract->bank_taxes_payment->template->title;
         }
-    }
 
-//    public function root_title()
-//    {
-//
-//        $type = $this->contract->template ? $this->contract->template->type->title : ' - ';
-//
-//
-//        $title = ""
-//            . "{$this->date_month} $type {$this->developer_company} ({$this->subscriber}) - "
-//            . "{$this->client_surname} {$this->address_type} {$this->address_title} "
-//            . "{$this->address_num} {$this->immovable_type} {$this->immovable_num} {$this->married} ";
-//
-//        $title = trim($title);
-//        $title = str_replace("/", "-", $title);
-//
-//
-//        return $title;
-//    }
+
+        if ($this->contract->full_settlement_application && $this->contract->full_settlement_application->template) {
+            $this->full_settlement_application = $this->contract->full_settlement_application->template->title;
+        }
+    }
 
     public function root_title()
     {
@@ -186,30 +176,6 @@ class FolderFileController extends Controller
 
         // 06.07 Основний Софіївська сфера (ГУЛІЄВ) -  просп. Героїв Небесної Сотні 26-20 кв. 54
     }
-
-//    public function save_folder()
-//    {
-//        $date = new \DateTime();
-//        // Однакова назва для папки та договору
-//        $folder = $this->root_title();
-//        // echo "{$folder}<br><br>";
-//        $contract = 'Contract';
-//        $dev_company = $contract . "/" . $date->format('d.m.Y') . "/" . $this->contract->dev_company->title;
-//
-//        // Створення папки забудовника
-//        if (!file_exists("{$dev_company}"))
-//            mkdir($dev_company, 0777, true);
-//        // Створення папки договору для конкретної угоди
-//        if (file_exists("$dev_company/$folder")) {}
-//            $this->deleteDirectory("$dev_company/$folder");
-//        if (!file_exists("{$dev_company}/{$folder}"))
-//            mkdir("$dev_company/$folder", 0777, true);
-//        // Створення папки забудовника
-//        if (!file_exists("Zip"))
-//            mkdir('Zip', 0777, true);
-//
-//        $this->generate_path = "$dev_company/$folder";
-//    }
 
     public function save_folder()
     {
@@ -280,7 +246,6 @@ class FolderFileController extends Controller
 
     public function contract_title()
     {
-        $title = null;
         $title = "{$this->generate_path}/" . $this->root_title() . "{$this->file_type_docx}";
 
 //        $title = str_replace(" ", "_", $title);
@@ -313,8 +278,6 @@ class FolderFileController extends Controller
 
     public function termination_consent_title($termination_consent, $client)
     {
-        $title = null;
-
         $title = "{$this->generate_path}/"
             . $termination_consent->template->title . " " . $client->surname_n
             . "$this->file_type_docx"
@@ -327,7 +290,6 @@ class FolderFileController extends Controller
 
     public function developer_statement_title()
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . "{$this->developer_statement} {$this->subscriber} {$this->client_surname}"
             . "{$this->file_type_docx}"
@@ -342,7 +304,6 @@ class FolderFileController extends Controller
     {
         $template_title = $this->contract->dev_company->owner->developer_consent->template->title;
         $surname = $this->contract->dev_company->owner->surname_n;
-        $title = null;
         $title = "{$this->generate_path}/"
             . "$template_title $surname"
             . "{$this->file_type_docx}"
@@ -355,7 +316,6 @@ class FolderFileController extends Controller
 
     public function communal_title($client, $template)
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . "$template->title $this->subscriber $client->surname_n $client->tax_code"
             . "$this->file_type_docx"
@@ -368,7 +328,6 @@ class FolderFileController extends Controller
 
     public function processing_personal_data_title($client, $template)
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . "$template->title $this->subscriber $client->surname_n $client->tax_code"
             . "$this->file_type_docx"
@@ -381,7 +340,6 @@ class FolderFileController extends Controller
 
     public function termination_contract_title()
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . $this->contract->termination_contract->template->title
             . $this->file_type_docx
@@ -395,7 +353,6 @@ class FolderFileController extends Controller
 
     public function termination_refund_title()
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . $this->contract->termination_refund->template->title
             . $this->file_type_docx
@@ -409,7 +366,6 @@ class FolderFileController extends Controller
 
     public function questionnaire_title()
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . "{$this->questionnaires} {$this->subscriber} {$this->client_surname}"
             . "{$this->file_type_docx}"
@@ -423,7 +379,6 @@ class FolderFileController extends Controller
 
     public function bank_account_title($client)
     {
-        $title = null;
         $title = "{$this->generate_path}/"
             . "{$this->bank_account_payment} (" . $client->surname_n . ")"
             . "{$this->file_type_docx}"
@@ -431,6 +386,22 @@ class FolderFileController extends Controller
 
 
         $template = $this->file_path($this->contract->bank_account_payment->template);
+
+        $this->create_file_for_contract($template, $title);
+
+        return $title;
+    }
+
+
+    public function full_settlement_application_title($client)
+    {
+        $title = "{$this->generate_path}/"
+            . "{$this->full_settlement_application} (" . $client->surname_n . ")"
+            . "{$this->file_type_docx}"
+            . "";
+
+
+        $template = $this->file_path($this->contract->full_settlement_application->template);
 
         $this->create_file_for_contract($template, $title);
 
@@ -478,22 +449,36 @@ class FolderFileController extends Controller
         return $model->document_path;
     }
 
-    public function create_file_for_contract($template, $title)
+    public function create_file_for_contract($template, $title): void
     {
-        if (!file_exists($title)) {
-//            $data = file_get_contents($template);
-            $data = curl_init();
-            curl_setopt($data, CURLOPT_URL,$template);
-            curl_setopt($data, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($data, CURLOPT_USERAGENT, 'Document Template');
+        // Удаление префикса "http://localhost:1111/" из URL шаблона
+        $filePath = str_replace("http://localhost:1111/", "", $template);
 
-            $result = curl_exec($data);
-
-            curl_close($data);
-
-            file_put_contents($title, $result);
+        // Получение содержимого файла
+        $content = @file_get_contents($filePath);
+        if ($content === false) {
+            throw new Exception("Error fetching template from {$filePath}");
         }
+
+        // Запись содержимого в файл
+        $result = @file_put_contents($title, $content);
+        if ($result === false) {
+            throw new Exception("Error writing to file {$title}");
+        }
+        //        if (!file_exists($title)) {
+        ////            $data = file_get_contents($template);
+        //            $data = curl_init();
+        //            curl_setopt($data, CURLOPT_URL,$template);
+        //            curl_setopt($data, CURLOPT_CONNECTTIMEOUT, 2);
+        //            curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
+        //            curl_setopt($data, CURLOPT_USERAGENT, 'Document Template');
+        //
+        //            $result = curl_exec($data);
+        //
+        //            curl_close($data);
+        //
+        //            file_put_contents($title, $result);
+        //        }
     }
 
     public function add_proxy_pdf($model)

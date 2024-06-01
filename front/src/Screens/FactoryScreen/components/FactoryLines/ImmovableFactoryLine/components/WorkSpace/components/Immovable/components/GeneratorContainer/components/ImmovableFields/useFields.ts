@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { useMemo, useState, useEffect } from 'react';
 
 import { State } from '../../../../../../../../../../../../../store/types';
+import { isNumber } from '../../../../../../../../../../../../../utils/numbers';
 import reqImmovableGeneral from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableGeneral';
 import reqImmovableOwnership from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableOwnership';
 import reqImmovablePayment from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovablePayment';
 import reqImmovableRating from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableRating';
 import reqImmovableTemplate from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableTemplate';
 import reqImmovableTermination from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableTermination';
-import { isNumber } from '../../../../../../../../../../../../../utils/numbers';
 import reqImmovableInstallment from '../../../../../../../../../../../../../services/generator/Immovable/reqImmovableInstallment';
 
 export const useFields = () => {
@@ -21,8 +21,8 @@ export const useFields = () => {
   const [ownerShip, setOwnerShip] = useState();
   const [securityPayment, setSecurityPayment] = useState();
   const [retting, setRetting] = useState();
-  const [termination, setTermination] = useState();
   const [templates, setTemplates] = useState();
+  const [termination, setTermination] = useState();
   const [installment, setInstallment] = useState();
 
   const isCorrectId = useMemo(() => isNumber(immovableId), [immovableId]);
@@ -65,21 +65,21 @@ export const useFields = () => {
         }
       })();
 
-      // get TERMINATION
-      (async () => {
-        const res = await reqImmovableTermination(token, immovableId);
-
-        if (res?.success) {
-          setTermination(res.data);
-        }
-      })();
-
       // get TEMPLATES
       (async () => {
         const res = await reqImmovableTemplate(token, immovableId);
 
         if (res?.success) {
           setTemplates(res.data);
+        }
+      })();
+
+      // get TERMINATION
+      (async () => {
+        const res = await reqImmovableTermination(token, immovableId);
+
+        if (res?.success) {
+          setTermination(res.data);
         }
       })();
 
@@ -95,13 +95,13 @@ export const useFields = () => {
   }, [token, isCorrectId, immovableId]);
 
   return {
-    general,
     immovableId,
+    general,
     ownerShip,
     securityPayment,
     retting,
-    termination,
     templates,
+    termination,
     installment,
   };
 };

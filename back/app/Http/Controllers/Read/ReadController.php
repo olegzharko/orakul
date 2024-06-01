@@ -33,6 +33,7 @@ class ReadController extends BaseController
         $card = Card::find($card_id);
         $dev_group = $card->dev_group;
         $contracts = $card->has_contracts;
+
         if ($dev_group && $contracts) {
             foreach ($contracts as $contract) {
                 $notary_service = NotaryService::where(['dev_group_id' => $dev_group->id, 'contract_type_id' => $contract->type_id])->first();
@@ -79,8 +80,8 @@ class ReadController extends BaseController
 
         foreach ($read_steps as $read_step) {
             ReadStepsCheckList::updateOrCreate(
-                ['contract_id' => $contact_id, 'read_step_id' => $read_step->id],
-                ['date_tiem' => $now]
+                ['id' => $read_step['id'], 'contract_id' => $contact_id],
+                ['date_time' => $now, 'status' => $read_step['status']]
             );
         }
     }

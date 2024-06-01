@@ -7,6 +7,7 @@ use App\Http\Controllers\Helper\ToolsController;
 use App\Models\BuildingRepresentativeProxy;
 use App\Models\CityType;
 use App\Models\Client;
+use App\Models\FundTaxesList;
 use App\Models\ClientContract;
 use App\Models\DevCompanyEmployer;
 use App\Models\ExchangeRate;
@@ -118,6 +119,7 @@ class DocumentController extends GeneratorController
         $result = [];
 
         foreach ($this->pack_contract as $key => $this->contract) {
+
             $this->ff = new FolderFileController($this->contract);
 
             $contract_clients = $this->get_contract_clients($this->contract);
@@ -132,8 +134,7 @@ class DocumentController extends GeneratorController
             $this->company_rate = $this->get_rate_by_company($this->card->id, $this->contract->immovable->developer_building->dev_company);
 
             $this->both_client_not_married = $this->check_both_client_not_married($contract_clients);
-
-
+            
             foreach ($contract_clients as $this->client) {
                 /*
                  * Оскільки в договорі необхідно передати данні про згоду подружжя
@@ -208,6 +209,13 @@ class DocumentController extends GeneratorController
             }
 
             $termination_clients = $this->get_termination_clients($this->contract->termination_info);
+
+            // Костыль для акта приема передачи квартиры по Новоселкам через разрыв договора
+            if (!$termination_clients) {
+                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                    $this->termination_contract_template_set_data();
+            }
+            // Конец костыля. Сделано на скорую руку, пока не будет добавлен нужный функционал.
 
             foreach($termination_clients as $this->client) {
                 if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
@@ -369,7 +377,7 @@ class DocumentController extends GeneratorController
 
         $this->set_passport_template_part($this->processing_personal_data_generate_file);
         $this->set_current_document_notary($this->processing_personal_data_generate_file, $this->contract->processing_personal_data->notary);
-        $this->set_sign_date($this->processing_personal_data_generate_file, $this->contract->processing_personal_data);
+        $this->set_sign_date($this->processing_personal_data_generate_file, $this->contract);
 
         $word = new TemplateProcessor($this->processing_personal_data_generate_file);
         $word = $this->set_data_word($word);
@@ -389,7 +397,8 @@ class DocumentController extends GeneratorController
         $this->set_spouse_word_template_part($this->termination_contract_generate_file);
         $this->set_passport_template_part($this->termination_contract_generate_file);
         $this->set_current_document_notary($this->termination_contract_generate_file, $this->contract->notary);
-        $this->set_sign_date($this->termination_contract_generate_file, $this->contract->termination_contract);
+//        $this->set_sign_date($this->termination_contract_generate_file, $this->contract->termination_contract);
+        $this->set_sign_date($this->termination_contract_generate_file, $this->contract);
 
         $word = new TemplateProcessor($this->termination_contract_generate_file);
         $word = $this->set_data_word($word);
@@ -478,7 +487,30 @@ class DocumentController extends GeneratorController
 
     public function bank_taxes_template_set_data()
     {
-        if ($this->contract->bank_taxes_payment->template->type == 'excel') {
+        // Костыль для налогов Бласкета. Фукционал не подразумевал деление типов налогово для застройщиков
+        // Добавляю проверку на id фирмы
+        if ($this->contract->immovable->developer_building->dev_company->id == 11) {
+            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
+
+            $this->set_passport_template_part($this->bank_taxes_generate_file);
+
+            /*
+             * В податкових рахунках використовується дата підписання Угоди $this->contract
+             * */
+            $this->set_sign_date($this->bank_taxes_generate_file, $this->contract);
+
+            // Для Excel
+            $spreadsheet = IOFactory::load($this->bank_taxes_generate_file);
+            $sheet = $spreadsheet->getActiveSheet();
+//            if ($this->two_clients)
+//                $this->set_excel_taxes_data_for_two_clients_blasket_kostul($sheet);
+//            else
+                $this->set_excel_taxes_data_for_one_client_blasket_kostul($sheet);
+            $writer = new Xlsx($spreadsheet);
+            $file_name = $this->bank_taxes_generate_file;
+            $writer->save($file_name);
+        // Конец костыля для налогов Бласкет. Дальше нормальный код который начинался с if а не elseif
+        } elseif ($this->contract->bank_taxes_payment->template->type == 'excel') {
             $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
 
             $this->set_passport_template_part($this->bank_taxes_generate_file);
@@ -743,7 +775,8 @@ class DocumentController extends GeneratorController
         /*
          * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
          * */
-        if ($this->card->dev_representative) {
+
+        if ($this->card->dev_representative && !$this->contract->immovable->developer_building->dev_company->owner || $this->card->dev_representative && $this->card->dev_representative->id != $this->contract->immovable->developer_building->dev_company->owner->id) {
             $dev_full_description = MainInfoType::where('alias', 'developer-full-dev-and-dev-representative')->value('description');
         } else {
             $dev_full_description = MainInfoType::where('alias', 'developer-full-name-tax-code-id-card-address')->value('description');
@@ -1021,6 +1054,12 @@ class DocumentController extends GeneratorController
             $word->setValue('НОТ-АКТ-Д-UP', $this->convert->mb_ucfirst($notary->activity_d));
             $word->setValue('НОТ-АКТ-О-UP', $this->convert->mb_ucfirst($notary->activity_o));
 
+            if ($notary->city) {
+                $word->setValue('НОТ-МІСТО', $notary->city->title);
+                $word->setValue('НОТ-РАЙОН-Н', $notary->city->district->title_n);
+                $word->setValue('НОТ-РАЙОН-Р', $notary->city->district->title_r);
+            }
+
             $word->saveAs($template);
         } else {
             $this->notification("Warning", "Відсутня інформація про нотаріуса у документі {$template}");
@@ -1045,6 +1084,7 @@ class DocumentController extends GeneratorController
             $word->setValue('ДАТА-СЛОВАМИ-UP', $this->convert->mb_ucfirst($document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r));
         if ($document->str_day && $document->str_month && $document->str_year)
         $word->setValue('ДАТА-СЛОВАМИ', $document->str_day->title . " " . $document->str_month->title_r . " " . $document->str_year->title_r);
+
 
         $word->setValue('ДАТА-МС', $this->day_quotes_month_year($document->sign_date));
         if ($document->sign_date)
@@ -1317,6 +1357,9 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПОБАТЬК-Н', $this->client->patronymic_n);
 
             $word->setValue('КЛ-ПІБ-Н-Ж', $this->set_style_bold($this->convert->get_full_name_n($this->client)));
+
+            $word->setValue('КЛ-ПІБ-ІНІЦІАЛИ-Н', $this->convert->get_client_surname_and_initials_n($this->client));
+
 
             $word->setValue('КЛ-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->gender)->value('title_r'));
             $word->setValue('КЛ-ШЛ-РОЛЬ-Р-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->gender)->value('title_r')));
@@ -1750,6 +1793,10 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-КОМПЛЕКС', $this->contract->immovable->developer_building->complex); // building
             $word->setValue('H-ПОВНА-АДРЕСА', $this->contract->immovable->address);
 
+            $word->setValue('Н-БУДИНОК-ВУЛ-Н', $this->convert->building_street_type_and_title_n($this->contract->immovable));
+            $word->setValue('Н-БУДИНОК-ВУЛ-Р', $this->convert->building_street_type_and_title_r($this->contract->immovable));
+            $word->setValue('Н-БУДИНОК-НОМЕР', $this->convert->immovable_number_with_string($this->contract->immovable->developer_building->number));
+
             $word->setValue('H-ПОВНА-АДРЕСА-ОСН', $this->convert->building_full_address_main($this->contract->immovable));
             $word->setValue('H-ПОВНА-АДРЕСА-ЗАЯВА', $this->convert->building_full_address_main($this->contract->immovable));
             $word->setValue('H-ПОВНА-АДРЕСА-СПД', $this->convert->building_full_address_by_type($this->contract->immovable, 'desc'));
@@ -1757,6 +1804,7 @@ class DocumentController extends GeneratorController
             $word->setValue('Н-БУДИНОК', $this->convert->building_street_and_num($this->contract->immovable)); // building
             $word->setValue('Н-БУДИНОК-ЦФР', $this->contract->immovable->developer_building->number); // building
             $word->setValue('Н-НОМЕР', $this->convert->immovable_number_with_string($this->contract->immovable->immovable_number));
+
             $word->setValue('Н-НОМЕР-ЦФР', $this->contract->immovable->immovable_number);
 
             /*
@@ -1892,6 +1940,7 @@ class DocumentController extends GeneratorController
     public function set_developer_price($word)
     {
         $word->setValue('Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
+        $word->setValue('Н-ЦІНА-ЗАГ-ГРН-1000', $this->convert->get_convert_price($this->contract->immovable->grn - 100000, 'grn'));
         $half_price = $this->contract->immovable->grn / 2;
         $word->setValue('Н-ЦІНА-ЗАГ-ГРН-1/2', $this->convert->get_convert_price($half_price, 'grn'));
 
@@ -2215,6 +2264,7 @@ class DocumentController extends GeneratorController
             $word->setValue('РОЗ-НОТ-ДАТА', $this->display_date($this->contract->termination_info->reg_date));
             $word->setValue('РОЗ-НОТ-НОМЕР', $this->contract->termination_info->reg_num);
             $word->setValue('РОЗ-Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->termination_info->price_grn, 'grn'));
+            $word->setValue('РОЗ-Н-ЦІНА-ЗАГ-ГРН', $this->convert->get_convert_price($this->contract->termination_info->price_grn, 'grn'));
             $word->setValue('РОЗ-Н-ЦІНА-ЗАГ-ДОЛ', $this->convert->get_convert_price($this->contract->termination_info->price_dollar, 'dollar'));
         } else {
             $this->notification("Warning", "Інформація про розірвання відсутне");
@@ -2302,6 +2352,11 @@ class DocumentController extends GeneratorController
             $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Р', $this->convert->get_surname_and_initials_r($this->contract->immovable->proxy->notary));
             $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-Д', $this->convert->get_surname_and_initials_d($this->contract->immovable->proxy->notary));
             $word->setValue('ДД-НОТ-ПІБ-ІНІЦІАЛИ-О', $this->convert->get_surname_and_initials_o($this->contract->immovable->proxy->notary));
+
+            $word->setValue('ДД-НОТ-АКТ-Н', $this->contract->immovable->proxy->notary->activity_n);
+            $word->setValue('ДД-НОТ-АКТ-Р', $this->contract->immovable->proxy->notary->activity_r);
+            $word->setValue('ДД-НОТ-АКТ-Д', $this->contract->immovable->proxy->notary->activity_d);
+            $word->setValue('ДД-НОТ-АКТ-О', $this->contract->immovable->proxy->notary->activity_o);
 
             $word->setValue('ДД-НОТ-ДАТА', $this->display_date($this->contract->immovable->proxy->reg_date));
             $word->setValue('ДД-НОТ-НОМЕР', $this->contract->immovable->proxy->reg_num);
@@ -2441,7 +2496,7 @@ class DocumentController extends GeneratorController
         $title = "«##» ###### ####";
 
         if ($date) {
-            $day = $date->format('D');
+            $day = $date->format('d');
             $month = MonthConvert::where('original', $date->format('m'))->orWhere('original', strval(intval($date->format('m'))))->value('title_r');
             $year = $date->format('Y');
 
@@ -2523,6 +2578,46 @@ class DocumentController extends GeneratorController
         return $str;
     }
 
+    // КОСТЫЛЬ Костыль для быстрого решения налогов по фонду
+    public function set_excel_taxes_data_for_one_client_blasket_kostul($sheet)
+    {
+        $developer = null;
+        $taxes = FundTaxesList::get();
+
+        $price = sprintf("%.2f", $this->contract->immovable->grn/100);
+        $sheet->setCellValue("J1", $price);
+
+        $i = 2;
+        foreach ($taxes as $tax) {
+            $pay_buy_client = $this->client;
+
+            $percent = $tax->percent / 10000; // 5% зберігається у форматі 500, 1% можна ділити на 100 частин
+//            $sheet->setCellValue("A{$i}", number_format((float) $price * $percent, 2, '.', ''));
+            $sheet->setCellValue("A{$i}", sprintf('%0.2f', $price * $percent));
+            $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($pay_buy_client));
+            $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
+            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($pay_buy_client);
+            $sheet->setCellValue("E{$i}", $full_tax_info);
+            $i++;
+        }
+
+//        $sheet->setCellValue("A8", "покупець");
+        $sheet->setCellValue("B4", $this->convert->get_full_name_n($this->client));
+        $sheet->setCellValue("C4", $this->client->tax_code);
+        $sheet->setCellValue("B5", "продавець");
+//        $sheet->setCellValue("B9", $this->convert->get_full_name_n($this->contract->dev_company->owner));
+//        $sheet->setCellValue("C9", $this->contract->dev_company->owner->tax_code);
+        $sheet->setCellValue("B6", $this->convert->building_full_address_with_imm_for_taxes($this->contract->immovable));
+        $sheet->setCellValue("B7", $this->display_date($this->contract->sign_date));
+        $sheet->setCellValue("B9", $this->client->phone);
+        if ($this->contract->dev_representative) {
+            $sheet->setCellValue("E5", "через " . $this->contract->dev_representative->surname_n);
+        }
+
+        return $sheet;
+    }
+    // Конеч костыля
+
     public function set_excel_taxes_data_for_one_client($sheet)
     {
         $developer = null;
@@ -2568,6 +2663,7 @@ class DocumentController extends GeneratorController
 
         return $sheet;
     }
+
 
     public function set_excel_taxes_data_for_two_clients($sheet)
     {

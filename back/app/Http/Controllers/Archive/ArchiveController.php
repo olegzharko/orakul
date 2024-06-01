@@ -122,7 +122,7 @@ class ArchiveController extends BaseController
             'cards.dev_group_id',
             'cards.dev_representative_id',
             'contracts.type_id',
-        )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false])
+        )->where(['cards.notary_id' => $notary_id, 'cards.ready' => true, 'cards.cancelled' => false, 'deals.deleted_at' => null])
             ->leftJoin('cards', 'cards.id', '=', 'deals.card_id')
             ->leftJoin('contracts', 'contracts.card_id', '=', 'cards.id')
             ->distinct('deals.id');

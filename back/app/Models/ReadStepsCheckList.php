@@ -10,6 +10,7 @@ class ReadStepsCheckList extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'contract_id',
         'read_step_id',
         'date_time',

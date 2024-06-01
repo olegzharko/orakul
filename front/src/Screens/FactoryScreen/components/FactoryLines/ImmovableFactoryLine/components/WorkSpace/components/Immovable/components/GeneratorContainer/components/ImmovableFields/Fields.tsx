@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Templates from './components/Templates';
 import General from './components/General';
 import Ownership from './components/Ownership';
-import Rating from './components/Rating';
 import SecurityPayment from './components/SecurityPayment';
-import Termination from './components/Termination';
 import Installment from './components/Installment';
+import Rating from './components/Rating';
+import Termination from './components/Termination';
+import Templates from './components/Templates';
 import { useFields } from './useFields';
 
 const Fields = () => {

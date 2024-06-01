@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+    nginx:
+        image: nginx:alpine
+        volumes:
+            - ./:/var/www
+            # - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+            - ./_docker/nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf
+            # - ./_docker/nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf
+            - ./storage/app/public:/var/www/storage/app/public
+        ports:
+            - "1111:80"
+        depends_on:
+            - app
+        container_name: notary_nginx
+        networks:
+            - notary_network
+
+    app:
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        #user: "1000:1000"
+        volumes:
+            - ./:/var/www
+            - ./_docker/app/php.ini:/usr/local/etc/php/conf.d/php.ini
+            - ./_docker/app/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+        depends_on:
+            - db
+            - phpmyadmin
+        container_name: notary_app
+        environment:
+            - REDIS_HOST=redis
+        networks:
+            - notary_network
+        #        extra_hosts:
+        #            - host.docker.internal:host-gateway
+
+    db:
+        image: mysql:8.0
+        restart: always
+        volumes:
+            - ./tmp/db:/var/lib/mysql
+            # - /Users/olegzharko/Downloads/orders_user.sql:/var/www/orders_user.sql
+        environment:
+            MYSQL_DATABASE: notary_app
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "8101:3306"
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --sort-buffer-size=50M
+        container_name: notary_db
+        networks:
+            - notary_network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            - PMA_HOST=db
+            - UPLOAD_LIMIT=2000M
+            - SORT_BUFFER_SIZE=50M
+        volumes:
+            - /sessions
+        ports:
+            - "8888:80"
+        container_name: notary_phpmyadmin
+        networks:
+            - notary_network
+
+    redis:
+        image: redis:alpine
+        #        ports:
+        #            - "6379:6379"
+        container_name: notary_redis
+        networks:
+            - notary_network
+
+networks:
+    notary_network:
+        driver: bridge

@@ -28,7 +28,7 @@ class BankController extends BaseController
         $today = new \DateTime('today');
         $tomorrow = new \DateTime('tomorrow');
 
-        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->get();
+        $cards = Card::where('date_time', '>', $today)->where('date_time', '<', $tomorrow)->orderBy('date_time')->get();
 //        $documents_link = DocumentLink::whereIn('card_id', $cards_id)->whereIn('type', ['bank_account', 'bank_taxes'])->get();
 
         foreach ($cards as $key => $card){

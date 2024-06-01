@@ -199,4 +199,9 @@ class Contract extends Model implements Sortable
     {
         return $this->belongsTo(NotaryService::class, 'notary_service_id');
     }
+
+    public function full_settlement_application()
+    {
+        return $this->hasOne(FullSettlementApplication::class, 'contract_id');
+    }
 }
