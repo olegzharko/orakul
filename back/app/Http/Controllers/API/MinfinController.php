@@ -17,7 +17,7 @@ class MinfinController extends BaseController
     {
         $this->client = new \GuzzleHttp\Client();
 //        $this->api_key = "d0624fa95581282989b572beaf26ea7eeb6323d1";
-        $this->api_key = "cfe70aa913f63a82fee327cbe8672ba7e7a79049";
+        $this->api_key = "313440caefb9a32303c9751a35a1aac827582b9b";
     }
 
     public function get_rate_exchange()
