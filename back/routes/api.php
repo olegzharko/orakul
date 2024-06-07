@@ -134,6 +134,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('contacts/{client_id}', [ClientController::class, 'get_contacts']); // postman
             Route::put('contacts/{client_id}', [ClientController::class, 'update_contacts']);
 
+            Route::get('work/{client_id}', [ClientController::class, 'get_work']); // postman
+            Route::put('work/{client_id}', [ClientController::class, 'update_work']);
+
             Route::get('citizenships/{client_id}', [ClientController::class, 'get_citizenships']); // postman
             Route::put('citizenships/{client_id}', [ClientController::class, 'update_citizenships']);
 
@@ -145,6 +148,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('cities/{region_id}/{district_id?}', [ClientController::class, 'get_cities']); // postman
             Route::get('address/{client_id}', [ClientController::class, 'get_address']); // postman
             Route::put('address/{client_id}', [ClientController::class, 'update_address']);
+
+            Route::get('native-address/{client_id}', [ClientController::class, 'get_native_address']); // postman
+            Route::put('native-address/{client_id}', [ClientController::class, 'update_native_address']);
 
             Route::get('consents/{card_id}/{client_id}', [ClientController::class, 'get_consents']); // postman
             Route::put('consents/{client_id}', [ClientController::class, 'update_consents']);

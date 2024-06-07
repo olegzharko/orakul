@@ -20,6 +20,8 @@ use App\Models\ConsentTemplate;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
 use App\Models\ContractType;
+use App\Models\DeliveryAcceptanceAct;
+use App\Models\DeliveryAcceptanceActTemplate;
 use App\Models\DevCompanyEmployer;
 use App\Models\DevConsent;
 use App\Models\DevConsentTemplate;
@@ -790,6 +792,7 @@ class ImmovableController extends BaseController
         $termination_refund_templates = TerminationRefundTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
 
         $full_settlement_application_templates = FullSettlementApplicationTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
+        $deliveryActTemplates = DeliveryAcceptanceActTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
@@ -803,6 +806,7 @@ class ImmovableController extends BaseController
         $termination_contract = TerminationContract::where('contract_id', $contract->id)->first();
         $termination_refund = TerminationRefund::where('contract_id', $contract->id)->first();
         $fullSettlementApplication = FullSettlementApplication::where('contract_id', $contract->id)->first();
+        $deliveryAct = DeliveryAcceptanceAct::where('contract_id', $contract->id)->first();
 
         $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
@@ -815,6 +819,7 @@ class ImmovableController extends BaseController
         $result['termination_contracts'] = $termination_contract_templates;
         $result['termination_refunds'] = $termination_refund_templates;
         $result['full_settlement_application_templates'] = $full_settlement_application_templates;
+        $result['delivery_act_templates'] = $deliveryActTemplates;
 
         if ($final_sing_date && $final_sing_date->sign_date > $this->date)
             $final_sing_date = $final_sing_date->sign_date->format('d.m.Y');
@@ -840,6 +845,7 @@ class ImmovableController extends BaseController
         $result['termination_refund_notary_id'] = null;
         $result['termination_refund_reg_date'] = null;
         $result['termination_refund_reg_num'] = null;
+        $result['delivery_act_template_id'] = $deliveryAct->template_id ?? null;
 
         $convert_notary = [];
         $other_notary = [];
@@ -941,6 +947,18 @@ class ImmovableController extends BaseController
                 ]);
         } else {
             Questionnaire::where('contract_id', $contract_id)->delete();
+        }
+
+        if ($r['delivery_act_template_id']) {
+            DeliveryAcceptanceAct::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['delivery_act_template_id'],
+                    'sign_date' => $r['sign_date'],
+                    'notary_id' => $notary_id,
+                ]);
+        } else {
+            DeliveryAcceptanceAct::where('contract_id', $contract_id)->delete();
         }
 
 

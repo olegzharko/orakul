@@ -17,10 +17,12 @@ use App\Models\City;
 use App\Models\ClientContract;
 use App\Models\ClientSpouseConsent;
 use App\Models\ClientSpouseConsentContract;
+use App\Models\ClientWork;
 use App\Models\ConsentTemplate;
 use App\Models\District;
 use App\Models\KeyWord;
 use App\Models\MarriageType;
+use App\Models\NativeAddress;
 use App\Models\Notary;
 use App\Models\Region;
 use App\Models\Representative;
@@ -234,6 +236,41 @@ class ClientController extends BaseController
         return $this->sendResponse('', 'Контакти кієнта з ID: ' . $client_id . ' оноволено успішно.');
     }
 
+    public function get_work($client_id)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $result['company'] = null;
+        $result['position'] = null;
+
+        if ($client->client_work) {
+            $result['company'] = $client->client_work->company;
+            $result['position'] = $client->client_work->position;
+        }
+
+        return  $this->sendResponse($result, 'Робота кієнта з ID: ' . $client_id);
+    }
+
+    public function update_work($client_id, Request $r)
+    {
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        ClientWork::updateOrCreate([
+            'client_id' => $client_id
+        ], [
+            'company' => $r['company'],
+            'position' => $r['position'],
+        ]);
+
+        return $this->sendResponse('', 'Робота кієнта з ID: ' . $client_id . ' оноволено успішно.');
+    }
+
     public function get_citizenships($client_id)
     {
         $result = [];
@@ -384,6 +421,56 @@ class ClientController extends BaseController
         return $this->sendResponse($result, 'Дані адреси клієнта з ID ' . $client_id);
     }
 
+    public function get_native_address($client_id)
+    {
+        $result = [];
+
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $regions = Region::select('id', 'title_n as title')->orderBy('title')->get();
+        $address_type = AddressType::select('id', 'title_n as title')->orderBy('title')->get();
+        $building_type = BuildingType::select('id', 'title_n as title')->orderBy('title')->get();
+        $building_part = BuildingPart::select('id', 'title_n as title')->orderBy('title')->get();
+        $apartment_type = ApartmentType::select('id', 'title_n as title')->orderBy('title')->get();
+
+        $result['regions'] = $regions;
+
+        $result['address_type'] = $address_type;
+        $result['building_type'] = $building_type;
+        $result['building_part'] = $building_part;
+        $result['apartment_type'] = $apartment_type;
+
+        $result['native_region_id'] = null;
+        $result['native_city_id'] = null;
+        $result['native_district_id'] = null;
+        $result['native_address_type_id'] = null;
+        $result['native_address'] = null;
+        $result['native_building_type_id'] = null;
+        $result['native_building_num'] = null;
+        $result['native_building_part_id'] = null;
+        $result['native_building_part_num'] = null;
+        $result['native_apartment_type_id'] = null;
+        $result['native_apartment_num'] = null;
+        
+        if ($client->native_address) {
+            $result['native_region_id'] = $client->native_address->city ? $client->native_address->city->region_id : null;
+            $result['native_city_id'] = $client->native_address->city_id;
+            $result['native_district_id'] = $client->native_address->district_id;
+            $result['native_address_type_id'] = $client->native_address->address_type_id;
+            $result['native_address'] = $client->native_address->address;
+            $result['native_building_type_id'] = $client->native_address->building_type_id;
+            $result['native_building_num'] = $client->native_address->building;
+            $result['native_building_part_id'] = $client->native_address->building_part_id;
+            $result['native_building_part_num'] = $client->native_address->building_part_num;
+            $result['native_apartment_type_id'] = $client->native_address->apartment_type_id;
+            $result['native_apartment_num'] = $client->native_address->apartment_num;
+        }
+
+        return $this->sendResponse($result, 'Дані адреси клієнта з ID ' . $client_id);
+    }
+
     public function get_districts($region_id)
     {
         $result = [];
@@ -510,6 +597,36 @@ class ClientController extends BaseController
         } else {
             ActualAddress::where('client_id', $client_id)->delete();
         }
+
+        return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
+    }
+
+    public function update_native_address($client_id, Request $r)
+    {
+        if (!$client = Client::find($client_id)) {
+            return $this->sendError('', 'Клієнт з ID: ' . $client_id . ' відсутній');
+        }
+
+        $validator = $this->validate_client_data($r);
+
+        if (count($validator->errors()->getMessages())) {
+            return $this->sendError('Форма передає помилкові дані', $validator->errors());
+        }
+
+        NativeAddress::updateOrCreate(
+            ['client_id' => $client_id],
+            [
+                'district_id' => $r['native_district_id'],
+                'city_id' => $r['native_city_id'],
+                'address_type_id' => $r['native_address_type_id'],
+                'address' => $r['native_address'],
+                'building_type_id' => $r['native_building_type_id'],
+                'building' => $r['native_building_num'],
+                'building_part_id' => $r['native_building_part_id'],
+                'building_part_num' => $r['native_building_part_num'],
+                'apartment_type_id' => $r['native_apartment_type_id'],
+                'apartment_num' => $r['native_apartment_num'],
+            ]);
 
         return $this->sendResponse('', 'Адреса клієнта з ID ' . $client_id . ' оновлена');
     }

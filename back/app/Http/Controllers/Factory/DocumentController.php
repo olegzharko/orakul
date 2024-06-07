@@ -119,78 +119,107 @@ class DocumentController extends GeneratorController
         $result = [];
 
         foreach ($this->pack_contract as $key => $this->contract) {
-
             $this->ff = new FolderFileController($this->contract);
 
             $contract_clients = $this->get_contract_clients($this->contract);
 
-            if ($this->contract->type->alias == 'preliminary')
+            if ($this->contract->type->alias == 'preliminary') {
                 $this->change_font_size();
+            }
 
             $this->total_clients = count($contract_clients);
-            if ($this->total_clients == 2)
+            if ($this->total_clients == 2) {
                 $this->two_clients = true;
+            }
 
-            $this->company_rate = $this->get_rate_by_company($this->card->id, $this->contract->immovable->developer_building->dev_company);
+            $this->company_rate = $this->get_rate_by_company(
+                $this->card->id,
+                $this->contract->immovable->developer_building->dev_company
+            );
 
             $this->both_client_not_married = $this->check_both_client_not_married($contract_clients);
-            
+
             foreach ($contract_clients as $this->client) {
                 /*
                  * Оскільки в договорі необхідно передати данні про згоду подружжя
                  * або заява про відсутність шлюбних відносин, необхідно виділити одну і єдину згоду або заяву
                  * для підстановки данних в договір cl-sp-word і т.п.
                  * */
-                if (count($this->contract->client_spouse_consent) && count($this->contract->client_spouse_consent->where('client_id', $this->client->id))) {
+                if (count($this->contract->client_spouse_consent) && count(
+                        $this->contract->client_spouse_consent->where('client_id', $this->client->id)
+                    )) {
                     if (count($this->contract->client_spouse_consent) == 2) {
                         if ($this->contract->client_spouse_consent[0]->mar_series_num && $this->contract->client_spouse_consent[1]->mar_series_num && $this->contract->client_spouse_consent[0]->mar_series_num == $this->contract->client_spouse_consent[1]->mar_series_num) {
                             $this->buyer_are_spouse = true;
                         }
                     }
-                    $this->consent = $this->contract->client_spouse_consent->where('client_id', $this->client->id)->first();
+                    $this->consent = $this->contract->client_spouse_consent->where(
+                        'client_id',
+                        $this->client->id
+                    )->first();
                 } else {
                     $this->consent = null;
                 }
 
-                if ($this->contract && $this->contract->template_id)
+                if ($this->contract && $this->contract->template_id) {
                     $this->contract_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Контракт відсутній");
+                }
 
-                if ($this->contract->questionnaire && $this->contract->questionnaire->template_id)
+                if ($this->contract->questionnaire && $this->contract->questionnaire->template_id) {
                     $this->questionnaire_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Анкета відсутняя");
+                }
 
-                if ($this->contract->developer_statement && $this->contract->developer_statement->template_id)
+                if ($this->contract->delivery_acceptance_act && $this->contract->delivery_acceptance_act->template_id) {
+                    $this->delivery_acceptance_act_template_set_data();
+                } else {
+                    $this->notification("Warning", "Акт приймання передачі відсутній");
+                }
+
+                if ($this->contract->developer_statement && $this->contract->developer_statement->template_id) {
                     $this->developer_statement_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Заява від забудовника відсутня");
+                }
 
-                if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_company->owner->married == false)
+                if ($this->contract->dev_company && $this->contract->dev_company->owner && $this->contract->dev_company->owner->married == false) {
                     $this->developer_consent();
-                else
+                } else {
                     $this->notification("Warning", "Забудовник в шлюбі");
+                }
 
-                if ($this->contract && $this->contract->communal && $this->contract->communal->template_id)
+                if ($this->contract && $this->contract->communal && $this->contract->communal->template_id) {
                     $this->communal_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Коммунальні від забудовника відсутні");
+                }
 
-                if ($this->contract && $this->contract->processing_personal_data && $this->contract->processing_personal_data->template_id)
+                if ($this->contract && $this->contract->processing_personal_data && $this->contract->processing_personal_data->template_id) {
                     $this->processing_personal_data_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Коммунальні від забудовника відсутні");
+                }
 
-                if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id)
+                if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template_id) {
                     $this->bank_account_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Рахунок відсутній");
+                }
 
-                if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template_id)
+                if ($this->contract->bank_taxes_payment && $this->contract->bank_taxes_payment->template_id) {
                     $this->bank_taxes_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Податки відсутні");
+                }
+
+                if ($this->contract->full_settlement_application && $this->contract->full_settlement_application->template_id) {
+                    $this->full_settlement_application_set_data();
+                } else {
+                    $this->notification("Warning", "Податки відсутні");
+                }
 
                 if ($this->consent && $this->client && $this->client->client_spouse_consent && $this->client->client_spouse_consent->template_id) {
                     $this->consent_template_set_data();
@@ -212,21 +241,24 @@ class DocumentController extends GeneratorController
 
             // Костыль для акта приема передачи квартиры по Новоселкам через разрыв договора
             if (!$termination_clients) {
-                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id) {
                     $this->termination_contract_template_set_data();
+                }
             }
             // Конец костыля. Сделано на скорую руку, пока не будет добавлен нужный функционал.
 
-            foreach($termination_clients as $this->client) {
-                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id)
+            foreach ($termination_clients as $this->client) {
+                if ($this->contract->termination_contract && $this->contract->termination_contract->template_id) {
                     $this->termination_contract_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Договір розірвання попереднього договору відсутній");
+                }
 
-                if ($this->contract->termination_refund && $this->contract->termination_refund->template_id)
+                if ($this->contract->termination_refund && $this->contract->termination_refund->template_id) {
                     $this->termination_refund_template_set_data();
-                else
+                } else {
                     $this->notification("Warning", "Заява про повернення коштів згідно попереднього договору");
+                }
 
                 if ($this->client && $this->client->termination_consent && $this->client->termination_consent->template_id) {
                     $this->termination_consent_template_set_data();
@@ -236,7 +268,6 @@ class DocumentController extends GeneratorController
             }
 
             if (file_exists($this->ff->generate_path)) {
-
                 $zip_folder_path_part = 'Zip/';
                 $zip = new ZipArchive;
 
@@ -247,8 +278,7 @@ class DocumentController extends GeneratorController
 
                 $fileName = str_replace("/", ": ", $fileName);
 
-                if ($zip->open(public_path($zip_folder_path_part . $fileName), ZipArchive::CREATE) === TRUE)
-                {
+                if ($zip->open(public_path($zip_folder_path_part . $fileName), ZipArchive::CREATE) === true) {
                     $files = File::files(public_path($this->ff->generate_path));
 
                     foreach ($files as $key => $value) {
@@ -259,8 +289,9 @@ class DocumentController extends GeneratorController
                     $zip->close();
                 }
 
-                if (file_exists($zip_folder_path_part .$fileName))
-                    $result[] = $zip_folder_path_part .$fileName;
+                if (file_exists($zip_folder_path_part . $fileName)) {
+                    $result[] = $zip_folder_path_part . $fileName;
+                }
             }
         }
 
@@ -292,7 +323,12 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->contract_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->contract_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'contract', $this->contract_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'contract',
+            $this->contract_generate_file
+        );
 
         unset($word);
 
@@ -312,7 +348,35 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->questionnaire_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->questionnaire_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'questionnaire', $this->questionnaire_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'questionnaire',
+            $this->questionnaire_generate_file
+        );
+
+        unset($word);
+    }
+
+    public function delivery_acceptance_act_template_set_data()
+    {
+        $this->delivery_acceptance_act_generate_file = $this->ff->delivery_acceptance_act_title();
+
+        $this->set_full_info_template($this->delivery_acceptance_act_generate_file);
+        $this->convert->date_to_string($this->contract->delivery_acceptance_act, $this->contract->delivery_acceptance_act->sign_date);
+        $this->set_passport_template_part($this->delivery_acceptance_act_generate_file);
+        $this->set_current_document_notary($this->delivery_acceptance_act_generate_file, $this->contract->delivery_acceptance_act->notary);
+        $this->set_sign_date($this->delivery_acceptance_act_generate_file, $this->contract->delivery_acceptance_act);
+
+        $word = new TemplateProcessor($this->delivery_acceptance_act_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->delivery_acceptance_act_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'delivery_acceptance_act',
+            $this->delivery_acceptance_act_generate_file
+        );
 
         unset($word);
     }
@@ -321,15 +385,26 @@ class DocumentController extends GeneratorController
     {
         $this->developer_statement_generate_file = $this->ff->developer_statement_title();
 
-        $this->convert->date_to_string($this->contract->developer_statement, $this->contract->developer_statement->sign_date);
+        $this->convert->date_to_string(
+            $this->contract->developer_statement,
+            $this->contract->developer_statement->sign_date
+        );
         $this->set_passport_template_part($this->developer_statement_generate_file);
-        $this->set_current_document_notary($this->developer_statement_generate_file, $this->contract->developer_statement->notary);
+        $this->set_current_document_notary(
+            $this->developer_statement_generate_file,
+            $this->contract->developer_statement->notary
+        );
         $this->set_sign_date($this->developer_statement_generate_file, $this->contract->developer_statement);
 
         $word = new TemplateProcessor($this->developer_statement_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->developer_statement_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'developer_statement', $this->developer_statement_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'developer_statement',
+            $this->developer_statement_generate_file
+        );
 
         unset($word);
     }
@@ -338,15 +413,29 @@ class DocumentController extends GeneratorController
     {
         $this->developer_consent_generate_file = $this->ff->developer_consent_title();
 
-        $this->convert->date_to_string($this->contract->dev_company->owner->developer_consent, $this->contract->dev_company->owner->developer_consent->sign_date);
+        $this->convert->date_to_string(
+            $this->contract->dev_company->owner->developer_consent,
+            $this->contract->dev_company->owner->developer_consent->sign_date
+        );
         $this->set_passport_template_part($this->developer_consent_generate_file);
-        $this->set_current_document_notary($this->developer_consent_generate_file, $this->contract->dev_company->owner->developer_consent->notary);
-        $this->set_sign_date($this->developer_consent_generate_file, $this->contract->dev_company->owner->developer_consent);
+        $this->set_current_document_notary(
+            $this->developer_consent_generate_file,
+            $this->contract->dev_company->owner->developer_consent->notary
+        );
+        $this->set_sign_date(
+            $this->developer_consent_generate_file,
+            $this->contract->dev_company->owner->developer_consent
+        );
 
         $word = new TemplateProcessor($this->developer_consent_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->developer_consent_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'developer_consent', $this->developer_consent_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'developer_consent',
+            $this->developer_consent_generate_file
+        );
 
         unset($word);
     }
@@ -364,25 +453,44 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->communal_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->communal_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'communal', $this->communal_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'communal',
+            $this->communal_generate_file
+        );
 
         unset($word);
     }
 
     public function processing_personal_data_template_set_data()
     {
-        $this->processing_personal_data_generate_file = $this->ff->processing_personal_data_title($this->client, $this->contract->processing_personal_data->template);
+        $this->processing_personal_data_generate_file = $this->ff->processing_personal_data_title(
+            $this->client,
+            $this->contract->processing_personal_data->template
+        );
 
-        $this->convert->date_to_string($this->contract->processing_personal_data, $this->contract->processing_personal_data->sign_date);
+        $this->convert->date_to_string(
+            $this->contract->processing_personal_data,
+            $this->contract->processing_personal_data->sign_date
+        );
 
         $this->set_passport_template_part($this->processing_personal_data_generate_file);
-        $this->set_current_document_notary($this->processing_personal_data_generate_file, $this->contract->processing_personal_data->notary);
+        $this->set_current_document_notary(
+            $this->processing_personal_data_generate_file,
+            $this->contract->processing_personal_data->notary
+        );
         $this->set_sign_date($this->processing_personal_data_generate_file, $this->contract);
 
         $word = new TemplateProcessor($this->processing_personal_data_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->processing_personal_data_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'processing_personal_data', $this->processing_personal_data_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'processing_personal_data',
+            $this->processing_personal_data_generate_file
+        );
 
         unset($word);
     }
@@ -403,7 +511,12 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->termination_contract_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_contract_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'termination_contract', $this->termination_contract_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'termination_contract',
+            $this->termination_contract_generate_file
+        );
 
         unset($word);
     }
@@ -412,18 +525,29 @@ class DocumentController extends GeneratorController
     {
         $this->termination_refund_generate_file = $this->ff->termination_refund_title();
 
-        $this->convert->date_to_string($this->contract->termination_refund, $this->contract->termination_refund->reg_date);
+        $this->convert->date_to_string(
+            $this->contract->termination_refund,
+            $this->contract->termination_refund->reg_date
+        );
 
         $this->set_full_info_template($this->termination_refund_generate_file);
         $this->set_passport_template_part($this->termination_refund_generate_file);
-        $this->set_current_document_notary($this->termination_refund_generate_file, $this->contract->termination_refund->notary);
+        $this->set_current_document_notary(
+            $this->termination_refund_generate_file,
+            $this->contract->termination_refund->notary
+        );
         // дату посвідчення заяви у нотаріуса про поверненя коштів беремо з дати підписання договору
         $this->set_sign_date($this->termination_refund_generate_file, $this->contract);
 
         $word = new TemplateProcessor($this->termination_refund_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_refund_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'termination_refund', $this->termination_refund_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'termination_refund',
+            $this->termination_refund_generate_file
+        );
 
         unset($word);
     }
@@ -449,11 +573,20 @@ class DocumentController extends GeneratorController
 
     public function termination_consent_template_set_data()
     {
-        $this->termination_consent_generate_file = $this->ff->termination_consent_title($this->client->termination_consent, $this->client);
+        $this->termination_consent_generate_file = $this->ff->termination_consent_title(
+            $this->client->termination_consent,
+            $this->client
+        );
 
-        $this->convert->date_to_string($this->client->termination_consent, $this->client->termination_consent->sign_date);
+        $this->convert->date_to_string(
+            $this->client->termination_consent,
+            $this->client->termination_consent->sign_date
+        );
         $this->set_passport_template_part($this->termination_consent_generate_file);
-        $this->set_current_document_notary($this->termination_consent_generate_file, $this->client->termination_consent->notary);
+        $this->set_current_document_notary(
+            $this->termination_consent_generate_file,
+            $this->client->termination_consent->notary
+        );
         $this->set_consent_married_template_part();
 
         $this->set_sign_date($this->termination_consent_generate_file, $this->client->termination_consent);
@@ -461,7 +594,12 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->termination_consent_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->termination_consent_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'termination_consent', $this->termination_consent_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'termination_consent',
+            $this->termination_consent_generate_file
+        );
 
         unset($word);
     }
@@ -480,7 +618,37 @@ class DocumentController extends GeneratorController
         $word = new TemplateProcessor($this->bank_account_generate_file);
         $word = $this->set_data_word($word);
         $word->saveAs($this->bank_account_generate_file);
-        DocumentLink::set_document_link($this->card->id, $this->contract->id, 'bank_account', $this->bank_account_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'bank_account',
+            $this->bank_account_generate_file
+        );
+
+        unset($word);
+    }
+
+    public function full_settlement_application_set_data()
+    {
+        $this->full_settlement_application = $this->ff->full_settlement_application_title($this->client);
+
+        $this->set_passport_template_part($this->full_settlement_application);
+
+        $this->set_current_document_notary($this->full_settlement_application, $this->contract->full_settlement_application->notary);
+        /*
+         * В рахунку використовується дата підписання Угоди $this->contract
+         * */
+        $this->set_sign_date($this->full_settlement_application, $this->contract);
+
+        $word = new TemplateProcessor($this->full_settlement_application);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->full_settlement_application);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'full_settlement_application',
+            $this->full_settlement_application
+        );
 
         unset($word);
     }
@@ -700,6 +868,12 @@ class DocumentController extends GeneratorController
          * Податки
          * */
         $word = $this->set_bank_account_data($word);
+
+
+        /*
+         * Заява про повний розрахунок
+         */
+        $word = $this->set_full_settlement_application($word);
 
         return $word;
     }
@@ -934,6 +1108,7 @@ class DocumentController extends GeneratorController
          * */
         if ($this->client) {
             $word = new TemplateProcessor($template_generate_file);
+
             $word->setValue('КЛ-ПАСПОРТ-Н', $this->client->passport_type->description_n);
             $word->setValue('КЛ-ПАСПОРТ-О', $this->client->passport_type->description_o);
             $word->setValue('КЛ-ПАСПОРТ-Н-UP', $this->convert->mb_ucfirst($this->client->passport_type->description_n));
@@ -1112,6 +1287,10 @@ class DocumentController extends GeneratorController
             else
                 $word->setValue('ОД-ДАТА', $this->set_style_color_warning("######"));
         }
+
+        $word->setValue('ОД-ДАТА-СКОБКИ', $this->day_quotes_month_year($this->contract->sign_date));
+
+
         // Допоміжні данні
         $word->setValue('alias-dis-sh', CityType::where('alias', 'district')->value('short'));
         $word->setValue('alias-dis-n', CityType::where('alias', 'district')->value('title_n'));
@@ -1448,6 +1627,8 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
 
 
+            $word->setValue('КЛ-МІСЦЕ-НАРОДЖЕННЯ-СК', $this->convert->client_native_address_short($this->client->native_address));
+
             // для анкет на двох
             $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
 
@@ -1457,6 +1638,16 @@ class DocumentController extends GeneratorController
 //            $word->setValue('cl-phone', $this->convert->phone_number($this->client->phone));
             $word->setValue('КЛ-ТЕЛЕФОН', $this->convert->phone_number($this->client->phone));
             $word->setValue($this->total_clients . '-КЛ-ТЕЛЕФОН', $this->client->phone);
+
+
+            if ($this->client->client_work) {
+                $client_work = $this->client->client_work->company;
+                if ($position = $this->client->client_work->position) {
+                    $client_work .= ", " . $position;
+                }
+
+                $word->setValue('КЛ-РОБОТА', $client_work);
+            }
 
             /*
              * Для Анкета На двох
@@ -2394,23 +2585,24 @@ class DocumentController extends GeneratorController
                     $word->setValue('СУМА-ДО-СПЛАТИ', $this->convert->get_convert_price($this->contract->immovable->reserve_grn, 'grn'));
             }
         }
-//            $word->setValue('СУМА-ДО-СПЛАТИ', $this->convert->get_convert_price($this->contract->immovable->grn, 'grn'));
 
+        return $word;
+    }
 
-
-//        if ($this->two_clients == 2) {
-//            if ($this->contract->immovable->security_payment)
-//                $word->setValue('КВИТАНЦІЯ-Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn / 2, 'grn'));
-//            else
-//                $word->setValue('КВИТАНЦІЯ-Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->reserve_grn / 2, 'grn'));
-//
-//        } else {
-//            if ($this->contract->immovable->security_payment)
-//                $word->setValue('КВИТАНЦІЯ-Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->security_payment->last_part_grn, 'grn'));
-//            else
-//                $word->setValue('КВИТАНЦІЯ-Н-ЗАБ-ПЛ-Ч2-ГРН', $this->convert->get_convert_price($this->contract->immovable->reserve_grn, 'grn'));
-//
-//        }
+    public function set_full_settlement_application($word)
+    {
+        $this->convert->date_to_string($this->contract->full_settlement_application, $this->contract->full_settlement_application->reg_date);
+        if ($this->contract->full_settlement_application) {
+            $word->setValue('ОД-ДАТА', $this->contract->sign_date->format('d.m.Y'));
+            $word->setValue('ВІДСТРОЧКА-ДАТА', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
+            if ($this->contract->full_settlement_application->str_day && $this->contract->full_settlement_application->str_month && $this->contract->full_settlement_application->str_year) {
+                $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ-UP', $this->convert->mb_ucfirst($this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r));
+                $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ', $this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r);
+            }
+            $word->setValue('ВІДСТРОЧКА-ДАТА-СЛОВАМИ-UP', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
+            $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА', $this->display_date($this->contract->full_settlement_application->reg_date));
+            $word->setValue('ВІДСТРОЧКА-ДОГОВРІВ-НОМЕР', $this->contract->full_settlement_application->reg_number ?? "#####");
+        }
 
         return $word;
     }

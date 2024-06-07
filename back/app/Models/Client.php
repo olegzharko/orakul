@@ -140,9 +140,19 @@ class Client extends Model implements Sortable, HasMedia
         return $this->hasOne(ActualAddress::class, 'client_id');
     }
 
+    public function native_address()
+    {
+        return $this->hasOne(NativeAddress::class, 'client_id');
+    }
+
     public function building_part()
     {
         return $this->belongsTo(BuildingPart::class, 'building_part_id');
+    }
+
+    public function client_work()
+    {
+        return $this->hasOne(ClientWork::class, 'client_id');
     }
 
 //    public static function get_dev_employers_by_type($dev_company_id, $employer_type)

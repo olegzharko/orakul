@@ -822,6 +822,24 @@ class ConvertController extends GeneratorController
         return $full_address;
     }
 
+        public function client_native_address_short($c)
+    {
+        $full_address = null;
+
+        if ($c) {
+            $full_address .= $this->generate_client_full_address_short($c);
+        }
+
+        if ($c->actual_address) {
+            $actual_address = "";
+            $actual_address .= $this->generate_client_full_address_short($c->actual_address);
+            $full_address .= $actual_address;
+        }
+
+        return $full_address;
+    }
+
+
     public function generate_client_full_address_short($c)
     {
         $region = null;
@@ -876,6 +894,7 @@ class ConvertController extends GeneratorController
             $building_num = trim($c->building);
 
             $building_part = null;
+
             if ($c->building_part_id) {
                 $building_part = ", " . $c->building_part->short . $this->non_break_space . trim($c->building_part_num);
             }
