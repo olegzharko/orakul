@@ -43,6 +43,8 @@ type InitialData = {
   full_settlement_application_notary_id: string | null,
   full_settlement_application_reg_date: any,
   full_settlement_application_reg_number: string | null,
+  delivery_act_template_id: number | null,
+  delivery_act_templates?: SelectItem[],
 }
 
 export type Props = {
@@ -67,6 +69,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
   const [processingPersonalTemplates, setProcessingPersonalTemplates] = useState<SelectItem[]>([]);
   const [notaries, setNotaries] = useState<SelectItem[]>([]);
   const [fullSettlementApplication, setFullSettlementApplication] = useState<SelectItem[]>([]);
+  const [deliveryActTemplates, setDeliveryActTemplates] = useState<SelectItem[]>([]);
 
   const [data, setData] = useState<InitialData>({
     type_id: null,
@@ -92,6 +95,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     full_settlement_application_notary_id: null,
     full_settlement_application_reg_date: null,
     full_settlement_application_reg_number: null,
+    delivery_act_template_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -119,6 +123,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       full_settlement_application_notary_id: null,
       full_settlement_application_reg_date: null,
       full_settlement_application_reg_number: null,
+      delivery_act_template_id: null,
     });
   }, []);
 
@@ -157,6 +162,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     setProcessingPersonalTemplates(initialData?.processing_personal_data_templates || []);
     setNotaries(initialData?.notary || []);
     setFullSettlementApplication(initialData?.full_settlement_application_templates || []);
+    setDeliveryActTemplates(initialData?.delivery_act_templates || []);
     setData({
       type_id: initialData?.type_id || null,
       contract_template_id: initialData?.contract_template_id || null,
@@ -192,7 +198,8 @@ export const useTemplates = ({ initialData, id }: Props) => {
         ? changeMonthWitDate(initialData.full_settlement_application_reg_date)
         : null,
       full_settlement_application_reg_number:
-        initialData?.full_settlement_application_reg_number || null
+        initialData?.full_settlement_application_reg_number || null,
+      delivery_act_template_id: initialData?.delivery_act_template_id || null,
     });
   }, [initialData]);
 
@@ -208,6 +215,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     contractType,
     statementTemplates,
     questionnaireTemplates,
+    deliveryActTemplates,
     bankTemplates,
     taxesTemplates,
     contractTemplates,

@@ -153,6 +153,18 @@ const Templates = (props: Props) => {
         </div>
       </SectionWithTitle>
 
+      <SectionWithTitle title="Акт приймання передачі">
+        <div className="flex-center">
+          <CustomSelect
+            label="Шаблон Акту"
+            data={meta.deliveryActTemplates}
+            onChange={(e) => meta.setData({ ...meta.data, delivery_act_template_id: +e })}
+            selectedValue={meta.data.delivery_act_template_id}
+            className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
       <SectionWithTitle title="Заява про повернення коштів">
         <div className="grid-center-duet">
           <CustomSelect

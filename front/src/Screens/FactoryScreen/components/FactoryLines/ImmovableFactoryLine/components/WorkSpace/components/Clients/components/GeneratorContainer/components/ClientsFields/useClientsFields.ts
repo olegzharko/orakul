@@ -5,9 +5,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { State } from '../../../../../../../../../../../../../store/types';
 import reqClientName from '../../../../../../../../../../../../../services/generator/Client/reqClientName';
 import reqClientContacts from '../../../../../../../../../../../../../services/generator/Client/reqClientContacts';
+import reqClientWork from '../../../../../../../../../../../../../services/generator/Client/reqClientWork';
 import reqClientCitizenship from '../../../../../../../../../../../../../services/generator/Client/reqClientCitizenship';
 import reqClientPassport from '../../../../../../../../../../../../../services/generator/Client/reqClientPassport';
 import reqClientAddress from '../../../../../../../../../../../../../services/generator/Client/reqClientAddress';
+import reqNativeClientAddress from '../../../../../../../../../../../../../services/generator/Client/reqNativeClientAddress';
 import reqClientConsents from '../../../../../../../../../../../../../services/generator/Client/reqClientConsents';
 import reqClientRepresentative from '../../../../../../../../../../../../../services/generator/Client/reqClientRepresentative';
 import reqTermination from '../../../../../../../../../../../../../services/generator/Client/reqTermination';
@@ -21,9 +23,11 @@ export const useClientsFields = () => {
   // Fields Data
   const [fioData, setFioData] = useState();
   const [contacts, setContacts] = useState();
+  const [work, setWork] = useState();
   const [citizenship, setCitizenship] = useState();
   const [passport, setPassport] = useState();
   const [address, setAddress] = useState();
+  const [native_address, setNativeAddress] = useState();
   const [consents, setConsents] = useState();
   const [representative, setRepresentative] = useState();
   const [termination, setTermination] = useState();
@@ -51,6 +55,15 @@ export const useClientsFields = () => {
         }
       })();
 
+      // get WORK
+      (async () => {
+        const { success, data } = await reqClientWork(token, personId);
+
+        if (success) {
+          setWork(data);
+        }
+      })();
+
       // get CITIZENSHIP
       (async () => {
         const { success, data } = await reqClientCitizenship(token, personId);
@@ -75,6 +88,15 @@ export const useClientsFields = () => {
 
         if (success) {
           setAddress(data);
+        }
+      })();
+
+      // get ADDRESS
+      (async () => {
+        const { success, data } = await reqNativeClientAddress(token, personId);
+
+        if (success) {
+          setNativeAddress(data);
         }
       })();
 
@@ -113,9 +135,11 @@ export const useClientsFields = () => {
     personId,
     fioData,
     contacts,
+    work,
     citizenship,
     passport,
     address,
+    native_address,
     consents,
     representative,
     termination,
