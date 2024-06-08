@@ -1627,7 +1627,10 @@ class DocumentController extends GeneratorController
             $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
 
 
-            $word->setValue('КЛ-МІСЦЕ-НАРОДЖЕННЯ-СК', $this->convert->client_native_address_short($this->client->native_address));
+            if ($this->client->native_address) {
+                $word->setValue('КЛ-МІСЦЕ-НАРОДЖЕННЯ-СК', $this->convert->client_native_address_short($this->client->native_address));
+            }
+
 
             // для анкет на двох
             $word->setValue($this->total_clients . '-КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
