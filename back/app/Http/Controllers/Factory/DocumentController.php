@@ -2594,17 +2594,19 @@ class DocumentController extends GeneratorController
 
     public function set_full_settlement_application($word)
     {
-        $this->convert->date_to_string($this->contract->full_settlement_application, $this->contract->full_settlement_application->reg_date);
         if ($this->contract->full_settlement_application) {
-            $word->setValue('ОД-ДАТА', $this->contract->sign_date->format('d.m.Y'));
-            $word->setValue('ВІДСТРОЧКА-ДАТА', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
-            if ($this->contract->full_settlement_application->str_day && $this->contract->full_settlement_application->str_month && $this->contract->full_settlement_application->str_year) {
-                $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ-UP', $this->convert->mb_ucfirst($this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r));
-                $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ', $this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r);
+            $this->convert->date_to_string($this->contract->full_settlement_application, $this->contract->full_settlement_application->reg_date);
+            if ($this->contract->full_settlement_application) {
+                $word->setValue('ОД-ДАТА', $this->contract->sign_date->format('d.m.Y'));
+                $word->setValue('ВІДСТРОЧКА-ДАТА', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
+                if ($this->contract->full_settlement_application->str_day && $this->contract->full_settlement_application->str_month && $this->contract->full_settlement_application->str_year) {
+                    $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ-UP', $this->convert->mb_ucfirst($this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r));
+                    $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА-СЛОВАМИ', $this->contract->full_settlement_application->str_day->title . " " . $this->contract->full_settlement_application->str_month->title_r . " " . $this->contract->full_settlement_application->str_year->title_r);
+                }
+                $word->setValue('ВІДСТРОЧКА-ДАТА-СЛОВАМИ-UP', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
+                $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА', $this->display_date($this->contract->full_settlement_application->reg_date));
+                $word->setValue('ВІДСТРОЧКА-ДОГОВРІВ-НОМЕР', $this->contract->full_settlement_application->reg_number ?? "#####");
             }
-            $word->setValue('ВІДСТРОЧКА-ДАТА-СЛОВАМИ-UP', $this->display_date($this->contract->full_settlement_application->full_settlement_date));
-            $word->setValue('ВІДСТРОЧКА-ЗАЯВА-ДАТА', $this->display_date($this->contract->full_settlement_application->reg_date));
-            $word->setValue('ВІДСТРОЧКА-ДОГОВРІВ-НОМЕР', $this->contract->full_settlement_application->reg_number ?? "#####");
         }
 
         return $word;
