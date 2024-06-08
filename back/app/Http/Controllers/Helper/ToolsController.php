@@ -218,6 +218,8 @@ class ToolsController extends Controller
             "sanctions",
             "financial_monitoring",
             "unified_register_of_debtors",
+            "self_employed_person",
+            "non_market_value",
         )->firstOrCreate(['client_id' => $client_id])->toArray();
 
         $i = 0;

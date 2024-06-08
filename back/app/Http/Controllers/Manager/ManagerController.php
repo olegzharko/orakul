@@ -706,6 +706,8 @@ class ManagerController extends BaseController
             "sanctions",
             "financial_monitoring",
             "unified_register_of_debtors",
+            "self_employed_person",
+            "non_market_value",
         ];
 
         foreach ($check_list as $key => $value) {
@@ -736,6 +738,8 @@ class ManagerController extends BaseController
             "sanctions" => $data['sanctions'],
             "financial_monitoring" => $data['financial_monitoring'],
             "unified_register_of_debtors" => $data['unified_register_of_debtors'],
+            "self_employed_person" => $data['self_employed_person'],
+            "non_market_value" => $data['non_market_value'],
         ]);
     }
 

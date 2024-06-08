@@ -27,6 +27,8 @@ class ClientCheckList extends Model
         "sanctions",
         "financial_monitoring",
         "unified_register_of_debtors",
+        "self_employed_person",
+        "non_market_value",
     ];
 
     protected $casts = [

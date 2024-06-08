@@ -155,6 +155,11 @@ class Client extends Model implements Sortable, HasMedia
         return $this->hasOne(ClientWork::class, 'client_id');
     }
 
+    public function check_list()
+    {
+        return $this->hasOne(ClientCheckList::class, 'client_id');
+    }
+
 //    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
 //    {
 //        return Client::where([

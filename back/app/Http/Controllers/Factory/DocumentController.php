@@ -1711,6 +1711,12 @@ class DocumentController extends GeneratorController
                     $word->setValue('ПОКУПЕЦЬ-АБО-ПІБ-Н', mb_strtoupper(Text::where('alias', 'buyer')->value('value')));
                 }
             }
+
+
+            if ($this->client->check_list) {
+                $word->setValue('КЛ-ФОП', $this->client->check_list->self_employed_person ? "Так" : "Ні");
+                $word->setValue('ЦІНА-ЗАВИЩЕННА', $this->client->check_list->non_market_value ? "Так" : "Ні");
+            }
         } else {
             $this->notification("Warning", "Відсутня інформація про клієнта");
         }
