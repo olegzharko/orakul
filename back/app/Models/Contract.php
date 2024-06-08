@@ -89,6 +89,10 @@ class Contract extends Model implements Sortable
         return $this->hasOne(DeliveryAcceptanceAct::class, 'contract_id');
     }
 
+    public function personal_property()
+    {
+        return $this->hasOne(PersonalProperty::class, 'contract_id');
+    }
     public function client_spouse_consent()
     {
         return $this->belongsToMany(ClientSpouseConsent::class);

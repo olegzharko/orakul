@@ -47,6 +47,7 @@ class DocumentController extends GeneratorController
     public $contract_generate_file;
     public $consent_generate_file;
     public $developer_statement_generate_file;
+    public $personal_property_generate_file;
     public $questionnaire_generate_file;
     public $bank_account_generate_file;
     public $bank_taxes_generate_file;
@@ -91,6 +92,7 @@ class DocumentController extends GeneratorController
         $this->contract_generate_file = null;
         $this->consent_generate_file = null;
         $this->developer_statement_generate_file = null;
+        $this->personal_property_generate_file = null;
         $this->questionnaire_generate_file = null;
         $this->bank_account_generate_file = null;
         $this->bank_taxes_generate_file = null;
@@ -177,6 +179,12 @@ class DocumentController extends GeneratorController
                     $this->delivery_acceptance_act_template_set_data();
                 } else {
                     $this->notification("Warning", "Акт приймання передачі відсутній");
+                }
+
+                if ($this->contract->personal_property && $this->contract->personal_property->template_id) {
+                    $this->personal_property_template_set_data();
+                } else {
+                    $this->notification("Warning", "Заява про особисті кошти передачі відсутній");
                 }
 
                 if ($this->contract->developer_statement && $this->contract->developer_statement->template_id) {
@@ -376,6 +384,29 @@ class DocumentController extends GeneratorController
             $this->contract->id,
             'delivery_acceptance_act',
             $this->delivery_acceptance_act_generate_file
+        );
+
+        unset($word);
+    }
+
+    public function personal_property_template_set_data()
+    {
+        $this->personal_property_generate_file = $this->ff->personal_property_title();
+
+        $this->set_full_info_template($this->personal_property_generate_file);
+        $this->convert->date_to_string($this->contract->personal_property, $this->contract->personal_property->sign_date);
+        $this->set_passport_template_part($this->personal_property_generate_file);
+        $this->set_current_document_notary($this->personal_property_generate_file, $this->contract->personal_property->notary);
+        $this->set_sign_date($this->personal_property_generate_file, $this->contract->personal_property);
+
+        $word = new TemplateProcessor($this->personal_property_generate_file);
+        $word = $this->set_data_word($word);
+        $word->saveAs($this->personal_property_generate_file);
+        DocumentLink::set_document_link(
+            $this->card->id,
+            $this->contract->id,
+            'personal_property',
+            $this->personal_property_generate_file
         );
 
         unset($word);
@@ -1834,8 +1865,12 @@ class DocumentController extends GeneratorController
              * Подружжя клієнта - стать Ч/Ж
              * */
 
+            $word->setValue('ПОД-ШЛ-РОЛЬ-Р', KeyWord::where('key', $this->client->married->spouse->gender)->value('title_r'));
+            $word->setValue('ПОД-ШЛ-РОЛЬ-Р-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->married->spouse->gender)->value('title_r')));
+
             $word->setValue('ПОД-ШЛ-РОЛЬ-О', KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o'));
             $word->setValue('ПОД-ШЛ-РОЛЬ-О-UP', $this->convert->mb_ucfirst(KeyWord::where('key', $this->client->married->spouse->gender)->value('title_o')));
+
 
             $cs_gender_pronoun = GenderWord::where('alias', "whose")->value($this->client->married->spouse->gender);
 
@@ -1860,6 +1895,11 @@ class DocumentController extends GeneratorController
 
             $cs_gender_sign = GenderWord::where('alias', "sign")->value($this->client->married->spouse->gender);
             $word->setValue('ПОД-ПІДПИС', $cs_gender_sign);
+
+            $cs_gender_mine_r = GenderWord::where('alias', "mine-r")->value($this->client->married->spouse->gender);
+
+            $word->setValue('КЛ-ПОД-МОЄ', $cs_gender_mine_r);
+            $word->setValue('КЛ-ПОД-МОЄ-UP', $this->convert->mb_ucfirst($cs_gender_mine_r));
 
         } else {
             $this->notification("Warning", "Відсутня інформація про подружжя клієнта");

@@ -37,6 +37,7 @@ use App\Models\ImmFence;
 use App\Models\Immovable;
 use App\Models\ImmovableOwnership;
 use App\Models\ImmovableType;
+use App\Models\PersonalPropertyTemplate;
 use App\Models\PropertyValuation;
 use App\Models\PropertyValuationPrice;
 use App\Models\QuestionnaireTemplate;
@@ -56,6 +57,7 @@ use App\Models\TerminationContractTemplate;
 use App\Models\TerminationInfo;
 use App\Models\TerminationRefund;
 use App\Models\TerminationRefundTemplate;
+use App\Models\PersonalProperty;
 use Illuminate\Http\Request;
 use App\Models\Card;
 use Laravel\Nova\Fields\DateTime;
@@ -793,6 +795,7 @@ class ImmovableController extends BaseController
 
         $full_settlement_application_templates = FullSettlementApplicationTemplate::select('id', 'title')->where('dev_company_id', $dev_company_id)->get();
         $deliveryActTemplates = DeliveryAcceptanceActTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
+        $personalPropertyTemplates = PersonalPropertyTemplate::select('id', 'title')->where('developer_id', $dev_company_id)->get();
 
         $contract = Contract::where('immovable_id', $immovable_id)->first();
 
@@ -807,6 +810,7 @@ class ImmovableController extends BaseController
         $termination_refund = TerminationRefund::where('contract_id', $contract->id)->first();
         $fullSettlementApplication = FullSettlementApplication::where('contract_id', $contract->id)->first();
         $deliveryAct = DeliveryAcceptanceAct::where('contract_id', $contract->id)->first();
+        $personalProperty = PersonalProperty::where('contract_id', $contract->id)->first();
 
         $result['contract_type'] = $contract_type;
         $result['contract_templates'] = $contract_templates;
@@ -820,6 +824,7 @@ class ImmovableController extends BaseController
         $result['termination_refunds'] = $termination_refund_templates;
         $result['full_settlement_application_templates'] = $full_settlement_application_templates;
         $result['delivery_act_templates'] = $deliveryActTemplates;
+        $result['personal_property_templates'] = $personalPropertyTemplates;
 
         if ($final_sing_date && $final_sing_date->sign_date > $this->date)
             $final_sing_date = $final_sing_date->sign_date->format('d.m.Y');
@@ -846,6 +851,7 @@ class ImmovableController extends BaseController
         $result['termination_refund_reg_date'] = null;
         $result['termination_refund_reg_num'] = null;
         $result['delivery_act_template_id'] = $deliveryAct->template_id ?? null;
+        $result['personal_property_template_id'] = $personalProperty->template_id ?? null;
 
         $convert_notary = [];
         $other_notary = [];
@@ -959,6 +965,18 @@ class ImmovableController extends BaseController
                 ]);
         } else {
             DeliveryAcceptanceAct::where('contract_id', $contract_id)->delete();
+        }
+
+        if ($r['personal_property_template_id']) {
+            PersonalProperty::updateOrCreate(
+                ['contract_id' => $contract_id],
+                [
+                    'template_id' => $r['personal_property_template_id'],
+                    'sign_date' => $r['sign_date'],
+                    'notary_id' => $notary_id,
+                ]);
+        } else {
+            PersonalProperty::where('contract_id', $contract_id)->delete();
         }
 
 

@@ -64,6 +64,7 @@ class FolderFileController extends Controller
         $this->developer_statement = null;
         $this->questionnaires = null;
         $this->delivery_acceptance_act = null;
+        $this->personal_property = null;
         $this->bank_account_payment = null;
         $this->full_settlement_application = null;
         $this->bank_taxes_payment = null;
@@ -148,6 +149,10 @@ class FolderFileController extends Controller
 
         if ($this->contract->delivery_acceptance_act && $this->contract->delivery_acceptance_act->template) {
             $this->delivery_acceptance_act = $this->contract->delivery_acceptance_act->template->title;
+        }
+
+        if ($this->contract->personal_property && $this->contract->personal_property->template) {
+            $this->personal_property = $this->contract->personal_property->template->title;
         }
 
         if ($this->contract->bank_account_payment && $this->contract->bank_account_payment->template) {
@@ -390,6 +395,19 @@ class FolderFileController extends Controller
             . "";
 
         $template = $this->file_path($this->contract->delivery_acceptance_act->template);
+
+        $this->create_file_for_contract($template, $title);
+        return $title;
+    }
+
+    public function personal_property_title()
+    {
+        $title = "{$this->generate_path}/"
+            . "{$this->personal_property} {$this->subscriber} {$this->client_surname}"
+            . "{$this->file_type_docx}"
+            . "";
+
+        $template = $this->file_path($this->contract->personal_property->template);
 
         $this->create_file_for_contract($template, $title);
         return $title;

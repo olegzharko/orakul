@@ -9,14 +9,14 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Naif\Toggle\Toggle;
 use Techouse\IntlDateTime\IntlDateTime as DateTime;
 
-class DeliveryAcceptanceAct extends Resource
+class PersonalProperty extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\DeliveryAcceptanceAct::class;
+    public static $model = \App\Models\PersonalProperty::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -37,7 +37,7 @@ class DeliveryAcceptanceAct extends Resource
 
     public static function label()
     {
-        return "Акт пиймання передачі";
+        return "Власні кошти";
     }
 
     /**
@@ -59,8 +59,8 @@ class DeliveryAcceptanceAct extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->creationRules('unique:delivery_acceptance_acts,contract_id')->updateRules('unique:delivery_acceptance_acts,contract_id,{{resourceId}}')->nullable(),
-            BelongsTo::make('Шаблон акту', 'template', 'App\Nova\DeliveryAcceptanceActTemplate'),
+            BelongsTo::make('Угода', 'contract', 'App\Nova\Contract')->creationRules('unique:personal_properties,contract_id')->updateRules('unique:personal_properties,contract_id,{{resourceId}}')->nullable(),
+            BelongsTo::make('Шаблон акту', 'template', 'App\Nova\PersonalPropertyTemplate'),
             BelongsTo::make('Нотариус', 'notary', 'App\Nova\Notary'),
             DateTime::make('Дата підписання згоди', 'sign_date'),
             Toggle::make('Активн згода', 'active'),
