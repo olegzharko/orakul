@@ -1135,6 +1135,19 @@ class ConvertController extends GeneratorController
         return $address;
     }
 
+    public function building_short_address_for_taxes($immovable)
+    {
+        $imm_addr_short = $immovable->developer_building->address_type->short;
+        $imm_addr_title = $immovable->developer_building->title;
+        $imm_build_num = $immovable->developer_building->number;
+        $imm_type_short = $immovable->immovable_type->short;
+        $imm_num = $immovable->immovable_number;
+
+        $address = "$imm_addr_short\xc2\xa0$imm_addr_title $imm_build_num $imm_type_short\xc2\xa0$imm_num";
+
+        return $address;
+    }
+
 
     /*
      * с. Новосілки, вул. Миру, буд. 14, кв. 1
@@ -1382,6 +1395,15 @@ class ConvertController extends GeneratorController
         $phone = str_replace("(", " (", $phone);
         $phone = str_replace(")", ") ", $phone);
         $phone = str_replace("-", " ", $phone);
+
+        return $phone;
+    }
+
+    public function phone_number_short($phone)
+    {
+        $phone = str_replace("(", "", $phone);
+        $phone = str_replace(")", "", $phone);
+        $phone = str_replace("-", "", $phone);
 
         return $phone;
     }

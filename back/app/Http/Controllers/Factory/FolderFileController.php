@@ -444,16 +444,21 @@ class FolderFileController extends Controller
         return $title;
     }
 
-    public function bank_taxes_title_excel($client)
+    public function bank_taxes_title_excel($client, $immovabel)
     {
-        $title = null;
+        // 06.06.2024 Іванова вул. Радісна 4 кв. 1
+
+        $date = $this->contract->sign_date->format('d.m.Y');
+        $surname_n = $client->surname_n;
+        $address = $this->convert->building_short_address_for_taxes($immovabel);
         $title = "{$this->generate_path}/"
-            . "{$this->bank_taxes_payment} (" . $client->surname_n . ")"
+            . "$date $surname_n $address"
             . "{$this->file_type_excel}"
             . "";
 
         $template = $this->file_path($this->contract->bank_taxes_payment->template);
         $this->create_file_for_contract($template, $title);
+
         return $title;
     }
 

@@ -689,7 +689,7 @@ class DocumentController extends GeneratorController
         // Костыль для налогов Бласкета. Фукционал не подразумевал деление типов налогово для застройщиков
         // Добавляю проверку на id фирмы
         if ($this->contract->immovable->developer_building->dev_company->id == 11) {
-            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
+            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client, $this->contract->immovable);
 
             $this->set_passport_template_part($this->bank_taxes_generate_file);
 
@@ -710,7 +710,7 @@ class DocumentController extends GeneratorController
             $writer->save($file_name);
         // Конец костыля для налогов Бласкет. Дальше нормальный код который начинался с if а не elseif
         } elseif ($this->contract->bank_taxes_payment->template->type == 'excel') {
-            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client);
+            $this->bank_taxes_generate_file = $this->ff->bank_taxes_title_excel($this->client, $this->contract->immovable);
 
             $this->set_passport_template_part($this->bank_taxes_generate_file);
 
@@ -998,6 +998,7 @@ class DocumentController extends GeneratorController
         }
         else {
             $full_description = MainInfoType::where('alias', 'full-name-tax-code-id-card-address')->value('description');
+            $full_description_long_address = MainInfoType::where('alias', 'full-name-tax-code-id-card-long-address')->value('description');
             $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-name-tax-code-id-card-address')->value('description');
         }
 
@@ -1015,6 +1016,7 @@ class DocumentController extends GeneratorController
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
+        $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-ПОВНА-АДРЕСА', $full_description_long_address);
         $word->setValue('КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $preliminary_full_description);
 
         /*
@@ -1656,7 +1658,7 @@ class DocumentController extends GeneratorController
 
             $word->setValue('КЛ-П-АДР-СК', $this->convert->client_full_address_short($this->client));
             $word->setValue('КЛ-ПОВНА-АДРЕСА-СК', $this->convert->client_full_address_short($this->client));
-
+            $word->setValue('КЛ-ПОВНА-АДР', $this->convert->get_client_full_address_n($this->client));
 
             if ($this->client->native_address) {
                 $word->setValue('КЛ-МІСЦЕ-НАРОДЖЕННЯ-СК', $this->convert->client_native_address_short($this->client->native_address));
@@ -1671,6 +1673,7 @@ class DocumentController extends GeneratorController
              * */
 //            $word->setValue('cl-phone', $this->convert->phone_number($this->client->phone));
             $word->setValue('КЛ-ТЕЛЕФОН', $this->convert->phone_number($this->client->phone));
+            $word->setValue('КЛ-ТЕЛЕФОН-СК', $this->convert->phone_number_short($this->client->phone));
             $word->setValue($this->total_clients . '-КЛ-ТЕЛЕФОН', $this->client->phone);
 
 
@@ -2839,7 +2842,7 @@ class DocumentController extends GeneratorController
             $sheet->setCellValue("A{$i}", sprintf('%0.2f', $price * $percent));
             $sheet->setCellValue("B{$i}", $this->convert->get_full_name_n($pay_buy_client));
             $sheet->setCellValue("C{$i}", $pay_buy_client->tax_code);
-            $full_tax_info = $tax->code_and_edrpoy . $pay_buy_client->tax_code . $tax->appointment_payment . $this->convert->get_full_name_n($pay_buy_client);
+            $full_tax_info = $tax->code_and_edrpoy . $tax->appointment_payment . " " . $pay_buy_client->tax_code . " " .  $this->convert->get_full_name_n($pay_buy_client);
             $sheet->setCellValue("E{$i}", $full_tax_info);
             $i++;
         }
