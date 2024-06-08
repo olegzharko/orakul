@@ -53,7 +53,7 @@ const Templates = (props: Props) => {
           /> */}
 
           <CustomDatePicker
-            label="ОД - дата відстрочення"
+            label="ОД - дата для Відстрочення або Розстрочення"
             onSelect={(e) => meta.setData({ ...meta.data, full_settlement_application_date: e })}
             selectedDate={meta.data.full_settlement_application_date}
           />
@@ -160,6 +160,18 @@ const Templates = (props: Props) => {
             data={meta.deliveryActTemplates}
             onChange={(e) => meta.setData({ ...meta.data, delivery_act_template_id: +e })}
             selectedValue={meta.data.delivery_act_template_id}
+            className="single"
+          />
+        </div>
+      </SectionWithTitle>
+
+      <SectionWithTitle title="Заява про власні кошти">
+        <div className="flex-center">
+          <CustomSelect
+            label="Шаблон про власні кошти"
+            data={meta.personalProperty}
+            onChange={(e) => meta.setData({ ...meta.data, personal_property_template_id: +e })}
+            selectedValue={meta.data.personal_property_template_id}
             className="single"
           />
         </div>

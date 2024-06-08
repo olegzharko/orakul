@@ -45,6 +45,8 @@ type InitialData = {
   full_settlement_application_reg_number: string | null,
   delivery_act_template_id: number | null,
   delivery_act_templates?: SelectItem[],
+  personal_property_template_id: number | null,
+  personal_property_templates?: SelectItem[],
 }
 
 export type Props = {
@@ -70,6 +72,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
   const [notaries, setNotaries] = useState<SelectItem[]>([]);
   const [fullSettlementApplication, setFullSettlementApplication] = useState<SelectItem[]>([]);
   const [deliveryActTemplates, setDeliveryActTemplates] = useState<SelectItem[]>([]);
+  const [personalProperty, setPersonalProperty] = useState<SelectItem[]>([]);
 
   const [data, setData] = useState<InitialData>({
     type_id: null,
@@ -96,6 +99,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     full_settlement_application_reg_date: null,
     full_settlement_application_reg_number: null,
     delivery_act_template_id: null,
+    personal_property_template_id: null,
   });
 
   const onClear = useCallback(() => {
@@ -124,6 +128,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       full_settlement_application_reg_date: null,
       full_settlement_application_reg_number: null,
       delivery_act_template_id: null,
+      personal_property_template_id: null,
     });
   }, []);
 
@@ -163,6 +168,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     setNotaries(initialData?.notary || []);
     setFullSettlementApplication(initialData?.full_settlement_application_templates || []);
     setDeliveryActTemplates(initialData?.delivery_act_templates || []);
+    setPersonalProperty(initialData?.personal_property_templates || []);
     setData({
       type_id: initialData?.type_id || null,
       contract_template_id: initialData?.contract_template_id || null,
@@ -200,6 +206,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
       full_settlement_application_reg_number:
         initialData?.full_settlement_application_reg_number || null,
       delivery_act_template_id: initialData?.delivery_act_template_id || null,
+      personal_property_template_id: initialData?.personal_property_template_id || null,
     });
   }, [initialData]);
 
@@ -216,6 +223,7 @@ export const useTemplates = ({ initialData, id }: Props) => {
     statementTemplates,
     questionnaireTemplates,
     deliveryActTemplates,
+    personalProperty,
     bankTemplates,
     taxesTemplates,
     contractTemplates,
