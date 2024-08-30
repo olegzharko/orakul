@@ -13,6 +13,7 @@ const FactoryScreen = React.lazy(() => import('../Screens/FactoryScreen'));
 const Scheduler = React.lazy(() => import('../Screens/SchedulerScreen'));
 const BankUser = React.lazy(() => import('../Screens/BankUserScreen'));
 const DeveloperUserScreen = React.lazy(() => import('../Screens/DeveloperUserScreen'));
+const NotarizeScreen = React.lazy(() => import('../Screens/NotarizeScreen'));
 const Login = React.lazy(() => import('../Screens/LoginScreen'));
 
 const App: React.FC = () => {
@@ -65,6 +66,14 @@ const App: React.FC = () => {
     return (
       <Suspense fallback={<Loader />}>
         <DeveloperUserScreen />
+      </Suspense>
+    );
+  }
+
+  if (type === UserTypes.NOTARIZE) {
+    return (
+      <Suspense fallback={<Loader />}>
+        <NotarizeScreen />
       </Suspense>
     );
   }
