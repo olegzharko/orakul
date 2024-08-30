@@ -6,6 +6,7 @@ type Props = {
 }
 
 const ControlPanel = ({ children }: Props) => (
+  // непосредственно та часть в которой выводятся разделы кнопки меню c Navigation.tsx
   <div className="controlPanel">
     {children}
   </div>
