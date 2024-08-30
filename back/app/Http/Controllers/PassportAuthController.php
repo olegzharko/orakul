@@ -179,11 +179,23 @@ class PassportAuthController extends BaseController
     {
         $result = [];
 
+        if (auth()->user()->reception)
+            $result[] = ['title' => 'Ресепшн', 'type' => 'reception'];
+
         if (auth()->user()->manager)
             $result[] = ['title' => 'Менеджер', 'type' => 'manager'];
 
         if (auth()->user()->generator)
             $result[] = ['title' => 'Генератор', 'type' => 'generator'];
+
+        if (auth()->user()->vision)
+            $result[] = ['title' => 'Локації', 'type' => 'vision'];
+
+        if (auth()->user()->assistant)
+            $result[] = ['title' => 'Ассистент', 'type' => 'assistant'];
+
+        if (auth()->user()->notarize)
+            $result[] = ['title' => 'Інші дії', 'type' => 'notarize'];
 
         if (auth()->user()->type == 'reception')
             $result[] = ['title' => 'Ресепшн', 'type' => 'reception'];
@@ -191,11 +203,8 @@ class PassportAuthController extends BaseController
         if (auth()->user()->type == 'assistant')
             $result[] = ['title' => 'Асистент', 'type' => 'assistant'];
 
-        if (auth()->user()->reception)
-            $result[] = ['title' => 'Ресепшн', 'type' => 'reception'];
-
-        if (auth()->user()->vision)
-            $result[] = ['title' => 'Локації', 'type' => 'vision'];
+        $result[] = ['title' => 'Регистратор', 'type' => 'registrator'];
+        $result[] = ['title' => 'Ассистент', 'type' => 'assistant'];
 
         return $result;
     }
