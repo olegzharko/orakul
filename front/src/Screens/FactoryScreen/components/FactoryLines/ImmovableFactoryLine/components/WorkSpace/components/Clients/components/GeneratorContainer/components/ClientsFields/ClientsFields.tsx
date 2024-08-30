@@ -16,8 +16,6 @@ import { useClientsFields } from './useClientsFields';
 const ClientsFields = () => {
   const meta = useClientsFields();
 
-  // console.log('meta.address', meta.address);
-  console.log('meta.native_address', meta.native_address);
   return (
     <main className="clients">
       <Fio initialData={meta.fioData} id={meta.personId} />
