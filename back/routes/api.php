@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Notarize\PowerOfAttorneyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PassportAuthController;
@@ -246,3 +248,47 @@ Route::middleware('auth:api')->group(function () {
 Route::get('single_test', [\App\Http\Controllers\Test\ContractController::class, 'single_test']); // postman
 
 Route::get('check_sql', [\App\Http\Controllers\Test\SqlController::class, 'check_sql']);
+
+Route::prefix('notarize')->group(function () {
+    Route::post('add-card', [PowerOfAttorneyController::class, 'store']);
+    Route::get('power-of-attorneys', [PowerOfAttorneyController::class, 'index']);
+    Route::get('power-of-attorneys/{id}', [PowerOfAttorneyController::class, 'show']);
+    Route::put('power-of-attorneys/{id}', [PowerOfAttorneyController::class, 'update']);
+    Route::delete('power-of-attorneys/{id}', [PowerOfAttorneyController::class, 'destroy']);
+
+    Route::get('power-of-attorney/general/{id}', [\App\Http\Controllers\Notarize\GeneralController::class, 'getGeneral']);
+    Route::put('power-of-attorney/general/{id}', [\App\Http\Controllers\Notarize\GeneralController::class, 'setGeneral']);
+
+    Route::get('power-of-attorney/template/{id}', [\App\Http\Controllers\Notarize\TemplateController::class, 'getTemplate']);
+    Route::put('power-of-attorney/template/{id}', [\App\Http\Controllers\Notarize\TemplateController::class, 'setTemplate']);
+
+    Route::get('client/{clientType}/full-name/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'getFullName'
+    ]);
+    Route::put('client/trustor/full-name/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class, 'updateTrustorFullName']);
+    Route::put('client/agent/full-name/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class, 'updateAgentFullName']);
+
+
+    Route::get('client/{clientType}/citizenships/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'getCitizenships'
+    ]);
+    Route::put('client/{clientType}/citizenships/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'setCitizenships'
+    ]);
+
+    Route::get('client/{clientType}/passport/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'getPassport'
+    ]);
+
+    Route::put('client/{clientType}/passport/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'setPassport'
+    ]);
+
+    Route::get('client/{clientType}/address/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'getAddress'
+    ]);
+
+    Route::put('client/{clientType}/address/{powerOfAttorneyId}', [\App\Http\Controllers\Notarize\ClientController::class,
+        'setAddress'
+    ]);
+});
