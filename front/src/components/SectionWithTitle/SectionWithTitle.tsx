@@ -6,6 +6,7 @@ type Props = {
   children: React.ReactNode;
   headerColor?: string;
   onClear?: () => void;
+  clientColor?: string;
 }
 
 const SectionWithTitle = ({ title, children, onClear, headerColor }: Props) => (
