@@ -1,0 +1,141 @@
+@import '../../constants.scss';
+
+.registrator {
+  display: flex;
+
+  &__navigation {
+    width: $control_panel;
+
+    &-item {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 20px;
+      border-radius: $border_radius;
+      background-color: transparent;
+      cursor: pointer;
+      transition: $transition_default;
+
+      &:hover {
+        opacity: .5;
+      }
+
+      &.selected {
+        background-color: $grey_light;
+      }
+
+      img {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  .buttons-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button-container {
+      width: 260px;
+    }
+
+    .custom-button {
+      @include form_text;
+      font-size: 14px;
+      line-height: 26px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #C0C1C1;
+      box-sizing: border-box;
+      border-radius: $border_radius;
+      text-decoration: none;
+      color: $primary;
+      text-transform: uppercase;
+      transition: $transition_default;
+      cursor: pointer;
+
+      &:disabled {
+        opacity: .5;
+        cursor: default;
+      }
+
+      &:hover {
+        opacity: .5;
+      }
+
+      img.left {
+        margin-right: 10px
+      }
+
+      img.right {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+
+.immovable {
+
+  &__fields {
+
+    & > div {
+      margin-bottom: 25px;
+    }
+
+    .general {
+
+      &__type {
+
+        &-title {
+          margin-bottom: 10px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 12px;
+          line-height: 12px;
+          letter-spacing: 0.4px;
+          color: #263238;
+        }
+      }
+
+      .duet {
+        display: flex;
+
+        & > div:first-child {
+          margin-right: 20px;
+        }
+      }
+
+      .trio {
+        display: flex;
+
+        & > div:first-child, & > div:nth-child(2) {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    .security-payment {
+
+      &__currency {
+
+        &-title {
+          margin-bottom: 10px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 12px;
+          line-height: 12px;
+          letter-spacing: 0.4px;
+          color: #263238;
+        }
+      }
+    }
+
+    .templates {
+      
+      .single {
+        width: 330px;
+      }
+    }
+  }
+}
