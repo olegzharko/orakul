@@ -40,6 +40,7 @@ export enum UserTypes {
   VISION = 'vision',
   BANK = 'bank',
   DEVELOPER = 'developer',
+  NOTARIZE = 'notarize',
 }
 
 export type ManagerAppointmentCard = {

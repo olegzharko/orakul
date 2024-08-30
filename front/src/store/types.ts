@@ -1,10 +1,11 @@
 import { ClientsState } from './clients/store';
-import { RegistratorState } from './registrator/store';
 import { FilterState } from './filter/store';
 import { SchedulerState } from './scheduler/store';
 import { MainState } from './main/store';
 import { AppointmentsState } from './appointments/store';
 import { ImmovablesState } from './immovables/store';
+import { RegistratorState } from './registrator/store';
+import { NotarizeState } from './notarize/store';
 
 export type REDUX_ACTION = {
   type: string;
@@ -16,9 +17,10 @@ export type State = {
   main: MainState;
   appointments: AppointmentsState;
   filter: FilterState;
-  registrator: RegistratorState;
   clients: ClientsState;
   immovables: ImmovablesState;
+  registrator: RegistratorState;
+  notarize: NotarizeState;
 };
 
 export type FilterData = {
