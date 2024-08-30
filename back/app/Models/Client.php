@@ -30,6 +30,7 @@ class Client extends Model implements Sortable, HasMedia
         'surname_o',
         'name_o',
         'patronymic_o',
+        'citizenship_id',
         'registration',
         'gender',
         'birth_date',
@@ -160,12 +161,13 @@ class Client extends Model implements Sortable, HasMedia
         return $this->hasOne(ClientCheckList::class, 'client_id');
     }
 
-//    public static function get_dev_employers_by_type($dev_company_id, $employer_type)
-//    {
-//        return Client::where([
-//                'dev_company_id' => $dev_company_id,
-//                'type_id' => $employer_type,
-//            ])->get();
-//    }
+    public function trustorPowersOfAttorney()
+    {
+        return $this->hasMany(PowerOfAttorney::class, 'trustor_id');
+    }
 
+    public function agentPowersOfAttorney()
+    {
+        return $this->hasMany(PowerOfAttorney::class, 'agent_id');
+    }
 }
