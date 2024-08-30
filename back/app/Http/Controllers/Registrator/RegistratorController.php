@@ -42,11 +42,13 @@ class RegistratorController extends BaseController
 
         $check_dev_company = Contract::select(
                'dev_companies.id',
-            )->where('contracts.ready', true)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
+            )->where('contracts.ready', true)
+//            ->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
             ->join('dev_companies', 'dev_companies.id', '=', 'developer_buildings.dev_company_id')
 //            ->join('dev_fences', 'dev_fences.dev_company_id', '=', 'dev_companies.id')
+            ->limit(9)
             ->distinct('dev_companies.id')->pluck('dev_companies.id')
         ;
 
@@ -139,13 +141,14 @@ class RegistratorController extends BaseController
 //                'imm_fences.date',
 //                'imm_fences.number',
 //                'imm_fences.pass',
-            )->where('ready', true)->where('type_id', 1)->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
+            )->where('ready', true)->where('type_id', 1)
+//            ->whereDate('sign_date', '=', $this->date->format('Y-m-d'))
             ->join('immovables', 'immovables.id', '=', 'contracts.immovable_id')
             ->join('immovable_types', 'immovable_types.id', '=', 'immovables.immovable_type_id')
             ->join('developer_buildings', 'developer_buildings.id', '=', 'immovables.developer_building_id')
 //            ->join('imm_fences', 'imm_fences.immovable_id', '=', 'immovables.id')
-            ->get()
-            ;
+            ->limit(9)
+            ->get();
 
         $imm_length = count($immovables);
         foreach ($immovables as $key => $imm) {
