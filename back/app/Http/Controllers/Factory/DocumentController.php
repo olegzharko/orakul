@@ -977,6 +977,7 @@ class DocumentController extends GeneratorController
     {
         $word = new TemplateProcessor($template_generate_file);
 
+
         /*
          * Додати шаблон для даних забудовника так підписанта або чисто шаблон для забудовника
          * */
@@ -1000,6 +1001,7 @@ class DocumentController extends GeneratorController
             $full_description = MainInfoType::where('alias', 'full-name-tax-code-id-card-address')->value('description');
             $full_description_long_address = MainInfoType::where('alias', 'full-name-tax-code-id-card-long-address')->value('description');
             $preliminary_full_description = MainInfoType::where('alias', 'preliminary-full-name-tax-code-id-card-address')->value('description');
+            $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-ПОВНА-АДРЕСА', $full_description_long_address);
         }
 
         /*
@@ -1016,7 +1018,7 @@ class DocumentController extends GeneratorController
         $word->setValue('ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
         $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $full_description);
-        $word->setValue('КЛ-ОД-ПІБ-ПАСПОРТ-КОД-ПОВНА-АДРЕСА', $full_description_long_address);
+        
         $word->setValue('КЛ-ПД-ПІБ-ПАСПОРТ-КОД-АДРЕСА', $preliminary_full_description);
 
         /*
