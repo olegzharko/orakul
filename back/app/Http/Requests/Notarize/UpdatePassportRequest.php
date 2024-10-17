@@ -32,7 +32,7 @@ class UpdatePassportRequest extends FormRequest
             'passport_date' => 'required',
             'passport_department' => 'nullable|string|max:255',
             'passport_demographic_code' => 'nullable|string|max:255',
-            'passport_finale_date' => 'required',
+            'passport_finale_date' => 'nullable|string|max:255',
         ];
     }
 }
