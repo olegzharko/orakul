@@ -222,7 +222,11 @@ class ClientController extends BaseController
         // Форматирование дат
         $request['date_of_birth'] = Carbon::createFromFormat('d.m.Y H:i', $validatedData['date_of_birth'])->format('Y-m-d H:i:s');
         $request['passport_date'] = Carbon::createFromFormat('d.m.Y H:i', $validatedData['passport_date'])->format('Y-m-d H:i:s');
-        $request['passport_finale_date'] = Carbon::createFromFormat('d.m.Y H:i', $validatedData['passport_finale_date'])->format('Y-m-d H:i:s');
+        $request['passport_finale_date'] = null;
+        if ($validatedData['passport_finale_date']) {
+            $request['passport_finale_date'] = Carbon::createFromFormat('d.m.Y H:i', $validatedData['passport_finale_date'])->format('Y-m-d H:i:s');
+        }
+
 
         // Найти запись PowerOfAttorney
         $powerOfAttorney = PowerOfAttorney::findOrFail($powerOfAttorneyId);
