@@ -9,8 +9,8 @@ const Fields = () => {
 
   return (
     <div className="immovable__fields">
-      <Templates initialData={meta.templates} id={meta.id} />
       <General initialData={meta.general} id={meta.id} />
+      <Templates initialData={meta.templates} id={meta.id} />
     </div>
   );
 };

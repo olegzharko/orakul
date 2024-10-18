@@ -12,12 +12,12 @@ const PowerOfAttorney = (props: Props) => {
 
   return (
     <div className="registrator__developer">
-      <h1>Предмет довіреності</h1>
-      <DealFields />
       <h1>Довіритель</h1>
       <ClientsFields headerColor="#8aa6af" clientType="trustor" />
       <h1>Уповноважена особа</h1>
       <ClientsFields headerColor="#a3b89b" clientType="agent" />
+      <h1>Предмет довіреності</h1>
+      <DealFields />
     </div>
   );
 };
